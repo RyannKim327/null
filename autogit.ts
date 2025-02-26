@@ -1,21 +1,55 @@
-function insertionSort(arr: number[]): number[] {
-    // Loop through the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i]; // The element to be positioned
-        let j = i - 1; // The index of the last sorted element
+// Define a type for the graph nodes
+type Node = {
+    value: string;
+    children: Node[];
+};
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key; // Place the key in its correct position
+// Depth-Limited Search function
+function depthLimitedSearch(node: Node, depth: number, target: string): boolean {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
     }
-    return arr; // Return the sorted array
+
+    // If the depth limit is reached, return false
+    if (depth === 0) {
+        return false;
+    }
+
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depth - 1, target)) {
+            return true;
+        }
+    }
+
+    // If the target is not found in this path, return false
+    return false;
 }
 
-// Example usage:
-const array = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+// Example usage
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                { value: 'D', children: [] },
+                { value: 'E', children: [] }
+            ]
+        },
+        {
+            value: 'C',
+            children: [
+                { value: 'F', children: [] },
+                { value: 'G', children: [] }
+            ]
+        }
+    ]
+};
+
+const targetValue = 'E';
+const depthLimit = 2;
+
+const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
