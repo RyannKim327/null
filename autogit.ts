@@ -1,38 +1,53 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-    let maxLength = 0;
-    let endIndex = -1;
+class Node {
+    value: string;
+    children: Node[];
 
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-    
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            // If characters match
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                // Update maxLength and endIndex
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndex = i - 1; // End index of LCS in str1
-                }
-            } else {
-                dp[i][j] = 0; // No common suffix
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
+    }
+}
+
+function depthLimitedSearch(root: Node, limit: number, target: string): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the node is the target
+        if (node.value === target) {
+            return node;
+        }
+
+        // If the depth limit has not been reached, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
             }
         }
     }
 
-    // If we found a common substring
-    if (maxLength > 0) {
-        return str1.substring(endIndex - maxLength + 1, endIndex + 1);
-    }
-    
-    return ""; // No common substring found
+    // Return null if the target was not found within the depth limit
+    return null;
 }
 
 // Example usage:
-const string1 = "abcde";
-const string2 = "abfce";
-const result = longestCommonSubstring(string1, string2);
-console.log(result); // Output: "ab"
+
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const targetNode = depthLimitedSearch(root, 2, "D");
+console.log(targetNode ? targetNode.value : "Not found");  // Output: "Not found"
