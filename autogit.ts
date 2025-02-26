@@ -1,35 +1,48 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Node = {
+    value: any;
+    children: Node[];
+};
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function depthLimitedSearch(root: Node, goal: any, limit: number): Node | null {
+    const stack: { node: Node, depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node;
+        }
+
+        // If we haven't reached the limit, continue to explore
+        if (depth < limit) {
+            // Push children to the stack with incremented depth
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
     }
+
+    // Return null if the goal was not found within the depth limit
+    return null;
 }
 
-function findMiddle(head: ListNode | null): ListNode | null {
-    if (!head) return null; // If the list is empty
+// Example usage
+const root: Node = {
+    value: 'A',
+    children: [
+        { value: 'B', children: [] },
+        { value: 'C', children: [
+            { value: 'D', children: [] },
+            { value: 'E', children: [] }
+        ] }
+    ]
+};
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow.next; // Move slow by one step
-        fast = fast.next.next; // Move fast by two steps
-    }
-
-    return slow; // Slow is now at the middle
-}
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const middleNode = findMiddle(head);
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+const result = depthLimitedSearch(root, 'E', 2);
+if (result) {
+    console.log(`Found: ${result.value}`);
+} else {
+    console.log('Goal not found within the depth limit.');
 }
