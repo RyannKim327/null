@@ -1,22 +1,122 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+class BinaryHeap<T> {
+    private heap: T[];
 
-    // Start with the first string as the prefix
-    let prefix = strs[0];
+    constructor() {
+        this.heap = [];
+    }
 
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If the prefix is empty, return it
-            if (prefix === "") return "";
+    private getParentIndex(index: number): number {
+        return Math.floor((index - 1) / 2);
+    }
+
+    private getLeftChildIndex(index: number): number {
+        return 2 * index + 1;
+    }
+
+    private getRightChildIndex(index: number): number {
+        return 2 * index + 2;
+    }
+
+    public insert(value: T): void {
+        this.heap.push(value);
+        this.bubbleUp();
+    }
+
+    public extract(): T | undefined {
+        if (this.heap.length === 0) return undefined;
+        
+        const root = this.heap[0];
+        const last = this.heap.pop();
+        
+        if (this.heap.length > 0 && last !== undefined) {
+            this.heap[0] = last;
+            this.bubbleDown();
+        }
+        
+        return root;
+    }
+
+    private bubbleUp(): void {
+        let index = this.heap.length - 1;
+        while (index > 0) {
+            const parentIndex = this.getParentIndex(index);
+            if (this.heap[index] >= this.heap[parentIndex]) break;
+            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+            index = parentIndex;
         }
     }
 
-    return prefix;
-}
+    private bubbleDown(): void {
+        let index = 0;
+        const length = this.heap.length;
 
-// Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+        while (true) {
+            const leftChildIndex = this.getLeftChildIndex(index);
+            const rightChildIndex = this.getRightChildIndex(index);
+            let smallestIndex = index;
+
+            if (leftChildIndex < length && this.heap[leftChildIndex] < this.heap[smallestIndex]) {
+                smallestIndex = leftChildIndex;
+            }
+            if (rightChildIndex < length && this.heap[rightChildIndex] < this.heap[smallestIndex]) {
+                smallestIndex = rightChildIndex;
+            }
+            if (smallestIndex === index) break;
+
+            [this.heap[index], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[index]];
+            index = smallestIndex;
+        }
+    }
+
+    public peek(): T | undefined {
+        return this.heap[0];
+    }
+
+    public isEmpty(): boolean {
+        return this.heap.length === 0;
+    }
+
+    public size(): number {
+        return this.heap.length;
+    }
+}
+class PriorityQueue<T> {
+    private heap: BinaryHeap<T>;
+
+    constructor() {
+        this.heap = new BinaryHeap<T>();
+    }
+
+    public enqueue(value: T): void {
+        this.heap.insert(value);
+    }
+
+    public dequeue(): T | undefined {
+        return this.heap.extract();
+    }
+
+    public peek(): T | undefined {
+        return this.heap.peek();
+    }
+
+    public isEmpty(): boolean {
+        return this.heap.isEmpty();
+    }
+
+    public size(): number {
+        return this.heap.size();
+    }
+}
+const pq = new PriorityQueue<number>();
+
+pq.enqueue(5);
+pq.enqueue(1);
+pq.enqueue(3);
+
+console.log(pq.peek()); // Output: 1
+console.log(pq.dequeue()); // Output: 1
+console.log(pq.dequeue()); // Output: 3
+console.log(pq.size()); // Output: 1
+console.log(pq.isEmpty()); // Output: false
+console.log(pq.dequeue()); // Output: 5
+console.log(pq.isEmpty()); // Output: true
