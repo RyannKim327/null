@@ -1,22 +1,12 @@
-// Assuming you have a back-end API running
-const apiUrl = 'http://your-api-url/api/data';
-
-// An asynchronous function to fetch data from the API
-async function fetchData() {
-    try {
-        const response = await fetch(apiUrl);
-        
-        // Check if the response is OK (status code in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
-        const data = await response.json();
-        console.log('Data fetched successfully:', data);
-    } catch (error) {
-        console.error('Error fetching ', error);
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
     }
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
 }
 
-// Call the fetchData function
-fetchData();
+// Example usage:
+const number = 5;
+console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
