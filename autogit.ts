@@ -1,56 +1,38 @@
-class Node {
-    value: string;
-    children: Node[]; // assume it's a tree structure
-    
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    addChild(child: Node) {
-        this.children.push(child);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-function depthLimitedSearch(startNode: Node, depthLimit: number, target: string): Node | null {
-    const stack: { node: Node, depth: number }[] = [];
-    stack.push({ node: startNode, depth: 0 });
+function hasCycle(head: ListNode | null): boolean {
+    if (head === null) return false;
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!; // non-null assertion, stack is not empty
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-        // Check if we found the target
-        if (node.value === target) {
-            return node;
-        }
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;           // Move slow by 1 step
+        fast = fast.next.next;     // Move fast by 2 steps
 
-        // If current depth is less than the limit, explore children
-        if (depth < depthLimit) {
-            for (let i = node.children.length - 1; i >= 0; i--) { // reverse to maintain order
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
+        if (slow === fast) {
+            return true;           // There is a cycle
         }
     }
 
-    return null; // target not found
+    return false;                  // No cycle found
 }
 
 // Example usage:
-const rootNode = new Node("A");
-const childB = new Node("B");
-const childC = new Node("C");
-const childD = new Node("D");
-const childE = new Node("E");
+// Creating a linked list with a cycle
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+head.next = second;
+second.next = third;
+third.next = second; // Creates a cycle
 
-rootNode.addChild(childB);
-rootNode.addChild(childC);
-childB.addChild(childD);
-childB.addChild(childE);
-
-const result = depthLimitedSearch(rootNode, 2, "E");
-
-if (result) {
-    console.log(`Found: ${result.value}`);
-} else {
-    console.log("Target not found.");
-}
+console.log(hasCycle(head)); // Output: true
