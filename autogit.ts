@@ -1,31 +1,24 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
-
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-
-        // Check if the target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found at index mid
-        }
-        
-        // If target is greater, ignore the left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            // If target is smaller, ignore the right half
-            right = mid - 1;
+function findSecondLargest(arr: number[]): number | null {
+    if (arr.length < 2) {
+        return null; // Not enough elements
+    }
+    
+    let first = -Infinity;
+    let second = -Infinity;
+    
+    for (const num of arr) {
+        if (num > first) {
+            second = first; // Update second before first
+            first = num;    // Update first
+        } else if (num > second && num < first) {
+            second = num;   // Update second
         }
     }
-
-    // Target was not found in the array
-    return -1; 
+    
+    return second !== -Infinity ? second : null; // Return null if no second largest exists
 }
 
 // Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
-const index = binarySearch(sortedArray, target);
-
-console.log(index); // Output: 4 (the index of target 5 in the array)
+const array = [12, 35, 1, 10, 34, 1];
+const secondLargest = findSecondLargest(array);
+console.log(secondLargest); // Outputs: 34
