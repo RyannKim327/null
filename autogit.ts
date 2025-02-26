@@ -1,38 +1,31 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    // Loop through all elements in the array
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
 
-function hasCycle(head: ListNode | null): boolean {
-    if (head === null) return false;
+        // Last i elements are already sorted
+        for (let j = 0; j < n - 1 - i; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
+        }
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;           // Move slow by 1 step
-        fast = fast.next.next;     // Move fast by 2 steps
-
-        if (slow === fast) {
-            return true;           // There is a cycle
+        // If no two elements were swapped in the inner loop, then the array is sorted
+        if (!swapped) {
+            break;
         }
     }
 
-    return false;                  // No cycle found
+    return arr;
 }
 
 // Example usage:
-// Creating a linked list with a cycle
-const head = new ListNode(1);
-const second = new ListNode(2);
-const third = new ListNode(3);
-head.next = second;
-second.next = third;
-third.next = second; // Creates a cycle
-
-console.log(hasCycle(head)); // Output: true
+const array = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
