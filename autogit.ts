@@ -1,31 +1,52 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    // Loop through all elements in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // use the previous lps value
+            } else {
+                lps[i] = 0;
+                i++;
             }
-        }
-
-        // If no two elements were swapped in the inner loop, then the array is sorted
-        if (!swapped) {
-            break;
         }
     }
 
-    return arr;
+    return lps;
 }
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-// Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+        
+        if (j === pattern.length) {
+            result.push(i - j); // Match found at index (i - j)
+            j = lps[j - 1]; // Look for the next match
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use the lps to skip characters
+            } else {
+                i++;
+            }
+        }
+    }
+    
+    return result; // Return the array of match starting indices
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices: ", result);
