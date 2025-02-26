@@ -1,26 +1,36 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+function isPrime(num: number): boolean {
+    if (num <= 1) return false;
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) return false;
+    }
+    return true;
+}
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element
-        let minIndex = i;
+function largestPrimeFactor(n: number): number {
+    let largest = -1; // Initialize to -1 (or 0, depending on your needs)
 
-        // Check the rest of the array to find the smallest element
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if a smaller element is found
-            }
-        }
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largest = 2;
+        n /= 2;
+    }
 
-        // If the minimum is not the position of i, swap the elements
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swap
+    // n must be odd at this point
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        while (n % i === 0) {
+            largest = i;
+            n /= i;
         }
     }
 
-    return arr; // Return the sorted array
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largest = n;
+    }
+
+    return largest;
 }
 
-// Example usage:
-const numbers = [64, 25, 12, 22, 11];
-console.log(selectionSort(numbers)); // Output: [11, 12, 22, 25, 64]
+// Example usage
+const number = 13195; // Replace with any number
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
