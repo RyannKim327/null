@@ -1,29 +1,22 @@
-function removeDuplicates(arr: number[]): number[] {
-    return Array.from(new Set(arr));
-}
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-// Example usage:
-const nums = [1, 2, 2, 3, 4, 4, 5];
-const uniqueNums = removeDuplicates(nums);
-console.log(uniqueNums); // Output: [1, 2, 3, 4, 5]
-function removeDuplicates(arr: number[]): number[] {
-    return arr.filter((value, index) => arr.indexOf(value) === index);
-}
+    // Start with the first string as a reference
+    let prefix = strs[0];
 
-// Example usage:
-const nums = [1, 2, 2, 3, 4, 4, 5];
-const uniqueNums = removeDuplicates(nums);
-console.log(uniqueNums); // Output: [1, 2, 3, 4, 5]
-function removeDuplicates(arr: number[]): number[] {
-    return arr.reduce((accumulator, current) => {
-        if (!accumulator.includes(current)) {
-            accumulator.push(current);
+    // Compare the prefix with each string in the array
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by one character from the end
+            prefix = prefix.slice(0, -1);
+            // If the prefix is empty, there's no common prefix
+            if (prefix === "") return "";
         }
-        return accumulator;
-    }, [] as number[]);
+    }
+
+    return prefix;
 }
 
 // Example usage:
-const nums = [1, 2, 2, 3, 4, 4, 5];
-const uniqueNums = removeDuplicates(nums);
-console.log(uniqueNums); // Output: [1, 2, 3, 4, 5]
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
