@@ -1,26 +1,31 @@
-const numbers: number[] = [1, 2, 3, 4, 5];
-const max = Math.max(...numbers);
-console.log(max); // Output: 5
-const numbers: number[] = [1, 2, 3, 4, 5];
-let max = numbers[0];
+import axios from 'axios';
 
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > max) {
-        max = numbers[i];
-    }
+// Define a TypeScript interface for the response data
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-console.log(max); // Output: 5
-const numbers: number[] = [1, 2, 3, 4, 5];
-const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
-console.log(max); // Output: 5
-const numbers: number[] = [1, 2, 3, 4, 5];
-let max = numbers[0];
-
-numbers.forEach(num => {
-    if (num > max) {
-        max = num;
+const fetchUsers = async (): Promise<void> => {
+  try {
+    // Make a GET request to a public API endpoint
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    
+    // Log the response data
+    response.data.forEach(user => {
+      console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+    });
+  } catch (error) {
+    // Handle errors
+    if (axios.isAxiosError(error)) {
+      console.error(`Error: ${error.message}`);
+    } else {
+      console.error('An unexpected error occurred', error);
     }
-});
+  }
+};
 
-console.log(max); // Output: 5
+// Call the function to fetch users
+fetchUsers();
