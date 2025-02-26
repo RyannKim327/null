@@ -1,83 +1,54 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinaryTree {
-    root: Node | null;
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
     constructor() {
-        this.root = null;
+        this.adjacencyList = new Map();
     }
 
-    // Method to insert a new value into the tree
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
+    // Add a vertex to the graph
+    addVertex(vertex: number) {
+        if (!this.adjacencyList.has(vertex)) {
+            this.adjacencyList.set(vertex, []);
         }
     }
 
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
+    // Add an edge to the graph
+    addEdge(vertex1: number, vertex2: number) {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // for undirected graph
+    }
+
+    // Recursive DFS helper function
+    private dfsHelper(vertex: number, visited: Set<number>): void {
+        // Handle the current vertex
+        console.log(vertex);
+        visited.add(vertex);
+
+        // Recur for all the vertices adjacent to this vertex
+        const neighbors = this.adjacencyList.get(vertex) || [];
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                this.dfsHelper(neighbor, visited);
             }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
         }
     }
 
-    // In-order traversal of the tree
-    inOrderTraversal(node: Node | null, visit: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrderTraversal(node.left, visit);
-            visit(node.value);
-            this.inOrderTraversal(node.right, visit);
-        }
-    }
-
-    // Pre-order traversal of the tree
-    preOrderTraversal(node: Node | null, visit: (value: number) => void): void {
-        if (node !== null) {
-            visit(node.value);
-            this.preOrderTraversal(node.left, visit);
-            this.preOrderTraversal(node.right, visit);
-        }
-    }
-
-    // Post-order traversal of the tree
-    postOrderTraversal(node: Node | null, visit: (value: number) => void): void {
-        if (node !== null) {
-            this.postOrderTraversal(node.left, visit);
-            this.postOrderTraversal(node.right, visit);
-            visit(node.value);
-        }
+    // Initiate DFS
+    dfs(startVertex: number): void {
+        const visited = new Set<number>();
+        this.dfsHelper(startVertex, visited);
     }
 }
 
 // Example usage
-const tree = new BinaryTree();
-tree.insert(5);
-tree.insert(3);
-tree.insert(7);
-tree.insert(1);
-tree.insert(4);
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
 
-// To print in-order traversal
-tree.inOrderTraversal(tree.root, (value) => console.log(value));
+console.log("DFS starting from vertex 1:");
+graph.dfs(1);
