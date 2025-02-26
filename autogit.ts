@@ -1,19 +1,35 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and word to lower case for a case-insensitive count
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    // Split the text into words
-    const words = normalizedText.split(/\s+/);
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    // Filter and count occurrences of the specified word
-    const count = words.filter(w => w === normalizedWord).length;
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return index
+        }
 
-    return count;
+        // If target is greater, ignore the left half
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            right = mid - 1;
+        }
+    }
+
+    // Target not present in the array
+    return -1;
 }
 
-// Example usage
-const text = "Hello world! This world is beautiful. World is full of wonders.";
-const wordToCount = "world";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" appears ${occurrences} times.`);
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = binarySearch(sortedArray, target);
+
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found in the array.');
+}
