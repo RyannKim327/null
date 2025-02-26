@@ -1,49 +1,48 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+type Node = {
+    state: string; // The current state or sequence
+    score: number; // The score of the current state
+};
 
-    // Build max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+function beamSearch(initialState: string, beamWidth: number, maxSteps: number): string {
+    let beams: Node[] = [{ state: initialState, score: 0 }];
+
+    for (let step = 0; step < maxSteps; step++) {
+        const newBeams: Node[] = [];
+
+        // Expand each beam
+        for (const beam of beams) {
+            const expandedNodes = expandNode(beam);
+            newBeams.push(...expandedNodes);
+        }
+
+        // Sort the new beams by score and keep the top `beamWidth` beams
+        newBeams.sort((a, b) => b.score - a.score);
+        beams = newBeams.slice(0, beamWidth);
     }
 
-    // One by one extract elements from heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
+    // Return the best beam's state
+    return beams[0].state;
 }
 
-// To maintain the heap property
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
+function expandNode(node: Node): Node[] {
+    // This function should generate new nodes based on the current node's state.
+    // For demonstration, let's assume we generate dummy nodes with random scores.
+    const newNodes: Node[] = [];
+    const possibleStates = ['A', 'B', 'C', 'D']; // Example possible states
 
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
+    for (const state of possibleStates) {
+        const newState = node.state + state; // Create a new state
+        const newScore = Math.random(); // Assign a random score for demonstration
+        newNodes.push({ state: newState, score: newScore });
     }
 
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
+    return newNodes;
 }
 
-// Example usage:
-const myArray = [12, 11, 13, 5, 6, 7];
-const sortedArray = heapSort(myArray);
-console.log("Sorted array:", sortedArray);
+// Example usage
+const initialState = 'Start';
+const beamWidth = 3;
+const maxSteps = 5;
+
+const bestSequence = beamSearch(initialState, beamWidth, maxSteps);
+console.log('Best sequence:', bestSequence);
