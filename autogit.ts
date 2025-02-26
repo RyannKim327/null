@@ -1,48 +1,60 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to the end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
+// Define a Node interface
+interface Node {
+    value: any;
+    children: Node[];
 }
 
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
+// Breadth-limited search function
+function breadthLimitedSearch(root: Node, target: any, maxDepth: number): Node | null {
+    // Use a queue to keep track of nodes to explore
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+    
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
 
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Return the found node
+        }
+
+        // If we haven't reached the maximum depth, add children to the queue
+        if (depth < maxDepth) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
     }
 
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
+    return null; // Return null if the target is not found
 }
 
 // Example usage
-const array = [3, 5, 1, 10, 2, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 10]
+const rootNode: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
+        }
+    ]
+};
+
+const targetValue = 5;
+const maxDepth = 2;
+const result = breadthLimitedSearch(rootNode, targetValue, maxDepth);
+
+if (result) {
+    console.log(`Found node with value: ${result.value}`);
+} else {
+    console.log('Node not found within the specified depth.');
+}
