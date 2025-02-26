@@ -1,23 +1,46 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+class Stack<T> {
+    private items: T[] = [];
 
-    // Start with the first string as the prefix
-    let prefix = strs[0];
-
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        // While the current string does not start with the prefix
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If there's no common prefix
-            if (prefix === "") return "";
-        }
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    return prefix;
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
