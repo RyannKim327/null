@@ -1,13 +1,10 @@
-const originalArray: number[] = [1, 2, 3, 4, 5];
-console.log("Original Array:", originalArray);
+let str1: string = "Hello, ";
+let str2: string = "World!";
+let result: string = str1 + str2;
 
-// Reverse the array
-const reversedArray = originalArray.reverse();
-console.log("Reversed Array:", reversedArray);
-const originalArray: number[] = [1, 2, 3, 4, 5];
-console.log("Original Array:", originalArray);
+console.log(result); // Output: "Hello, World!"
+let str1: string = "Hello, ";
+let str2: string = "World!";
+let result: string = `${str1}${str2}`;
 
-// Create a new reversed array
-const reversedArray = originalArray.slice().reverse();
-console.log("Reversed Array:", reversedArray);
-console.log("Original Array after reversing:", originalArray);
+console.log(result); // Output: "Hello, World!"
