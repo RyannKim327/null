@@ -1,12 +1,27 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
+    }
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+    return arr;
+}
+
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
