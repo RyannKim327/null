@@ -1,64 +1,41 @@
-class Node<T> {
-     T;
-    next: Node<T> | null;
+function countingSort(arr: number[], exp: number): number[] {
+    const output: number[] = new Array(arr.length); // Output array
+    const count: number[] = new Array(10).fill(0); // Count array for digits (0 to 9)
 
-    constructor( T) {
-        this.data = data;
-        this.next = null;
+    // Count occurrences of each digit
+    for (let i = 0; i < arr.length; i++) {
+        const index = Math.floor((arr[i] / exp) % 10);
+        count[index]++;
     }
+
+    // Change count[i] so that count[i] contains the actual position of this digit in output[]
+    for (let i = 1; i < 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const index = Math.floor((arr[i] / exp) % 10);
+        output[count[index] - 1] = arr[i];
+        count[index]--;
+    }
+
+    return output;
 }
-class LinkedList<T> {
-    private head: Node<T> | null = null;
 
-    // Add a new node to the end of the list
-    append( T): void {
-        const newNode = new Node(data);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
+function radixSort(arr: number[]): number[] {
+    // Find the maximum number to know the number of digits
+    const max = Math.max(...arr);
+
+    // Apply counting sort to sort elements based on each digit
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        arr = countingSort(arr, exp);
     }
 
-    // Remove a node by value
-    remove( T): void {
-        if (!this.head) return;
-        
-        if (this.head.data === data) {
-            this.head = this.head.next;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.data === data) {
-                current.next = current.next.next;
-                return;
-            }
-            current = current.next;
-        }
-    }
-
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const values: T[] = [];
-        while (current) {
-            values.push(current.data);
-            current = current.next;
-        }
-        console.log(values.join(" -> "));
-    }
+    return arr;
 }
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.append(30);
-list.display(); // Output: 10 -> 20 -> 30
 
-list.remove(20);
-list.display(); // Output: 10 -> 30
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
