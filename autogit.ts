@@ -10,10 +10,10 @@ function kthSmallest(arr: number[], k: number): number {
     return sortedArray[k - 1];
 }
 
-// Example usage
-const arr = [7, 10, 4, 3, 20, 15];
+// Example usage:
+const array = [7, 10, 4, 3, 20, 15];
 const k = 3;
-console.log(kthSmallest(arr, k)); // Output: 7
+console.log(kthSmallest(array, k)); // Output: 7
 function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
     const pivotValue = arr[pivotIndex];
     // Move pivot to end
@@ -36,7 +36,7 @@ function quickSelect(arr: number[], left: number, right: number, k: number): num
         return arr[left];
     }
 
-    const pivotIndex = Math.floor((right - left) / 2) + left;
+    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
     const newPivotIndex = partition(arr, left, right, pivotIndex);
 
     if (k === newPivotIndex) {
@@ -52,12 +52,10 @@ function kthSmallest(arr: number[], k: number): number {
     if (k < 1 || k > arr.length) {
         throw new Error("k is out of bounds");
     }
-    
-    // Convert k to 0-based index
     return quickSelect(arr, 0, arr.length - 1, k - 1);
 }
 
-// Example usage
-const arr = [7, 10, 4, 3, 20, 15];
+// Example usage:
+const array = [7, 10, 4, 3, 20, 15];
 const k = 3;
-console.log(kthSmallest(arr, k)); // Output: 7
+console.log(kthSmallest(array, k)); // Output: 7
