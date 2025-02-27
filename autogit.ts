@@ -1,24 +1,63 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    // Traverse through all array elements
-    for (let i = 0; i < n - 1; i++) {
-        // Find the minimum element in unsorted array
-        let minIndex = i;
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-
-        // Swap the found minimum element with the first element of unsorted part
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swap using destructuring
-        }
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
-    return arr;
+    
+    // Sort the array
+    const sortedArray = arr.slice().sort((a, b) => a - b);
+    
+    // Return the k-th smallest element (1-based index)
+    return sortedArray[k - 1];
 }
 
-// Example usage:
-const array = [64, 25, 12, 22, 11];
-console.log("Sorted array:", selectionSort(array));
+// Example usage
+const arr = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(arr, k)); // Output: 7
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    // Move pivot to end
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
+
+    for (let i = left; i < right; i++) {
+        if (arr[i] < pivotValue) {
+            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+            storeIndex++;
+        }
+    }
+    // Move pivot to its final place
+    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
+    return storeIndex;
+}
+
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left];
+    }
+
+    const pivotIndex = Math.floor((right - left) / 2) + left;
+    const newPivotIndex = partition(arr, left, right, pivotIndex);
+
+    if (k === newPivotIndex) {
+        return arr[k];
+    } else if (k < newPivotIndex) {
+        return quickSelect(arr, left, newPivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, newPivotIndex + 1, right, k);
+    }
+}
+
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    
+    // Convert k to 0-based index
+    return quickSelect(arr, 0, arr.length - 1, k - 1);
+}
+
+// Example usage
+const arr = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(arr, k)); // Output: 7
