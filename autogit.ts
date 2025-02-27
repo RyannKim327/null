@@ -1,51 +1,47 @@
-function lengthOfLIS(nums: number[]): number {
-    if (nums.length === 0) return 0;
+function buildBadCharTable(pattern: string): Record<string, number> {
+    const badCharTable: Record<string, number> = {};
+    const patternLength = pattern.length;
 
-    const dp: number[] = new Array(nums.length).fill(1);
-    
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
+    for (let i = 0; i < patternLength; i++) {
+        badCharTable[pattern[i]] = i; // Store the last occurrence index of each character
     }
-    
-    return Math.max(...dp);
+
+    return badCharTable;
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(nums)); // Output: 4
-function lengthOfLIS(nums: number[]): number {
-    const piles: number[] = [];
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const badCharTable = buildBadCharTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const positions: number[] = [];
 
-    for (const num of nums) {
-        let left = 0;
-        let right = piles.length;
+    let shift = 0; // Shift of the pattern with respect to text
 
-        // Find the position to replace or expand the piles array
-        while (left < right) {
-            const mid = Math.floor((left + right) / 2);
-            if (piles[mid] < num) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        // Keep reducing j while the characters of pattern and text are matching
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
         }
 
-        // If `left` is equal to the number of piles, add a new pile
-        if (left === piles.length) {
-            piles.push(num);
+        // If the pattern has been found
+        if (j < 0) {
+            positions.push(shift); // Store the index
+            // Shift the pattern such that the next character in text aligns with the last occurrence of it in the pattern
+            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text[shift + patternLength]] || patternLength : 1;
         } else {
-            // Otherwise, replace the top of the pile
-            piles[left] = num;
+            // Shift the pattern based on the bad character rule
+            const badCharShift = badCharTable[text[shift + j]] || -1;
+            shift += Math.max(1, j - badCharShift);
         }
     }
-
-    return piles.length;
+    
+    return positions;
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(nums)); // Output: 4
+// Example usage
+const text = "ABCAABCDABABCAABCDABCA";
+const pattern = "ABCD";
+const occurrences = boyerMooreSearch(text, pattern);
+console.log("Pattern found at positions:", occurrences);
