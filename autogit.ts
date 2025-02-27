@@ -1,48 +1,55 @@
-class Stack<T> {
-    private items: T[] = [];
+// Define a Node interface to represent each node in the tree/graph
+interface Node {
+    value: any;
+    children: Node[];
+}
 
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
+// Depth-Limited Search function
+function depthLimitedSearch(node: Node, depth: number, target: any): boolean {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
     }
 
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
+    // If the depth limit is reached, return false
+    if (depth === 0) {
+        return false;
     }
 
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depth - 1, target)) {
+            return true;
+        }
     }
 
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
-
-    // Print the stack (for debugging purposes)
-    print(): void {
-        console.log(this.items);
-    }
+    // If the target is not found in this path, return false
+    return false;
 }
 
 // Example usage
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-stack.print();              // Output: [1, 2]
+const rootNode: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
+        }
+    ]
+};
+
+const targetValue = 5;
+const depthLimit = 2;
+
+const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
