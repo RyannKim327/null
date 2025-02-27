@@ -1,17 +1,14 @@
-function maxSubArray(nums: number[]): number {
-    let maxCurrent = nums[0];
-    let maxGlobal = nums[0];
-
-    for (let i = 1; i < nums.length; i++) {
-        maxCurrent = Math.max(nums[i], maxCurrent + nums[i]);
-        if (maxCurrent > maxGlobal) {
-            maxGlobal = maxCurrent;
-        }
-    }
-
-    return maxGlobal;
+function isPalindrome(str: string): boolean {
+    // Convert the string to lowercase and remove non-alphanumeric characters
+    const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Reverse the cleaned string
+    const reversedStr = cleanedStr.split('').reverse().join('');
+    
+    // Compare the cleaned string with its reversed version
+    return cleanedStr === reversedStr;
 }
 
 // Example usage:
-const nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubArray(nums)); // Output: 6
+const testString = "A man, a plan, a canal, Panama";
+console.log(isPalindrome(testString)); // Output: true
