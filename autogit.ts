@@ -1,41 +1,50 @@
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array for digits (0 to 9)
-
-    // Count occurrences of each digit
-    for (let i = 0; i < arr.length; i++) {
-        const index = Math.floor((arr[i] / exp) % 10);
-        count[index]++;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // Change count[i] so that count[i] contains the actual position of this digit in output[]
-    for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
-    }
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor((arr[i] / exp) % 10);
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    return output;
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = Math.max(...arr);
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-    // Apply counting sort to sort elements based on each digit
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        arr = countingSort(arr, exp);
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
+        }
     }
 
-    return arr;
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sortedArray.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sortedArray.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return sortedArray;
 }
 
 // Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
