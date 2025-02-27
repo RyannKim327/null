@@ -1,21 +1,20 @@
-function firstNonRepeatingCharacter(s: string): string {
-    const charCount: { [key: string]: number } = {};
+function isPrime(num: number): boolean {
+    // Check if the number is less than 2
+    if (num < 2) return false;
 
-    // Count occurrences of each character
-    for (const char of s) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
-
-    // Find the first character that occurs only once
-    for (const char of s) {
-        if (charCount[char] === 1) {
-            return char; // Return the first non-repeating character
+    // Check for factors from 2 to the square root of num
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false; // num is divisible by i, so it's not prime
         }
     }
-
-    return ""; // Return an empty string if there are no non-repeating characters
+    return true; // num is prime
 }
 
 // Example usage
-const str = "swiss";
-console.log(firstNonRepeatingCharacter(str)); // Output: "w"
+const numberToCheck = 29;
+if (isPrime(numberToCheck)) {
+    console.log(`${numberToCheck} is a prime number.`);
+} else {
+    console.log(`${numberToCheck} is not a prime number.`);
+}
