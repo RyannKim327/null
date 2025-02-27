@@ -1,61 +1,72 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class Graph {
+    private vertices: number;
+    private adjList: number[][];
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
-}
-
-class Trie {
-    private root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = Array.from({ length: vertices }, () => []);
     }
 
-    // Insert a word into the trie
-    insert(word: string): void {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children.has(char)) {
-                node.children.set(char, new TrieNode());
+    addEdge(v: number, w: number) {
+        this.adjList[v].push(w);
+    }
+
+    tarjan(): number[][] {
+        const index: number[] = Array(this.vertices).fill(-1);
+        const lowlink: number[] = Array(this.vertices).fill(-1);
+        const onStack: boolean[] = Array(this.vertices).fill(false);
+        const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
+
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
+
+            for (const w of this.adjList[v]) {
+                if (index[w] === -1) {
+                    // Successor w has not yet been visited; recurse on it
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    // Successor w is in stack and hence in the current SCC
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
+                }
             }
-            node = node.children.get(char)!; // Unsafe access, assume the char exists
-        }
-        node.isEndOfWord = true; // Mark the end of the word
-    }
 
-    // Search for a word in the trie
-    search(word: string): boolean {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children.has(char)) {
-                return false; // Character not found
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
             }
-            node = node.children.get(char)!;
-        }
-        return node.isEndOfWord; // Return true if it is the end of a word
-    }
+        };
 
-    // Check if there is any word in the trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        let node = this.root;
-        for (const char of prefix) {
-            if (!node.children.has(char)) {
-                return false; // Prefix not found
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
             }
-            node = node.children.get(char)!;
         }
-        return true; // Prefix found
+
+        return result;
     }
 }
 
 // Example usage:
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell")); // false
-console.log(trie.startsWith("wor")); // true
+const g = new Graph(5);
+g.addEdge(0, 1);
+g.addEdge(1, 2);
+g.addEdge(2, 0);
+g.addEdge(1, 3);
+g.addEdge(3, 4);
+
+const sccs = g.tarjan();
+console.log(sccs); // Output: [[2, 1, 0], [4], [3]]
