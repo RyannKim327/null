@@ -1,30 +1,61 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
     }
 }
 
-// Call the function to fetch posts
-fetchPosts();
+class Trie {
+    private root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    // Insert a word into the trie
+    insert(word: string): void {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char)!; // Unsafe access, assume the char exists
+        }
+        node.isEndOfWord = true; // Mark the end of the word
+    }
+
+    // Search for a word in the trie
+    search(word: string): boolean {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                return false; // Character not found
+            }
+            node = node.children.get(char)!;
+        }
+        return node.isEndOfWord; // Return true if it is the end of a word
+    }
+
+    // Check if there is any word in the trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        let node = this.root;
+        for (const char of prefix) {
+            if (!node.children.has(char)) {
+                return false; // Prefix not found
+            }
+            node = node.children.get(char)!;
+        }
+        return true; // Prefix found
+    }
+}
+
+// Example usage:
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+console.log(trie.search("hello")); // true
+console.log(trie.search("hell")); // false
+console.log(trie.startsWith("wor")); // true
