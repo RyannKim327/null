@@ -1,127 +1,30 @@
-class Node<T> {
-    value: T;
-    forward: Node<T>[];
-
-    constructor(value: T, level: number) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
-    }
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-class SkipList<T> {
-    private head: Node<T>;
-    private maxLevel: number;
-    private p: number; // Probability for random level generation
-    private level: number;
-
-    constructor(maxLevel: number = 16, p: number = 0.5) {
-        this.maxLevel = maxLevel;
-        this.p = p;
-        this.level = 0;
-        this.head = new Node<T>(null, this.maxLevel);
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
     }
 
-    private randomLevel(): number {
-        let lvl = 0;
-        while (Math.random() < this.p && lvl < this.maxLevel) {
-            lvl++;
-        }
-        return lvl;
-    }
-
-    insert(value: T): void {
-        const update: Node<T>[] = new Array(this.maxLevel + 1);
-        let current: Node<T> = this.head;
-
-        // Find the position to insert the new value
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        // If the value is not already present, insert it
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-
-            // Update the level of the new node
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            const newNode = new Node(value, newLevel);
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
-        }
-    }
-
-    search(value: T): boolean {
-        let current: Node<T> = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-
-        current = current.forward[0];
-
-        return current !== null && current.value === value;
-    }
-
-    delete(value: T): boolean {
-        const update: Node<T>[] = new Array(this.maxLevel + 1);
-        let current: Node<T> = this.head;
-
-        // Find the node to delete
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        // If the node is found, delete it
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] !== current) break;
-                update[i].forward[i] = current.forward[i];
-            }
-
-            // Remove levels if necessary
-            while (this.level > 0 && this.head.forward[this.level] === null) {
-                this.level--;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
 }
 
-// Example usage
-const skipList = new SkipList<number>();
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
-skipList.insert(17);
-
-console.log(skipList.search(6)); // true
-console.log(skipList.search(15)); // false
-
-skipList.delete(6);
-console.log(skipList.search(6)); // false
+// Call the fetchPosts function and log the results
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
