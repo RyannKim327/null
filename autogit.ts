@@ -1,72 +1,50 @@
-class Graph {
-    private vertices: Set<string>;
-    private edges: Map<string, Map<string, number>>;
-
-    constructor() {
-        this.vertices = new Set();
-        this.edges = new Map();
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    addVertex(vertex: string) {
-        this.vertices.add(vertex);
-        this.edges.set(vertex, new Map());
-    }
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-    addEdge(vertex1: string, vertex2: string, weight: number) {
-        if (!this.edges.has(vertex1) || !this.edges.has(vertex2)) {
-            throw new Error("Vertex not found");
-        }
-        this.edges.get(vertex1)?.set(vertex2, weight);
-        this.edges.get(vertex2)?.set(vertex1, weight); // For undirected graph
-    }
-
-    dijkstra(start: string): Map<string, number> {
-        const distances: Map<string, number> = new Map();
-        const visited: Set<string> = new Set();
-        const priorityQueue: [string, number][] = []; // [vertex, distance]
-
-        // Initialize distances
-        for (const vertex of this.vertices) {
-            distances.set(vertex, Infinity);
-        }
-        distances.set(start, 0);
-        priorityQueue.push([start, 0]);
-
-        while (priorityQueue.length > 0) {
-            // Sort the queue (min-heap implementation could be used for efficiency)
-            priorityQueue.sort((a, b) => a[1] - b[1]);
-
-            const [currentVertex, currentDistance] = priorityQueue.shift()!;
-
-            if (visited.has(currentVertex)) continue;
-
-            visited.add(currentVertex);
-
-            for (const [neighbor, weight] of this.edges.get(currentVertex)!.entries()) {
-                const newDistance = currentDistance + weight;
-
-                if (newDistance < distances.get(neighbor)!) {
-                    distances.set(neighbor, newDistance);
-                    priorityQueue.push([neighbor, newDistance]);
-                }
-            }
-        }
-
-        return distances;
-    }
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Usage example
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addEdge("A", "B", 1);
-graph.addEdge("A", "C", 4);
-graph.addEdge("B", "C", 2);
-graph.addEdge("B", "D", 5);
-graph.addEdge("C", "D", 1);
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-const distances = graph.dijkstra("A");
-console.log(distances); // Output shortest distances from A to other nodes
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sortedArray.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sortedArray.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return sortedArray;
+}
+
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
