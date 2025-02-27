@@ -1,30 +1,31 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+    // Loop through all elements in the array
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
+
+        // Last i elements are already sorted, no need to check them
+        for (let j = 0; j < n - 1 - i; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true; // Set swapped to true
+            }
+        }
+
+        // If no two elements were swapped in the inner loop, then the array is sorted
+        if (!swapped) {
+            break;
+        }
     }
 
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
+    return arr;
 }
 
-// Call the fetchPosts function and log the results
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Example usage:
+const array = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
