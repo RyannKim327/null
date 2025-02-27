@@ -1,12 +1,57 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
+class Node {
+    value: string;
+    children: Node[];
+
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
-    return count;
+
+    addChild(child: Node) {
+        this.children.push(child);
+    }
 }
 
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node; // Goal found
+        }
+
+        // If the current depth is less than the limit, explore children
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // Goal not found within the depth limit
+}
+
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const goalNode = depthLimitedSearch(root, "E", 2);
+if (goalNode) {
+    console.log(`Goal found: ${goalNode.value}`);
+} else {
+    console.log("Goal not found within the depth limit.");
+}
