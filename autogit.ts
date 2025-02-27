@@ -1,29 +1,34 @@
-function countingSort(arr: number[], k: number): number[] {
-    // Step 1: Create count array and initialize it to 0
-    const count: number[] = new Array(k + 1).fill(0);
-    const output: number[] = new Array(arr.length);
-    
-    // Step 2: Count occurrences of each number in arr
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Return the index of the target
+        }
+
+        // If the target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else { // If the target is smaller, ignore the right half
+            high = pos - 1;
+        }
     }
 
-    // Step 3: Update count[i] to be the position of this digit in output array
-    for (let i = 1; i <= k; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Step 4: Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return output;
+    return -1; // Target not found
 }
 
-// Example usage
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const maxValue = Math.max(...arr);
-const sortedArray = countingSort(arr, maxValue);
-console.log(sortedArray);  // Output: [1, 2, 2, 3, 3, 4, 8]
+// Example usage:
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const index = interpolationSearch(sortedArray, targetValue);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found in the array.');
+}
