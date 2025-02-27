@@ -1,13 +1,21 @@
 function areAnagrams(str1: string, str2: string): boolean {
     // Normalize the strings: remove spaces and convert to lowercase
-    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
-    
-    // Compare the normalized versions of both strings
-    return normalize(str1) === normalize(str2);
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
+    }
+
+    // Sort the characters of each string and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
 const string1 = "listen";
 const string2 = "silent";
-
 console.log(areAnagrams(string1, string2)); // Output: true
