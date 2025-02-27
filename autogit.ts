@@ -1,20 +1,145 @@
-function isPrime(num: number): boolean {
-    // Check if the number is less than 2
-    if (num < 2) return false;
+class TreeNode {
+    key: number;
+    height: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Check for factors from 2 to the square root of num
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // num is divisible by i, so it's not prime
+    constructor(key: number) {
+        this.key = key;
+        this.height = 1; // New node is initially added at leaf
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class AVLTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    // Get the height of the node
+    getHeight(node: TreeNode | null): number {
+        return node ? node.height : 0;
+    }
+
+    // Get the balance factor of the node
+    getBalance(node: TreeNode | null): number {
+        if (!node) return 0;
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
+
+    // Right rotate the subtree rooted with y
+    rightRotate(y: TreeNode): TreeNode {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+
+        // Return the new root
+        return x;
+    }
+
+    // Left rotate the subtree rooted with x
+    leftRotate(x: TreeNode): TreeNode {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+
+        // Return the new root
+        return y;
+    }
+
+    // Insert a key into the subtree rooted with node and return the new root of the subtree
+    insert(node: TreeNode | null, key: number): TreeNode {
+        // Perform the normal BST insert
+        if (!node) return new TreeNode(key);
+
+        if (key < node.key) {
+            node.left = this.insert(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.insert(node.right, key);
+        } else {
+            // Duplicate keys are not allowed in the AVL tree
+            return node;
+        }
+
+        // Update the height of this ancestor node
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+
+        // Get the balance factor of this ancestor node to check whether this node became unbalanced
+        const balance = this.getBalance(node);
+
+        // If this node becomes unbalanced, then there are 4 cases
+
+        // Left Left Case
+        if (balance > 1 && key < node.left!.key) {
+            return this.rightRotate(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && key > node.right!.key) {
+            return this.leftRotate(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && key > node.left!.key) {
+            node.left = this.leftRotate(node.left!);
+            return this.rightRotate(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && key < node.right!.key) {
+            node.right = this.rightRotate(node.right!);
+            return this.leftRotate(node);
+        }
+
+        // Return the (unchanged) node pointer
+        return node;
+    }
+
+    // Public method to insert a key
+    public insertKey(key: number): void {
+        this.root = this.insert(this.root, key);
+    }
+
+    // Inorder traversal of the tree
+    inorder(node: TreeNode | null): void {
+        if (node) {
+            this.inorder(node.left);
+            console.log(node.key);
+            this.inorder(node.right);
         }
     }
-    return true; // num is prime
+
+    // Public method to perform inorder traversal
+    public inorderTraversal(): void {
+        this.inorder(this.root);
+    }
 }
 
 // Example usage
-const numberToCheck = 29;
-if (isPrime(numberToCheck)) {
-    console.log(`${numberToCheck} is a prime number.`);
-} else {
-    console.log(`${numberToCheck} is not a prime number.`);
-}
+const avlTree = new AVLTree();
+avlTree.insertKey(10);
+avlTree.insertKey(20);
+avlTree.insertKey(30);
+avlTree.insertKey(40);
+avlTree.insertKey(50);
+avlTree.insertKey(25);
+
+console.log("Inorder traversal of the constructed AVL tree is:");
+avlTree.inorderTraversal();
