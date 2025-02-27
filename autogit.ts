@@ -1,53 +1,19 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    let n = arr.length;
-    let fibM2 = 0;  // (m-2)'th Fibonacci number
-    let fibM1 = 1;  // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2;  // m'th Fibonacci number
+function insertionSort(arr: number[]): number[] {
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i];
+        let j = i - 1;
 
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
-    }
-
-    let offset = -1;
-
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check the index that is fibM2 elements away from offset
-        let i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
+        // Move elements of arr[0..i-1] that are greater than key
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
         }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found, return index
-        else {
-            return i;
-        }
+        arr[j + 1] = key;
     }
-
-    // Compare the last element with x
-    if (fibM1 && offset + 1 < n && arr[offset + 1] === x) {
-        return offset + 1;
-    }
-
-    // Element not found, return -1
-    return -1;
+    return arr;
 }
 
 // Example usage:
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
-console.log(`Element found at index: ${result}`);
+const array = [5, 2, 9, 1, 5, 6];
+console.log(insertionSort(array)); // Output: [1, 2, 5, 5, 6, 9]
