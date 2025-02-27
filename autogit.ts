@@ -1,57 +1,30 @@
-class Node {
-    value: string;
-    children: Node[];
-
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
+// Define an interface for the data we expect to receive
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the goal
-        if (node.value === goal) {
-            return node; // Goal found
+// Function to fetch posts
+async function fetchPosts(): Promise<void> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        
+        // Check if the response is ok (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // If the current depth is less than the limit, explore children
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
-        }
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
+
+        // Log the posts to the console
+        console.log(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
     }
-
-    return null; // Goal not found within the depth limit
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
-
-const goalNode = depthLimitedSearch(root, "E", 2);
-if (goalNode) {
-    console.log(`Goal found: ${goalNode.value}`);
-} else {
-    console.log("Goal not found within the depth limit.");
-}
+// Call the function to fetch posts
+fetchPosts();
