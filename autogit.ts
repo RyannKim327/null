@@ -1,50 +1,29 @@
-type Graph = {
-    [key: string]: { neighbor: string; weight: number }[];
-};
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-function dijkstra(graph: Graph, start: string): { [key: string]: number } {
-    const distances: { [key: string]: number } = {};
-    const priorityQueue: [string, number][] = [];
-    const visited: Set<string> = new Set();
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    // Initialize distances
-    for (const node in graph) {
-        distances[node] = Infinity;
-    }
-    distances[start] = 0;
-    priorityQueue.push([start, 0]);
-
-    while (priorityQueue.length > 0) {
-        // Sort the queue by distance and get the node with the smallest distance
-        priorityQueue.sort((a, b) => a[1] - b[1]);
-        const [currentNode, currentDistance] = priorityQueue.shift()!;
-
-        if (visited.has(currentNode)) {
-            continue;
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found
         }
-        visited.add(currentNode);
 
-        // Explore neighbors
-        for (const { neighbor, weight } of graph[currentNode]) {
-            const newDistance = currentDistance + weight;
-
-            if (newDistance < distances[neighbor]) {
-                distances[neighbor] = newDistance;
-                priorityQueue.push([neighbor, newDistance]);
-            }
+        // If target is greater, ignore left half
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            // If target is smaller, ignore right half
+            right = mid - 1;
         }
     }
 
-    return distances;
+    return -1; // Target not found
 }
 
-// Example usage
-const graph: Graph = {
-    A: [{ neighbor: 'B', weight: 1 }, { neighbor: 'C', weight: 4 }],
-    B: [{ neighbor: 'A', weight: 1 }, { neighbor: 'C', weight: 2 }, { neighbor: 'D', weight: 5 }],
-    C: [{ neighbor: 'A', weight: 4 }, { neighbor: 'B', weight: 2 }, { neighbor: 'D', weight: 1 }],
-    D: [{ neighbor: 'B', weight: 5 }, { neighbor: 'C', weight: 1 }],
-};
-
-const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths);
+// Example usage:
+const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 5;
+const index = binarySearch(numbers, target);
+console.log(index); // Output: 4
