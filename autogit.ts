@@ -1,62 +1,45 @@
-type Graph = { [key: string]: string[] };
+class TreeNode {
+    val: number;
+    left: TreeNode | null = null;
+    right: TreeNode | null = null;
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If already visited, return
-    }
-
-    console.log(start); // Process the node
-    visited.add(start); // Mark the node as visited
-
-    for (const neighbor of graph[start]) {
-        depthFirstSearch(graph, neighbor, visited); // Recur for each neighbor
+    constructor(val: number) {
+        this.val = val;
     }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
 
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
+    function height(node: TreeNode | null): number {
+        if (!node) return 0;
 
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
 
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (visited.has(node)) {
-            continue; // If already visited, skip
-        }
+        // Update diameter
+        diameter = Math.max(diameter, leftHeight + rightHeight);
 
-        console.log(node); // Process the node
-        visited.add(node); // Mark the node as visited
-
-        // Push all unvisited neighbors onto the stack
-        for (const neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                stack.push(neighbor);
-            }
-        }
+        // Return height of the tree
+        return Math.max(leftHeight, rightHeight) + 1;
     }
+
+    height(root);
+    return diameter;
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+// Creating a binary tree:
+//         1
+//        / \
+//       2   3
+//      / \
+//     4   5
 
-depthFirstSearchIterative(graph, 'A');
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
