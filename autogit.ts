@@ -1,30 +1,17 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function countOccurrences(text: string, word: string): number {
+    // Normalize the text and word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+    // Split the text by spaces and filter the results
+    const wordsArray = normalizedText.split(/\s+/);
+    const count = wordsArray.filter(w => w === normalizedWord).length;
 
-const index = array.indexOf(elementToRemove);
-if (index !== -1) {
-    array.splice(index, 1);
-}
-console.log(array); // Output: [1, 2, 4, 5]
-interface Item {
-    id: number;
-    name: string;
+    return count;
 }
 
-const array: Item[] = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' },
-];
-
-const idToRemove = 2;
-const index = array.findIndex(item => item.id === idToRemove);
-if (index !== -1) {
-    array.splice(index, 1);
-}
-console.log(array); // Output: [{ id: 1, name: 'Item 1' }, { id: 3, name: 'Item 3' }]
+// Example usage:
+const text = "Hello world! This is a test. Hello again, world!";
+const word = "hello";
+const occurrences = countOccurrences(text, word);
+console.log(`The word "${word}" occurs ${occurrences} times.`);
