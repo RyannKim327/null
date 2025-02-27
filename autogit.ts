@@ -1,34 +1,38 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target
-        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos; // Target found, return the index
-        }
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-        // If target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } else { // If target is smaller, ignore the right half
-            high = pos - 1;
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        slow = slow.next;               // Move slow pointer one step
+        fast = fast.next.next;         // Move fast pointer two steps
+
+        if (slow === fast) {
+            return true;               // Cycle detected
         }
     }
-
-    return -1; // Target not found
+    return false;                     // No cycle found
 }
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
 
-// Example usage:
-const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
-const index = interpolationSearch(arr, target);
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Cycle here
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found');
-}
+console.log(hasCycle(node1)); // Output: true
