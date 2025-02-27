@@ -1,8 +1,26 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    // Ensure the min and max are inclusive
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = array.filter(element => element !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const index = array.indexOf(elementToRemove);
+if (index !== -1) {
+    array.splice(index, 1);
+}
+console.log(array); // Output: [1, 2, 4, 5]
+interface Item {
+    id: number;
+    name: string;
 }
 
-// Example usage:
-const randomNum = getRandomNumberInRange(1, 10);
-console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
+const array: Item[] = [{ id: 1, name: 'item1' }, { id: 2, name: 'item2' }, { id: 3, name: 'item3' }];
+const idToRemove = 2;
+
+const index = array.findIndex(item => item.id === idToRemove);
+if (index !== -1) {
+    array.splice(index, 1);
+}
+console.log(array); // Output: [{ id: 1, name: 'item1' }, { id: 3, name: 'item3' }]
