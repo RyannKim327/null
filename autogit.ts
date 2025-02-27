@@ -1,32 +1,51 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+function lengthOfLIS(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        
-        // Check if the target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found
-        }
-
-        // If target is greater, ignore the left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        }
-        // If target is smaller, ignore the right half
-        else {
-            right = mid - 1;
+    const dp: number[] = new Array(nums.length).fill(1);
+    
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
     }
-
-    // Target was not found
-    return -1;
+    
+    return Math.max(...dp);
 }
 
 // Example usage:
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(lengthOfLIS(nums)); // Output: 4
+function lengthOfLIS(nums: number[]): number {
+    const piles: number[] = [];
 
-const result = binarySearch(arr, target);
-console.log(result); // Output: 4 (index of the target)
+    for (const num of nums) {
+        let left = 0;
+        let right = piles.length;
+
+        // Find the position to replace or expand the piles array
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (piles[mid] < num) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+
+        // If `left` is equal to the number of piles, add a new pile
+        if (left === piles.length) {
+            piles.push(num);
+        } else {
+            // Otherwise, replace the top of the pile
+            piles[left] = num;
+        }
+    }
+
+    return piles.length;
+}
+
+// Example usage:
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(lengthOfLIS(nums)); // Output: 4
