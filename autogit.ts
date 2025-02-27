@@ -1,61 +1,64 @@
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+class Node<T> {
+     T;
+    next: Node<T> | null;
+
+    constructor( T) {
+        this.data = data;
+        this.next = null;
     }
-    
-    // Sort the array
-    const sortedArray = arr.slice().sort((a, b) => a - b);
-    
-    // Return the k-th smallest element (1-based index)
-    return sortedArray[k - 1];
 }
+class LinkedList<T> {
+    private head: Node<T> | null = null;
 
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
-function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
+    // Add a new node to the end of the list
+    append( T): void {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
 
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivotValue) {
-            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-            storeIndex++;
+    // Remove a node by value
+    remove( T): void {
+        if (!this.head) return;
+        
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.data === data) {
+                current.next = current.next.next;
+                return;
+            }
+            current = current.next;
         }
     }
-    // Move pivot to its final place
-    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
-    return storeIndex;
-}
 
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left];
-    }
-
-    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
-    const newPivotIndex = partition(arr, left, right, pivotIndex);
-
-    if (k === newPivotIndex) {
-        return arr[k];
-    } else if (k < newPivotIndex) {
-        return quickSelect(arr, left, newPivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, newPivotIndex + 1, right, k);
+    // Display the list
+    display(): void {
+        let current = this.head;
+        const values: T[] = [];
+        while (current) {
+            values.push(current.data);
+            current = current.next;
+        }
+        console.log(values.join(" -> "));
     }
 }
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.append(30);
+list.display(); // Output: 10 -> 20 -> 30
 
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
-    return quickSelect(arr, 0, arr.length - 1, k - 1);
-}
-
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
+list.remove(20);
+list.display(); // Output: 10 -> 30
