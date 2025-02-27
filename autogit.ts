@@ -1,21 +1,24 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+function longestIncreasingSubsequence(arr: number[]): number {
+    if (arr.length === 0) return 0;
 
-    // If lengths are different, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+    // Initialize an array to store the lengths of the longest increasing subsequence
+    const dp: number[] = new Array(arr.length).fill(1);
+    
+    let maxLength = 1; // Variable to keep track of the maximum length found
+
+    // Build the dp array
+    for (let i = 1; i < arr.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+        maxLength = Math.max(maxLength, dp[i]); // Update maxLength
     }
 
-    // Sort the characters of each string and compare
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+    return maxLength; // Return the maximum length found
 }
 
-// Example usage:
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+// Example usage
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(arr)); // Output: 4
