@@ -1,58 +1,72 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
-
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            // Store the last occurrence of each character in the pattern
-            table.set(pattern[i], i);
-        }
-
-        return table;
-    }
-
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    // If there's a mismatch, use the bad character rule
-                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - lastOccurrence);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found
-                return i; // Return the starting index of the match
-            }
-        }
-
-        return -1; // No match found
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
     }
 }
 
-// Example usage
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
+
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
+        }
+    }
+
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+            currentNode = currentNode.children.get(char)!;
+            // If we reach the end of the current node's edge, we can stop
+            if (currentNode.end === null) {
+                currentNode.end = i;
+                return;
+            }
+        }
+    }
+
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+        let index = 0;
+
+        while (index < pattern.length) {
+            const char = pattern[index];
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+            currentNode = currentNode.children.get(char)!;
+            index++;
+        }
+        return true; // Found
+    }
 }
+
+// Example usage:
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // false
