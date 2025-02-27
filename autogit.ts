@@ -1,24 +1,11 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the string and word to lowercase for case insensitive counting
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
-
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/);
-    
-    // Count occurrences
-    let count = 0;
-    wordsArray.forEach((currentWord) => {
-        if (currentWord === normalizedWord) {
-            count++;
-        }
-    });
-
-    return count;
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    // Recursive case
+    return n * factorial(n - 1);
 }
 
 // Example usage
-const text = "Hello world! Hello everyone. Hello!";
-const word = "hello";
-const occurrences = countWordOccurrences(text, word);
-console.log(`The word "${word}" occurs ${occurrences} times.`);
+console.log(factorial(5));  // Output: 120
