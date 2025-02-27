@@ -1,61 +1,38 @@
-function burrowsWheelerTransform(input: string): string {
-    const n = input.length;
-    const rotations: string[] = [];
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    // Sort the rotations
-    rotations.sort();
-
-    // Build the BWT result from the last column of the sorted rotations
-    let bwtResult = '';
-    for (const rotation of rotations) {
-        bwtResult += rotation[n - 1]; // Last character of each sorted rotation
-    }
-
-    return bwtResult;
 }
 
-// Example usage
-const input = "banana";
-const bwt = burrowsWheelerTransform(input);
-console.log(bwt); // Output: "annb$aa"
-function inverseBurrowsWheelerTransform(bwt: string): string {
-    const n = bwt.length;
-    const sortedBwt = Array.from(bwt).sort();
-    const next = new Array(n);
-    const count = new Array(256).fill(0);
-
-    // Count occurrences of each character
-    for (let i = 0; i < n; i++) {
-        count[bwt.charCodeAt(i)]++;
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
     }
 
-    // Compute the next array
-    for (let i = 1; i < 256; i++) {
-        count[i] += count[i - 1];
-    }
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-    for (let i = n - 1; i >= 0; i--) {
-        const char = bwt.charCodeAt(i);
-        next[--count[char]] = i;
-    }
-
-    // Reconstruct the original string
-    let original = '';
-    let index = next[bwt.indexOf('$')]; // Start from the position of the end character
-
-    for (let i = 0; i < n; i++) {
-        original += bwt[index];
-        index = next[index];
-    }
-
-    return original.split('').reverse().join(''); // Reverse to get the original string
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Example usage
-const original = inverseBurrowsWheelerTransform(bwt);
-console.log(original); // Output: "banana"
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
