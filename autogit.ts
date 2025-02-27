@@ -1,23 +1,22 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function firstNonRepeatingCharacter(s: string): string | null {
+    const charCount: { [key: string]: number } = {};
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const index = array.indexOf(elementToRemove);
-
-if (index !== -1) {
-    array.splice(index, 1);
-}
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
+    // Count the occurrences of each character
+    for (const char of s) {
+        charCount[char] = (charCount[char] || 0) + 1;
     }
-    return acc;
-}, []);
-console.log(newArray); // Output: [1, 2, 4, 5]
+
+    // Find the first non-repeating character
+    for (const char of s) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
+
+    return null; // Return null if there is no non-repeating character
+}
+
+// Example usage:
+const input = "swiss";
+const result = firstNonRepeatingCharacter(input);
+console.log(result); // Output: "w"
