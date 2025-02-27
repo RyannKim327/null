@@ -1,59 +1,56 @@
-class Beam {
-    state: string; // or any type representing the state
-    score: number; // score based on your heuristic
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+}
 
-    constructor(state: string, score: number) {
-        this.state = state;
-        this.score = score;
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
+
+function mostDigits(nums: number[]): number {
+    let maxDigits = 0;
+    for (let num of nums) {
+        maxDigits = Math.max(maxDigits, digitCount(num));
     }
+    return maxDigits;
 }
 
-function beamSearch(initialState: string, beamWidth: number, maxSteps: number): string {
-    let beams: Beam[] = [new Beam(initialState, evaluate(initialState))];
-    
-    for (let step = 0; step < maxSteps; step++) {
-        let newBeams: Beam[] = [];
-        
-        for (let beam of beams) {
-            const nextStates = expand(beam.state); // Generate possible next states
-            
-            for (let nextState of nextStates) {
-                const score = evaluate(nextState);
-                newBeams.push(new Beam(nextState, score));
-            }
-        }
-        
-        // Select the top 'beamWidth' beams based on their scores
-        newBeams.sort((a, b) => b.score - a.score); // Sort by score, descending
-        beams = newBeams.slice(0, beamWidth); // Keep only the best beams
-        
-        // Optional: Check if we have a satisfactory solution
-        if (isGoalState(beams[0].state)) {
-            return beams[0].state;
-        }
+function countingSortForRadix(nums: number[], place: number): number[] {
+    const output: number[] = new Array(nums.length);
+    const count: number[] = new Array(10).fill(0);
+
+    // Count occurrences of each digit
+    for (let num of nums) {
+        const digit = getDigit(num, place);
+        count[digit]++;
     }
-    
-    // Return the best solution found
-    return beams[0].state;
+
+    // Update count array to contain actual positions
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = nums.length - 1; i >= 0; i--) {
+        const digit = getDigit(nums[i], place);
+        output[count[digit] - 1] = nums[i];
+        count[digit]--;
+    }
+
+    return output;
 }
 
-// Example functions for state expansion, evaluation, and goal check
-function expand(state: string): string[] {
-    // Replace with your logic to generate next states
-    return [`${state}A`, `${state}B`, `${state}C`];
-}
+function radixSort(nums: number[]): number[] {
+    const maxDigits = mostDigits(nums);
 
-function evaluate(state: string): number {
-    // Replace with your logic to evaluate the state
-    return Math.random(); // Random score for demonstration
-}
+    for (let i = 0; i < maxDigits; i++) {
+        nums = countingSortForRadix(nums, i);
+    }
 
-function isGoalState(state: string): boolean {
-    // Replace with your goal checking logic
-    return state.length > 5; // For demonstration purposes
+    return nums;
 }
 
 // Example usage
-const initialState = "";
-const result = beamSearch(initialState, 3, 10);
-console.log(`Best state found: ${result}`);
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
