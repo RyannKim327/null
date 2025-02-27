@@ -1,29 +1,15 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
-
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-
-        // Check if the target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found
-        }
-
-        // If target is greater, ignore left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            // If target is smaller, ignore right half
-            right = mid - 1;
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
         }
     }
-
-    return -1; // Target not found
+    return true; // All elements are in ascending order
 }
 
 // Example usage:
-const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
-const index = binarySearch(numbers, target);
-console.log(index); // Output: 4
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [1, 3, 2, 4, 5];
+
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
