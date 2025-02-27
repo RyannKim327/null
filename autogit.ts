@@ -1,31 +1,31 @@
-function bubbleSort(arr: number[]): number[] {
+function shellSort(arr: number[]): number[] {
     const n = arr.length;
-    let swapped: boolean;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-    // Loop through all elements in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
+    // Start with the largest gap and reduce the gap until it is 0
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
 
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
             }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
-
-        // If no two elements were swapped in the inner loop, then the array is sorted
-        if (!swapped) {
-            break;
-        }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
 
     return arr;
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
