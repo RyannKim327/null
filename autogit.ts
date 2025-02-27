@@ -1,26 +1,43 @@
-import axios from 'axios';
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-// Define an interface for the expected response data
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
+    // Step 1: Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    // Step 2: Recursively sort both halves
+    const sortedLeft = mergeSort(left);
+    const sortedRight = mergeSort(right);
+
+    // Step 3: Merge the sorted halves
+    return merge(sortedLeft, sortedRight);
 }
 
-async function fetchUsers() {
-    try {
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        console.log('Users:', response.data);
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Step 4: Merge the two arrays while maintaining order
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            console.error('Unexpected error:', error);
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
+
+    // Step 5: Concatenate any remaining elements
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
-// Call the function to fetch users
-fetchUsers();
-npm install axios
+// Example usage:
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
