@@ -1,51 +1,53 @@
-function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
-    const m = pattern.length;
-    const n = text.length;
-    const result: number[] = [];
-    const hPattern = 0; // Hash value for pattern
-    const hText = 0; // Hash value for text
-    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    if (n < 2) return arr; // Base case: an array of 0 or 1 element is already sorted
 
-    // Calculate the hash value of the pattern and the first window of text
-    for (let i = 0; i < m; i++) {
-        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
-        hText = (d * hText + text.charCodeAt(i)) % q;
-    }
+    // Create a temporary array to hold the sorted elements
+    const temp = new Array(n);
 
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check the hash values of the current window of text and pattern
-        if (hPattern === hText) {
-            // If the hash values match, check for characters one by one
-            let match = true;
-            for (let j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    match = false;
-                    break;
-                }
-            }
-            // If the pattern is found, add the index to the result
-            if (match) {
-                result.push(i);
-            }
-        }
-
-        // Calculate the hash value for the next window of text
-        if (i < n - m) {
-            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
-
-            // We might get negative value of hText, converting it to positive
-            if (hText < 0) {
-                hText += q;
-            }
+    // Start with a size of 1 and double it each iteration
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
+            const mid = Math.min(leftStart + size, n);
+            const rightEnd = Math.min(leftStart + size * 2, n);
+            merge(arr, temp, leftStart, mid, rightEnd);
         }
     }
 
-    return result;
+    return arr;
+}
+
+function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
+    let left = leftStart; // Starting index for left subarray
+    let right = mid;      // Starting index for right subarray
+    let index = leftStart; // Starting index to be merged
+
+    // Merge the two subarrays into temp[]
+    while (left < mid && right < rightEnd) {
+        if (arr[left] <= arr[right]) {
+            temp[index++] = arr[left++];
+        } else {
+            temp[index++] = arr[right++];
+        }
+    }
+
+    // Copy the remaining elements of the left subarray, if any
+    while (left < mid) {
+        temp[index++] = arr[left++];
+    }
+
+    // Copy the remaining elements of the right subarray, if any
+    while (right < rightEnd) {
+        temp[index++] = arr[right++];
+    }
+
+    // Copy the sorted elements back into the original array
+    for (let i = leftStart; i < rightEnd; i++) {
+        arr[i] = temp[i];
+    }
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABC";
-const indices = rabinKarp(text, pattern);
-console.log(`Pattern found at indices: ${indices.join(", ")}`);
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
