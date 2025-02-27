@@ -1,20 +1,29 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Remove duplicates by converting the array to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
-
-    // If there are less than 2 unique elements, return null
-    if (uniqueArr.length < 2) {
-        return null;
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
     }
-
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
-
-    // Return the second largest element
-    return uniqueArr[1];
+    return count;
 }
 
-// Example usage:
-const numbers = [3, 5, 1, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+// Example usage
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
+
+// Example usage
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    const regex = new RegExp(char, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
