@@ -1,35 +1,48 @@
-// Importing necessary types
-import axios from "axios";
+class Stack<T> {
+    private items: T[] = [];
 
-// Define an interface for the expected response data
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
+
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
+
+    // Print the stack (for debugging purposes)
+    print(): void {
+        console.log(this.items);
+    }
 }
 
-// Fetch posts from the API
-const fetchPosts = async (): Promise<Post[]> => {
-    try {
-        const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        throw error; // Rethrow the error for handling in calling function
-    }
-};
-
-// Function to display posts
-const displayPosts = async () => {
-    const posts = await fetchPosts();
-    posts.forEach(post => {
-        console.log(`Title: ${post.title}`);
-        console.log(`Body: ${post.body}`);
-        console.log('---');
-    });
-};
-
-// Call the displayPosts function
-displayPosts();
-npm install axios
+// Example usage
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+stack.print();              // Output: [1, 2]
