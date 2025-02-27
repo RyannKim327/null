@@ -1,147 +1,82 @@
-class TreeNode {
-    key: number;
-    height: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Node {
+    value: number;
+    left: Node | null;
+    right: Node | null;
 
-    constructor(key: number) {
-        this.key = key;
-        this.height = 1; // New node is initially added at leaf
+    constructor(value: number) {
+        this.value = value;
         this.left = null;
         this.right = null;
     }
 }
 
-class AVLTree {
-    root: TreeNode | null;
+class BinaryTree {
+    root: Node | null;
 
     constructor() {
         this.root = null;
     }
 
-    // Get the height of the node
-    getHeight(node: TreeNode | null): number {
-        return node ? node.height : 0;
-    }
-
-    // Get the balance factor of the node
-    getBalance(node: TreeNode | null): number {
-        if (!node) return 0;
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
-
-    // Right rotate the subtree rooted with y
-    rightRotate(y: TreeNode): TreeNode {
-        const x = y.left!;
-        const T2 = x.right;
-
-        // Perform rotation
-        x.right = y;
-        y.left = T2;
-
-        // Update heights
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-
-        // Return the new root
-        return x;
-    }
-
-    // Left rotate the subtree rooted with x
-    leftRotate(x: TreeNode): TreeNode {
-        const y = x.right!;
-        const T2 = y.left;
-
-        // Perform rotation
-        y.left = x;
-        x.right = T2;
-
-        // Update heights
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-
-        // Return the new root
-        return y;
-    }
-
-    // Insert a key into the subtree rooted with node and return the new root of the subtree
-    insert(node: TreeNode | null, key: number): TreeNode {
-        // 1. Perform the normal BST insert
-        if (node === null) {
-            return new TreeNode(key);
-        }
-
-        if (key < node.key) {
-            node.left = this.insert(node.left, key);
-        } else if (key > node.key) {
-            node.right = this.insert(node.right, key);
+    insert(value: number): void {
+        const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
         } else {
-            // Duplicate keys are not allowed in the AVL tree
-            return node;
-        }
-
-        // 2. Update the height of this ancestor node
-        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
-
-        // 3. Get the balance factor of this ancestor node to check whether
-        // this node became unbalanced
-        const balance = this.getBalance(node);
-
-        // If this node becomes unbalanced, then there are 4 cases
-
-        // Left Left Case
-        if (balance > 1 && key < node.left!.key) {
-            return this.rightRotate(node);
-        }
-
-        // Right Right Case
-        if (balance < -1 && key > node.right!.key) {
-            return this.leftRotate(node);
-        }
-
-        // Left Right Case
-        if (balance > 1 && key > node.left!.key) {
-            node.left = this.leftRotate(node.left!);
-            return this.rightRotate(node);
-        }
-
-        // Right Left Case
-        if (balance < -1 && key < node.right!.key) {
-            node.right = this.rightRotate(node.right!);
-            return this.leftRotate(node);
-        }
-
-        // return the (unchanged) node pointer
-        return node;
-    }
-
-    // Function to print the tree in-order
-    inOrder(node: TreeNode | null): void {
-        if (node !== null) {
-            this.inOrder(node.left);
-            console.log(node.key);
-            this.inOrder(node.right);
+            this.insertNode(this.root, newNode);
         }
     }
 
-    // Public method to insert a key
-    public insertKey(key: number): void {
-        this.root = this.insert(this.root, key);
+    private insertNode(node: Node, newNode: Node): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
     }
 
-    // Public method to print the tree
-    public printInOrder(): void {
-        this.inOrder(this.root);
+    // Traversal methods
+    inOrderTraversal(node: Node | null = this.root): void {
+        if (node) {
+            this.inOrderTraversal(node.left);
+            console.log(node.value);
+            this.inOrderTraversal(node.right);
+        }
+    }
+
+    preOrderTraversal(node: Node | null = this.root): void {
+        if (node) {
+            console.log(node.value);
+            this.preOrderTraversal(node.left);
+            this.preOrderTraversal(node.right);
+        }
+    }
+
+    postOrderTraversal(node: Node | null = this.root): void {
+        if (node) {
+            this.postOrderTraversal(node.left);
+            this.postOrderTraversal(node.right);
+            console.log(node.value);
+        }
     }
 }
 
-// Example usage
-const avlTree = new AVLTree();
-avlTree.insertKey(10);
-avlTree.insertKey(20);
-avlTree.insertKey(30);
-avlTree.insertKey(40);
-avlTree.insertKey(50);
-avlTree.insertKey(25);
+// Example Usage
+const tree = new BinaryTree();
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(2);
+tree.insert(4);
+tree.insert(6);
+tree.insert(8);
 
-console.log("In-order traversal of the
+console.log("In-order Traversal:");
+tree.inOrderTraversal(); // Output: 2, 3, 4, 5, 6, 7, 8
