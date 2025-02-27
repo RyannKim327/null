@@ -1,56 +1,35 @@
-function getDigit(num: number, place: number): number {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+function longestCommonSubstring(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-function digitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-function mostDigits(nums: number[]): number {
-    let maxDigits = 0;
-    for (let num of nums) {
-        maxDigits = Math.max(maxDigits, digitCount(num));
-    }
-    return maxDigits;
-}
-
-function countingSortForRadix(nums: number[], place: number): number[] {
-    const output: number[] = new Array(nums.length);
-    const count: number[] = new Array(10).fill(0);
-
-    // Count occurrences of each digit
-    for (let num of nums) {
-        const digit = getDigit(num, place);
-        count[digit]++;
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update ending index of the substring
+                }
+            }
+        }
     }
 
-    // Update count array to contain actual positions
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
     }
 
-    // Build the output array
-    for (let i = nums.length - 1; i >= 0; i--) {
-        const digit = getDigit(nums[i], place);
-        output[count[digit] - 1] = nums[i];
-        count[digit]--;
-    }
-
-    return output;
+    return str1.substring(endingIndex - maxLength, endingIndex);
 }
 
-function radixSort(nums: number[]): number[] {
-    const maxDigits = mostDigits(nums);
-
-    for (let i = 0; i < maxDigits; i++) {
-        nums = countingSortForRadix(nums, i);
-    }
-
-    return nums;
-}
-
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage:
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
