@@ -1,43 +1,24 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
-
-    function height(node: TreeNode | null): number {
-        if (node === null) {
-            return 0;
+    // Traverse through all array elements
+    for (let i = 0; i < n - 1; i++) {
+        // Find the minimum element in unsorted array
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
         }
 
-        // Recursively find the height of the left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-
-        // Update the diameter if the path through the current node is larger
-        diameter = Math.max(diameter, leftHeight + rightHeight);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
+        // Swap the found minimum element with the first element of unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swap using destructuring
+        }
     }
-
-    height(root);
-    return diameter;
+    return arr;
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+const array = [64, 25, 12, 22, 11];
+console.log("Sorted array:", selectionSort(array));
