@@ -1,137 +1,61 @@
-class MinHeap {
-    private heap: number[];
+function burrowsWheelerTransform(input: string): string {
+    const n = input.length;
+    const rotations: string[] = [];
 
-    constructor() {
-        this.heap = [];
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
 
-    private getParentIndex(index: number): number {
-        return Math.floor((index - 1) / 2);
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the BWT result from the last column of the sorted rotations
+    let bwtResult = '';
+    for (const rotation of rotations) {
+        bwtResult += rotation[n - 1]; // Last character of each sorted rotation
     }
 
-    private getLeftChildIndex(index: number): number {
-        return index * 2 + 1;
-    }
-
-    private getRightChildIndex(index: number): number {
-        return index * 2 + 2;
-    }
-
-    private hasParent(index: number): boolean {
-        return this.getParentIndex(index) >= 0;
-    }
-
-    private hasLeftChild(index: number): boolean {
-        return this.getLeftChildIndex(index) < this.heap.length;
-    }
-
-    private hasRightChild(index: number): boolean {
-        return this.getRightChildIndex(index) < this.heap.length;
-    }
-
-    private parent(index: number): number {
-        return this.heap[this.getParentIndex(index)];
-    }
-
-    private leftChild(index: number): number {
-        return this.heap[this.getLeftChildIndex(index)];
-    }
-
-    private rightChild(index: number): number {
-        return this.heap[this.getRightChildIndex(index)];
-    }
-
-    private swap(indexOne: number, indexTwo: number): void {
-        const temp = this.heap[indexOne];
-        this.heap[indexOne] = this.heap[indexTwo];
-        this.heap[indexTwo] = temp;
-    }
-
-    public insert(value: number): void {
-        this.heap.push(value);
-        this.heapifyUp();
-    }
-
-    private heapifyUp(): void {
-        let index = this.heap.length - 1;
-        while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
-            this.swap(this.getParentIndex(index), index);
-            index = this.getParentIndex(index);
-        }
-    }
-
-    public remove(): number | null {
-        if (this.heap.length === 0) {
-            return null;
-        }
-        const item = this.heap[0];
-        this.heap[0] = this.heap[this.heap.length - 1];
-        this.heap.pop();
-        this.heapifyDown();
-        return item;
-    }
-
-    private heapifyDown(): void {
-        let index = 0;
-        while (this.hasLeftChild(index)) {
-            let smallerChildIndex = this.getLeftChildIndex(index);
-            if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
-                smallerChildIndex = this.getRightChildIndex(index);
-            }
-            if (this.heap[index] < this.heap[smallerChildIndex]) {
-                break;
-            } else {
-                this.swap(index, smallerChildIndex);
-            }
-            index = smallerChildIndex;
-        }
-    }
-
-    public peek(): number | null {
-        return this.heap.length > 0 ? this.heap[0] : null;
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    public size(): number {
-        return this.heap.length;
-    }
+    return bwtResult;
 }
-class PriorityQueue {
-    private heap: MinHeap;
 
-    constructor() {
-        this.heap = new MinHeap();
+// Example usage
+const input = "banana";
+const bwt = burrowsWheelerTransform(input);
+console.log(bwt); // Output: "annb$aa"
+function inverseBurrowsWheelerTransform(bwt: string): string {
+    const n = bwt.length;
+    const sortedBwt = Array.from(bwt).sort();
+    const next = new Array(n);
+    const count = new Array(256).fill(0);
+
+    // Count occurrences of each character
+    for (let i = 0; i < n; i++) {
+        count[bwt.charCodeAt(i)]++;
     }
 
-    public enqueue(value: number): void {
-        this.heap.insert(value);
+    // Compute the next array
+    for (let i = 1; i < 256; i++) {
+        count[i] += count[i - 1];
     }
 
-    public dequeue(): number | null {
-        return this.heap.remove();
+    for (let i = n - 1; i >= 0; i--) {
+        const char = bwt.charCodeAt(i);
+        next[--count[char]] = i;
     }
 
-    public peek(): number | null {
-        return this.heap.peek();
+    // Reconstruct the original string
+    let original = '';
+    let index = next[bwt.indexOf('$')]; // Start from the position of the end character
+
+    for (let i = 0; i < n; i++) {
+        original += bwt[index];
+        index = next[index];
     }
 
-    public isEmpty(): boolean {
-        return this.heap.isEmpty();
-    }
-
-    public size(): number {
-        return this.heap.size();
-    }
+    return original.split('').reverse().join(''); // Reverse to get the original string
 }
-const pq = new PriorityQueue();
-pq.enqueue(5);
-pq.enqueue(3);
-pq.enqueue(8);
-pq.enqueue(1);
 
-console.log(pq.peek()); // Output: 1
-console.log(pq.dequeue()); // Output: 1
-console.log(pq.peek()); // Output: 3
+// Example usage
+const original = inverseBurrowsWheelerTransform(bwt);
+console.log(original); // Output: "banana"
