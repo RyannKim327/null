@@ -1,47 +1,45 @@
-function buildBadCharTable(pattern: string): Record<string, number> {
-    const badCharTable: Record<string, number> = {};
-    const patternLength = pattern.length;
+class Stack<T> {
+    private items: T[] = [];
 
-    for (let i = 0; i < patternLength; i++) {
-        badCharTable[pattern[i]] = i; // Store the last occurrence index of each character
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    return badCharTable;
-}
-
-function boyerMooreSearch(text: string, pattern: string): number[] {
-    const badCharTable = buildBadCharTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const positions: number[] = [];
-
-    let shift = 0; // Shift of the pattern with respect to text
-
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Keep reducing j while the characters of pattern and text are matching
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-
-        // If the pattern has been found
-        if (j < 0) {
-            positions.push(shift); // Store the index
-            // Shift the pattern such that the next character in text aligns with the last occurrence of it in the pattern
-            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text[shift + patternLength]] || patternLength : 1;
-        } else {
-            // Shift the pattern based on the bad character rule
-            const badCharShift = badCharTable[text[shift + j]] || -1;
-            shift += Math.max(1, j - badCharShift);
-        }
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
     }
-    
-    return positions;
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
-// Example usage
-const text = "ABCAABCDABABCAABCDABCA";
-const pattern = "ABCD";
-const occurrences = boyerMooreSearch(text, pattern);
-console.log("Pattern found at positions:", occurrences);
+// Example usage:
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
