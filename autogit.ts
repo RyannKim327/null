@@ -1,28 +1,50 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
     if (arr.length <= 1) {
         return arr;
     }
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            right.push(arr[i]);
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sortedArray.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sortedArray.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return sortedArray;
 }
 
 // Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
