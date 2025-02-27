@@ -1,43 +1,31 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
-}
+    // Loop through all elements in the array
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let maxDiameter = 0;
-
-    function depth(node: TreeNode | null): number {
-        if (node === null) {
-            return 0;
+        // Last i elements are already sorted
+        for (let j = 0; j < n - 1 - i; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
         }
 
-        // Recursively find the depth of left and right subtrees
-        const leftDepth = depth(node.left);
-        const rightDepth = depth(node.right);
-
-        // Update the maximum diameter found
-        maxDiameter = Math.max(maxDiameter, leftDepth + rightDepth);
-
-        // Return the depth of the current node
-        return Math.max(leftDepth, rightDepth) + 1;
+        // If no two elements were swapped in the inner loop, then the array is sorted
+        if (!swapped) {
+            break;
+        }
     }
 
-    depth(root); // Start the recursion
-    return maxDiameter; // Return the maximum diameter found
+    return arr;
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3 (the longest path is between nodes 4 and 5)
+const array = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
