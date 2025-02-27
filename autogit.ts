@@ -1,76 +1,57 @@
-class Graph {
-    private vertices: number;
-    private adjList: Map<number, number[]>;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(vertices: number) {
-        this.vertices = vertices;
-        this.adjList = new Map<number, number[]>();
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    tarjan(): number[][] {
-        const index: number[] = new Array(this.vertices).fill(-1);
-        const lowlink: number[] = new Array(this.vertices).fill(-1);
-        const onStack: boolean[] = new Array(this.vertices).fill(false);
-        const stack: number[] = [];
-        const result: number[][] = [];
-        let currentIndex = 0;
-
-        const strongConnect = (v: number) => {
-            index[v] = currentIndex;
-            lowlink[v] = currentIndex;
-            currentIndex++;
-            stack.push(v);
-            onStack[v] = true;
-
-            const neighbors = this.adjList.get(v) || [];
-            for (const w of neighbors) {
-                if (index[w] === -1) {
-                    // Successor w has not yet been visited; recurse on it
-                    strongConnect(w);
-                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
-                } else if (onStack[w]) {
-                    // Successor w is in stack and hence in the current SCC
-                    lowlink[v] = Math.min(lowlink[v], index[w]);
-                }
-            }
-
-            // If v is a root node, pop the stack and generate an SCC
-            if (lowlink[v] === index[v]) {
-                const scc: number[] = [];
-                let w: number;
-                do {
-                    w = stack.pop()!;
-                    onStack[w] = false;
-                    scc.push(w);
-                } while (w !== v);
-                result.push(scc);
-            }
-        };
-
-        for (let v = 0; v < this.vertices; v++) {
-            if (index[v] === -1) {
-                strongConnect(v);
-            }
-        }
-
-        return result;
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
 
-// Example usage:
-const g = new Graph(5);
-g.addEdge(0, 2);
-g.addEdge(2, 1);
-g.addEdge(1, 0);
-g.addEdge(0, 3);
-g.addEdge(3, 4);
+function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-const sccs = g.tarjan();
-console.log(sccs); // Output: [[0, 1, 2], [3], [4]]
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node; // Goal found
+        }
+
+        // If the current depth is less than the limit, explore children
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // Goal not found within the depth limit
+}
+
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const goalNode = depthLimitedSearch(root, "E", 2);
+if (goalNode) {
+    console.log(`Goal found: ${goalNode.value}`);
+} else {
+    console.log("Goal not found within the depth limit.");
+}
