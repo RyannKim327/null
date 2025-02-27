@@ -1,9 +1,8 @@
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
+function removeVowels(str: string): string {
+    return str.replace(/[aeiouAEIOU]/g, '');
 }
 
 // Example usage:
-const myString = "hello world";
-const charToCount = "o";
-const count = countCharacter(myString, charToCount);
-console.log(`The character "${charToCount}" occurs ${count} times.`);
+const originalString = "Hello, World!";
+const stringWithoutVowels = removeVowels(originalString);
+console.log(stringWithoutVowels); // Output: "Hll, Wrld!"
