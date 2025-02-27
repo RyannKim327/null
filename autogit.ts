@@ -1,36 +1,26 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function countingSort(arr: number[], max: number): number[] {
+    // Create a count array to store the count of each unique value
+    const count: number[] = new Array(max + 1).fill(0);
+    
+    // Count each element in the input array
+    for (const num of arr) {
+        count[num]++;
     }
+
+    // Build the output array
+    const output: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        // For each value, add it to the output array based on its count
+        for (let j = 0; j < count[i]; j++) {
+            output.push(i);
+        }
+    }
+
+    return output;
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
-    
-    // Check if it's a leaf node
-    if (root.left === null && root.right === null) {
-        return 1; // It is a leaf node
-    }
-    
-    // Recursively count leaf nodes in left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-
-// Example usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: 3
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
