@@ -1,48 +1,55 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    let temp: number[] = new Array(n);
-    
-    // Starting with a size of 1, we keep merging
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            const mid = Math.min(leftStart + size - 1, n - 1);
-            const rightEnd = Math.min(leftStart + size * 2 - 1, n - 1);
-            merge(arr, temp, leftStart, mid, rightEnd);
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
-        // Copy the merged results back to the original array
-        for (let i = 0; i < n; i++) {
-            arr[i] = temp[i];
+
+        if (j === pattern.length) {
+            result.push(i - j); // Pattern found at index (i - j)
+            j = lps[j - 1]; // Update j using LPS array
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
+            } else {
+                i++;
+            }
         }
     }
-    return arr;
+
+    return result;
 }
 
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number) {
-    let left = leftStart;
-    let right = mid + 1;
-    let index = leftStart;
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    // Merging the two halves
-    while (left <= mid && right <= rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
         } else {
-            temp[index++] = arr[right++];
+            if (length !== 0) {
+                length = lps[length - 1]; // Use the LPS array to find the next length
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
 
-    // Copy remaining elements from the left half, if any
-    while (left <= mid) {
-        temp[index++] = arr[left++];
-    }
-
-    // Copy remaining elements from the right half, if any
-    while (right <= rightEnd) {
-        temp[index++] = arr[right++];
-    }
+    return lps;
 }
 
 // Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray);
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const indices = kmpSearch(text, pattern);
+console.log(indices); // Output: [10]
