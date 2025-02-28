@@ -1,47 +1,92 @@
-function mergeSort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr; // base case: an array of zero or one element is sorted
+class Node {
+    value: number;
+    left: Node | null;
+    right: Node | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinarySearchTree {
+    root: Node | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    const mid = Math.floor(arr.length / 2); // find the middle point
-    const left = mergeSort(arr.slice(0, mid)); // recursively sort the left half
-    const right = mergeSort(arr.slice(mid)); // recursively sort the right half
+    // Insert a new value into the BST
+    insert(value: number): void {
+        const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
+        }
+        this.insertNode(this.root, newNode);
+    }
 
-    return merge(left, right); // merge the sorted halves
-}
-
-function merge(left: number[], right: number[]): number[] {
-    let sorted: number[] = [];
-    let i = 0;
-    let j = 0;
-
-    // merge the two arrays
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) {
-            sorted.push(left[i]);
-            i++;
+    private insertNode(node: Node, newNode: Node): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
         } else {
-            sorted.push(right[j]);
-            j++;
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
         }
     }
 
-    // if there are remaining elements in left, add them
-    while (i < left.length) {
-        sorted.push(left[i]);
-        i++;
+    // Search for a value in the BST
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
     }
 
-    // if there are remaining elements in right, add them
-    while (j < right.length) {
-        sorted.push(right[j]);
-        j++;
+    private searchNode(node: Node | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // value is equal to node.value
+        }
     }
 
-    return sorted; // return the merged array
+    // In-order traversal of the BST
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: Node | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
+    }
 }
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(18);
 
-// Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray);
+// Search for a value
+console.log(bst.search(7)); // true
+console.log(bst.search(20)); // false
+
+// In-order traversal
+bst.inOrderTraversal(value => {
+    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
+});
