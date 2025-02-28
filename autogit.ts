@@ -1,92 +1,115 @@
 class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
+    public x: number;
+    public y: number;
+    public g: number; // Cost from start to node
+    public h: number; // Heuristic cost to goal
+    public f: number; // Total cost (g + h)
+    public parent?: Node;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+        this.g = Infinity; // Start with Infinity
+        this.h = 0;
+        this.f = Infinity;
     }
 }
-class BinarySearchTree {
-    root: Node | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    // Insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is equal to node.value
-        }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
+function heuristic(nodeA: Node, nodeB: Node): number {
+    // Using Manhattan distance for the heuristic function
+    return Math.abs(nodeA.x - nodeB.x) + Math.abs(nodeA.y - nodeB.y);
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
 
-// Search for a value
-console.log(bst.search(7)); // true
-console.log(bst.search(20)); // false
+function aStar(start: Node, goal: Node, grid: Node[][]): Node[] | null {
+    const openSet: Node[] = [start];
+    const closedSet: Set<Node> = new Set();
 
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+    start.g = 0;
+    start.h = heuristic(start, goal);
+    start.f = start.g + start.h;
+
+    while (openSet.length > 0) {
+        // Get the node with the lowest f value
+        openSet.sort((a, b) => a.f - b.f);
+        const current = openSet.shift()!;
+
+        // Check if we have reached the goal
+        if (current.x === goal.x && current.y === goal.y) {
+            const path: Node[] = [];
+            let temp: Node | undefined = current;
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
+            }
+            return path.reverse(); // Return the path from start to goal
+        }
+
+        closedSet.add(current);
+
+        // Check neighbors
+        const neighbors = getNeighbors(current, grid);
+        for (const neighbor of neighbors) {
+            if (closedSet.has(neighbor)) {
+                continue; // Ignore the neighbor which is already evaluated
+            }
+
+            const tentativeG = current.g + 1; // Assume cost between nodes is 1
+
+            if (!openSet.includes(neighbor)) {
+                openSet.push(neighbor); // Discover a new node
+            } else if (tentativeG >= neighbor.g) {
+                continue; // This is not a better path
+            }
+
+            // This path is the best until now, record it
+            neighbor.parent = current;
+            neighbor.g = tentativeG;
+            neighbor.h = heuristic(neighbor, goal);
+            neighbor.f = neighbor.g + neighbor.h;
+        }
+    }
+
+    return null; // Return null if no path is found
+}
+function getNeighbors(node: Node, grid: Node[][]): Node[] {
+    const neighbors: Node[] = [];
+    const directions = [
+        { x: 0, y: 1 },   // Down
+        { x: 1, y: 0 },   // Right
+        { x: 0, y: -1 },  // Up
+        { x: -1, y: 0 }   // Left
+    ];
+
+    for (const dir of directions) {
+        const newX = node.x + dir.x;
+        const newY = node.y + dir.y;
+
+        if (newX >= 0 && newX < grid.length && newY >= 0 && newY < grid[0].length) {
+            neighbors.push(grid[newX][newY]);
+        }
+    }
+
+    return neighbors;
+}
+function createGrid(rows: number, cols: number): Node[][] {
+    const grid: Node[][] = [];
+    for (let i = 0; i < rows; i++) {
+        const row: Node[] = [];
+        for (let j = 0; j < cols; j++) {
+            row.push(new Node(i, j));
+        }
+        grid.push(row);
+    }
+    return grid;
+}
+const grid = createGrid(5, 5); // 5x5 grid
+const start = grid[0][0];       // Starting node
+const goal = grid[4][4];        // Goal node
+
+const path = aStar(start, goal, grid);
+
+if (path) {
+    console.log("Path found:");
+    console.log(path.map(node => `[${node.x}, ${node.y}]`));
+} else {
+    console.log("No path found");
+}
