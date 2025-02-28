@@ -1,45 +1,53 @@
-// App.tsx
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Text, Button, ActivityIndicator } from 'react-native';
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-const App: React.FC = () => {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const json = await response.json();
-      setData(json);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
     }
-  };
+}
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
 
-  return (
-    <SafeAreaView>
-      <Button title="Fetch Data" onPress={fetchData} />
-      {loading && <ActivityIndicator />}
-      {error && <Text>Error: {error}</Text>}
-      {data && (
-        <Text>
-          Fetched {data.length} posts.
-        </Text>
-      )}
-    </SafeAreaView>
-  );
-};
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
+        }
+    }
 
-export default App;
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                currentNode = newNode;
+                break;
+            } else {
+                currentNode = currentNode.children.get(char)!;
+            }
+        }
+    }
+
+    // Additional methods can be added here, such as searching for substrings, etc.
+}
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+
+// You can add more methods to search for substrings or to display the tree structure.
