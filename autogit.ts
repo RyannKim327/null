@@ -1,63 +1,38 @@
-class Node<T> {
-    public value: T;
-    public next: Node<T> | null = null;
-
-    constructor(value: T) {
-        this.value = value;
-    }
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
-class Queue<T> {
-    private head: Node<T> | null = null;
-    private tail: Node<T> | null = null;
-    private size: number = 0;
 
-    // Add an element to the end of the queue
-    public enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (this.tail) {
-            this.tail.next = newNode; // Link the new node at the end
-        }
-        this.tail = newNode; // Update the tail to the new node
-        if (!this.head) {
-            this.head = newNode; // If the queue was empty, head is also the new node
-        }
-        this.size++;
-    }
-
-    // Remove and return the element from the front of the queue
-    public dequeue(): T | null {
-        if (!this.head) return null; // Queue is empty
-        const dequeuedValue = this.head.value;
-        this.head = this.head.next; // Move head to the next node
-        if (!this.head) {
-            this.tail = null; // If the queue is now empty, reset tail
-        }
-        this.size--;
-        return dequeuedValue;
-    }
-
-    // Return the size of the queue
-    public getSize(): number {
-        return this.size;
-    }
-
-    // Check if the queue is empty
-    public isEmpty(): boolean {
-        return this.size === 0;
-    }
-
-    // Peek at the front value without removing it
-    public peek(): T | null {
-        return this.head ? this.head.value : null;
-    }
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
-const queue = new Queue<number>();
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
+function maxDigits(nums: number[]): number {
+    let max = 0;
+    for (const num of nums) {
+        max = Math.max(max, digitCount(num));
+    }
+    return max;
+}
 
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.peek());     // Output: 2
-console.log(queue.getSize());  // Output: 2
-console.log(queue.isEmpty());   // Output: false
+function radixSort(nums: number[]): number[] {
+    const maxDigitCount = maxDigits(nums);
+
+    for (let k = 0; k < maxDigitCount; k++) {
+        const digitBuckets: number[][] = Array.from({ length: 10 }, () => []);
+        
+        for (const num of nums) {
+            const digit = getDigit(num, k);
+            digitBuckets[digit].push(num);
+        }
+
+        nums = [].concat(...digitBuckets);
+    }
+    
+    return nums;
+}
+
+// Example usage:
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
