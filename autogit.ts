@@ -1,6 +1,9 @@
-const str: string = "Hello, world!";
-const substring: string = "world";
+let array: number[] = [1, 2, 3, 4, 5];
+array.reverse();
 
-const containsSubstring: boolean = str.includes(substring);
+console.log(array); // Output: [5, 4, 3, 2, 1]
+let array: number[] = [1, 2, 3, 4, 5];
+let reversedArray: number[] = array.slice().reverse();
 
-console.log(containsSubstring); // Output: true
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+console.log(array); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
