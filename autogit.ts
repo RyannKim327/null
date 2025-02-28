@@ -1,38 +1,34 @@
-function getDigit(num: number, place: number): number {
-    return Math.floor((num / Math.pow(10, place)) % 10);
-}
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-function digitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-function mostDigits(nums: number[]): number {
-    let maxDigits = 0;
-    for (let num of nums) {
-        maxDigits = Math.max(maxDigits, digitCount(num));
-    }
-    return maxDigits;
-}
-
-function radixSort(nums: number[]): number[] {
-    const maxLength = mostDigits(nums);
-
-    for (let i = 0; i < maxLength; i++) {
-        const buckets: number[][] = Array.from({length: 10}, () => []);
-        
-        for (let num of nums) {
-            const digit = getDigit(num, i);
-            buckets[digit].push(num);
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found, return the index
         }
 
-        nums = [].concat(...buckets);
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else { // If target is smaller, ignore the right half
+            high = pos - 1;
+        }
     }
 
-    return nums;
+    return -1; // Target not found
 }
 
 // Example usage:
-const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedNumbers = radixSort(numbers);
-console.log(sortedNumbers); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const target = 70;
+const index = interpolationSearch(arr, target);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found');
+}
