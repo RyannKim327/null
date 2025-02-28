@@ -1,20 +1,86 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Remove duplicates by converting the array to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    // If there are less than 2 unique elements, return null
-    if (uniqueArr.length < 2) {
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList<T> {
+    head: Node<T> | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Add a new node at the end of the list
+    add(value: T) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Display the list
+    display() {
+        let current = this.head;
+        const elements: T[] = [];
+        
+        while (current) {
+            elements.push(current.value);
+            current = current.next;
+        }
+        console.log(elements.join(' -> '));
+    }
+
+    // Find a node by value
+    find(value: T): Node<T> | null {
+        let current = this.head;
+        while (current) {
+            if (current.value === value) {
+                return current;
+            }
+            current = current.next;
+        }
         return null;
     }
 
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
 
-    // Return the second largest element
-    return uniqueArr[1];
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
 }
 
-// Example usage:
-const numbers = [3, 5, 1, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+// Example usage
+const list = new LinkedList<number>();
+list.add(1);
+list.add(2);
+list.add(3);
+list.display(); // Output: 1 -> 2 -> 3
+console.log(list.find(2)); // Output: Node { value: 2, next: Node { value: 3, next: null } }
+list.remove(2);
+list.display(); // Output: 1 -> 3
