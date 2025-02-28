@@ -1,81 +1,56 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
-
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
-    }
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
-class LinkedList<T> {
-    head: Node<T> | null;
-    size: number;
 
-    constructor() {
-        this.head = null;
-        this.size = 0;
-    }
-
-    // Add a new node at the end of the list
-    add(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-        this.size++;
-    }
-
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.size--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                this.size--;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const elements: T[] = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
-    }
-
-    // Get the size of the list
-    getSize(): number {
-        return this.size;
-    }
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
-const list = new LinkedList<number>();
-list.add(10);
-list.add(20);
-list.add(30);
-list.display(); // Output: 10 -> 20 -> 30
 
-list.remove(20);
-list.display(); // Output: 10 -> 30
+function mostDigits(nums: number[]): number {
+    let maxDigits = 0;
+    for (let num of nums) {
+        maxDigits = Math.max(maxDigits, digitCount(num));
+    }
+    return maxDigits;
+}
 
-console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
+function countingSortForRadix(nums: number[], place: number): number[] {
+    const output: number[] = new Array(nums.length);
+    const count: number[] = new Array(10).fill(0);
+
+    // Count occurrences of each digit
+    for (let num of nums) {
+        const digit = getDigit(num, place);
+        count[digit]++;
+    }
+
+    // Update count array to contain actual positions
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = nums.length - 1; i >= 0; i--) {
+        const digit = getDigit(nums[i], place);
+        output[count[digit] - 1] = nums[i];
+        count[digit]--;
+    }
+
+    return output;
+}
+
+function radixSort(nums: number[]): number[] {
+    const maxDigits = mostDigits(nums);
+
+    for (let place = 0; place < maxDigits; place++) {
+        nums = countingSortForRadix(nums, place);
+    }
+
+    return nums;
+}
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
