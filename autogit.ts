@@ -1,8 +1,58 @@
-const numbers: number[] = [5, 3, 8, 1, 4];
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
+    }
 
-console.log(numbers); // Output: [1, 3, 4, 5, 8]
-numbers.sort((a, b) => b - a);
-console.log(numbers); // Output: [8, 5, 4, 3, 1]
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
+
+        for (let i = 0; i < patternLength; i++) {
+            // Store the last occurrence of each character in the pattern
+            table.set(pattern[i], i);
+        }
+
+        return table;
+    }
+
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    // If there's a mismatch, use the bad character rule
+                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - lastOccurrence);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found
+                return i; // Return the index of the first occurrence
+            }
+        }
+
+        return -1; // No match found
+    }
+}
+
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
+
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
+}
