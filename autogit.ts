@@ -1,8 +1,8 @@
-function getRandomNumber(min: number, max: number): number {
-    const random = Math.random() * (max - min) + min;
-    return Math.floor(random);
-}
+const numbers: number[] = [5, 3, 8, 1, 4];
 
-// Example usage:
-const randomNum = getRandomNumber(1, 100);
-console.log(randomNum);
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
+
+console.log(numbers); // Output: [1, 3, 4, 5, 8]
+numbers.sort((a, b) => b - a);
+console.log(numbers); // Output: [8, 5, 4, 3, 1]
