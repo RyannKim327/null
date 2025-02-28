@@ -1,71 +1,45 @@
-class Tarjan {
-    private index: number;
-    private stack: number[];
-    private indices: number[];
-    private lowLink: number[];
-    private onStack: boolean[];
-    private sccs: number[][];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(private graph: number[][]) {
-        this.index = 0;
-        this.stack = [];
-        this.indices = new Array(graph.length).fill(-1);
-        this.lowLink = new Array(graph.length).fill(0);
-        this.onStack = new Array(graph.length).fill(false);
-        this.sccs = [];
-    }
-
-    public findSCCs(): number[][] {
-        for (let v = 0; v < this.graph.length; v++) {
-            if (this.indices[v] === -1) {
-                this.strongConnect(v);
-            }
-        }
-        return this.sccs;
-    }
-
-    private strongConnect(v: number): void {
-        this.indices[v] = this.index;
-        this.lowLink[v] = this.index;
-        this.index++;
-        this.stack.push(v);
-        this.onStack[v] = true;
-
-        for (const w of this.graph[v]) {
-            if (this.indices[w] === -1) {
-                // Successor w has not yet been visited; recurse on it
-                this.strongConnect(w);
-                this.lowLink[v] = Math.min(this.lowLink[v], this.lowLink[w]);
-            } else if (this.onStack[w]) {
-                // Successor w is in stack and hence in the current SCC
-                this.lowLink[v] = Math.min(this.lowLink[v], this.indices[w]);
-            }
-        }
-
-        // If v is a root node, pop the stack and generate an SCC
-        if (this.lowLink[v] === this.indices[v]) {
-            const scc: number[] = [];
-            let w: number;
-            do {
-                w = this.stack.pop()!;
-                this.onStack[w] = false;
-                scc.push(w);
-            } while (w !== v);
-            this.sccs.push(scc);
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const graph = [
-    [1],        // 0 -> 1
-    [2],        // 1 -> 2
-    [0],        // 2 -> 0
-    [1, 4],     // 3 -> 1, 3 -> 4
-    [5],        // 4 -> 5
-    [3],        // 5 -> 3
-];
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-const tarjan = new Tarjan(graph);
-const stronglyConnectedComponents = tarjan.findSCCs();
-console.log(stronglyConnectedComponents); // Outputs the strongly connected components
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
+        }
+    }
+
+    return false; // No cycle
+}
+
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
