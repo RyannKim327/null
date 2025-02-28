@@ -1,57 +1,52 @@
-function kmpSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            // Found a match, add the starting index to the result
-            result.push(i - j);
-            j = lps[j - 1]; // Continue to search for more matches
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            // Mismatch after j matches
-            if (j !== 0) {
-                j = lps[j - 1]; // Use the LPS array to skip characters
-            } else {
-                i++;
-            }
-        }
+class ListNode {
+    value: number;
+    next: ListNode | null;
+    
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return result;
 }
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (head === null || n <= 0) {
+        return null;
     }
 
-    return lps;
+    let firstPointer: ListNode | null = head;
+    let secondPointer: ListNode | null = head;
+
+    // Move firstPointer n nodes ahead
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            // If n is greater than the length of the linked list
+            return null;
+        }
+        firstPointer = firstPointer.next;
+    }
+
+    // Move both pointers until firstPointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    // secondPointer will now be at the nth node from the end
+    return secondPointer;
 }
 
 // Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+// Create the linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+// Find the 2nd node from the end
+const nthNodeFromEnd = findNthFromEnd(head, 2);
+if (nthNodeFromEnd) {
+    console.log(nthNodeFromEnd.value); // Output: 4
+} else {
+    console.log('Node not found!');
+}
