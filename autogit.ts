@@ -1,29 +1,43 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
     }
+}
 
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
-        // While i divides n, update n and largestFactor
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
+
+    function height(node: TreeNode | null): number {
+        if (node === null) {
+            return 0;
         }
+
+        // Recursively find the height of the left and right subtrees
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
+
+        // Update the diameter if the path through the current node is larger
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        // Return the height of the current node
+        return Math.max(leftHeight, rightHeight) + 1;
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    height(root);
+    return diameter;
 }
 
 // Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3 (the path is 4 -> 2 -> 1 -> 3 or 5 -> 2 -> 1 -> 3)
