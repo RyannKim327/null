@@ -1,59 +1,51 @@
-type Graph = { [key: string]: string[] };
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
-    if (visited.has(node)) {
-        return;
-    }
-
-    visited.add(node);
-    console.log(node); // Process the node (could be any operation)
-    
-    for (const neighbor of graph[node]) {
-        dfsRecursive(graph, neighbor, visited);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+class LinkedList {
+    head: ListNode | null;
 
-dfsRecursive(graph, 'A'); // Output: A B D E C F
-type Graph = { [key: string]: string[] };
+    constructor() {
+        this.head = null;
+    }
 
-function dfsIterative(graph: Graph, startNode: string): void {
-    const stack: string[] = [startNode];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop();
-        
-        if (!node || visited.has(node)) {
-            continue;
+    // Method to add a new node to the list (for testing purposes)
+    add(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
         }
+    }
 
-        visited.add(node);
-        console.log(node); // Process the node (could be any operation)
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
 
-        for (const neighbor of graph[node]) {
-            stack.push(neighbor);
+        while (current) {
+            count++;
+            current = current.next;
         }
+        return count;
     }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+// Example usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
 
-dfsIterative(graph, 'A'); // Output: A C F B E D (the output order might vary since it's stack-based)
+console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
