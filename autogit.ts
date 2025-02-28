@@ -1,43 +1,55 @@
-function computePrefixTable(pattern: string): number[] {
-    const prefixTable = new Array(pattern.length).fill(0);
-    let j = 0;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let len = 0; // length of the previous longest prefix suffix
+    let i = 1;   // we start from the second character
 
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
-        }
-        if (pattern[i] === pattern[j]) {
-            j++;
-            prefixTable[i] = j;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
         } else {
-            prefixTable[i] = 0;
-        }
-    }
-
-    return prefixTable;
-}
-function KMPSearch(text: string, pattern: string): number[] {
-    const prefixTable = computePrefixTable(pattern);
-    const result: number[] = [];
-    let j = 0;
-
-    for (let i = 0; i < text.length; i++) {
-        while (j > 0 && text[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
-        }
-        if (text[i] === pattern[j]) {
-            j++;
-            if (j === pattern.length) {
-                result.push(i - j + 1); // Found a match
-                j = prefixTable[j - 1]; // Continue searching for the next match
+            if (len !== 0) {
+                len = lps[len - 1]; // Use the previous lps value
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
     }
-
-    return result; // Return the starting indices of all matches
+    return lps;
 }
-const text = "ababcabcabababd";
-const pattern = "ababd";
 
-const matches = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const indices: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            // Found the pattern, record the index
+            indices.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+    return indices; // return the list of starting indices where the pattern is found
+}
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+
+console.log("Pattern found at indices: ", result);
