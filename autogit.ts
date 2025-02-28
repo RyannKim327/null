@@ -1,96 +1,43 @@
-type Graph = { [key: string]: string[] };
+function computePrefixTable(pattern: string): number[] {
+    const prefixTable = new Array(pattern.length).fill(0);
+    let j = 0;
 
-function topologicalSortKahn(graph: Graph): string[] {
-    const indegree: { [key: string]: number } = {};
-    const result: string[] = [];
-    const queue: string[] = [];
-
-    // Calculate indegrees of all vertices
-    for (const node in graph) {
-        indegree[node] = 0; // Initialize indegree
-    }
-    for (const node in graph) {
-        for (const neighbor of graph[node]) {
-            indegree[neighbor] = (indegree[neighbor] || 0) + 1;
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+        if (pattern[i] === pattern[j]) {
+            j++;
+            prefixTable[i] = j;
+        } else {
+            prefixTable[i] = 0;
         }
     }
 
-    // Enqueue nodes with indegree of 0
-    for (const node in indegree) {
-        if (indegree[node] === 0) {
-            queue.push(node);
+    return prefixTable;
+}
+function KMPSearch(text: string, pattern: string): number[] {
+    const prefixTable = computePrefixTable(pattern);
+    const result: number[] = [];
+    let j = 0;
+
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
         }
-    }
-
-    // Process nodes
-    while (queue.length > 0) {
-        const current = queue.shift()!;
-        result.push(current);
-
-        for (const neighbor of graph[current]) {
-            indegree[neighbor]--;
-            if (indegree[neighbor] === 0) {
-                queue.push(neighbor);
+        if (text[i] === pattern[j]) {
+            j++;
+            if (j === pattern.length) {
+                result.push(i - j + 1); // Found a match
+                j = prefixTable[j - 1]; // Continue searching for the next match
             }
         }
     }
 
-    if (result.length !== Object.keys(graph).length) {
-        throw new Error("Graph has at least one cycle; topological sort not possible.");
-    }
-
-    return result;
+    return result; // Return the starting indices of all matches
 }
+const text = "ababcabcabababd";
+const pattern = "ababd";
 
-// Example usage
-const graph: Graph = {
-    'A': ['B', 'C'],
-    'B': ['D'],
-    'C': ['D'],
-    'D': []
-};
-
-console.log(topologicalSortKahn(graph)); // Output: One of the valid topological orderings
-type GraphDFS = { [key: string]: string[] };
-
-function topologicalSortDFS(graph: GraphDFS): string[] {
-    const visited: { [key: string]: boolean } = {};
-    const result: string[] = [];
-    const tempMarked: { [key: string]: boolean } = {}; // Temp marking for cycle detection
-
-    const dfs = (node: string) => {
-        if (tempMarked[node]) {
-            throw new Error("Graph has at least one cycle; topological sort not possible.");
-        }
-        if (visited[node]) {
-            return;
-        }
-
-        tempMarked[node] = true; // Temp mark
-        for (const neighbor of graph[node] || []) {
-            dfs(neighbor);
-        }
-        tempMarked[node] = false; // Remove temp mark
-
-        visited[node] = true; // Mark as visited
-        result.push(node); // Add to result
-    };
-
-    for (const node in graph) {
-        if (!visited[node]) {
-            dfs(node);
-        }
-    }
-
-    return result.reverse(); // Reverse the result to get the correct ordering
-}
-
-// Example usage
-const graphDFS: GraphDFS = {
-    'A': ['B', 'C'],
-    'B': ['D'],
-    'C': ['D'],
-    'D': []
-};
-
-console.log(topologicalSortDFS(graphDFS)); // Output: One of the valid topological orderings
+const matches = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
