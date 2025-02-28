@@ -1,92 +1,42 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+interface Node {
+    state: string; // Current state representation (e.g., sentence)
+    score: number; // Score for the current state
 }
-class BinarySearchTree {
-    root: Node | null;
 
-    constructor() {
-        this.root = null;
-    }
+function beamSearch(initialState: string, beamWidth: number, maxSteps: number, expand: (state: string) => Node[]): Node[] {
+    let currentBeam: Node[] = [{ state: initialState, score: 0 }];
+    
+    for (let step = 0; step < maxSteps; step++) {
+        let newBeam: Node[] = [];
 
-    // Insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
+        // Expand each node in the current beam
+        for (const node of currentBeam) {
+            const expandedNodes = expand(node.state); // Generate new nodes by expanding the current state
+            newBeam.push(...expandedNodes); // Add new nodes to the new beam
         }
-        this.insertNode(this.root, newNode);
+
+        // Sort the new beam by score and keep the top 'beamWidth' nodes
+        newBeam.sort((a, b) => b.score - a.score); // Sort high to low based on score
+        currentBeam = newBeam.slice(0, beamWidth); // Keep only the top 'beamWidth' nodes
     }
 
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is found
-        }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
+    return currentBeam; // Final states in the beam
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
 
-// Search for a value
-console.log(bst.search(7));  // true
-console.log(bst.search(20)); // false
+// Example expansion function
+function exampleExpand(state: string): Node[] {
+    // Here you would define how to expand states with the actual logic
+    const possibilities = [
+        { state: state + " A", score: Math.random() }, // Random score for example
+        { state: state + " B", score: Math.random() }
+    ];
+    return possibilities;
+}
 
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+// Use the beamSearch function
+const initialState = "Start";
+const beamWidth = 2;
+const maxSteps = 3;
+const result = beamSearch(initialState, beamWidth, maxSteps, exampleExpand);
+
+console.log(result);
