@@ -1,24 +1,34 @@
-function longestIncreasingSubsequence(arr: number[]): number {
-    const n = arr.length;
-    if (n === 0) return 0;
+npm install axios
+import axios from 'axios';
 
-    // Initialize the dp array
-    const dp: number[] = new Array(n).fill(1);
-    
-    // Build the dp array
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[i] > arr[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-    }
-    
-    // Find the maximum value in dp array
-    return Math.max(...dp);
+// Define an interface for the data we expect to receive
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
 
-// Example usage
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-const lisLength = longestIncreasingSubsequence(arr);
-console.log(`Length of Longest Increasing Subsequence: ${lisLength}`); // Output: 4
+// Function to fetch users from the API
+const fetchUsers = async (): Promise<void> => {
+    try {
+        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+        const users = response.data;
+
+        // Log the users to the console
+        users.forEach(user => {
+            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+        });
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error message:', error.message);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+    }
+};
+
+// Call the function to fetch users
+fetchUsers();
+tsc fetchData.ts
+node fetchData.js
