@@ -1,47 +1,61 @@
-class ListNode {
-    value: number;
-    next: ListNode | null = null;
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
     }
 }
+class Trie {
+    private root: TrieNode;
 
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
-
-    while (current !== null) {
-        // Store the next node
-        next = current.next;
-        // Reverse the current node's pointer
-        current.next = prev;
-        // Move prev and current one step forward
-        prev = current;
-        current = next;
+    constructor() {
+        this.root = new TrieNode();
     }
-    // When the loop ends, prev will be the new head
-    return prev;
-}
 
-// Example usage
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-
-const reversedHead = reverseLinkedList(head);
-
-// Function to print LinkedList
-function printList(head: ListNode | null) {
-    let current = head;
-    while (current) {
-        process.stdout.write(`${current.value} -> `);
-        current = current.next;
+    // Insert a word into the trie
+    insert(word: string): void {
+        let currentNode = this.root;
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        currentNode.isEndOfWord = true;
     }
-    console.log('null');
-}
 
-printList(reversedHead); // Output: 4 -> 3 -> 2 -> 1 -> null
+    // Search for a word in the trie
+    search(word: string): boolean {
+        const node = this.searchNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if any word in the trie starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.searchNode(prefix) !== null;
+    }
+
+    // Helper function to find the node corresponding to a given word or prefix
+    private searchNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return null;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return currentNode;
+    }
+}
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("app");
+
+console.log(trie.search("apple")); // true
+console.log(trie.search("app"));   // true
+console.log(trie.search("ap"));    // false
+console.log(trie.startsWith("ap")); // true
+console.log(trie.startsWith("appl")); // true
+console.log(trie.startsWith("b")); // false
