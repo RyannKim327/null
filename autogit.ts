@@ -1,27 +1,50 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
-    
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element
-        let minIndex = i;
-        
-        // Iterate over the unsorted elements
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if the new minimum is found
-            }
-        }
-        
-        // Swap the found minimum element with the first element
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-        }
+class Node {
+    value: any;
+    next: Node | null;
+
+    constructor(value: any) {
+        this.value = value;
+        this.next = null;
     }
-    
-    return arr;
 }
 
-// Example usage
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+class LinkedList {
+    head: Node | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node to the list
+    add(value: any) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let currentNode = this.head;
+        while (currentNode.next) {
+            currentNode = currentNode.next;
+        }
+        currentNode.next = newNode;
+    }
+
+    // Method to get the length of the linked list
+    getLength(): number {
+        let count = 0;
+        let currentNode = this.head;
+        while (currentNode) {
+            count++;
+            currentNode = currentNode.next;
+        }
+        return count;
+    }
+}
+
+// Example usage:
+const list = new LinkedList();
+list.add(10);
+list.add(20);
+list.add(30);
+
+console.log("Length of the linked list:", list.getLength()); // Output: 3
