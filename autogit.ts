@@ -1,28 +1,50 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Loop through each element in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-        // Compare adjacent elements and swap them if they're in the wrong order
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j + 1]
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
-
-        // If no elements were swapped, the array is sorted
-        if (!swapped) break;
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (!head || n <= 0) {
+        return null; // Return null if the list is empty or n is invalid
     }
 
-    return arr;
+    let firstPointer: ListNode | null = head;
+    let secondPointer: ListNode | null = head;
+
+    // Move the first pointer n nodes ahead
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            return null; // n is greater than the length of the list
+        }
+        firstPointer = firstPointer.next;
+    }
+
+    // Move both pointers until the first pointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    // The second pointer is now at the nth node from the end
+    return secondPointer;
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const result = findNthFromEnd(head, n);
+if (result) {
+    console.log(`The ${n}th node from the end is: ${result.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
+}
