@@ -1,50 +1,63 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node<T> {
+    public value: T;
+    public next: Node<T> | null = null;
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
-        this.next = null;
     }
 }
+class Queue<T> {
+    private head: Node<T> | null = null;
+    private tail: Node<T> | null = null;
+    private size: number = 0;
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null if the list is empty or n is invalid
-    }
-
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    // Add an element to the end of the queue
+    public enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the new node at the end
         }
-        firstPointer = firstPointer.next;
+        this.tail = newNode; // Update the tail to the new node
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, head is also the new node
+        }
+        this.size++;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+    // Remove and return the element from the front of the queue
+    public dequeue(): T | null {
+        if (!this.head) return null; // Queue is empty
+        const dequeuedValue = this.head.value;
+        this.head = this.head.next; // Move head to the next node
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, reset tail
+        }
+        this.size--;
+        return dequeuedValue;
     }
 
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
-}
+    // Return the size of the queue
+    public getSize(): number {
+        return this.size;
+    }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+    // Check if the queue is empty
+    public isEmpty(): boolean {
+        return this.size === 0;
+    }
 
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
+    // Peek at the front value without removing it
+    public peek(): T | null {
+        return this.head ? this.head.value : null;
+    }
 }
+const queue = new Queue<number>();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek());     // Output: 2
+console.log(queue.getSize());  // Output: 2
+console.log(queue.isEmpty());   // Output: false
