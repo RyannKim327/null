@@ -1,55 +1,83 @@
-function kmpSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+type Graph = {
+    [key: string]: string[];
+};
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
+
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: { [key: string]: string | null } = { [start]: null };
+    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
+
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Search from the start
+        const currentFromStart = queueFromStart.shift()!;
+        if (visitedFromGoal.has(currentFromStart)) {
+            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
+        }
+        visitedFromStart.add(currentFromStart);
+
+        for (const neighbor of graph[currentFromStart] || []) {
+            if (!visitedFromStart.has(neighbor)) {
+                queueFromStart.push(neighbor);
+                visitedFromStart.add(neighbor);
+                parentFromStart[neighbor] = currentFromStart;
+            }
         }
 
-        if (j === pattern.length) {
-            result.push(i - j); // Pattern found at index (i - j)
-            j = lps[j - 1]; // Update j using LPS array
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
-            } else {
-                i++;
+        // Search from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        if (visitedFromStart.has(currentFromGoal)) {
+            return constructPath(currentFromGoal, parentFromStart, parentFromGoal);
+        }
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph[currentFromGoal] || []) {
+            if (!visitedFromGoal.has(neighbor)) {
+                queueFromGoal.push(neighbor);
+                visitedFromGoal.add(neighbor);
+                parentFromGoal[neighbor] = currentFromGoal;
             }
         }
     }
 
-    return result;
+    return null; // No path found
 }
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
+    const path: string[] = [];
+    let current: string | null = meetingPoint;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the LPS array to find the next length
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    // Construct path from start to meeting point
+    while (current !== null) {
+        path.push(current);
+        current = parentFromStart[current];
+    }
+    path.reverse();
+
+    // Construct path from meeting point to goal
+    current = parentFromGoal[meetingPoint];
+    while (current !== null) {
+        path.push(current);
+        current = parentFromGoal[current];
     }
 
-    return lps;
+    return path;
 }
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
 
-// Example usage
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const indices = kmpSearch(text, pattern);
-console.log(indices); // Output: [10]
+const start = 'A';
+const goal = 'F';
+const path = biDirectionalSearch(graph, start, goal);
+
+console.log(path); // Output: ['A', 'C', 'F'] or ['A', 'B', 'E', 'F']
