@@ -1,33 +1,59 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class RabinKarp {
+    private prime: number;
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: If the tree is empty, its depth is 0
+    constructor(prime: number = 101) {
+        this.prime = prime; // A prime number to reduce collisions
     }
 
-    // Compute the depth of each subtree
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    private hash(s: string, end: number): number {
+        let h = 0;
+        for (let i = 0; i < end; i++) {
+            h = (h * 256 + s.charCodeAt(i)) % this.prime;
+        }
+        return h;
+    }
 
-    // The maximum depth is the greater of the two, plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    public search(text: string, pattern: string): number[] {
+        const m = pattern.length;
+        const n = text.length;
+        const result: number[] = [];
+        const patternHash = this.hash(pattern, m);
+        let textHash = this.hash(text, m);
+        const h = 1;
+
+        // Precompute the value of h
+        for (let i = 0; i < m - 1; i++) {
+            h = (h * 256) % this.prime;
+        }
+
+        // Slide the pattern over the text one by one
+        for (let i = 0; i <= n - m; i++) {
+            // Check for a match
+            if (patternHash === textHash) {
+                if (text.slice(i, i + m) === pattern) {
+                    result.push(i); // Pattern found, store index
+                }
+            }
+
+            // Calculate the hash for the next window
+            if (i < n - m) {
+                textHash =
+                    (256 * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % this.prime;
+
+                // In case of negative hash value
+                if (textHash < 0) {
+                    textHash += this.prime;
+                }
+            }
+        }
+
+        return result; // Return all indices where pattern occurs
+    }
 }
 
 // Example usage:
-// Creating a simple binary tree 
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-
-console.log(maxDepth(root)); // Output: 3
+const rk = new RabinKarp();
+const text = "GEEKS FOR GEEKS";
+const pattern = "GEEK";
+const indices = rk.search(text, pattern);
+console.log("Pattern found at indices:", indices);
