@@ -1,62 +1,36 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
-}
-
-class Trie {
-    root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the trie
-    insert(word: string): void {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children.has(char)) {
-                node.children.set(char, new TrieNode());
-            }
-            node = node.children.get(char)!;
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
         }
-        node.isEndOfWord = true;
     }
 
-    // Search for a word in the trie
-    search(word: string): boolean {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children.has(char)) {
-                return false;
-            }
-            node = node.children.get(char)!;
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
         }
-        return node.isEndOfWord;
     }
 
-    // Check if there's any word in the trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        let node = this.root;
-        for (const char of prefix) {
-            if (!node.children.has(char)) {
-                return false;
-            }
-            node = node.children.get(char)!;
-        }
-        return true;
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
     }
 }
 
 // Example usage:
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app")); // true
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
