@@ -1,20 +1,22 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Remove duplicates by converting the array to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    // If there are less than 2 unique elements, return null
-    if (uniqueArr.length < 2) {
-        return null;
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
+    // Sort the characters of each string
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-    // Return the second largest element
-    return uniqueArr[1];
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
-const numbers = [3, 5, 1, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("Dormitory", "Dirty room")); // true
