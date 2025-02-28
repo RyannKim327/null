@@ -1,12 +1,22 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+    
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
-
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
-
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
-
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
+    
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    
+    return Math.max(leftDepth, rightDepth) + 1;
+}
