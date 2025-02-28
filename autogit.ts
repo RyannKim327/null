@@ -1,26 +1,28 @@
-function largestPrimeFactor(n: number): number {
-    // Step 1: Divide by 2 until n is odd
-    while (n % 2 === 0) {
-        n /= 2;
-    }
-    
-    // Now n must be odd, thus we can check for odd factors starting from 3
-    let largestFactor = 2; // Since we handled 2 separately
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i; // Update largest prime factor
-            n /= i;
-        }
-    }
-    
-    // If n becomes a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n; // n is prime and larger than any factor we found
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return largestFactor;
+    // Choose a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
+
+    // Partitioning the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    // Recursively sort the left and right arrays, and concatenate with the pivot
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
 // Example usage
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
