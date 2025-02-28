@@ -19,6 +19,15 @@ function countCharacter(str: string, char: string): number {
 const result = countCharacter("hello world", "o");
 console.log(result); // Output: 2
 function countCharacter(str: string, char: string): number {
+    return Array.from(str).reduce((count, currentChar) => {
+        return currentChar === char ? count + 1 : count;
+    }, 0);
+}
+
+// Example usage
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
     const regex = new RegExp(char, 'g');
     const matches = str.match(regex);
     return matches ? matches.length : 0;
