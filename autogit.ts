@@ -1,17 +1,18 @@
-function maxSumSubarray(arr: number[]): number {
-    if (arr.length === 0) return 0;
+function isPrime(num: number): boolean {
+    if (num <= 1) return false; // numbers less than 2 are not prime
+    if (num <= 3) return true; // 2 and 3 are prime numbers
 
-    let maxSoFar = arr[0];
-    let maxEndingHere = arr[0];
+    // Check for even numbers and multiples of 3
+    if (num % 2 === 0 || num % 3 === 0) return false;
 
-    for (let i = 1; i < arr.length; i++) {
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    // Check for factors from 5 to the square root of num
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
     }
 
-    return maxSoFar;
+    return true;
 }
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSumSubarray(array)); // Output: 6
+// Example usage
+console.log(isPrime(11)); // Output: true
+console.log(isPrime(15)); // Output: false
