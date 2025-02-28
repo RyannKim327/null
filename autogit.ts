@@ -1,50 +1,21 @@
-class Node {
-    value: any;
-    next: Node | null;
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    let left = 0;
+    let right = normalizedString.length - 1;
 
-    constructor(value: any) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    head: Node | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node to the list
-    add(value: any) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+    while (left < right) {
+        if (normalizedString[left] !== normalizedString[right]) {
+            return false; // Not a palindrome
         }
-        let currentNode = this.head;
-        while (currentNode.next) {
-            currentNode = currentNode.next;
-        }
-        currentNode.next = newNode;
+        left++;
+        right--;
     }
 
-    // Method to get the length of the linked list
-    getLength(): number {
-        let count = 0;
-        let currentNode = this.head;
-        while (currentNode) {
-            count++;
-            currentNode = currentNode.next;
-        }
-        return count;
-    }
+    return true; // Is a palindrome
 }
 
 // Example usage:
-const list = new LinkedList();
-list.add(10);
-list.add(20);
-list.add(30);
-
-console.log("Length of the linked list:", list.getLength()); // Output: 3
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
