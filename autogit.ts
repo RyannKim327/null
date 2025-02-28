@@ -1,38 +1,48 @@
-function getDigit(num: number, place: number): number {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+// Define the graph as an adjacency list
+type Graph = {
+    [key: string]: string[];
+};
 
-function digitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+// BFS function
+function bfs(graph: Graph, start: string): string[] {
+    const visited: Set<string> = new Set(); // To keep track of visited nodes
+    const queue: string[] = []; // Queue for BFS
+    const result: string[] = []; // To store the order of traversal
 
-function maxDigits(nums: number[]): number {
-    let max = 0;
-    for (const num of nums) {
-        max = Math.max(max, digitCount(num));
-    }
-    return max;
-}
+    // Start with the initial node
+    queue.push(start);
+    visited.add(start);
 
-function radixSort(nums: number[]): number[] {
-    const maxDigitCount = maxDigits(nums);
+    while (queue.length > 0) {
+        const node = queue.shift(); // Dequeue a node
+        if (node) {
+            result.push(node); // Process the node
 
-    for (let k = 0; k < maxDigitCount; k++) {
-        const digitBuckets: number[][] = Array.from({ length: 10 }, () => []);
-        
-        for (const num of nums) {
-            const digit = getDigit(num, k);
-            digitBuckets[digit].push(num);
+            // Get all adjacent nodes
+            const neighbors = graph[node];
+            if (neighbors) {
+                for (const neighbor of neighbors) {
+                    if (!visited.has(neighbor)) {
+                        visited.add(neighbor); // Mark as visited
+                        queue.push(neighbor); // Enqueue the neighbor
+                    }
+                }
+            }
         }
-
-        nums = [].concat(...digitBuckets);
     }
-    
-    return nums;
+
+    return result; // Return the order of traversal
 }
 
-// Example usage:
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
+
+const result = bfs(graph, 'A');
+console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
