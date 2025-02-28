@@ -1,38 +1,30 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}
+
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
     }
-    return count;
+
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return Array.from(str).reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+// Call the fetchPosts function and log the results
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
