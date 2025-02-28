@@ -1,42 +1,21 @@
-interface Node {
-    state: string; // Current state representation (e.g., sentence)
-    score: number; // Score for the current state
-}
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-function beamSearch(initialState: string, beamWidth: number, maxSteps: number, expand: (state: string) => Node[]): Node[] {
-    let currentBeam: Node[] = [{ state: initialState, score: 0 }];
-    
-    for (let step = 0; step < maxSteps; step++) {
-        let newBeam: Node[] = [];
+    // Start with the first string in the array
+    let prefix = strs[0];
 
-        // Expand each node in the current beam
-        for (const node of currentBeam) {
-            const expandedNodes = expand(node.state); // Generate new nodes by expanding the current state
-            newBeam.push(...expandedNodes); // Add new nodes to the new beam
+    // Compare the prefix with each string in the array
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by one character from the end
+            prefix = prefix.substring(0, prefix.length - 1);
+            if (prefix === "") return ""; // No common prefix
         }
-
-        // Sort the new beam by score and keep the top 'beamWidth' nodes
-        newBeam.sort((a, b) => b.score - a.score); // Sort high to low based on score
-        currentBeam = newBeam.slice(0, beamWidth); // Keep only the top 'beamWidth' nodes
     }
 
-    return currentBeam; // Final states in the beam
+    return prefix;
 }
 
-// Example expansion function
-function exampleExpand(state: string): Node[] {
-    // Here you would define how to expand states with the actual logic
-    const possibilities = [
-        { state: state + " A", score: Math.random() }, // Random score for example
-        { state: state + " B", score: Math.random() }
-    ];
-    return possibilities;
-}
-
-// Use the beamSearch function
-const initialState = "Start";
-const beamWidth = 2;
-const maxSteps = 3;
-const result = beamSearch(initialState, beamWidth, maxSteps, exampleExpand);
-
-console.log(result);
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
