@@ -1,37 +1,62 @@
-type Node = {
-    value: any;
-    children?: Node[];
-};
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-function depthLimitedSearch(root: Node, target: any, limit: number): boolean {
-    if (limit < 0) {
-        return false; // Limit reached, stop searching
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
     }
-    if (root.value === target) {
-        return true; // Target found
+}
+
+class Trie {
+    root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
     }
-    if (root.children) {
-        for (const child of root.children) {
-            if (depthLimitedSearch(child, target, limit - 1)) {
-                return true; // If the target is found in the child
+
+    // Insert a word into the trie
+    insert(word: string): void {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
             }
+            node = node.children.get(char)!;
         }
+        node.isEndOfWord = true;
     }
-    return false; // Target not found in this path
+
+    // Search for a word in the trie
+    search(word: string): boolean {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                return false;
+            }
+            node = node.children.get(char)!;
+        }
+        return node.isEndOfWord;
+    }
+
+    // Check if there's any word in the trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        let node = this.root;
+        for (const char of prefix) {
+            if (!node.children.has(char)) {
+                return false;
+            }
+            node = node.children.get(char)!;
+        }
+        return true;
+    }
 }
 
 // Example usage:
-
-const tree: Node = {
-    value: 1,
-    children: [
-        { value: 2, children: [{ value: 4 }, { value: 5 }] },
-        { value: 3, children: [{ value: 6 }, { value: 7 }] },
-    ],
-};
-
-const targetValue = 5;
-const depthLimit = 2;
-
-const found = depthLimitedSearch(tree, targetValue, depthLimit);
-console.log(`Target ${targetValue} found: ${found}`);
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // true
+console.log(trie.search("app")); // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app")); // true
