@@ -1,19 +1,12 @@
-function isPalindrome(s: string): boolean {
+function isPalindrome(str: string): boolean {
     // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
     
-    let left = 0;
-    let right = normalizedString.length - 1;
-
-    while (left < right) {
-        if (normalizedString[left] !== normalizedString[right]) {
-            return false; // Not a palindrome
-        }
-        left++;
-        right--;
-    }
-
-    return true; // Is a palindrome
+    // Reverse the normalized string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Compare the normalized string with the reversed string
+    return normalizedStr === reversedStr;
 }
 
 // Example usage:
