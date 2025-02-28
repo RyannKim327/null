@@ -1,45 +1,35 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // target found at index mid
+        }
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // Cycle detected
+        // If target is greater, ignore left half
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            // If target is smaller, ignore right half
+            right = mid - 1;
         }
     }
 
-    return false; // No cycle
+    // Target was not found in the array
+    return -1;
 }
 
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 5;
+const index = binarySearch(sortedArray, target);
 
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found in the array');
+}
