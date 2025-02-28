@@ -1,34 +1,32 @@
-npm install axios
-import axios from 'axios';
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-// Define an interface for the data we expect to receive
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Function to fetch users from the API
-const fetchUsers = async (): Promise<void> => {
-    try {
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        const users = response.data;
+function findMiddle(head: ListNode | null): number | null {
+    if (!head) return null; // If the linked list is empty, return null
 
-        // Log the users to the console
-        users.forEach(user => {
-            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-        });
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
-        }
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        slow = slow.next;       // Move slow one step
+        fast = fast.next.next; // Move fast two steps
     }
-};
 
-// Call the function to fetch users
-fetchUsers();
-tsc fetchData.ts
-node fetchData.js
+    return slow.value; // When fast is null or at the end, slow is at the middle
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+console.log(findMiddle(head)); // Output: 3
