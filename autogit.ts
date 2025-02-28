@@ -1,53 +1,9 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
-
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
-    }
+function calculateTriangleArea(base: number, height: number): number {
+    return 0.5 * base * height;
 }
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
 
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
-    }
-
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
-        }
-    }
-
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                currentNode = newNode;
-                break;
-            } else {
-                currentNode = currentNode.children.get(char)!;
-            }
-        }
-    }
-
-    // Additional methods can be added here, such as searching for substrings, etc.
-}
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-
-// You can add more methods to search for substrings or to display the tree structure.
+// Example usage:
+const base = 10;
+const height = 5;
+const area = calculateTriangleArea(base, height);
+console.log(`The area of the triangle is: ${area}`);
