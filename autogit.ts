@@ -1,18 +1,29 @@
-function isPrime(num: number): boolean {
-    if (num <= 1) return false; // numbers less than 2 are not prime
-    if (num <= 3) return true; // 2 and 3 are prime numbers
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    // Check for even numbers and multiples of 3
-    if (num % 2 === 0 || num % 3 === 0) return false;
-
-    // Check for factors from 5 to the square root of num
-    for (let i = 5; i * i <= num; i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) return false;
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
 
-    return true;
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        // While i divides n, update n and largestFactor
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-// Example usage
-console.log(isPrime(11)); // Output: true
-console.log(isPrime(15)); // Output: false
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
