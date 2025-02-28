@@ -1,27 +1,12 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted part
-        let minIndex = i;
-
-        // Find the index of the smallest element in the unsorted part
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if a smaller element is found
-            }
-        }
-        
-        // Swap the found minimum element with the first element of the unsorted part
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Destructuring swap
-        }
-    }
-    
-    return arr;
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
 }
 
-// Example usage:
-const array = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
+
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
