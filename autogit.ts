@@ -1,21 +1,36 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+class Node {
+    constructor(public value: number, public children: Node[] = []) {}
+}
 
-    // Start with the first string in the array
-    let prefix = strs[0];
+function depthLimitedSearch(node: Node, target: number, limit: number): boolean {
+    if (limit < 0) {
+        return false; // Limit reached, return false
+    }
 
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            if (prefix === "") return ""; // No common prefix
+    if (node.value === target) {
+        return true; // Target found
+    }
+
+    // Iterate through the children of the current node
+    for (let child of node.children) {
+        // Recursive call to the children with a decreased limit
+        if (depthLimitedSearch(child, target, limit - 1)) {
+            return true; // Target found in child
         }
     }
 
-    return prefix;
+    return false; // Target not found in this branch
 }
 
-// Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+// Example Usage:
+const root = new Node(1, [
+    new Node(2, [new Node(5), new Node(6)]),
+    new Node(3),
+    new Node(4, [new Node(7)])
+]);
+
+const target = 5;
+const limit = 2;
+
+const found = depthLimitedSearch(root, target, limit);
+console.log(`Target ${target} found within limit: ${found}`);
