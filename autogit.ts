@@ -1,32 +1,56 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const rotations: string[] = [];
+class Edge {
+    constructor(public from: number, public to: number, public weight: number) {}
+}
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
+class Graph {
+    vertices: number;
+    edges: Edge[];
+
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.edges = [];
     }
 
-    // Sort the rotations
-    rotations.sort();
+    addEdge(from: number, to: number, weight: number) {
+        this.edges.push(new Edge(from, to, weight));
+    }
 
-    // Build the BWT result and find the original index
-    let bwtResult = '';
-    let originalIndex = 0;
+    bellmanFord(source: number): number[] | string {
+        const distances: number[] = new Array(this.vertices).fill(Infinity);
+        distances[source] = 0;
 
-    for (let i = 0; i < n; i++) {
-        const rotation = rotations[i];
-        bwtResult += rotation[n - 1]; // Take the last character of each sorted rotation
-        if (rotation === input) {
-            originalIndex = i; // Store the index of the original string
+        // Relax edges |V| - 1 times
+        for (let i = 1; i < this.vertices; i++) {
+            for (const edge of this.edges) {
+                if (distances[edge.from] !== Infinity &&
+                    distances[edge.from] + edge.weight < distances[edge.to]) {
+                    distances[edge.to] = distances[edge.from] + edge.weight;
+                }
+            }
         }
-    }
 
-    return { transformed: bwtResult, index: originalIndex };
+        // Check for negative-weight cycles
+        for (const edge of this.edges) {
+            if (distances[edge.from] !== Infinity && 
+                distances[edge.from] + edge.weight < distances[edge.to]) {
+                return "Graph contains a negative-weight cycle";
+            }
+        }
+
+        return distances;
+    }
 }
 
 // Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
+
+const distances = graph.bellmanFord(0);
+console.log(distances); // Output the shortest distances from source vertex
