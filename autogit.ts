@@ -1,19 +1,41 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
+type Graph = {
+    [key: string]: string[]; // Adjacency list
+};
 
-    for (let i = 1; i < nums.length; i++) {
-        // Update maxEndingHere to include the current element
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
-        
-        // Update maxSoFar if maxEndingHere is greater
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+function bfs(graph: Graph, startNode: string): string[] {
+    const visited: Set<string> = new Set();
+    const queue: string[] = [];
+    const result: string[] = [];
+
+    visited.add(startNode);
+    queue.push(startNode);
+
+    while (queue.length > 0) {
+        const node = queue.shift();
+        if (node) {
+            result.push(node);
+            const neighbors = graph[node];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
+        }
     }
 
-    return maxSoFar;
+    return result;
 }
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
+// Example Usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
+
+const result = bfs(graph, 'A');
+console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
