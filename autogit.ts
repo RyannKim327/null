@@ -1,21 +1,32 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: convert to lowercase and remove spaces
-    const normalizedStr1 = str1.toLowerCase().replace(/\s+/g, '');
-    const normalizedStr2 = str2.toLowerCase().replace(/\s+/g, '');
-    
-    // If lengths differ, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+function stringLength(str: string): number {
+    let count = 0;
+
+    // Iterate over each character in the string
+    for (let i = 0; i < str.length; i++) {
+        count++;
     }
 
-    // Sort the characters in the strings and compare
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+    return count;
 }
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("triangle", "integral")); // true
-console.log(areAnagrams("hello", "world")); // false
+// Example usage
+const myString = "Hello, World!";
+const length = stringLength(myString);
+console.log(length); // Output: 13
+function stringLength(str: string): number {
+    let count = 0;
+    let index = 0;
+
+    // Loop until the index is less than the string's length
+    while (str[index] !== undefined) {
+        count++;
+        index++;
+    }
+
+    return count;
+}
+
+// Example usage
+const myString = "Hello, World!";
+const length = stringLength(myString);
+console.log(length); // Output: 13
