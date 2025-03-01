@@ -1,24 +1,36 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+type Graph = { [key: string]: string[] };
+
+function bfs(graph: Graph, start: string): string[] {
+    let queue: string[] = [start]; // Initialize a queue with the starting node
+    let visited: Set<string> = new Set(); // Keep track of visited nodes
+    let result: string[] = []; // To hold the order of visited nodes
+
+    while (queue.length > 0) {
+        const node = queue.shift(); // Dequeue an element
+        if (node && !visited.has(node)) {
+            visited.add(node); // Mark the node as visited
+            result.push(node); // Add the node to the result
+
+            // Enqueue all the neighbors that haven't been visited
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    queue.push(neighbor);
+                }
+            }
+        }
+    }
+
+    return result; // Return the order of visited nodes
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
-}
-
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+console.log(bfs(graph, 'A')); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
