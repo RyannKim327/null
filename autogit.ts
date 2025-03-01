@@ -1,60 +1,86 @@
-class Node {
-    data: any;
-    next: Node | null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    constructor(data: any) {
-        this.data = data;
+    constructor(value: T) {
+        this.value = value;
         this.next = null;
     }
 }
-
-class Queue {
-    head: Node | null;
-    tail: Node | null;
+class LinkedList<T> {
+    head: Node<T> | null;
+    tail: Node<T> | null;
+    length: number;
 
     constructor() {
         this.head = null;
         this.tail = null;
+        this.length = 0;
     }
 
-    enqueue(data: any) {
-        const newNode = new Node(data);
+    // Add a new node to the end of the list
+    append(value: T): void {
+        const newNode = new Node(value);
         if (!this.head) {
             this.head = newNode;
             this.tail = newNode;
         } else {
-            this.tail.next = newNode;
+            if (this.tail) {
+                this.tail.next = newNode;
+            }
             this.tail = newNode;
         }
+        this.length++;
     }
 
-    dequeue(): any | undefined {
-        if (!this.head) {
-            return undefined;
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
+
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.length--;
+            return true;
         }
 
-        const data = this.head.data;
-        this.head = this.head.next;
-
-        if (!this.head) {
-            this.tail = null;
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                if (current.next === null) {
+                    this.tail = current; // Update tail if needed
+                }
+                this.length--;
+                return true;
+            }
+            current = current.next;
         }
-
-        return data;
+        return false;
     }
 
-    isEmpty(): boolean {
-        return this.head === null;
+    // Display the list
+    display(): void {
+        let current = this.head;
+        const values: T[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
+    }
+
+    // Get the size of the list
+    size(): number {
+        return this.length;
     }
 }
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+list.display(); // Output: 1 -> 2 -> 3
 
-// Example usage
-const queue = new Queue();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
+list.remove(2);
+list.display(); // Output: 1 -> 3
 
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.dequeue()); // Output: 2
-console.log(queue.dequeue()); // Output: 3
-console.log(queue.dequeue()); // Output: undefined
+console.log(`Size of the list: ${list.size()}`); // Output: Size of the list: 2
