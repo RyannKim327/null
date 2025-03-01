@@ -1,58 +1,54 @@
-class Node {
-    value: string;
+type Node = {
+    value: any;
     children: Node[];
+};
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+function depthLimitedSearch(node: Node, target: any, limit: number): boolean {
+    // Base case: check if the current node is the target
+    if (node.value === target) {
+        return true;
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    if (limit < 0) {
-        return null; // Limit exceeded
+    // If the limit has been reached, return false
+    if (limit <= 0) {
+        return false;
     }
 
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-    
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
-        }
-
-        // If we haven't reached the limit, add children to the queue
-        if (depth < limit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
+    // Recursively search in the children
+    for (let child of node.children) {
+        if (depthLimitedSearch(child, target, limit - 1)) {
+            return true;
         }
     }
 
-    return null; // Target not found within the limit
+    // Target not found within the depth limit
+    return false;
 }
 
 // Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
+const tree: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
+        }
+    ]
+};
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
+const target = 5;
+const limit = 2;
 
-const result = breadthLimitedSearch(root, "D", 2);
-if (result) {
-    console.log(`Found: ${result.value}`);
-} else {
-    console.log("Not found within the limit.");
-}
+// Executing the Depth-Limited Search
+const found = depthLimitedSearch(tree, target, limit);
+console.log(`Target ${target} ${found ? 'found' : 'not found'} within limit ${limit}.`);
