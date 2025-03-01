@@ -1,27 +1,19 @@
-npm install node-cron
-import cron from 'node-cron';
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return ""; // Handle empty array case
+    if (strs.length === 1) return strs[0]; // Handle single string case
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log(`Task is running every minute: ${new Date().toISOString()}`);
-});
+    let prefix = strs[0]; // Start with the first string as the prefix
 
-// Start the task
-task.start();
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) { // While the prefix is not found at start of strs[i]
+            prefix = prefix.slice(0, prefix.length - 1); // Reduce the prefix by one character
+            if (prefix === "") return ""; // If the prefix becomes empty, no common prefix exists
+        }
+    }
+    return prefix; // Return the longest common prefix found
+}
 
-console.log('Cron job has been scheduled. It will run every minute.');
-
-// Optional: If you want to stop the task after a certain time
-setTimeout(() => {
-    task.stop();
-    console.log('Cron job has been stopped.');
-}, 60000); // Stops the task after 60 seconds
-npm install -g typescript
-tsc cronScheduler.ts
-node cronScheduler.js
-Cron job has been scheduled. It will run every minute.
-Task is running every minute: 2023-10-06T12:00:00.000Z
-Task is running every minute: 2023-10-06T12:00:01.000Z
-Task is running every minute: 2023-10-06T12:00:02.000Z
-...
-Cron job has been stopped.
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+const result = longestCommonPrefix(strings);
+console.log(result); // Outputs: "fl"
