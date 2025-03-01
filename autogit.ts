@@ -1,4 +1,8 @@
-let originalString: string = "Hello, World!";
-let lowerCaseString: string = originalString.toLowerCase();
+function reverseString(str: string): string {
+    return str.split('').reverse().join('');
+}
 
-console.log(lowerCaseString); // Output: "hello, world!"
+// Example usage:
+const originalString = "Hello, World!";
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Output: "!dlroW ,olleH"
