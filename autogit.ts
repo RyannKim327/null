@@ -1,32 +1,27 @@
-function stringLength(str: string): number {
-    let count = 0;
+npm install node-cron
+import cron from 'node-cron';
 
-    // Iterate over each character in the string
-    for (let i = 0; i < str.length; i++) {
-        count++;
-    }
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log(`Task is running every minute: ${new Date().toISOString()}`);
+});
 
-    return count;
-}
+// Start the task
+task.start();
 
-// Example usage
-const myString = "Hello, World!";
-const length = stringLength(myString);
-console.log(length); // Output: 13
-function stringLength(str: string): number {
-    let count = 0;
-    let index = 0;
+console.log('Cron job has been scheduled. It will run every minute.');
 
-    // Loop until the index is less than the string's length
-    while (str[index] !== undefined) {
-        count++;
-        index++;
-    }
-
-    return count;
-}
-
-// Example usage
-const myString = "Hello, World!";
-const length = stringLength(myString);
-console.log(length); // Output: 13
+// Optional: If you want to stop the task after a certain time
+setTimeout(() => {
+    task.stop();
+    console.log('Cron job has been stopped.');
+}, 60000); // Stops the task after 60 seconds
+npm install -g typescript
+tsc cronScheduler.ts
+node cronScheduler.js
+Cron job has been scheduled. It will run every minute.
+Task is running every minute: 2023-10-06T12:00:00.000Z
+Task is running every minute: 2023-10-06T12:00:01.000Z
+Task is running every minute: 2023-10-06T12:00:02.000Z
+...
+Cron job has been stopped.
