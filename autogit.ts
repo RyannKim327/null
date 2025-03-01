@@ -1,22 +1,37 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+function countOccurrences(str: string, word: string): number {
+    // Normalize the string and word to lowercase to make the search case-insensitive
+    const normalizedStr = str.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-    // Start with the first string as the initial prefix
-    let prefix = strs[0];
+    // Split the string into an array of words
+    const wordsArray = normalizedStr.split(/\s+/); // Split by whitespace
 
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If there's no common prefix, return an empty string
-            if (prefix === "") return "";
-        }
-    }
+    // Count occurrences of the specified word
+    const count = wordsArray.filter(w => w === normalizedWord).length;
 
-    return prefix;
+    return count;
 }
 
-// Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+// Usage example
+const text = "The quick brown fox jumps over the lazy dog. The dog barked.";
+const wordToCount = "the";
+const occurrences = countOccurrences(text, wordToCount);
+
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+function countOccurrences(str: string, word: string): number {
+    const normalizedStr = str.toLowerCase();
+    const normalizedWord = word.toLowerCase();
+
+    // Use a regular expression to find whole words
+    const regex = new RegExp(`\\b${normalizedWord}\\b`, 'g');
+    const matches = normalizedStr.match(regex);
+
+    return matches ? matches.length : 0;
+}
+
+// Usage example
+const text = "The quick brown fox jumps over the lazy dog. The dog barked.";
+const wordToCount = "the";
+const occurrences = countOccurrences(text, wordToCount);
+
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
