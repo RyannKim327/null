@@ -1,51 +1,53 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    // Phase 1: Find the candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
         } else {
-            count--;
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
-
-    // Phase 2: Validate the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    return count > nums.length / 2 ? candidate : null; // Return null if no majority element
+    return lps;
 }
 
-// Test the function
-const nums = [3, 2, 3]; // Example array
-const result = majorityElement(nums);
-console.log(result); // Output: 3
-function majorityElementWithMap(nums: number[]): number | null {
-    const countMap = new Map<number, number>();
-    const majorityCount = Math.floor(nums.length / 2);
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    for (const num of nums) {
-        const count = (countMap.get(num) || 0) + 1;
-        countMap.set(num, count);
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
 
-        if (count > majorityCount) {
-            return num; // Early return if we find a majority element
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to result
+            j = lps[j - 1]; // Use LPS to continue searching
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters in the pattern
+            } else {
+                i++;
+            }
         }
     }
-
-    return null; // Return null if no majority element is found
+    return result; // Return all starting indices of matches
 }
 
-// Test the function
-const nums = [2, 2, 1, 1, 1, 2, 2]; // Example array
-const result = majorityElementWithMap(nums);
-console.log(result); // Output: 2
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", result);
