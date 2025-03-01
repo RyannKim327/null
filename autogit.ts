@@ -1,56 +1,67 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1; // the loop calculates lps[i] for i = 1 to M-1
+type Graph = { [key: string]: string[] };
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+/**
+ * Depth Limited Search function
+ * @param graph - The graph represented as an adjacency list
+ * @param currentNode - The current node being explored
+ * @param goalNode - The target node we want to find
+ * @param depth - The current depth in the search tree
+ * @param depthLimit - The maximum depth to explore
+ * @param visited - A set to keep track of visited nodes (to avoid cycles)
+ * @returns - True if the goal was found, false otherwise
+ */
+function depthLimitedSearch(
+  graph: Graph,
+  currentNode: string,
+  goalNode: string,
+  depth: number,
+  depthLimit: number,
+  visited: Set<string> = new Set()
+): boolean {
+  // Base case: if the current node is the goal node
+  if (currentNode === goalNode) {
+    return true;
+  }
+
+  // Stop searching if depth limit is reached
+  if (depth === depthLimit) {
+    return false;
+  }
+
+  // Mark the current node as visited
+  visited.add(currentNode);
+
+  // Explore neighbors
+  for (const neighbor of graph[currentNode] || []) {
+    // Avoid cycles by checking if the neighbor has already been visited
+    if (!visited.has(neighbor)) {
+      // Recursively search in the next level
+      if (depthLimitedSearch(graph, neighbor, goalNode, depth + 1, depthLimit, visited)) {
+        return true;
+      }
     }
-    return lps;
+  }
+
+  // Backtrack: remove the current node from visited set
+  visited.delete(currentNode);
+  
+  return false;
 }
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const occurrences: number[] = [];
-    
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+// Example usage
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['G'],
+  F: [],
+  G: ['C'],
+};
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+const startNode = 'A';
+const goalNode = 'G';
+const depthLimit = 3;
 
-        if (j === pattern.length) {
-            // Found a match, recording the start index
-            occurrences.push(i - j);
-            j = lps[j - 1]; // use lps to skip unnecessary comparisons
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            // mismatch after j matches
-            if (j !== 0) {
-                j = lps[j - 1]; // use the lps array to skip characters
-            } else {
-                i++;
-            }
-        }
-    }
-    return occurrences;
-}
-
-// Example Usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = KMPSearch(text, pattern);
-console.log(`Pattern found at indices: ${result.join(', ')}`);
+const found = depthLimitedSearch(graph, startNode, goalNode, 0, depthLimit);
+console.log(`Goal node ${goalNode} found: ${found}`);
