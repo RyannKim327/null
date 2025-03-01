@@ -1,30 +1,21 @@
-npm install axios
-import axios from 'axios';
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    let left = 0;
+    let right = normalizedString.length - 1;
 
-// Define an interface for the data we expect to receive
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-}
-
-async function fetchUsers() {
-    try {
-        // Make a GET request to the JSONPlaceholder API
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        
-        // Log the response data
-        console.log('Users:', response.data);
-    } catch (error) {
-        // Handle any errors
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
+    while (left < right) {
+        if (normalizedString[left] !== normalizedString[right]) {
+            return false; // Not a palindrome
         }
+        left++;
+        right--;
     }
+
+    return true; // Is a palindrome
 }
 
-// Call the function to fetch users
-fetchUsers();
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
