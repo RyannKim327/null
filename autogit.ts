@@ -1,92 +1,59 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
+function merge(arr: number[], left: number, mid: number, right: number): void {
+    const leftArr = arr.slice(left, mid + 1);
+    const rightArr = arr.slice(mid + 1, right + 1);
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    let i = 0; // Initial index of the first subarray
+    let j = 0; // Initial index of the second subarray
+    let k = left; // Initial index of merged subarray
+
+    while (i < leftArr.length && j < rightArr.length) {
+        if (leftArr[i] <= rightArr[j]) {
+            arr[k] = leftArr[i];
+            i++;
+        } else {
+            arr[k] = rightArr[j];
+            j++;
+        }
+        k++;
+    }
+
+    // Copy remaining elements of leftArr, if any
+    while (i < leftArr.length) {
+        arr[k] = leftArr[i];
+        i++;
+        k++;
+    }
+
+    // Copy remaining elements of rightArr, if any
+    while (j < rightArr.length) {
+        arr[k] = rightArr[j];
+        j++;
+        k++;
     }
 }
-class BinarySearchTree {
-    root: Node | null;
 
-    constructor() {
-        this.root = null;
-    }
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    // Insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+    // Start with subarray size = 1
+    for (let size = 1; size < n; size *= 2) {
+        // Pick the starting point of different subarrays of current size
+        for (let left = 0; left < n; left += size * 2) {
+            // Find the mid and right bounds of the subarrays
+            const mid = Math.min(left + size - 1, n - 1);
+            const right = Math.min(left + 2 * size - 1, n - 1);
+            
+            // Merge the subarrays
+            if (mid < right) {
+                merge(arr, left, mid, right);
             }
         }
     }
-
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is found
-        }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
+    return arr;
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
 
-// Search for a value
-console.log(bst.search(7)); // true
-console.log(bst.search(20)); // false
-
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+// Example usage
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log("Unsorted array:", arr);
+const sortedArr = mergeSort(arr);
+console.log("Sorted array:", sortedArr);
