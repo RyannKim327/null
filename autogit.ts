@@ -1,32 +1,19 @@
-npm install axios
-import axios from 'axios';
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-// Define an interface for the data we expect to receive
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-// Function to fetch users from a public API
-const fetchUsers = async (): Promise<void> => {
-    try {
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        const users = response.data;
+// Start the task
+task.start();
 
-        // Log the users to the console
-        users.forEach(user => {
-            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-        });
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-    }
-};
-
-// Call the function to fetch users
-fetchUsers();
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
