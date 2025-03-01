@@ -1,31 +1,72 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-    // Loop through all elements in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
+    }
+}
 
-        // Last i elements are already sorted, no need to check them
-        for (let j = 0; j < n - 1 - i; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-        // If no two elements were swapped in the inner loop, then the array is sorted
-        if (!swapped) {
-            break;
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
+
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
         }
     }
 
-    return arr;
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+            currentNode = currentNode.children.get(char)!;
+            // If we reach the end of the current node's edge, we can stop
+            if (currentNode.end === null) {
+                currentNode.end = i;
+                return;
+            }
+        }
+    }
+
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+        let index = 0;
+
+        while (index < pattern.length) {
+            const char = pattern[index];
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+            currentNode = currentNode.children.get(char)!;
+            index++;
+        }
+        return true; // Found
+    }
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // false
