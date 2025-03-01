@@ -1,63 +1,34 @@
-function findKthSmallest(array: number[], k: number): number {
-    if (k < 1 || k > array.length) {
-        throw new Error('k is out of bounds');
+function mergeSort(arr: number[]): number[] {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // Sort the array in ascending order
-    const sortedArray = array.slice().sort((a, b) => a - b);
-    
-    // Return the k-th smallest element (1-based index, hence k-1)
-    return sortedArray[k - 1];
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example usage
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(findKthSmallest(array, k)); // Output: 7
-function partition(array: number[], left: number, right: number, pivotIndex: number): number {
-    const pivotValue = array[pivotIndex];
-    // Move the pivot to the end
-    [array[pivotIndex], array[right]] = [array[right], array[pivotIndex]];
-    
-    let storeIndex = left;
-    for (let i = left; i < right; i++) {
-        if (array[i] < pivotValue) {
-            [array[storeIndex], array[i]] = [array[i], array[storeIndex]];
-            storeIndex++;
+function merge(left: number[], right: number[]): number[] {
+    let result: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
-    // Move the pivot to its final place
-    [array[storeIndex], array[right]] = [array[right], array[storeIndex]];
-    
-    return storeIndex;
-}
 
-function quickSelect(array: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return array[left];
-    }
-
-    const pivotIndex = left + Math.floor(Math.random() * (right - left));
-    pivotIndex = partition(array, left, right, pivotIndex);
-    
-    if (k === pivotIndex) {
-        return array[k];
-    } else if (k < pivotIndex) {
-        return quickSelect(array, left, pivotIndex - 1, k);
-    } else {
-        return quickSelect(array, pivotIndex + 1, right, k);
-    }
-}
-
-function findKthSmallest(array: number[], k: number): number {
-    if (k < 1 || k > array.length) {
-        throw new Error('k is out of bounds');
-    }
-    
-    return quickSelect(array.slice(), 0, array.length - 1, k - 1);
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
 // Example usage
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(findKthSmallest(array, k)); // Output: 7
+const unsortedArray = [5, 3, 8, 6, 2];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 3, 5, 6, 8]
