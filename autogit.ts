@@ -1,81 +1,39 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
-
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it's already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    // Split the array in half
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid)); // Sort the left half
+    const right = mergeSort(arr.slice(mid));    // Sort the right half
+
+    // Merge the sorted halves
+    return merge(left, right);
 }
-class LinkedList<T> {
-    head: Node<T> | null;
-    size: number;
 
-    constructor() {
-        this.head = null;
-        this.size = 0;
-    }
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-    // Add a new node at the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
+    // Merge process
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
-        this.size++;
     }
 
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.size--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                this.size--;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const elements: T[] = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
-    }
-
-    // Get the size of the list
-    getSize(): number {
-        return this.size;
-    }
+    // If there are remaining elements in left or right arrays, add them to the result
+    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.append(30);
-list.display(); // Output: 10 -> 20 -> 30
 
-list.remove(20);
-list.display(); // Output: 10 -> 30
-
-console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray);  // Output: [3, 9, 10, 27, 38, 43, 82]
