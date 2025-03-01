@@ -1,37 +1,32 @@
-function countOccurrences(str: string, word: string): number {
-    // Normalize the string and word to lowercase to make the search case-insensitive
-    const normalizedStr = str.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-    // Split the string into an array of words
-    const wordsArray = normalizedStr.split(/\s+/); // Split by whitespace
+    // Start with the largest gap and reduce the gap until it is 0
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
 
-    // Count occurrences of the specified word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
 
-    return count;
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
+        }
+        gap = Math.floor(gap / 2); // Reduce the gap
+    }
+
+    return arr;
 }
 
-// Usage example
-const text = "The quick brown fox jumps over the lazy dog. The dog barked.";
-const wordToCount = "the";
-const occurrences = countOccurrences(text, wordToCount);
-
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
-function countOccurrences(str: string, word: string): number {
-    const normalizedStr = str.toLowerCase();
-    const normalizedWord = word.toLowerCase();
-
-    // Use a regular expression to find whole words
-    const regex = new RegExp(`\\b${normalizedWord}\\b`, 'g');
-    const matches = normalizedStr.match(regex);
-
-    return matches ? matches.length : 0;
-}
-
-// Usage example
-const text = "The quick brown fox jumps over the lazy dog. The dog barked.";
-const wordToCount = "the";
-const occurrences = countOccurrences(text, wordToCount);
-
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+// Example usage:
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
