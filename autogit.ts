@@ -1,30 +1,20 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function firstRepeatedCharacter(str: string): string | null {
+  const seen = new Set<string>();
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+  for (const char of str) {
+    // Check if the character has been seen before
+    if (seen.has(char)) {
+      return char; // Return the first repeated character
     }
+    // If not, add it to the seen set
+    seen.add(char);
+  }
 
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
+  // If no character is repeated, return null
+  return null;
 }
 
-// Call the fetchPosts function and log the results
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Example usage:
+const inputString = "abca";
+const result = firstRepeatedCharacter(inputString);
+console.log(result); // Output: 'a'
