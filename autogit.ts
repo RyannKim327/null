@@ -1,31 +1,30 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize both the text and word to lower case
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
-    
-    // Split the text into an array of words using space as a delimiter
-    const wordsArray = normalizedText.split(/\s+/);
-    
-    // Filter the array to count how many times the target word appears
-    const occurrences = wordsArray.filter(w => w === normalizedWord).length;
-
-    return occurrences;
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example usage
-const exampleText = "Hello world! This world is beautiful. World is big.";
-const targetWord = "world";
-
-const count = countWordOccurrences(exampleText, targetWord);
-console.log(`The word "${targetWord}" occurs ${count} times.`); // Output: The word "world" occurs 3 times.
-function countWordOccurrences(text: string, word: string): number {
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase().replace(/[.,!?]/g, ''); // Remove basic punctuation
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
     
-    const wordsArray = normalizedText.toLowerCase().replace(/[.,!?]/g, ' ').split(/\s+/);
-    const occurrences = wordsArray.filter(w => w === normalizedWord).length;
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
 
-    return occurrences;
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
 }
 
-// Example usage remains the same
+// Call the fetchPosts function and log the results
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
