@@ -1,30 +1,50 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
+
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+class LinkedList<T> {
+    head: Node<T> | null;
+
+    constructor() {
+        this.head = null;
     }
 
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
+    // Method to add a new node to the end of the list
+    add(value: T) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
 
-// Call the fetchPosts function and log the results
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Example usage:
+const list = new LinkedList<number>();
+list.add(1);
+list.add(2);
+list.add(3);
+console.log(list.length()); // Output: 3
