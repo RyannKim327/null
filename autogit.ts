@@ -1,35 +1,57 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-    let maxLength = 0;
-    let endingIndex = 0;
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endingIndex = i; // Update ending index of the substring
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
+
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
                 }
             }
         }
-    }
 
-    // Extract the longest common substring
-    if (maxLength === 0) {
-        return ""; // No common substring found
+        return result;
     }
-
-    return str1.substring(endingIndex - maxLength, endingIndex);
 }
 
 // Example usage:
-const str1 = "abcdef";
-const str2 = "zcdemf";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "cd"
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.addEdge(3, 5);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
