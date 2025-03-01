@@ -1,36 +1,51 @@
-type Graph = { [key: string]: string[] };
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-function bfs(graph: Graph, start: string): string[] {
-    let queue: string[] = [start]; // Initialize a queue with the starting node
-    let visited: Set<string> = new Set(); // Keep track of visited nodes
-    let result: string[] = []; // To hold the order of visited nodes
-
-    while (queue.length > 0) {
-        const node = queue.shift(); // Dequeue an element
-        if (node && !visited.has(node)) {
-            visited.add(node); // Mark the node as visited
-            result.push(node); // Add the node to the result
-
-            // Enqueue all the neighbors that haven't been visited
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    queue.push(neighbor);
-                }
-            }
+    // Phase 1: Find the candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
         }
     }
 
-    return result; // Return the order of visited nodes
+    // Phase 2: Validate the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    return count > nums.length / 2 ? candidate : null; // Return null if no majority element
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E'],
-};
+// Test the function
+const nums = [3, 2, 3]; // Example array
+const result = majorityElement(nums);
+console.log(result); // Output: 3
+function majorityElementWithMap(nums: number[]): number | null {
+    const countMap = new Map<number, number>();
+    const majorityCount = Math.floor(nums.length / 2);
 
-console.log(bfs(graph, 'A')); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+    for (const num of nums) {
+        const count = (countMap.get(num) || 0) + 1;
+        countMap.set(num, count);
+
+        if (count > majorityCount) {
+            return num; // Early return if we find a majority element
+        }
+    }
+
+    return null; // Return null if no majority element is found
+}
+
+// Test the function
+const nums = [2, 2, 1, 1, 1, 2, 2]; // Example array
+const result = majorityElementWithMap(nums);
+console.log(result); // Output: 2
