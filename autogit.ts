@@ -1,54 +1,38 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array has 1 or 0 elements, it is already sorted
-    if (arr.length <= 1) {
-        return arr;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    // Split the array into two halves
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    // Recursively sort both halves
-    const sortedLeft = mergeSort(left);
-    const sortedRight = mergeSort(right);
-
-    // Merge the sorted halves
-    return merge(sortedLeft, sortedRight);
 }
 
-function merge(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    // Merge the two arrays while there are elements in both
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
     }
 
-    // If there are remaining elements in the left array, add them
-    while (leftIndex < left.length) {
-        result.push(left[leftIndex]);
-        leftIndex++;
-    }
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-    // If there are remaining elements in the right array, add them
-    while (rightIndex < right.length) {
-        result.push(right[rightIndex]);
-        rightIndex++;
-    }
-
-    return result;
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
