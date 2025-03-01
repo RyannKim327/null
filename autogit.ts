@@ -1,34 +1,71 @@
-function mergeSort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr;
+class Graph {
+    private adjacencyList: Map<string, Array<{ node: string, weight: number }>>;
+
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
+    addVertex(vertex: string): void {
+        this.adjacencyList.set(vertex, []);
+    }
 
-    return merge(mergeSort(left), mergeSort(right));
-}
+    addEdge(vertex1: string, vertex2: string, weight: number): void {
+        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
+        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // Undirected graph
+    }
 
-function merge(left: number[], right: number[]): number[] {
-    let result: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+    dijkstra(start: string): Map<string, number> {
+        const distances = new Map<string, number>();
+        const queue: Array<{ node: string, distance: number }> = [];
+        const visited = new Set<string>();
 
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+        // Initialize distances and queue
+        this.adjacencyList.forEach((_, vertex) => {
+            distances.set(vertex, vertex === start ? 0 : Infinity);
+            queue.push({ node: vertex, distance: distances.get(vertex)! });
+        });
+
+        while (queue.length > 0) {
+            // Sort the queue to get the node with the smallest distance
+            queue.sort((a, b) => a.distance - b.distance);
+            const { node: currentNode } = queue.shift()!; // Get the node with the smallest distance
+            
+            if (visited.has(currentNode)) continue;
+
+            visited.add(currentNode);
+
+            // Update distances for neighbors
+            const neighbors = this.adjacencyList.get(currentNode) || [];
+            for (const { node: neighbor, weight } of neighbors) {
+                const newDistance = distances.get(currentNode)! + weight;
+
+                if (newDistance < distances.get(neighbor)!) {
+                    distances.set(neighbor, newDistance);
+                    // Update the node's distance in the queue
+                    const index = queue.findIndex(q => q.node === neighbor);
+                    if (index !== -1) {
+                        queue[index].distance = newDistance;
+                    }
+                }
+            }
         }
-    }
 
-    return result.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+        return distances;
+    }
 }
 
-// Example usage
-const unsortedArray = [5, 3, 8, 6, 2];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray); // Output: [2, 3, 5, 6, 8]
+// Usage example:
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 2);
+graph.addEdge("B", "D", 5);
+graph.addEdge("C", "D", 1);
+
+const distances = graph.dijkstra("A");
+console.log(distances);
