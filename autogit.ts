@@ -1,50 +1,49 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null for invalid input
-    }
-
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move the first pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    // Phase 1: Find a potential candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
         }
-        firstPointer = firstPointer.next;
+        count += (num === candidate) ? 1 : -1;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+    // Phase 2: Validate the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
     }
 
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    }
+
+    return null; // No majority element
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// Example usage
+const nums = [3, 2, 3];
+console.log(majorityElement(nums)); // Output: 3
+function majorityElementWithMap(nums: number[]): number | null {
+    const countMap: { [key: number]: number } = {};
+    const majorityThreshold = nums.length / 2;
 
-const n = 2;
-const nthNode = findNthFromEnd(head, n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
+    for (const num of nums) {
+        countMap[num] = (countMap[num] || 0) + 1;
+
+        if (countMap[num] > majorityThreshold) {
+            return num; // Return early if we find a majority
+        }
+    }
+
+    return null; // No majority element
 }
+
+// Example usage
+const nums = [3, 2, 3];
+console.log(majorityElementWithMap(nums)); // Output: 3
