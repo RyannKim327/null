@@ -1,55 +1,58 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(value: number) {
+    constructor(value: string) {
         this.value = value;
-        this.next = null;
-    }
-}
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
-
-    while (current !== null) {
-        // Store the next node
-        next = current.next;
-        // Reverse the current node's pointer
-        current.next = prev;
-        // Move prev and current one step forward
-        prev = current;
-        current = next;
+        this.children = [];
     }
 
-    return prev; // prev will be the new head of the reversed list
-}
-// Helper function to print the linked list
-function printList(head: ListNode | null): void {
-    let current = head;
-    while (current !== null) {
-        process.stdout.write(current.value + " -> ");
-        current = current.next;
+    addChild(child: Node) {
+        this.children.push(child);
     }
-    console.log("null");
 }
 
-// Creating a linked list: 1 -> 2 -> 3 -> null
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
+function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    if (limit < 0) {
+        return null; // Limit exceeded
+    }
 
-// Print original list
-console.log("Original list:");
-printList(head);
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+    
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
 
-// Reverse the linked list
-const reversedHead = reverseLinkedList(head);
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Target found
+        }
 
-// Print reversed list
-console.log("Reversed list:");
-printList(reversedHead);
-Original list:
-1 -> 2 -> 3 -> null
-Reversed list:
-3 -> 2 -> 1 -> null
+        // If we haven't reached the limit, add children to the queue
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // Target not found within the limit
+}
+
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const result = breadthLimitedSearch(root, "D", 2);
+if (result) {
+    console.log(`Found: ${result.value}`);
+} else {
+    console.log("Not found within the limit.");
+}
