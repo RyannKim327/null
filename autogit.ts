@@ -1,54 +1,50 @@
-type Node = {
-    value: any;
-    children: Node[];
-};
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function depthLimitedSearch(node: Node, target: any, limit: number): boolean {
-    // Base case: check if the current node is the target
-    if (node.value === target) {
-        return true;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // If the limit has been reached, return false
-    if (limit <= 0) {
-        return false;
-    }
-
-    // Recursively search in the children
-    for (let child of node.children) {
-        if (depthLimitedSearch(child, target, limit - 1)) {
-            return true;
-        }
-    }
-
-    // Target not found within the depth limit
-    return false;
 }
 
-// Example usage
-const tree: Node = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ]
-        },
-        {
-            value: 3,
-            children: [
-                { value: 6, children: [] },
-                { value: 7, children: [] }
-            ]
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (!head || n <= 0) {
+        return null; // Return null for invalid input
+    }
+
+    let firstPointer: ListNode | null = head;
+    let secondPointer: ListNode | null = head;
+
+    // Move the first pointer n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            return null; // n is greater than the length of the list
         }
-    ]
-};
+        firstPointer = firstPointer.next;
+    }
 
-const target = 5;
-const limit = 2;
+    // Move both pointers until the first pointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
 
-// Executing the Depth-Limited Search
-const found = depthLimitedSearch(tree, target, limit);
-console.log(`Target ${target} ${found ? 'found' : 'not found'} within limit ${limit}.`);
+    // The second pointer is now at the nth node from the end
+    return secondPointer;
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const nthNode = findNthFromEnd(head, n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
+}
