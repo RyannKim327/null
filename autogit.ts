@@ -1,12 +1,34 @@
-function validateEmail(email: string): boolean {
-    // Regular expression for validating an email address
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+// Define an interface for the user data we expect
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
 
-// Example usage
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
+// Function to fetch users from a public API and log them
+async function fetchUsers(): Promise<void> {
+    const apiUrl = 'https://jsonplaceholder.typicode.com/users';
 
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
+    try {
+        // Make a fetch request
+        const response = await fetch(apiUrl);
+
+        // Check if the response was successful
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Parse the JSON response
+        const users: User[] = await response.json();
+
+        // Log the user data to the console
+        console.log(users);
+    } catch (error) {
+        // Handle errors
+        console.error('Error fetching users:', error);
+    }
+}
+
+// Call the fetchUsers function
+fetchUsers();
