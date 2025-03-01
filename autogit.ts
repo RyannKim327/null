@@ -1,27 +1,66 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+class Graph {
+    private adjacencyList: Map<string, { node: string, weight: number }[]>;
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted part
-        let minIndex = i;
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-        // Find the index of the minimum element in the unsorted part
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-
-        // Swap the found minimum element with the first element of the unsorted part
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+    addVertex(vertex: string) {
+        if (!this.adjacencyList.has(vertex)) {
+            this.adjacencyList.set(vertex, []);
         }
     }
 
-    return arr;
+    addEdge(vertex1: string, vertex2: string, weight: number) {
+        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
+        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // For undirected graph
+    }
+
+    dijkstra(start: string): Map<string, number> {
+        const distances: Map<string, number> = new Map();
+        const priorityQueue: { node: string, distance: number }[] = [];
+        const visited: Set<string> = new Set();
+
+        // Initialize distances
+        this.adjacencyList.forEach((_, vertex) => {
+            distances.set(vertex, Infinity);
+        });
+        distances.set(start, 0);
+        priorityQueue.push({ node: start, distance: 0 });
+
+        while (priorityQueue.length > 0) {
+            // Sort the queue by distance
+            priorityQueue.sort((a, b) => a.distance - b.distance);
+            const { node } = priorityQueue.shift()!;
+
+            if (visited.has(node)) continue;
+            visited.add(node);
+
+            const neighbors = this.adjacencyList.get(node) || [];
+            for (const { node: neighbor, weight } of neighbors) {
+                const newDistance = distances.get(node)! + weight;
+                if (newDistance < distances.get(neighbor)!) {
+                    distances.set(neighbor, newDistance);
+                    priorityQueue.push({ node: neighbor, distance: newDistance });
+                }
+            }
+        }
+
+        return distances;
+    }
 }
 
 // Example usage:
-const array = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 2);
+graph.addEdge("B", "D", 5);
+graph.addEdge("C", "D", 1);
+
+const distances = graph.dijkstra("A");
+console.log(distances); // Output the shortest distances from A
