@@ -1,19 +1,32 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+const numbers: number[] = [1, 5, 3, 9, 2];
+const maxValue = Math.max(...numbers);
+console.log(maxValue); // Outputs: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleString());
+let maxValue: number = numbers[0]; // Start with the first element
+
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > maxValue) {
+        maxValue = numbers[i];
+    }
+}
+
+console.log(maxValue); // Outputs: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+const maxValue = numbers.reduce((acc, curr) => {
+    return curr > acc ? curr : acc;
+}, numbers[0]);
+
+console.log(maxValue); // Outputs: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+let maxValue: number = numbers[0];
+
+numbers.forEach(num => {
+    if (num > maxValue) {
+        maxValue = num;
+    }
 });
 
-// Start the task
-task.start();
-
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronExample.ts
-node cronExample.js
+console.log(maxValue); // Outputs: 9
