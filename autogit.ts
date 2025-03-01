@@ -1,73 +1,27 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
+
+        // Find the index of the smallest element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // If the minimum element is not the current element, swap them
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
+
+    return arr;
 }
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to append a value to the linked list
-    append(value: number): void {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print the linked list
-    print(): void {
-        let current = this.head;
-        while (current) {
-            process.stdout.write(`${current.value} -> `);
-            current = current.next;
-        }
-        console.log('null');
-    }
-
-    // Method to reverse the linked list
-    reverse(): void {
-        let previous: ListNode | null = null;
-        let current: ListNode | null = this.head;
-        let next: ListNode | null = null;
-
-        while (current) {
-            next = current.next; // Store the next node
-            current.next = previous; // Reverse the link
-            previous = current; // Move previous one step forward
-            current = next; // Move to the next node
-        }
-
-        this.head = previous; // Update the head to the new front of the list
-    }
-}
-
-// Example usage:
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.append(5);
-
-console.log("Original Linked List:");
-linkedList.print();
-
-linkedList.reverse(); // Reverse the linked list
-
-console.log("Reversed Linked List:");
-linkedList.print();
+// Example usage
+const arr = [64, 25, 12, 22, 11];
+const sortedArr = selectionSort(arr);
+console.log(sortedArr); // Output: [11, 12, 22, 25, 64]
