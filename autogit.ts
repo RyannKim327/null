@@ -1,71 +1,56 @@
-class Graph {
-    private adjacencyList: Map<string, Array<{ node: string, weight: number }>>;
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
+    
+    // Initialize Fibonacci numbers
+    let fibM2 = 0;  // (m-2)th Fibonacci No.
+    let fibM1 = 1;  // (m-1)th Fibonacci No.
+    let fibM = fibM1 + fibM2; // mth Fibonacci No.
 
-    constructor() {
-        this.adjacencyList = new Map();
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
 
-    addVertex(vertex: string): void {
-        this.adjacencyList.set(vertex, []);
-    }
+    // Marks the eliminated range from front
+    let offset = -1;
 
-    addEdge(vertex1: string, vertex2: string, weight: number): void {
-        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
-        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // Undirected graph
-    }
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Check if fibM2 is a valid index
+        const i = Math.min(offset + fibM2, n - 1);
 
-    dijkstra(start: string): Map<string, number> {
-        const distances = new Map<string, number>();
-        const queue: Array<{ node: string, distance: number }> = [];
-        const visited = new Set<string>();
-
-        // Initialize distances and queue
-        this.adjacencyList.forEach((_, vertex) => {
-            distances.set(vertex, vertex === start ? 0 : Infinity);
-            queue.push({ node: vertex, distance: distances.get(vertex)! });
-        });
-
-        while (queue.length > 0) {
-            // Sort the queue to get the node with the smallest distance
-            queue.sort((a, b) => a.distance - b.distance);
-            const { node: currentNode } = queue.shift()!; // Get the node with the smallest distance
-            
-            if (visited.has(currentNode)) continue;
-
-            visited.add(currentNode);
-
-            // Update distances for neighbors
-            const neighbors = this.adjacencyList.get(currentNode) || [];
-            for (const { node: neighbor, weight } of neighbors) {
-                const newDistance = distances.get(currentNode)! + weight;
-
-                if (newDistance < distances.get(neighbor)!) {
-                    distances.set(neighbor, newDistance);
-                    // Update the node's distance in the queue
-                    const index = queue.findIndex(q => q.node === neighbor);
-                    if (index !== -1) {
-                        queue[index].distance = newDistance;
-                    }
-                }
-            }
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
         }
-
-        return distances;
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found, return index
+        else {
+            return i;
+        }
     }
+
+    // Comparing the last element with x
+    if (fibM1 && offset + 1 < n && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
-// Usage example:
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-
-graph.addEdge("A", "B", 1);
-graph.addEdge("A", "C", 4);
-graph.addEdge("B", "C", 2);
-graph.addEdge("B", "D", 5);
-graph.addEdge("C", "D", 1);
-
-const distances = graph.dijkstra("A");
-console.log(distances);
+// Example usage:
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const index = fibonacciSearch(arr, x);
+console.log(index); // Output: 8
