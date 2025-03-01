@@ -1,21 +1,54 @@
-function isPalindrome(s: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-    
-    let left = 0;
-    let right = normalizedString.length - 1;
+function createBadCharacterTable(pattern: string): { [key: string]: number } {
+    const table: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    while (left < right) {
-        if (normalizedString[left] !== normalizedString[right]) {
-            return false; // Not a palindrome
-        }
-        left++;
-        right--;
+    // Initialize the table with the length of the pattern
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
     }
 
-    return true; // Is a palindrome
+    return table;
 }
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
+    }
+
+    const badCharTable = createBadCharacterTable(pattern);
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare the pattern with the text from the end
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            return i; // Return the starting index of the match
+        } else {
+            // Shift the pattern based on the bad character rule
+            const badCharShift = badCharTable[text[i + j]] || patternLength;
+            i += badCharShift;
+        }
+    }
+
+    return -1; // Pattern not found
+}
+
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
