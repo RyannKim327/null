@@ -1,20 +1,28 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+function largestPrimeFactor(n: number): number {
+    let largestPrime = -1;
 
-    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
+    // Divide by 2 until n is odd
+    while (n % 2 === 0) {
+        largestPrime = 2;
+        n /= 2;
+    }
 
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+    // Check for odd factors from 3 to sqrt(n)
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestPrime = i;
+            n /= i;
         }
     }
 
-    return Math.max(...dp); // The length of the longest increasing subsequence
+    // If n is still greater than 2, then n itself is prime
+    if (n > 2) {
+        largestPrime = n;
+    }
+
+    return largestPrime;
 }
 
 // Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const length = longestIncreasingSubsequence(nums);
-console.log(length); // Output: 4
+const number = 13195;
+console.log(`The largest prime factor of ${number} is: ${largestPrimeFactor(number)}`);
