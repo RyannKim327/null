@@ -1,22 +1,55 @@
-function firstNonRepeatingCharacter(s: string): string {
-    const charCount: { [key: string]: number } = {};
+function KMPSearch(pattern: string, text: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    // Count the occurrences of each character
-    for (const char of s) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
 
-    // Find the first non-repeating character
-    for (const char of s) {
-        if (charCount[char] === 1) {
-            return char; // Return the first non-repeating character
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index
+            j = lps[j - 1]; // Get the next position from LPS
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters
+            } else {
+                i++;
+            }
         }
     }
 
-    return ""; // Return an empty string if there are no non-repeating characters
+    return result; // Return all starting indices of matches
 }
 
-// Example usage
-const inputString = "swiss";
-const result = firstNonRepeatingCharacter(inputString);
-console.log(result); // Output: "w"
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // Length of the previous longest prefix suffix
+    let i = 1; // Start from the second character
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use the previous LPS value
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
+}
+
+// Example usage:
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = KMPSearch(pattern, text);
+console.log("Pattern found at indices:", matches);
