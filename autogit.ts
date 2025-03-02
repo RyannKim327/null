@@ -1,68 +1,70 @@
-type Graph = {
-    [key: string]: string[];
-};
-
-function depthFirstSearch(graph: Graph, start: string): string[] {
-    const visited: Set<string> = new Set();
-    const result: string[] = [];
-
-    function dfs(node: string) {
-        if (!node || visited.has(node)) {
-            return;
-        }
-        visited.add(node);
-        result.push(node);
-
-        for (const neighbor of graph[node]) {
-            dfs(neighbor);
-        }
-    }
-
-    dfs(start);
-    return result;
-}
-
-// Example usage:
-
-const graph: Graph = {
-    a: ['b', 'c'],
-    b: ['d'],
-    c: ['e'],
-    d: [],
-    e: []
-};
-
-console.log(depthFirstSearch(graph, 'a')); // Output: ['a', 'b', 'd', 'c', 'e']
-class TreeNode {
+class ListNode {
     value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+    next: ListNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
-function depthFirstSearchTree(node: TreeNode | null, result: number[] = []): number[] {
-    if (node === null) {
-        return result;
+
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
     }
 
-    // Pre-order: process the node value first.
-    result.push(node.value);
-    depthFirstSearchTree(node.left, result);
-    depthFirstSearchTree(node.right, result);
-    
-    return result;
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    findNthFromEnd(n: number): ListNode | null {
+        let mainPointer = this.head;
+        let referencePointer = this.head;
+
+        // Move referencePointer `n` nodes ahead
+        let count = 0;
+        while (count < n) {
+            if (referencePointer === null) {
+                console.log("The linked list has fewer than n nodes.");
+                return null; // If n is greater than the number of nodes
+            }
+            referencePointer = referencePointer.next;
+            count++;
+        }
+
+        // Move both pointers until referencePointer reaches the end
+        while (referencePointer) {
+            mainPointer = mainPointer!.next; // Use non-null assertion
+            referencePointer = referencePointer.next;
+        }
+
+        return mainPointer; // This will be the nth node from the end
+    }
 }
 
 // Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(depthFirstSearchTree(root)); // Output: [1, 2, 4, 5, 3]
+const n = 2;
+const nthNode = list.findNthFromEnd(n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The linked list has fewer than ${n} nodes.`);
+}
