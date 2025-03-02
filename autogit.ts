@@ -1,43 +1,27 @@
-function longestCommonSubsequence(text1: string, text2: string): string {
-    const m = text1.length;
-    const n = text2.length;
-
-    // Create a 2D array to store the lengths of longest common subsequence
-    const dp: number[][] = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
-
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            // If characters match
-            if (text1[i - 1] === text2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                // If characters don't match, take the maximum of left or top cell
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+let str = "   Hello, World!   ";
+let trimmedStr = str.trim();
+console.log(trimmedStr); // "Hello, World!"
+let str = " Hello, \n World! ";
+let noWhitespaceStr = str.replace(/\s+/g, ''); // removes all whitespace
+console.log(noWhitespaceStr); // "Hello,World!"
+let str = "   Hello,   World!   ";
+let trimmedInternalStr = str.trim();
+console.log(trimmedInternalStr); // "Hello,   World!"
+let str = " Hello, World! ";
+let noSpacesStr = str.replace(/ +/g, ''); // removes only spaces
+console.log(noSpacesStr); // "Hello,World!"
+function cleanString(input: string, removeAllWhitespace: boolean = false): string {
+    if (removeAllWhitespace) {
+        return input.replace(/\s+/g, ''); // Removes all whitespace
+    } else {
+        return input.trim(); // Trims whitespace from both ends
     }
-
-    // Backtrack to find the LCS
-    let lcs = '';
-    let i = m, j = n;
-
-    while (i > 0 && j > 0) {
-        if (text1[i - 1] === text2[j - 1]) {
-            lcs = text1[i - 1] + lcs; // prepend the character
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // move up in the DP table
-        } else {
-            j--; // move left in the DP table
-        }
-    }
-
-    return lcs;
 }
 
-// Example usage
-const str1 = "abcde";
-const str2 = "ace";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "ace"
+let str1 = "   Hello, World!   ";
+let result1 = cleanString(str1); // Uses trim by default
+console.log(result1); // "Hello, World!"
+
+let str2 = " Hello, \n World! ";
+let result2 = cleanString(str2, true); // Removes all whitespace
+console.log(result2); // "Hello,World!"
