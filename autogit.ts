@@ -1,24 +1,38 @@
-function findCommonElements<T>(array1: T[], array2: T[]): T[] {
-    return array1.filter(item => array2.includes(item));
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    return count;
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElementsUsingSet<T>(array1: T[], array2: T[]): T[] {
-    const set1 = new Set(array1);
-    const set2 = new Set(array2);
-
-    const commonElements = [...set1].filter(item => set2.has(item));
-    return commonElements;
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return Array.from(str).reduce((count, currentChar) => {
+        return currentChar === char ? count + 1 : count;
+    }, 0);
+}
 
-const commonElements = findCommonElementsUsingSet(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    const regex = new RegExp(char, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
