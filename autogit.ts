@@ -1,13 +1,11 @@
-const originalArray: number[] = [1, 2, 3, 4, 5];
-console.log("Original Array:", originalArray);
+function findMaxValue(arr: number[]): number | null {
+    if (arr.length === 0) {
+        return null; // Return null if the array is empty
+    }
+    return Math.max(...arr);
+}
 
-// Reverse the array
-const reversedArray: number[] = originalArray.reverse();
-console.log("Reversed Array:", reversedArray);
-const originalArray: number[] = [1, 2, 3, 4, 5];
-console.log("Original Array:", originalArray);
-
-// Create a copy and reverse it
-const reversedArray: number[] = [...originalArray].reverse();
-console.log("Reversed Array:", reversedArray);
-console.log("Original Array after reverse:", originalArray); // Original array remains unchanged
+// Example usage:
+const numbers = [1, 5, 3, 9, 2];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Output: 9
