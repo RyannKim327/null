@@ -1,77 +1,69 @@
-interface Candidate {
-    sequence: string;  // Current sequence generated
-    score: number;     // Score of the current sequence
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-class BeamSearch {
-    private beamWidth: number;
-    private candidates: Candidate[];
+class LinkedList {
+    head: ListNode | null;
 
-    constructor(beamWidth: number) {
-        this.beamWidth = beamWidth;
-        this.candidates = [];
+    constructor() {
+        this.head = null;
     }
 
-    // Function to add new candidates
-    public addCandidates(newCandidates: Candidate[]): void {
-        this.candidates.push(...newCandidates);
-        this.candidates.sort((a, b) => b.score - a.score); // Sort by score (high to low)
-        this.candidates = this.candidates.slice(0, this.beamWidth); // Keep only the top candidates
-    }
-
-    // Function to perform beam search iteration
-    public search(iterations: number): void {
-        for (let i = 0; i < iterations; i++) {
-            const newCandidates: Candidate[] = [];
-
-            for (const candidate of this.candidates) {
-                const extensions = this.expandCandidate(candidate);
-                newCandidates.push(...extensions);
-            }
-
-            this.addCandidates(newCandidates);
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-    }
-
-    // Function to expand a candidate (this is where your domain logic will go)
-    private expandCandidate(candidate: Candidate): Candidate[] {
-        const newCandidates: Candidate[] = [];
-        
-        // Example logic: Append A, B, C to the current sequence
-        const extensions = ['A', 'B', 'C'];
-        for (const extension of extensions) {
-            const newSequence = candidate.sequence + extension;
-            const newScore = this.scoreSequence(newSequence);
-            newCandidates.push({ sequence: newSequence, score: newScore });
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
         }
-
-        return newCandidates;
+        current.next = newNode;
     }
 
-    // Score a sequence (this should be replaced with your actual scoring logic)
-    private scoreSequence(sequence: string): number {
-        // Placeholder scoring function
-        return sequence.length; // Simple scoring based on the length of the sequence
-    }
-
-    // Get the best candidate
-    public getBestCandidate(): Candidate | null {
-        return this.candidates.length > 0 ? this.candidates[0] : null;
+    // Method to print the list
+    printList() {
+        let current = this.head;
+        const values: number[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
     }
 }
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+    let next: ListNode | null = null;
 
-// Example usage
-const beamWidth = 3;
-const beamSearch = new BeamSearch(beamWidth);
-
-// Initialize with an empty candidate
-beamSearch.addCandidates([{ sequence: "", score: 0 }]);
-
-// Perform the search
-beamSearch.search(5);
-
-// Get the best candidate found
-const bestCandidate = beamSearch.getBestCandidate();
-if (bestCandidate) {
-    console.log('Best Sequence:', bestCandidate.sequence, 'Score:', bestCandidate.score);
+    while (current) {
+        next = current.next; // Store the next node
+        current.next = prev; // Reverse the current node's pointer
+        prev = current;      // Move prev and current one step forward
+        current = next;
+    }
+    return prev; // New head of the reversed list
 }
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+console.log("Original List:");
+list.printList();
+
+list.head = reverseLinkedList(list.head);
+
+console.log("Reversed List:");
+list.printList();
