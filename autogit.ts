@@ -1,60 +1,84 @@
-type Graph = { [key: string]: string[] };
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If the node has already been visited, return
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    console.log(start); // Process the node (e.g., print it)
-    visited.add(start); // Mark the node as visited
-
-    for (const neighbor of graph[start]) {
-        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
+    addVertex(vertex: number) {
+        this.adjacencyList.set(vertex, []);
     }
-}
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+    addEdge(vertex1: number, vertex2: number) {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // Assuming undirected graph
+    }
 
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
+    dfs(start: number) {
+        const visited = new Set<number>();
+        this._dfsHelper(start, visited);
+    }
 
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
+    private _dfsHelper(vertex: number, visited: Set<number>) {
+        if (visited.has(vertex)) return;
 
-    while (stack.length > 0) {
-        const node = stack.pop()!; // Get the last node from the stack
+        visited.add(vertex);
+        console.log(vertex); // Process the vertex
 
-        if (!visited.has(node)) {
-            console.log(node); // Process the node (e.g., print it)
-            visited.add(node); // Mark the node as visited
-
-            // Add all unvisited neighbors to the stack
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    stack.push(neighbor);
-                }
-            }
+        for (const neighbor of this.adjacencyList.get(vertex) || []) {
+            this._dfsHelper(neighbor, visited);
         }
     }
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
 
-depthFirstSearchIterative(graph, 'A');
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+
+console.log("Depth-First Search starting from vertex 1:");
+graph.dfs(1);
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinaryTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    dfs(node: TreeNode | null) {
+        if (node === null) return;
+
+        console.log(node.value); // Process the node
+        this.dfs(node.left);
+        this.dfs(node.right);
+    }
+}
+
+// Example usage:
+const tree = new BinaryTree();
+tree.root = new TreeNode(1);
+tree.root.left = new TreeNode(2);
+tree.root.right = new TreeNode(3);
+tree.root.left.left = new TreeNode(4);
+tree.root.left.right = new TreeNode(5);
+
+console.log("Depth-First Search of the binary tree:");
+tree.dfs(tree.root);
