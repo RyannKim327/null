@@ -1,83 +1,43 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function longestCommonSubsequence(text1: string, text2: string): string {
+    const m = text1.length;
+    const n = text2.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    // Create a 2D array to store the lengths of longest common subsequence
+    const dp: number[][] = Array(m + 1).fill(0).map(() => Array(n + 1).fill(0));
 
-function findIntersection(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    const visited = new Set<ListNode>();
-    
-    // Traverse the first linked list and store its nodes in the set
-    let currentA = headA;
-    while (currentA) {
-        visited.add(currentA);
-        currentA = currentA.next;
-    }
-    
-    // Traverse the second linked list and check for an intersection
-    let currentB = headB;
-    while (currentB) {
-        if (visited.has(currentB)) {
-            return currentB; // Intersection found
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            // If characters match
+            if (text1[i - 1] === text2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                // If characters don't match, take the maximum of left or top cell
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
-        currentB = currentB.next;
     }
-    
-    return null; // No intersection
-}
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    while (head) {
-        length++;
-        head = head.next;
-    }
-    return length;
-}
 
-function advanceListByK(head: ListNode | null, k: number): ListNode | null {
-    while (k > 0 && head) {
-        head = head.next;
-        k--;
-    }
-    return head;
-}
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
 
-function findIntersection(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    const lenA = getLength(headA);
-    const lenB = getLength(headB);
-    
-    // Align the starting point of both lists
-    if (lenA > lenB) {
-        headA = advanceListByK(headA, lenA - lenB);
-    } else {
-        headB = advanceListByK(headB, lenB - lenA);
-    }
-    
-    // Traverse both lists in tandem to find intersection
-    while (headA && headB) {
-        if (headA === headB) {
-            return headA; // Intersection found
+    while (i > 0 && j > 0) {
+        if (text1[i - 1] === text2[j - 1]) {
+            lcs = text1[i - 1] + lcs; // prepend the character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // move up in the DP table
+        } else {
+            j--; // move left in the DP table
         }
-        headA = headA.next;
-        headB = headB.next;
     }
-    
-    return null; // No intersection
+
+    return lcs;
 }
-const intersectNode = new ListNode(8);
-const listA = new ListNode(1);
-listA.next = new ListNode(2);
-listA.next.next = new ListNode(3);
-listA.next.next.next = intersectNode;
 
-const listB = new ListNode(5);
-listB.next = new ListNode(6);
-listB.next.next = intersectNode;
-
-// Call the function
-const intersection = findIntersection(listA, listB);
-console.log(intersection ? intersection.value : null); // Output: 8
+// Example usage
+const str1 = "abcde";
+const str2 = "ace";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "ace"
