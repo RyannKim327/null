@@ -8,63 +8,48 @@ class ListNode {
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head) return true; // An empty list is a palindrome
 
-    constructor() {
-        this.head = null;
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    while (fast && fast.next) {
+        slow = slow.next;
+        fast = fast.next.next;
     }
 
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+    
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev;            // Reverse link
+        prev = current;                 // Move prev and current one step forward
+        current = nextTemp;
     }
 
-    findNthFromEnd(n: number): ListNode | null {
-        let mainPointer = this.head;
-        let referencePointer = this.head;
+    // Step 3: Compare the two halves
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // 'prev' now points to the head of the reversed second half
 
-        // Move referencePointer `n` nodes ahead
-        let count = 0;
-        while (count < n) {
-            if (referencePointer === null) {
-                console.log("The linked list has fewer than n nodes.");
-                return null; // If n is greater than the number of nodes
-            }
-            referencePointer = referencePointer.next;
-            count++;
+    while (right) { // Compare until the end of the reversed half
+        if (left.value !== right.value) {
+            return false; // Not a palindrome
         }
-
-        // Move both pointers until referencePointer reaches the end
-        while (referencePointer) {
-            mainPointer = mainPointer!.next; // Use non-null assertion
-            referencePointer = referencePointer.next;
-        }
-
-        return mainPointer; // This will be the nth node from the end
+        left = left.next; // Move left pointer
+        right = right.next; // Move right pointer
     }
+
+    return true; // If no mismatches found, it's a palindrome
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
+let head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(2);
+head.next.next.next.next = new ListNode(1);
 
-const n = 2;
-const nthNode = list.findNthFromEnd(n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
-} else {
-    console.log(`The linked list has fewer than ${n} nodes.`);
-}
+console.log(isPalindrome(head)); // Output: true
