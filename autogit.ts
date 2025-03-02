@@ -1,49 +1,141 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
+class TreeNode {
+    public key: number;
+    public left: TreeNode | null;
+    public right: TreeNode | null;
+    public height: number;
 
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+    constructor(key: number) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+        this.height = 1; // Height of a new node is initially 1
     }
-
-    let left = 0;
-    let right = nums1.length;
-
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
-
-        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const minRight1 = partition1 === nums1.length ? Infinity : nums1[partition1];
-
-        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const minRight2 = partition2 === nums2.length ? Infinity : nums2[partition2];
-
-        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
-            // We have found the correct partitions
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
-            } else {
-                return Math.max(maxLeft1, maxLeft2);
-            }
-        } else if (maxLeft1 > minRight2) {
-            // Move towards the left in nums1
-            right = partition1 - 1;
-        } else {
-            // Move towards the right in nums1
-            left = partition1 + 1;
-        }
-    }
-
-    throw new Error("Input arrays are not sorted.");
 }
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+class AVLTree {
+    private root: TreeNode | null = null;
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+    // Get the height of the node
+    private getHeight(node: TreeNode | null): number {
+        return node ? node.height : 0;
+    }
+
+    // Get the balance factor of a node
+    private getBalanceFactor(node: TreeNode | null): number {
+        return node ? this.getHeight(node.left) - this.getHeight(node.right) : 0;
+    }
+
+    // Rotate right
+    private rightRotate(y: TreeNode): TreeNode {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+
+        // Return the new root
+        return x;
+    }
+
+    // Rotate left
+    private leftRotate(x: TreeNode): TreeNode {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+
+        // Return the new root
+        return y;
+    }
+
+    // Insert a key into the AVL tree
+    public insert(key: number): void {
+        this.root = this.insertNode(this.root, key);
+    }
+
+    private insertNode(node: TreeNode | null, key: number): TreeNode {
+        // Perform the normal BST insert
+        if (node === null) {
+            return new TreeNode(key);
+        }
+
+        if (key < node.key) {
+            node.left = this.insertNode(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.insertNode(node.right, key);
+        } else {
+            // Duplicate keys are not allowed in the AVL tree
+            return node;
+        }
+
+        // Update the height of this ancestor node
+        node.height = Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+
+        // Get the balance factor
+        const balance = this.getBalanceFactor(node);
+
+        // If the node becomes unbalanced, then there are 4 cases
+
+        // Left Left Case
+        if (balance > 1 && key < node.left!.key) {
+            return this.rightRotate(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && key > node.right!.key) {
+            return this.leftRotate(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && key > node.left!.key) {
+            node.left = this.leftRotate(node.left!);
+            return this.rightRotate(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && key < node.right!.key) {
+            node.right = this.rightRotate(node.right!);
+            return this.leftRotate(node);
+        }
+
+        // Return the (unchanged) node pointer
+        return node;
+    }
+
+    // In-order traversal of the tree
+    public inOrderTraversal(): number[] {
+        const result: number[] = [];
+        this.inOrder(this.root, result);
+        return result;
+    }
+
+    private inOrder(node: TreeNode | null, result: number[]): void {
+        if (node !== null) {
+            this.inOrder(node.left, result);
+            result.push(node.key);
+            this.inOrder(node.right, result);
+        }
+    }
+}
+
+// Example usage
+const avl = new AVLTree();
+avl.insert(10);
+avl.insert(20);
+avl.insert(30);
+avl.insert(40);
+avl.insert(50);
+avl.insert(25);
+
+console.log(avl.inOrderTraversal()); // Output: [10, 20, 25, 30, 40, 50]
