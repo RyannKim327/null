@@ -1,28 +1,38 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // One by one move the boundary of the unsorted subarray
-    for (let i = 0; i < n - 1; i++) {
-        // Find the minimum element in the unsorted array
-        let minIndex = i;
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if the element is smaller
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-        // Swap the found minimum element with the first element of the unsorted part
-        if (minIndex !== i) {
-            const temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
         }
     }
 
-    return arr;
+    return false; // No cycle
 }
 
-// Example usage
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+// Example usage:
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+head.next = second;
+second.next = third;
+// Uncomment the next line to create a cycle
+// third.next = second;
+
+console.log(hasCycle(head)); // Output: false (or true if a cycle is created)
