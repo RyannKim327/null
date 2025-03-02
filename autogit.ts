@@ -1,17 +1,30 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
-    
-    // Normalize both strings
-    const normalizedStr1 = normalize(str1);
-    const normalizedStr2 = normalize(str2);
-    
-    // Compare the normalized strings
-    return normalizedStr1 === normalizedStr2;
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example usage:
-const string1 = "listen";
-const string2 = "silent";
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
 
-console.log(areAnagrams(string1, string2)); // Output: true
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
+}
+
+// Call the fetchPosts function and log the results
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
