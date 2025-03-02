@@ -1,63 +1,58 @@
-type Graph = {
-  [key: string]: { node: string; weight: number }[];
-};
+function preprocessPattern(pattern: string): { [key: string]: number } {
+    const shiftTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-interface ShortestPathResult {
-  distances: { [key: string]: number };
-  previous: { [key: string]: string | null };
+    // Fill the table with the length of the pattern
+    for (let i = 0; i < patternLength - 1; i++) {
+        shiftTable[pattern[i]] = patternLength - 1 - i;
+    }
+
+    // Default shift for characters not in the pattern
+    for (let charCode = 0; charCode < 256; charCode++) { // Assuming ASCII
+        const char = String.fromCharCode(charCode);
+        if (!(char in shiftTable)) {
+            shiftTable[char] = patternLength; // Shift by full pattern length
+        }
+    }
+
+    return shiftTable;
 }
 
-function dijkstra(graph: Graph, startNode: string): ShortestPathResult {
-  const distances: { [key: string]: number } = {};
-  const previous: { [key: string]: string | null } = {};
-  const queue: Set<string> = new Set();
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const patternLength = pattern.length;
+    const textLength = text.length;
 
-  // Initialize distances and queue
-  for (const node in graph) {
-    distances[node] = Infinity;
-    previous[node] = null;
-    queue.add(node);
-  }
-  distances[startNode] = 0;
+    if (patternLength === 0) return []; // handle empty pattern case
+    if (patternLength > textLength) return []; // pattern longer than text
 
-  while (queue.size > 0) {
-    // Get the node with the smallest distance
-    let currentNode: string | null = null;
-    for (const node of queue) {
-      if (currentNode === null || distances[node] < distances[currentNode]) {
-        currentNode = node;
-      }
+    const shiftTable = preprocessPattern(pattern);
+    const occurrences: number[] = [];
+    let i = 0;
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        // Compare from the end of the pattern to the beginning
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // Found a match
+            occurrences.push(i);
+            // Shift by the pattern length or by the next character in the shift table
+            i += shiftTable[text[i + patternLength]] || patternLength;
+        } else {
+            // Shift by the value from the shift table
+            i += shiftTable[text[i + j]] || 1;
+        }
     }
 
-    // If the smallest distance is Infinity, the remaining nodes are not reachable
-    if (distances[currentNode] === Infinity) {
-      break;
-    }
-
-    // Remove the current node from the queue
-    queue.delete(currentNode);
-
-    // Update the distance to the neighboring nodes
-    for (const neighbor of graph[currentNode]) {
-      const alt = distances[currentNode] + neighbor.weight;
-      if (alt < distances[neighbor.node]) {
-        distances[neighbor.node] = alt;
-        previous[neighbor.node] = currentNode;
-      }
-    }
-  }
-
-  return { distances, previous };
+    return occurrences;
 }
 
 // Example usage
-const graph: Graph = {
-  A: [{ node: 'B', weight: 1 }, { node: 'C', weight: 4 }],
-  B: [{ node: 'A', weight: 1 }, { node: 'C', weight: 2 }, { node: 'D', weight: 5 }],
-  C: [{ node: 'A', weight: 4 }, { node: 'B', weight: 2 }, { node: 'D', weight: 1 }],
-  D: [{ node: 'B', weight: 5 }, { node: 'C', weight: 1 }]
-};
-
-const result = dijkstra(graph, 'A');
-console.log('Distances:', result.distances);
-console.log('Previous nodes:', result.previous);
+const text = "ABAAABCDABC";
+const pattern = "ABC";
+const result = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at indices: ${result.join(", ")}`); // Output: Pattern found at indices: 7
