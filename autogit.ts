@@ -1,17 +1,14 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalize = (str: string): string => 
-        str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("Cannot calculate mean of an empty array.");
+    }
 
-    // Compare the normalized strings
-    return normalize(str1) === normalize(str2);
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / numbers.length;
+    return mean;
 }
 
-// Example usage
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
-
-const string3 = "hello";
-const string4 = "world";
-console.log(areAnagrams(string3, string4)); // Output: false
+// Example usage:
+const numbers = [10, 20, 30, 40, 50];
+const mean = calculateMean(numbers);
+console.log(`The mean is: ${mean}`);
