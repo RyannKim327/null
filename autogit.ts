@@ -1,148 +1,50 @@
-class TreeNode {
-    key: number;
-    height: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function mergeSortIterative(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // If the array is already sorted
+  }
 
-    constructor(key: number) {
-        this.key = key;
-        this.height = 1; // New node is initially added at leaf
-        this.left = null;
-        this.right = null;
+  const n = arr.length;
+  // Create an auxiliary array to help with the merging process
+  const aux = new Array(n);
+
+  // Start with a size of 1 for the sub-arrays to be merged
+  for (let size = 1; size < n; size *= 2) {
+    for (let left = 0; left < n; left += size * 2) {
+      const mid = Math.min(left + size, n);
+      const right = Math.min(left + size * 2, n);
+
+      // Merge the two halves
+      merge(arr, aux, left, mid, right);
     }
+  }
+
+  return arr;
 }
 
-class AVLTree {
-    root: TreeNode | null;
+function merge(arr: number[], aux: number[], left: number, mid: number, right: number): void {
+  // Copy the current segment to the auxiliary array
+  for (let i = left; i < right; i++) {
+    aux[i] = arr[i];
+  }
 
-    constructor() {
-        this.root = null;
+  let i = left; // Pointer for the left sub-array
+  let j = mid;  // Pointer for the right sub-array
+
+  // Merge the two halves back into the original array
+  for (let k = left; k < right; k++) {
+    if (i >= mid) {
+      arr[k] = aux[j++];
+    } else if (j >= right) {
+      arr[k] = aux[i++];
+    } else if (aux[i] <= aux[j]) {
+      arr[k] = aux[i++];
+    } else {
+      arr[k] = aux[j++];
     }
-
-    // Helper function to get the height of the tree
-    private getHeight(node: TreeNode | null): number {
-        if (!node) return 0;
-        return node.height;
-    }
-
-    // Helper function to get the balance factor of the node
-    private getBalance(node: TreeNode | null): number {
-        if (!node) return 0;
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
-
-    // Right Rotate
-    private rightRotate(y: TreeNode): TreeNode {
-        const x = y.left!;
-        const T2 = x.right;
-
-        // Perform rotation
-        x.right = y;
-        y.left = T2;
-
-        // Update heights
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-
-        // Return the new root
-        return x;
-    }
-
-    // Left Rotate
-    private leftRotate(x: TreeNode): TreeNode {
-        const y = x.right!;
-        const T2 = y.left;
-
-        // Perform rotation
-        y.left = x;
-        x.right = T2;
-
-        // Update heights
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-
-        // Return the new root
-        return y;
-    }
-
-    // Insert a new node in the AVL tree
-    insert(key: number): void {
-        this.root = this.insertNode(this.root, key);
-    }
-
-    private insertNode(node: TreeNode | null, key: number): TreeNode {
-        // 1. Perform the normal BST insert
-        if (!node) {
-            return new TreeNode(key);
-        }
-
-        if (key < node.key) {
-            node.left = this.insertNode(node.left, key);
-        } else if (key > node.key) {
-            node.right = this.insertNode(node.right, key);
-        } else {
-            // Duplicate keys are not allowed
-            return node;
-        }
-
-        // 2. Update the height of this ancestor node
-        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
-
-        // 3. Get the balance factor of this ancestor node to check whether
-        // this node became unbalanced
-        const balance = this.getBalance(node);
-
-        // If this node becomes unbalanced, then there are 4 cases
-
-        // Left Left Case
-        if (balance > 1 && key < (node.left!.key)) {
-            return this.rightRotate(node);
-        }
-
-        // Right Right Case
-        if (balance < -1 && key > (node.right!.key)) {
-            return this.leftRotate(node);
-        }
-
-        // Left Right Case
-        if (balance > 1 && key > (node.left!.key)) {
-            node.left = this.leftRotate(node.left!);
-            return this.rightRotate(node);
-        }
-
-        // Right Left Case
-        if (balance < -1 && key < (node.right!.key)) {
-            node.right = this.rightRotate(node.right!);
-            return this.leftRotate(node);
-        }
-
-        // return the (unchanged) node pointer
-        return node;
-    }
-
-    // In-order traversal of the AVL tree
-    inorderTraversal(node: TreeNode | null, result: number[] = []): number[] {
-        if (node) {
-            this.inorderTraversal(node.left, result);
-            result.push(node.key);
-            this.inorderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // A utility function to print the tree
-    print() {
-        const result = this.inorderTraversal(this.root);
-        console.log('In-order Traversal:', result);
-    }
+  }
 }
 
-// Usage
-const avl = new AVLTree();
-avl.insert(30);
-avl.insert(20);
-avl.insert(10);
-avl.insert(40);
-avl.insert(50);
-avl.insert(25);
-avl.print(); // Outputs in sorted order
+// Example usage
+const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSortIterative(unsortedArray);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
