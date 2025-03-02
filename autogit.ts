@@ -1,28 +1,15 @@
-function quicksort<T>(array: T[]): T[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (array.length <= 1) {
-        return array;
-    }
-
-    // Choose a pivot element (we can choose the last element here)
-    const pivot = array[array.length - 1];
-    const left: T[] = [];
-    const right: T[] = [];
-
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < array.length - 1; i++) {
-        if (array[i] < pivot) {
-            left.push(array[i]);
-        } else {
-            right.push(array[i]);
-        }
-    }
-
-    // Recursively sort the left and right arrays and concatenate them with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+function countWordOccurrences(text: string, word: string): number {
+    // Create a regular expression to search for the word, ignoring case
+    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+    const matches = text.match(regex);
+    
+    // If there are matches, return the count, otherwise return 0
+    return matches ? matches.length : 0;
 }
 
 // Example usage:
-const unsortedArray = [34, 7, 23, 32, 5, 62];
-const sortedArray = quicksort(unsortedArray);
-console.log(sortedArray); // Output: [5, 7, 23, 32, 34, 62]
+const sampleText = "The quick brown fox jumps over the lazy dog. The dog is not quick.";
+const wordToCount = "quick";
+
+const count = countWordOccurrences(sampleText, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${count} times.`);
