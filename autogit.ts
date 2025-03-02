@@ -1,56 +1,51 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // First pass to find a candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
-    }
-
-    // Second pass to validate the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Check if the candidate is the majority element
-    if (count > nums.length / 2) {
-        return candidate;
-    } else {
-        return null; // No majority element
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const arr = [3, 2, 3];
-const result = majorityElement(arr);
-console.log(result); // Output: 3
-function majorityElement(nums: number[]): number | null {
-    const countMap: { [key: number]: number } = {};
-    const majorityCount = Math.floor(nums.length / 2);
-
-    for (const num of nums) {
-        if (countMap[num]) {
-            countMap[num]++;
-        } else {
-            countMap[num] = 1;
-        }
-
-        // Check if the current number is the majority element
-        if (countMap[num] > majorityCount) {
-            return num;
-        }
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (head === null || n <= 0) {
+        return null; // Handle edge cases
     }
 
-    return null; // No majority element
+    let firstPointer: ListNode | null = head;
+    let secondPointer: ListNode | null = head;
+
+    // Move firstPointer n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            return null; // n is greater than the length of the list
+        }
+        firstPointer = firstPointer.next;
+    }
+
+    // Move both pointers until firstPointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    // Now secondPointer points to the nth node from the end
+    return secondPointer;
 }
 
 // Example usage:
-const arr = [2, 2, 1, 1, 1, 2, 2];
-const result = majorityElement(arr);
-console.log(result); // Output: 2
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const result = findNthFromEnd(head, n);
+if (result) {
+    console.log(result.value); // Output should be 4
+} else {
+    console.log("Node not found.");
+}
