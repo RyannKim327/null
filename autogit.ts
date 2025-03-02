@@ -1,86 +1,62 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function kmpSearch(text: string, pattern: string): number[] {
+    const m = pattern.length;
+    const n = text.length;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    // Create the partial match table (also known as the "prefix table")
+    const lps = new Array(m).fill(0);
+    computeLPSArray(pattern, m, lps);
+
+    const result: number[] = []; // to store the indices of matches
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+        
+        if (j === m) {
+            // Found a match, add the starting index to the result
+            result.push(i - j);
+            j = lps[j - 1]; // continue searching for next match
+        } else if (i < n && pattern[j] !== text[i]) {
+            // Mismatch after j matches
+            if (j !== 0) {
+                j = lps[j - 1]; // use LPS array to skip characters
+            } else {
+                i++;
+            }
+        }
     }
+
+    return result; // return the array of match indices
 }
-class LinkedList<T> {
-    head: Node<T> | null;
-    tail: Node<T> | null;
-    length: number;
 
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.length = 0;
-    }
+function computeLPSArray(pattern: string, m: number, lps: number[]): void {
+    let len = 0; // length of the previous longest prefix suffix
+    lps[0] = 0; // lps[0] is always 0
+    let i = 1;
 
-    // Add a new node to the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            this.tail = newNode;
+    while (i < m) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
         } else {
-            if (this.tail) {
-                this.tail.next = newNode;
+            // mismatch after len matches
+            if (len !== 0) {
+                len = lps[len - 1]; // also check for the necessary previous matching
+            } else {
+                lps[i] = 0;
+                i++;
             }
-            this.tail = newNode;
         }
-        this.length++;
-    }
-
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.length--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                if (current.next === null) {
-                    this.tail = current; // Update tail if needed
-                }
-                this.length--;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const elements: T[] = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
-    }
-
-    // Get the size of the list
-    size(): number {
-        return this.length;
     }
 }
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-list.display(); // Output: 1 -> 2 -> 3
 
-list.remove(2);
-list.display(); // Output: 1 -> 3
-
-console.log(`Size of the list: ${list.size()}`); // Output: Size of the list: 2
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matchedIndices = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", matchedIndices);
