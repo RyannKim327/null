@@ -1,10 +1,16 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function isPalindrome(str: string): boolean {
+    // Normalize the string: convert to lowercase and remove non-alphanumeric characters
+    const normalizedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Reverse the normalized string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Check if the normalized string is the same as the reversed string
+    return normalizedStr === reversedStr;
 }
 
 // Example usage:
-const randomNum = getRandomNumberInRange(5, 10);
-console.log(randomNum); // This will log a random number between 5 and 10 (inclusive).
-function getRandomNumberInRangeExclusive(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
+console.log(isPalindrome("")); // true
+console.log(isPalindrome("no 'x' in nixon")); // true
