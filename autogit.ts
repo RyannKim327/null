@@ -1,31 +1,56 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    // Loop through all elements in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
+    // First pass to find a candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
         }
+        count += (num === candidate) ? 1 : -1;
+    }
 
-        // If no two elements were swapped in the inner loop, then the array is sorted
-        if (!swapped) {
-            break;
+    // Second pass to validate the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
         }
     }
 
-    return arr;
+    // Check if the candidate is the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element
+    }
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const arr = [3, 2, 3];
+const result = majorityElement(arr);
+console.log(result); // Output: 3
+function majorityElement(nums: number[]): number | null {
+    const countMap: { [key: number]: number } = {};
+    const majorityCount = Math.floor(nums.length / 2);
+
+    for (const num of nums) {
+        if (countMap[num]) {
+            countMap[num]++;
+        } else {
+            countMap[num] = 1;
+        }
+
+        // Check if the current number is the majority element
+        if (countMap[num] > majorityCount) {
+            return num;
+        }
+    }
+
+    return null; // No majority element
+}
+
+// Example usage:
+const arr = [2, 2, 1, 1, 1, 2, 2];
+const result = majorityElement(arr);
+console.log(result); // Output: 2
