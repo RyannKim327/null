@@ -1,67 +1,62 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
-}
-
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
-
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the starting points
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next;
-        }
-    }
-
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
+    // Sort the array
+    arr.sort((a, b) => a - b);
+    // Return the k-th smallest element
+    return arr[k - 1];
 }
 
 // Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
+const arr = [3, 2, 1, 5, 6, 4];
+const k = 2;
+console.log(findKthSmallest(arr, k)); // Output: 2
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    // Move pivot to end
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
+    
+    for (let i = left; i < right; i++) {
+        if (arr[i] < pivotValue) {
+            // Move smaller elements to the left
+            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+            storeIndex++;
+        }
+    }
+    
+    // Move pivot to its final place
+    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
+    return storeIndex;
+}
 
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left];
+    }
+    
+    const pivotIndex = Math.floor(Math.random() * (right - left + 1)) + left;
+    const newPivotIndex = partition(arr, left, right, pivotIndex);
+    
+    if (k === newPivotIndex) {
+        return arr[k];
+    } else if (k < newPivotIndex) {
+        return quickSelect(arr, left, newPivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, newPivotIndex + 1, right, k);
+    }
+}
 
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    // k-1 because we want the k-th smallest (1-indexed)
+    return quickSelect(arr.slice(), 0, arr.length - 1, k - 1);
+}
 
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
+// Example usage:
+const arr2 = [3, 2, 1, 5, 6, 4];
+const k2 = 2;
+console.log(findKthSmallest(arr2, k2)); // Output: 2
