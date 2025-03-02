@@ -1,17 +1,42 @@
-function isPalindrome(s: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedString = s.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Get the reversed string
-    const reversedString = normalizedString.split('').reverse().join('');
-    
-    // Check if the normalized string is equal to its reverse
-    return normalizedString === reversedString;
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m: number = str1.length;
+    const n: number = str2.length;
+
+    // Create a 2D array to store lengths of longest common subsequence.
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // take max of previous values
+            }
+        }
+    }
+
+    // Reconstruct the longest common subsequence
+    let i = m;
+    let j = n;
+    let lcs = '';
+
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // character is part of LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
+        } else {
+            j--; // Move left
+        }
+    }
+
+    return lcs;
 }
 
-// Example usage:
-const testString1 = "A man, a plan, a canal: Panama";
-const testString2 = "not a palindrome";
-
-console.log(isPalindrome(testString1)); // Output: true
-console.log(isPalindrome(testString2)); // Output: false
+// Example usage
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
