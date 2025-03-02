@@ -1,61 +1,35 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Initialize Fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
-
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Marks the eliminated range from the front
-    let offset = -1;
-
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Calculate the index to be compared
-        const i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else {
-            return i;
-        }
-    }
-
-    // Comparing the last element with x
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
-    }
-
-    // Element not found
-    return -1;
 }
 
-// Example usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
+function findMiddle(head: ListNode | null): ListNode | null {
+    if (!head) return null; // If the list is empty
 
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log('Element not found in the array.');
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        slow = slow.next; // Move slow by one step
+        fast = fast.next.next; // Move fast by two steps
+    }
+
+    return slow; // Slow is now at the middle
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const middleNode = findMiddle(head);
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
 }
