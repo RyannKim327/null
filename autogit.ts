@@ -1,70 +1,49 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    const totalLength = nums1.length + nums2.length;
+    const half = Math.floor(totalLength / 2);
 
-    constructor(size: number) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
+    // Ensure nums1 is the smaller array
+    if (nums1.length > nums2.length) {
+        [nums1, nums2] = [nums2, nums1];
     }
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
-        }
-        return hash % this.size;
-    }
+    let left = 0;
+    let right = nums1.length;
 
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
+    while (left <= right) {
+        const partition1 = Math.floor((left + right) / 2);
+        const partition2 = half - partition1;
 
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket[i][1] = value; // Update the value
-                return;
+        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
+        const minRight1 = partition1 === nums1.length ? Infinity : nums1[partition1];
+
+        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
+        const minRight2 = partition2 === nums2.length ? Infinity : nums2[partition2];
+
+        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
+            // We have found the correct partitions
+            if (totalLength % 2 === 0) {
+                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
+            } else {
+                return Math.max(maxLeft1, maxLeft2);
             }
+        } else if (maxLeft1 > minRight2) {
+            // Move towards the left in nums1
+            right = partition1 - 1;
+        } else {
+            // Move towards the right in nums1
+            left = partition1 + 1;
         }
-
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
     }
 
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return bucket[i][1]; // Return the value
-            }
-        }
-
-        return undefined; // Key not found
-    }
-
-    public remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
-            }
-        }
-
-        return false; // Key not found
-    }
+    throw new Error("Input arrays are not sorted.");
 }
 
-// Example usage
-const hashTable = new HashTable<string, number>(10);
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.get("banana")); // Output: 2
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: undefined
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+
+const nums3 = [1, 2];
+const nums4 = [3, 4];
+console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
