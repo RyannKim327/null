@@ -1,61 +1,103 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-    
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+class BinaryHeap<T> {
+    private heap: T[] = [];
+    private compare: (a: T, b: T) => number;
+
+    constructor(compare: (a: T, b: T) => number) {
+        this.compare = compare;
+    }
+
+    public insert(item: T): void {
+        this.heap.push(item);
+        this.bubbleUp(this.heap.length - 1);
+    }
+
+    public remove(): T | undefined {
+        if (this.heap.length === 0) return undefined;
+        const root = this.heap[0];
+        const last = this.heap.pop();
+        if (this.heap.length > 0 && last !== undefined) {
+            this.heap[0] = last;
+            this.bubbleDown(0);
         }
-        
-        if (j === pattern.length) {
-            result.push(i - j); // Found pattern at index (i - j)
-            j = lps[j - 1]; // Get the next position to check in the pattern
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
+        return root;
+    }
+
+    public peek(): T | undefined {
+        return this.heap[0];
+    }
+
+    public size(): number {
+        return this.heap.length;
+    }
+
+    private bubbleUp(index: number): void {
+        let currentIndex = index;
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (this.compare(this.heap[currentIndex], this.heap[parentIndex]) < 0) {
+                [this.heap[currentIndex], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[currentIndex]];
+                currentIndex = parentIndex;
             } else {
-                i++;
+                break;
             }
         }
     }
-    
-    return result;
-}
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let len = 0; // length of the previous longest prefix suffix
-    let i = 1;
+    private bubbleDown(index: number): void {
+        const length = this.heap.length;
+        let currentIndex = index;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let smallestIndex = currentIndex;
+
+            if (leftChildIndex < length && this.compare(this.heap[leftChildIndex], this.heap[smallestIndex]) < 0) {
+                smallestIndex = leftChildIndex;
             }
+
+            if (rightChildIndex < length && this.compare(this.heap[rightChildIndex], this.heap[smallestIndex]) < 0) {
+                smallestIndex = rightChildIndex;
+            }
+
+            if (smallestIndex === currentIndex) break;
+
+            [this.heap[currentIndex], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[currentIndex]];
+            currentIndex = smallestIndex;
         }
     }
-    
-    return lps;
 }
+class PriorityQueue<T> {
+    private heap: BinaryHeap<T>;
 
-// Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const indices = KMPSearch(pattern, text);
+    constructor(compare: (a: T, b: T) => number) {
+        this.heap = new BinaryHeap(compare);
+    }
 
-if (indices.length > 0) {
-    console.log(`Pattern found at indices: ${indices}`);
-} else {
-    console.log('Pattern not found');
+    public enqueue(item: T): void {
+        this.heap.insert(item);
+    }
+
+    public dequeue(): T | undefined {
+        return this.heap.remove();
+    }
+
+    public peek(): T | undefined {
+        return this.heap.peek();
+    }
+
+    public size(): number {
+        return this.heap.size();
+    }
 }
+// Example usage
+const priorityQueue = new PriorityQueue<number>((a, b) => a - b); // Min-heap
+
+priorityQueue.enqueue(5);
+priorityQueue.enqueue(1);
+priorityQueue.enqueue(3);
+
+console.log(priorityQueue.peek()); // Output: 1
+console.log(priorityQueue.dequeue()); // Output: 1
+console.log(priorityQueue.peek()); // Output: 3
+console.log(priorityQueue.size()); // Output: 2
