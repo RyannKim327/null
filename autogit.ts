@@ -1,27 +1,20 @@
-import * as readline from 'readline';
+function findSecondLargest(arr: number[]): number | null {
+    // Remove duplicates by converting the array to a Set and back to an array
+    const uniqueArr = Array.from(new Set(arr));
 
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+    // If there are less than 2 unique elements, return null
+    if (uniqueArr.length < 2) {
+        return null;
+    }
 
-// Function to ask a question and get user input
-function askQuestion(query: string): Promise<string> {
-    return new Promise((resolve) => {
-        rl.question(query, (answer) => {
-            resolve(answer);
-        });
-    });
+    // Sort the array in descending order
+    uniqueArr.sort((a, b) => b - a);
+
+    // Return the second largest element
+    return uniqueArr[1];
 }
 
-// Main function to run the program
-async function main() {
-    const name = await askQuestion("What is your name? ");
-    console.log(`Hello, ${name}! Welcome to TypeScript.`);
-    
-    rl.close(); // Close the readline interface
-}
-
-// Run the main function
-main();
+// Example usage:
+const numbers = [3, 5, 1, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
