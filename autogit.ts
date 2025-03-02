@@ -1,32 +1,77 @@
-function shellSort(array: number[]): number[] {
-    const n = array.length;
-    let gap = Math.floor(n / 2); // Start with a big gap
-
-    // Continues until gap is reduced to 0
-    while (gap > 0) {
-        // Perform a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            const temp = array[i];
-            let j = i;
-
-            // Shift earlier gap-sorted elements up until the correct location for array[i] is found
-            while (j >= gap && array[j - gap] > temp) {
-                array[j] = array[j - gap];
-                j -= gap;
-            }
-
-            // Put temp (the original array[i]) in its correct location
-            array[j] = temp;
-        }
-
-        // Reduce the gap for the next iteration
-        gap = Math.floor(gap / 2);
-    }
-
-    return array;
+interface Candidate {
+    sequence: string;  // Current sequence generated
+    score: number;     // Score of the current sequence
 }
 
-// Example usage:
-const unsortedArray = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(unsortedArray);
-console.log(sortedArray); // Output: [2, 3, 12, 34, 54]
+class BeamSearch {
+    private beamWidth: number;
+    private candidates: Candidate[];
+
+    constructor(beamWidth: number) {
+        this.beamWidth = beamWidth;
+        this.candidates = [];
+    }
+
+    // Function to add new candidates
+    public addCandidates(newCandidates: Candidate[]): void {
+        this.candidates.push(...newCandidates);
+        this.candidates.sort((a, b) => b.score - a.score); // Sort by score (high to low)
+        this.candidates = this.candidates.slice(0, this.beamWidth); // Keep only the top candidates
+    }
+
+    // Function to perform beam search iteration
+    public search(iterations: number): void {
+        for (let i = 0; i < iterations; i++) {
+            const newCandidates: Candidate[] = [];
+
+            for (const candidate of this.candidates) {
+                const extensions = this.expandCandidate(candidate);
+                newCandidates.push(...extensions);
+            }
+
+            this.addCandidates(newCandidates);
+        }
+    }
+
+    // Function to expand a candidate (this is where your domain logic will go)
+    private expandCandidate(candidate: Candidate): Candidate[] {
+        const newCandidates: Candidate[] = [];
+        
+        // Example logic: Append A, B, C to the current sequence
+        const extensions = ['A', 'B', 'C'];
+        for (const extension of extensions) {
+            const newSequence = candidate.sequence + extension;
+            const newScore = this.scoreSequence(newSequence);
+            newCandidates.push({ sequence: newSequence, score: newScore });
+        }
+
+        return newCandidates;
+    }
+
+    // Score a sequence (this should be replaced with your actual scoring logic)
+    private scoreSequence(sequence: string): number {
+        // Placeholder scoring function
+        return sequence.length; // Simple scoring based on the length of the sequence
+    }
+
+    // Get the best candidate
+    public getBestCandidate(): Candidate | null {
+        return this.candidates.length > 0 ? this.candidates[0] : null;
+    }
+}
+
+// Example usage
+const beamWidth = 3;
+const beamSearch = new BeamSearch(beamWidth);
+
+// Initialize with an empty candidate
+beamSearch.addCandidates([{ sequence: "", score: 0 }]);
+
+// Perform the search
+beamSearch.search(5);
+
+// Get the best candidate found
+const bestCandidate = beamSearch.getBestCandidate();
+if (bestCandidate) {
+    console.log('Best Sequence:', bestCandidate.sequence, 'Score:', bestCandidate.score);
+}
