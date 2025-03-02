@@ -1,38 +1,24 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function findSecondLargest(arr: number[]): number | null {
+    if (arr.length < 2) {
+        return null; // Not enough elements for a second largest
     }
-}
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+    let firstLargest = -Infinity;
+    let secondLargest = -Infinity;
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // Cycle detected
+    for (const num of arr) {
+        if (num > firstLargest) {
+            secondLargest = firstLargest;
+            firstLargest = num;
+        } else if (num > secondLargest && num < firstLargest) {
+            secondLargest = num;
         }
     }
 
-    return false; // No cycle
+    return secondLargest === -Infinity ? null : secondLargest; // Handle case where no second largest found
 }
 
 // Example usage:
-const head = new ListNode(1);
-const second = new ListNode(2);
-const third = new ListNode(3);
-head.next = second;
-second.next = third;
-// Uncomment the next line to create a cycle
-// third.next = second;
-
-console.log(hasCycle(head)); // Output: false (or true if a cycle is created)
+const numbers = [3, 1, 4, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
