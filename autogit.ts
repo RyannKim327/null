@@ -1,18 +1,27 @@
-const numbers: number[] = [1, 5, 3, 9, 2];
-const max = Math.max(...numbers);
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-const max = numbers.reduce((accumulator, currentValue) => {
-    return Math.max(accumulator, currentValue);
-}, numbers[0]); // Initial value is the first element
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-let max = numbers[0]; // Initialize with the first element
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > max) {
-        max = numbers[i];
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
+
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
+
+    return arr;
 }
 
-console.log(max); // Output: 9
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
