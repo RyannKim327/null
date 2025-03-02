@@ -1,32 +1,28 @@
-npm install axios
-import axios from 'axios';
+function countOccurrences(sentence: string, word: string): number {
+    // Normalize the string to lowercase and trim spaces, for case-insensitive counting
+    const normalizedSentence = sentence.toLowerCase().trim();
+    const normalizedWord = word.toLowerCase().trim();
 
-// Define an interface for the data we expect from the API
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
+    // Split the sentence into words using space as a delimiter
+    const wordsArray = normalizedSentence.split(/\s+/);
+
+    // Use filter to count occurrences of the specified word
+    const occurrences = wordsArray.filter(w => w === normalizedWord).length;
+
+    return occurrences;
 }
 
-// Function to fetch users from the API
-const fetchUsers = async (): Promise<void> => {
-    try {
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        const users = response.data;
+// Example usage:
+const sentence = "Hello world! The world is beautiful. Hello!";
+const word = "hello";
+const count = countOccurrences(sentence, word);
+console.log(`The word "${word}" occurs ${count} time(s).`);
+function countOccurrences(sentence: string, word: string): number {
+    const normalizedSentence = sentence.toLowerCase().replace(/[.,?!;"]/g, '').trim();
+    const normalizedWord = word.toLowerCase().trim();
 
-        // Log the users to the console
-        users.forEach(user => {
-            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-        });
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-    }
-};
+    const wordsArray = normalizedSentence.split(/\s+/);
+    const occurrences = wordsArray.filter(w => w === normalizedWord).length;
 
-// Call the function to fetch users
-fetchUsers();
+    return occurrences;
+}
