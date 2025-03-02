@@ -1,94 +1,58 @@
-class Node<T> {
-    value: T;
-    left: Node<T> | null;
-    right: Node<T> | null;
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
+    }
+
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
+
+        for (let i = 0; i < patternLength; i++) {
+            // Store the last occurrence of each character in the pattern
+            table.set(pattern[i], i);
+        }
+
+        return table;
+    }
+
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    // If there's a mismatch, use the bad character rule
+                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - lastOccurrence);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found
+                return i; // Return the starting index of the match
+            }
+        }
+
+        return -1; // No match found
     }
 }
-class BinarySearchTree<T> {
-    root: Node<T> | null;
 
-    constructor() {
-        this.root = null;
-    }
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
 
-    insert(value: T): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    // Helper method to insert a node
-    private insertNode(node: Node<T>, newNode: Node<T>): void {
-        if (newNode.value < node.value) {
-            // Insert in the left subtree
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            // Insert in the right subtree
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    search(value: T): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    // Helper method to search for a value
-    private searchNode(node: Node<T> | null, value: T): boolean {
-        if (node === null) {
-            return false; // Not found
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value); // Search left
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value); // Search right
-        } else {
-            return true; // Value found
-        }
-    }
-
-    inorderTraversal(callback: (value: T) => void): void {
-        this.inorder(this.root, callback);
-    }
-
-    // Helper method to perform inorder traversal
-    private inorder(node: Node<T> | null, callback: (value: T) => void): void {
-        if (node !== null) {
-            this.inorder(node.left, callback);
-            callback(node.value);
-            this.inorder(node.right, callback);
-        }
-    }
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
 }
-const bst = new BinarySearchTree<number>();
-
-bst.insert(50);
-bst.insert(30);
-bst.insert(70);
-bst.insert(20);
-bst.insert(40);
-bst.insert(60);
-bst.insert(80);
-
-// Search for a value
-console.log(bst.search(40)); // true
-console.log(bst.search(25)); // false
-
-// Inorder traversal
-bst.inorderTraversal(value => console.log(value)); // Outputs: 20, 30, 40, 50, 60, 70, 80
