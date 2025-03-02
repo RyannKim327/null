@@ -1,95 +1,97 @@
-type Graph = {
-    [key: string]: string[]; // Each node points to an array of its neighbors
-};
-function bidirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    // Edge cases
-    if (start === goal) return [start];
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    const queueStart = [start];
-    const queueGoal = [goal];
-    
-    const visitedFromStart: { [key: string]: boolean } = { [start]: true };
-    const visitedFromGoal: { [key: string]: boolean } = { [goal]: true };
-    
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-    while (queueStart.length > 0 && queueGoal.length > 0) {
-        // Search forward from start
-        let nodeFromStart = queueStart.shift()!;
-        let neighborsFromStart = graph[nodeFromStart];
+class BinarySearchTree {
+    root: TreeNode | null;
 
-        for (let neighbor of neighborsFromStart) {
-            if (!visitedFromStart[neighbor]) {
-                visitedFromStart[neighbor] = true;
-                parentFromStart[neighbor] = nodeFromStart;
-                queueStart.push(neighbor);
+    constructor() {
+        this.root = null;
+    }
 
-                // Check if the node is reached from the goal side
-                if (visitedFromGoal[neighbor]) {
-                    return constructPath(parentFromStart, parentFromGoal, neighbor);
-                }
-            }
+    // Insert a new value into the tree
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
+    }
 
-        // Search backward from goal
-        let nodeFromGoal = queueGoal.shift()!;
-        let neighborsFromGoal = graph[nodeFromGoal];
-
-        for (let neighbor of neighborsFromGoal) {
-            if (!visitedFromGoal[neighbor]) {
-                visitedFromGoal[neighbor] = true;
-                parentFromGoal[neighbor] = nodeFromGoal;
-                queueGoal.push(neighbor);
-
-                // Check if the node is reached from the start side
-                if (visitedFromStart[neighbor]) {
-                    return constructPath(parentFromStart, parentFromGoal, neighbor);
-                }
+    // Helper function to insert a node
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    return null; // No path found
+    // Search for a value in the tree
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    // Helper function to search for a node
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // Found the value
+        }
+    }
+
+    // In-order traversal (sorted order)
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrderTraverseNode(this.root, callback);
+    }
+
+    // Helper function for in-order traversal
+    private inOrderTraverseNode(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrderTraverseNode(node.left, callback);
+            callback(node.value);
+            this.inOrderTraverseNode(node.right, callback);
+        }
+    }
+
+    // Additional methods (pre-order, post-order traversals, delete, etc.) can be added as needed
 }
 
-function constructPath(
-    parentFromStart: { [key: string]: string | null },
-    parentFromGoal: { [key: string]: string | null },
-    meetingPoint: string
-): string[] {
-    const path = [];
-    
-    // Trace path back from meeting point to start
-    let currentNode: string | null = meetingPoint;
-    while (currentNode !== null) {
-        path.push(currentNode);
-        currentNode = parentFromStart[currentNode];
-    }
-    
-    // Reverse to go from start to meeting point
-    path.reverse();
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(20);
 
-    // Trace path back from meeting point to goal
-    currentNode = parentFromGoal[meetingPoint];
-    while (currentNode !== null) {
-        path.push(currentNode);
-        currentNode = parentFromGoal[currentNode];
-    }
-    
-    return path;
-}
-const graph: Graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-};
+console.log("In-order Traversal:");
+bst.inOrderTraversal((value) => console.log(value)); // Output will be sorted: 3, 5, 7, 10, 12, 15, 20
 
-const start = 'A';
-const goal = 'F';
-
-const path = bidirectionalSearch(graph, start, goal);
-console.log(path); // Example output: ["A", "C", "F"]
+console.log("Search for 7:", bst.search(7)); // true
+console.log("Search for 9:", bst.search(9)); // false
