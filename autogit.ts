@@ -1,12 +1,12 @@
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-function isValidEmail(email: string): boolean {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
 // Example usage
-const testEmail = "example@example.com";
-console.log(isValidEmail(testEmail)); // Output: true
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
 
-const invalidEmail = "example.com";
-console.log(isValidEmail(invalidEmail)); // Output: false
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
