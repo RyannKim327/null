@@ -1,49 +1,144 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class TreeNode {
+    key: number;
+    height: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor(key: number) {
+        this.key = key;
+        this.height = 1; // New node is initially added at leaf
+        this.left = null;
+        this.right = null;
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+class AVLTree {
+    root: TreeNode | null;
 
     constructor() {
-        this.head = null;
+        this.root = null;
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
+    // Get the height of the node
+    getHeight(node: TreeNode | null): number {
+        return node ? node.height : 0;
     }
 
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
+    // Get the balance factor of the node
+    getBalance(node: TreeNode | null): number {
+        if (!node) return 0;
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
+
+    // Right rotate the subtree rooted with y
+    rightRotate(y: TreeNode): TreeNode {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+
+        // Return the new root
+        return x;
+    }
+
+    // Left rotate the subtree rooted with x
+    leftRotate(x: TreeNode): TreeNode {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+
+        // Return the new root
+        return y;
+    }
+
+    // Insert a key into the subtree rooted with node and return the new root of the subtree
+    insert(node: TreeNode | null, key: number): TreeNode {
+        // Perform the normal BST insert
+        if (node === null) {
+            return new TreeNode(key);
         }
-        return count;
+
+        if (key < node.key) {
+            node.left = this.insert(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.insert(node.right, key);
+        } else {
+            // Duplicate keys are not allowed in the AVL tree
+            return node;
+        }
+
+        // Update the height of this ancestor node
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+
+        // Get the balance factor of this ancestor node to check whether this node became unbalanced
+        const balance = this.getBalance(node);
+
+        // If this node becomes unbalanced, then there are 4 cases
+
+        // Left Left Case
+        if (balance > 1 && key < node.left!.key) {
+            return this.rightRotate(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && key > node.right!.key) {
+            return this.leftRotate(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && key > node.left!.key) {
+            node.left = this.leftRotate(node.left!);
+            return this.rightRotate(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && key < node.right!.key) {
+            node.right = this.rightRotate(node.right!);
+            return this.leftRotate(node);
+        }
+
+        // Return the (unchanged) node pointer
+        return node;
+    }
+
+    // Function to print the tree in-order
+    inOrder(node: TreeNode | null): void {
+        if (node !== null) {
+            this.inOrder(node.left);
+            console.log(node.key);
+            this.inOrder(node.right);
+        }
+    }
+
+    // Public method to insert a key
+    public insertKey(key: number): void {
+        this.root = this.insert(this.root, key);
+    }
+
+    // Public method to print the tree in-order
+    public printInOrder(): void {
+        this.inOrder(this.root);
     }
 }
 
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
+// Example usage
+const avlTree = new AVLTree();
+avlTree.insertKey(10);
+avlTree.insertKey(20);
+avlTree.insertKey(30);
+avlTree.insertKey(40);
+avlTree.insertKey(50);
+avlTree
