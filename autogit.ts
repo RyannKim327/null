@@ -1,50 +1,70 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null if the list is empty or n is invalid
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
     }
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
         }
-        firstPointer = firstPointer.next;
+        return hash % this.size;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
+            }
+        }
+
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
     }
 
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
+            }
+        }
+
+        return undefined; // Key not found
+    }
+
+    public remove(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
-}
+// Example usage
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: undefined
