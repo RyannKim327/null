@@ -1,34 +1,68 @@
-const arr = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+type Graph = {
+    [key: string]: string[];
+};
 
-const newArray = arr.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const arr = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const index = arr.indexOf(elementToRemove);
+function depthFirstSearch(graph: Graph, start: string): string[] {
+    const visited: Set<string> = new Set();
+    const result: string[] = [];
 
-if (index !== -1) {
-    arr.splice(index, 1); // Removes 1 element at the found index
-}
+    function dfs(node: string) {
+        if (!node || visited.has(node)) {
+            return;
+        }
+        visited.add(node);
+        result.push(node);
 
-console.log(arr); // Output: [1, 2, 4, 5]
-const arr = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const index = arr.findIndex(item => item === elementToRemove);
-
-if (index !== -1) {
-    arr.splice(index, 1);
-}
-
-console.log(arr); // Output: [1, 2, 4, 5]
-const arr = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = arr.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
+        for (const neighbor of graph[node]) {
+            dfs(neighbor);
+        }
     }
-    return acc;
-}, [] as number[]);
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+    dfs(start);
+    return result;
+}
+
+// Example usage:
+
+const graph: Graph = {
+    a: ['b', 'c'],
+    b: ['d'],
+    c: ['e'],
+    d: [],
+    e: []
+};
+
+console.log(depthFirstSearch(graph, 'a')); // Output: ['a', 'b', 'd', 'c', 'e']
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+function depthFirstSearchTree(node: TreeNode | null, result: number[] = []): number[] {
+    if (node === null) {
+        return result;
+    }
+
+    // Pre-order: process the node value first.
+    result.push(node.value);
+    depthFirstSearchTree(node.left, result);
+    depthFirstSearchTree(node.right, result);
+    
+    return result;
+}
+
+// Example usage:
+
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(depthFirstSearchTree(root)); // Output: [1, 2, 4, 5, 3]
