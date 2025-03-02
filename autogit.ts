@@ -1,84 +1,42 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean; // To mark the end of a word
-
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+    
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-class Trie {
-    root: TrieNode;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    constructor() {
-        this.root = new TrieNode();
-    }
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-    // Insert a word into the trie
-    insert(word: string): void {
-        let currentNode = this.root;
+    while (fast && fast.next) {
+        slow = slow?.next;        // Move slow by 1 step
+        fast = fast.next.next;    // Move fast by 2 steps
 
-        for (const char of word) {
-            // If the character doesn't exist in children, create a new TrieNode
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            // Move to the next node
-            currentNode = currentNode.children.get(char)!; // Using non-null assertion since we just added it
+        // If slow and fast meet, there's a cycle
+        if (slow === fast) {
+            return true;
         }
-
-        // Mark the end of the word
-        currentNode.isEndOfWord = true;
     }
 
-    // Search for a word in the trie
-    search(word: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            // If the character is not found, return false
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-            // Move to the next node
-            currentNode = currentNode.children.get(char)!;
-        }
-
-        // Return true if we reached the end of the word; otherwise, false
-        return currentNode.isEndOfWord;
-    }
-
-    // Check if there is any word in the trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of prefix) {
-            // If the character is not found, return false
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-            // Move to the next node
-            currentNode = currentNode.children.get(char)!;
-        }
-
-        // If we reach here, it means the prefix exists
-        return true;
-    }
+    return false; // No cycle found
 }
 
-// Example usage of the Trie
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
 
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-trie.insert("hi");
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+// Uncomment the next line to create a cycle for testing
+// node4.next = node2; // Create a cycle
 
-console.log(trie.search("hello")); // true
-console.log(trie.search("world")); // true
-console.log(trie.search("hi"));    // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("he")); // true
-console.log(trie.startsWith("wor")); // true
-console.log(trie.startsWith("h"));   // true
-console.log(trie.startsWith("x"));   // false
+console.log(hasCycle(node1)); // Output: true if there is a cycle, false otherwise
