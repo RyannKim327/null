@@ -1,51 +1,26 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (head === null || n <= 0) {
-        return null; // Handle edge cases
-    }
-
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move firstPointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    // Traverse through all array elements
+    for (let i = 0; i < n - 1; i++) {
+        // Find the index of the minimum element in the unsorted part
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j; // Update minIndex if a smaller element is found
+            }
         }
-        firstPointer = firstPointer.next;
+
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
 
-    // Move both pointers until firstPointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
-    }
-
-    // Now secondPointer points to the nth node from the end
-    return secondPointer;
+    return arr;
 }
 
-// Example usage:
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(result.value); // Output should be 4
-} else {
-    console.log("Node not found.");
-}
+// Example usage
+const arr = [64, 25, 12, 22, 11];
+const sortedArr = selectionSort(arr);
+console.log(sortedArr); // Output: [11, 12, 22, 25, 64]
