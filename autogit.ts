@@ -1,12 +1,24 @@
-function validateEmail(email: string): boolean {
-    // Regular expression for validating an email address
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+function countCharacter(string: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < string.length; i++) {
+        if (string[i] === char) {
+            count++;
+        }
+    }
+    return count;
 }
 
-// Example usage
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
+// Example usage:
+const myString = "hello world";
+const characterToCount = 'o';
+const occurrenceCount = countCharacter(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${occurrenceCount} times.`);
+function countCharacter(string: string, char: string): number {
+    return string.split(char).length - 1;
+}
 
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
+// Example usage:
+const myString = "hello world";
+const characterToCount = 'o';
+const occurrenceCount = countCharacter(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${occurrenceCount} times.`);
