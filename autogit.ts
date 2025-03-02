@@ -1,26 +1,31 @@
-function selectionSort(arr: number[]): number[] {
+function shellSort(arr: number[]): number[] {
     const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-    // Traverse through all array elements
-    for (let i = 0; i < n - 1; i++) {
-        // Find the index of the minimum element in the unsorted part
-        let minIndex = i;
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if a smaller element is found
+    // Start with the largest gap and reduce the gap until it is 0
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
+
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
             }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
-
-        // Swap the found minimum element with the first element of the unsorted part
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-        }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
 
     return arr;
 }
 
-// Example usage
-const arr = [64, 25, 12, 22, 11];
-const sortedArr = selectionSort(arr);
-console.log(sortedArr); // Output: [11, 12, 22, 25, 64]
+// Example usage:
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
