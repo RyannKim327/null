@@ -1,31 +1,17 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
-
-    // Start with the largest gap and reduce the gap until it is 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
-
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2); // Reduce the gap
-    }
-
-    return arr;
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedString = s.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    
+    // Get the reversed string
+    const reversedString = normalizedString.split('').reverse().join('');
+    
+    // Check if the normalized string is equal to its reverse
+    return normalizedString === reversedString;
 }
 
 // Example usage:
-const array = [12, 34, 54, 2, 3];
-console.log("Original array:", array);
-const sortedArray = shellSort(array);
-console.log("Sorted array:", sortedArray);
+const testString1 = "A man, a plan, a canal: Panama";
+const testString2 = "not a palindrome";
+
+console.log(isPalindrome(testString1)); // Output: true
+console.log(isPalindrome(testString2)); // Output: false
