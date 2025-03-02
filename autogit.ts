@@ -1,30 +1,34 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
+const arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = arr.filter(item => item !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+const index = arr.indexOf(elementToRemove);
+
+if (index !== -1) {
+    arr.splice(index, 1); // Removes 1 element at the found index
 }
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+console.log(arr); // Output: [1, 2, 4, 5]
+const arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+const index = arr.findIndex(item => item === elementToRemove);
+
+if (index !== -1) {
+    arr.splice(index, 1);
+}
+
+console.log(arr); // Output: [1, 2, 4, 5]
+const arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = arr.reduce((acc, item) => {
+    if (item !== elementToRemove) {
+        acc.push(item);
     }
+    return acc;
+}, [] as number[]);
 
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
-}
-
-// Call the fetchPosts function and log the results
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+console.log(newArray); // Output: [1, 2, 4, 5]
