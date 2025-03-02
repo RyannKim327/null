@@ -1,24 +1,54 @@
-// Assuming you have a tsconfig.json file set up
+function createBadCharacterTable(pattern: string): { [key: string]: number } {
+    const table: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-// Importing fetch, you might not need this if you're in a browser environment where it's available by default.
-// Uncomment the next line if you're using Node.js with a fetch package such as node-fetch or undici.
-// import fetch from 'node-fetch';
-
-// Function to fetch a random joke
-async function fetchRandomJoke(): Promise<void> {
-    try {
-        const response = await fetch('https://official-joke-api.appspot.com/jokes/random');
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const jokeData = await response.json();
-        console.log(`Here's a random joke: ${jokeData.setup} - ${jokeData.punchline}`);
-    } catch (error) {
-        console.error('Error fetching the joke:', error);
+    // Initialize the table with the length of the pattern
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
     }
+
+    return table;
 }
 
-// Call the function
-fetchRandomJoke();
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
+    }
+
+    const badCharTable = createBadCharacterTable(pattern);
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare the pattern with the text from the end
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            return i; // Return the starting index of the match
+        } else {
+            // Shift the pattern based on the bad character rule
+            const badCharShift = badCharTable[text[i + j]] || patternLength;
+            i += badCharShift;
+        }
+    }
+
+    return -1; // Pattern not found
+}
+
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const result = boyerMooreHorspool(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
