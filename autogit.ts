@@ -1,55 +1,28 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+    // One by one move the boundary of the unsorted subarray
+    for (let i = 0; i < n - 1; i++) {
+        // Find the minimum element in the unsorted array
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j; // Update minIndex if the element is smaller
+            }
         }
 
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index
-            j = lps[j - 1]; // Get the next position from LPS
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters
-            } else {
-                i++;
-            }
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
         }
     }
 
-    return result; // Return all starting indices of matches
+    return arr;
 }
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1; // Start from the second character
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
-}
-
-// Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = KMPSearch(pattern, text);
-console.log("Pattern found at indices:", matches);
+// Example usage
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
