@@ -1,54 +1,65 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const table: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-    // Initialize the table with the length of the pattern
-    for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - 1 - i;
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
     }
-
-    return table;
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
+class Trie {
+    private root: TrieNode;
 
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    const badCharTable = createBadCharacterTable(pattern);
-    let i = 0; // Index for text
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let currentNode = this.root;
 
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Index for pattern
-
-        // Compare the pattern with the text from the end
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
         }
-
-        // If the pattern is found
-        if (j < 0) {
-            return i; // Return the starting index of the match
-        } else {
-            // Shift the pattern based on the bad character rule
-            const badCharShift = badCharTable[text[i + j]] || patternLength;
-            i += badCharShift;
-        }
+        currentNode.isEndOfWord = true;
     }
 
-    return -1; // Pattern not found
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if there is any word in the Trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null;
+    }
+
+    // Helper function to find the node corresponding to a given word/prefix
+    private findNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return null;
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        return currentNode;
+    }
 }
 
 // Example usage
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = boyerMooreHorspool(text, pattern);
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
 
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+console.log(trie.search("hello")); // true
+console.log(trie.search("hell"));  // false
+console.log(trie.startsWith("hell")); // true
+console.log(trie.startsWith("wor")); // true
+console.log(trie.search("worlds")); // false
