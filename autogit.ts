@@ -1,58 +1,28 @@
-function preprocessPattern(pattern: string): { [key: string]: number } {
-    const shiftTable: { [key: string]: number } = {};
-    const patternLength = pattern.length;
-
-    // Fill the table with the length of the pattern
-    for (let i = 0; i < patternLength - 1; i++) {
-        shiftTable[pattern[i]] = patternLength - 1 - i;
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // Default shift for characters not in the pattern
-    for (let charCode = 0; charCode < 256; charCode++) { // Assuming ASCII
-        const char = String.fromCharCode(charCode);
-        if (!(char in shiftTable)) {
-            shiftTable[char] = patternLength; // Shift by full pattern length
-        }
-    }
+    // Choose a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
 
-    return shiftTable;
-}
-
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const patternLength = pattern.length;
-    const textLength = text.length;
-
-    if (patternLength === 0) return []; // handle empty pattern case
-    if (patternLength > textLength) return []; // pattern longer than text
-
-    const shiftTable = preprocessPattern(pattern);
-    const occurrences: number[] = [];
-    let i = 0;
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Compare from the end of the pattern to the beginning
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            // Found a match
-            occurrences.push(i);
-            // Shift by the pattern length or by the next character in the shift table
-            i += shiftTable[text[i + patternLength]] || patternLength;
+    // Partitioning the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
         } else {
-            // Shift by the value from the shift table
-            i += shiftTable[text[i + j]] || 1;
+            right.push(arr[i]);
         }
     }
 
-    return occurrences;
+    // Recursively sort the left and right arrays, and concatenate with the pivot
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
 // Example usage
-const text = "ABAAABCDABC";
-const pattern = "ABC";
-const result = boyerMooreHorspool(text, pattern);
-console.log(`Pattern found at indices: ${result.join(", ")}`); // Output: Pattern found at indices: 7
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
