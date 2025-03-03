@@ -1,52 +1,14 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
     
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
-    }
-
-    const len1 = nums1.length;
-    const len2 = nums2.length;
-
-    let left = 0;
-    let right = len1;
-
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
-
-        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const minRight1 = partition1 === len1 ? Infinity : nums1[partition1];
-
-        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const minRight2 = partition2 === len2 ? Infinity : nums2[partition2];
-
-        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
-            // We have found the correct partitions
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
-            } else {
-                return Math.max(maxLeft1, maxLeft2);
-            }
-        } else if (maxLeft1 > minRight2) {
-            // Move towards the left in nums1
-            right = partition1 - 1;
-        } else {
-            // Move towards the right in nums1
-            left = partition1 + 1;
-        }
-    }
-
-    throw new Error("Input arrays are not sorted.");
+    // Get the reversed string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Check if the normalized string is equal to its reverse
+    return normalizedStr === reversedStr;
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
-
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
