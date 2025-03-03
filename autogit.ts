@@ -1,33 +1,24 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Find index of the element
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove the element at the index
+function areaOfTriangle(base: number, height: number): number {
+    return 0.5 * base * height;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+// Example usage
+const base = 5;
+const height = 10;
+const area = areaOfTriangle(base, height);
+console.log(`Area of the triangle: ${area}`); // Output: Area of the triangle: 25
+function areaOfTriangleHeron(a: number, b: number, c: number): number {
+    // Calculate semi-perimeter
+    const s = (a + b + c) / 2;
 
-const indexToRemove = array.findIndex(item => item === elementToRemove); // Find index based on a condition
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove the element
+    // Calculate area using Heron's formula
+    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    return area;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
-    }
-    return acc;
-}, []);
-console.log(newArray); // Output: [1, 2, 4, 5]
+// Example usage
+const sideA = 3;
+const sideB = 4;
+const sideC = 5;
+const areaHeron = areaOfTriangleHeron(sideA, sideB, sideC);
+console.log(`Area of the triangle: ${areaHeron}`); // Output: Area of the triangle: 6
