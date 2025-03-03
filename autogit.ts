@@ -1,22 +1,27 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce<number[]>((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
+const numbers: number[] = [1, 5, 3, 9, 2];
+const max = Math.max(...numbers);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+let max = numbers[0]; // Assume the first element is the max initially
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
     }
-    return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray: number[] = [];
-array.forEach(value => {
-    if (!uniqueArray.includes(value)) {
-        uniqueArray.push(value);
+}
+
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+let max = numbers[0];
+numbers.forEach(num => {
+    if (num > max) {
+        max = num;
     }
 });
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+
+console.log(max); // Output: 9
