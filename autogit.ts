@@ -1,41 +1,53 @@
-function countingSortForRadix(array: number[], place: number): number[] {
-    const output = new Array(array.length); // Output array
-    const count = new Array(10).fill(0); // Count array for decimal digits (0-9)
-
-    // Count occurrences of each digit in the given place
-    for (let i = 0; i < array.length; i++) {
-        const digit = Math.floor(array[i] / place) % 10;
-        count[digit]++;
+function mergeSortIterative(arr: number[]): number[] {
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // Change count[i] so that it contains the actual position of this digit in output[]
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
+    let n = arr.length;
+    // Create a temporary array to hold the merged result
+    const temp = new Array(n);
+
+    // Size of the subarrays being merged (starts from 1)
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
+            // Define the left and right starting indices
+            const mid = Math.min(leftStart + size, n);
+            const rightEnd = Math.min(leftStart + size * 2, n);
+
+            // Merge the two subarrays
+            let left = leftStart;
+            let right = mid;
+            let index = leftStart;
+
+            while (left < mid && right < rightEnd) {
+                if (arr[left] <= arr[right]) {
+                    temp[index++] = arr[left++];
+                } else {
+                    temp[index++] = arr[right++];
+                }
+            }
+
+            // Copy any remaining elements on the left side
+            while (left < mid) {
+                temp[index++] = arr[left++];
+            }
+
+            // Copy any remaining elements on the right side
+            while (right < rightEnd) {
+                temp[index++] = arr[right++];
+            }
+
+            // Copy the merged subarray back into the original array
+            for (let i = leftStart; i < rightEnd; i++) {
+                arr[i] = temp[i];
+            }
+        }
     }
 
-    // Build the output array using the count array
-    for (let i = array.length - 1; i >= 0; i--) {
-        const digit = Math.floor(array[i] / place) % 10;
-        output[count[digit] - 1] = array[i];
-        count[digit]--;
-    }
-
-    return output;
-}
-
-function radixSort(array: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = Math.max(...array);
-
-    // Perform counting sort for each digit
-    for (let place = 1; Math.floor(max / place) > 0; place *= 10) {
-        array = countingSortForRadix(array, place);
-    }
-
-    return array;
+    return arr;
 }
 
 // Example usage:
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log("Sorted array:", sortedArr);
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSortIterative(array);
+console.log(sortedArray); // [3, 9, 10, 27, 38, 43, 82]
