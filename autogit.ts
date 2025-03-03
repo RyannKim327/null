@@ -1,79 +1,56 @@
-class HashTable<K, V> {
-    private table: Array<[K, V][]>; // Array of buckets
-    private size: number; // Number of buckets
-
-    constructor(size: number = 53) {
-        this.size = size;
-        this.table = new Array(size);
-    }
-
-    // Hash function to convert keys to an index
-    private hash(key: K): number {
-        let hash = 0;
-        const stringKey = String(key);
-        for (let i = 0; i < stringKey.length; i++) {
-            hash += stringKey.charCodeAt(i);
-        }
-        return hash % this.size;
-    }
-
-    // Insert a key-value pair
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            this.table[index] = [];
-        }
-        // Check if the key already exists and update the value
-        const bucket = this.table[index];
-        const existingPair = bucket.find(([k]) => k === key);
-        if (existingPair) {
-            existingPair[1] = value; // Update value
-        } else {
-            bucket.push([key, value]); // Add new key-value pair
-        }
-    }
-
-    // Retrieve a value by key
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-        if (bucket) {
-            const pair = bucket.find(([k]) => k === key);
-            return pair ? pair[1] : undefined; // Return value or undefined
-        }
-        return undefined;
-    }
-
-    // Remove a key-value pair
-    public delete(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-        if (bucket) {
-            const pairIndex = bucket.findIndex(([k]) => k === key);
-            if (pairIndex !== -1) {
-                bucket.splice(pairIndex, 1); // Remove the pair
-                return true;
-            }
-        }
-        return false;
-    }
-
-    // Check if the hash table contains a key
-    public has(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-        if (bucket) {
-            return bucket.some(([k]) => k === key);
-        }
-        return false;
-    }
+// Node class representing each state in the search
+class Node {
+    constructor(public state: any, public score: number) {}
 }
 
-// Example usage
-const hashTable = new HashTable<string, number>();
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.has("banana")); // Output: true
-hashTable.delete("apple");
-console.log(hashTable.get("apple")); // Output: undefined
+// Beam Search function
+function beamSearch(initialState: any, beamWidth: number, maxDepth: number): Node[] {
+    let beam: Node[] = [new Node(initialState, score(initialState))];
+
+    for (let depth = 0; depth < maxDepth; depth++) {
+        let newBeam: Node[] = [];
+
+        // Expand all nodes in the current beam
+        for (const node of beam) {
+            const children = expand(node.state);
+            for (const child of children) {
+                newBeam.push(new Node(child, score(child)));
+            }
+        }
+
+        // Sort new beam by score and keep the top N nodes
+        newBeam.sort((a, b) => b.score - a.score); // Sort by score, high to low
+        beam = newBeam.slice(0, beamWidth); // Keep only the top `beamWidth` nodes
+
+        // If we reach a goal, we can return the current best
+        if (beam.some(node => isGoal(node.state))) {
+            return beam; // Return successful nodes
+        }
+    }
+
+    return beam; // Return the best candidates found within the max depth
+}
+
+// Example functions for scoring, expanding nodes, and checking goals
+function score(state: any): number {
+    // Implement your specific scoring logic
+    return Math.random(); // Placeholder scoring, replace with actual logic
+}
+
+function expand(state: any): any[] {
+    // Implement your expansion logic to generate child nodes
+    return [state + "1", state + "2"]; // Example placeholder
+}
+
+function isGoal(state: any): boolean {
+    // Check if the state meets the goal condition
+    return state === "goal"; // Example condition, replace with actual logic
+}
+
+// Usage
+const initialState = "start";
+const beamWidth = 2;
+const maxDepth = 5;
+
+const results = beamSearch(initialState, beamWidth, maxDepth);
+console.log("Best Candidates:", results);
