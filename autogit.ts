@@ -1,39 +1,64 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
+class TrieNode {
+    public children: Map<string, TrieNode>;
+    public isEndOfWord: boolean;
 
-    while (left < right) {
-        // Move the left pointer to the right as long as it's not an alphanumeric character
-        while (left < right && !isAlphanumeric(s[left])) {
-            left++;
-        }
-        
-        // Move the right pointer to the left as long as it's not an alphanumeric character
-        while (left < right && !isAlphanumeric(s[right])) {
-            right--;
-        }
-        
-        // Compare characters, ignoring case
-        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false; // Not a palindrome
-        }
-
-        left++;
-        right--;
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
     }
-    
-    return true; // Is a palindrome
 }
 
-function isAlphanumeric(char: string): boolean {
-    const code = char.charCodeAt(0);
-    return (
-        (code >= 48 && code <= 57) || // 0-9
-        (code >= 65 && code <= 90) || // A-Z
-        (code >= 97 && code <= 122)   // a-z
-    );
+class Trie {
+    private root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    // Insert a word into the Trie
+    public insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        currentNode.isEndOfWord = true; // Mark the end of the word
+    }
+
+    // Search a word in the Trie
+    public search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if any words in the Trie start with the given prefix
+    public startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null;
+    }
+
+    // Helper function to find the node corresponding to a given prefix/word
+    private findNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return null; // Not found
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+
+        return currentNode; // Return the node where the word/prefix ends
+    }
 }
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+// Example Usage
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple")); // true
+console.log(trie.search("app"));   // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app")); // true
