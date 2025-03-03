@@ -1,22 +1,31 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce<number[]>((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
+function burrowsWheelerTransform(input: string): { transformed: string, originalIndex: number } {
+    const n = input.length;
+    const rotations: string[] = new Array(n);
+
+    // Step 1: Create all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations[i] = input.slice(i) + input.slice(0, i);
     }
-    return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray: number[] = [];
-array.forEach(value => {
-    if (!uniqueArray.includes(value)) {
-        uniqueArray.push(value);
+
+    // Step 2: Sort the rotations
+    rotations.sort();
+
+    // Step 3: Create the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = -1;
+
+    for (let i = 0; i < n; i++) {
+        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
+        if (rotations[i] === input) {
+            originalIndex = i; // Track the index of the original string
+        }
     }
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+
+    return { transformed, originalIndex };
+}
+
+// Example usage:
+const input = "banana";
+const { transformed, originalIndex } = burrowsWheelerTransform(input);
+console.log("Transformed String: ", transformed);
+console.log("Index of Original String: ", originalIndex);
