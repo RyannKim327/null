@@ -1,68 +1,32 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+npm install axios
+import axios from 'axios';
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+// Define an interface for the data we expect to receive
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
 
-class LinkedList {
-    head: ListNode | null;
+// Function to fetch users from a public API
+const fetchUsers = async (): Promise<void> => {
+    try {
+        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+        const users = response.data;
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+        // Log the users to the console
+        users.forEach(user => {
+            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+        });
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error message:', error.message);
+        } else {
+            console.error('Unexpected error:', error);
         }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
     }
+};
 
-    // Method to print the linked list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
-}
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-
-    while (current) {
-        const nextTemp = current.next; // Store the next node
-        current.next = prev;            // Reverse the current node's pointer
-        prev = current;                 // Move prev and current one step forward
-        current = nextTemp;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original Linked List:");
-list.print();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed Linked List:");
-list.print();
+// Call the function to fetch users
+fetchUsers();
