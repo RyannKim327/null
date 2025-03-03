@@ -1,81 +1,73 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+class Tarjan {
+    private index: number = 0;
+    private stack: number[] = [];
+    private lowLink: number[];
+    private indexes: number[];
+    private onStack: boolean[];
+    private stronglyConnectedComponents: number[][];
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    constructor(private graph: number[][]) {
+        const n = graph.length;
+        this.lowLink = new Array(n).fill(0);
+        this.indexes = new Array(n).fill(-1);
+        this.onStack = new Array(n).fill(false);
+        this.stronglyConnectedComponents = [];
+    }
+
+    public findSCCs(): number[][] {
+        for (let v = 0; v < this.graph.length; v++) {
+            if (this.indexes[v] === -1) {
+                this.strongConnect(v);
+            }
+        }
+        return this.stronglyConnectedComponents;
+    }
+
+    private strongConnect(v: number): void {
+        // Set the depth index for v to the smallest unused index
+        this.indexes[v] = this.index;
+        this.lowLink[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
+
+        // Consider successors of v
+        for (const w of this.graph[v]) {
+            if (this.indexes[w] === -1) {
+                // Successor w has not yet been visited; recurse on it
+                this.strongConnect(w);
+                this.lowLink[v] = Math.min(this.lowLink[v], this.lowLink[w]);
+            } else if (this.onStack[w]) {
+                // Successor w is in the stack and hence in the current SCC
+                this.lowLink[v] = Math.min(this.lowLink[v], this.indexes[w]);
+            }
+        }
+
+        // If v is a root node, pop the stack and generate an SCC
+        if (this.lowLink[v] === this.indexes[v]) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                scc.push(w);
+            } while (w !== v);
+            this.stronglyConnectedComponents.push(scc);
+        }
     }
 }
-class LinkedList<T> {
-    head: Node<T> | null;
-    size: number;
 
-    constructor() {
-        this.head = null;
-        this.size = 0;
-    }
+// Example usage:
+const graph = [
+    [1],    // Node 0 points to Node 1
+    [2],    // Node 1 points to Node 2
+    [0],    // Node 2 points to Node 0 (forming a cycle)
+    [1],    // Node 3 points to Node 1
+    [5],    // Node 4 points to Node 5
+    [4],    // Node 5 points to Node 4 (forming another cycle)
+    [3],    // Node 6 points to Node 3
+];
 
-    // Add a new node at the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-        this.size++;
-    }
-
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.size--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                this.size--;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const elements: T[] = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
-    }
-
-    // Get the size of the list
-    getSize(): number {
-        return this.size;
-    }
-}
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.append(30);
-list.display(); // Output: 10 -> 20 -> 30
-
-list.remove(20);
-list.display(); // Output: 10 -> 30
-
-console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
+const tarjan = new Tarjan(graph);
+const sccs = tarjan.findSCCs();
+console.log(sccs); // Output the strongly connected components
