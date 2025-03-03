@@ -1,28 +1,22 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element
-        let minIndex = i;
+    // Start with the first string as the initial prefix
+    let prefix = strs[0];
 
-        // Test against elements after i to find the smallest
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if the current element is smaller
-            }
-        }
-
-        // If minIndex is not the position of the first element,
-        // then swap the found minimum element with the first element
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swap elements
+    // Compare the prefix with each string in the array
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by one character from the end
+            prefix = prefix.substring(0, prefix.length - 1);
+            // If the prefix is empty, return it
+            if (prefix === "") return "";
         }
     }
 
-    return arr;
+    return prefix;
 }
 
 // Example usage:
-const numbers = [64, 25, 12, 22, 11];
-const sortedNumbers = selectionSort(numbers);
-console.log(sortedNumbers); // Output: [11, 12, 22, 25, 64]
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
