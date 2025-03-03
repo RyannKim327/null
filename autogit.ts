@@ -1,45 +1,91 @@
-class ListNode {
+class TreeNode {
     value: number;
-    next: ListNode | null;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (head === null || n <= 0) {
-        return null;
+class BinarySearchTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    // Move first n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (first === null) {
-            return null; // n is greater than the length of the list
+    // Insert a value into the binary search tree
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
         }
-        first = first.next;
+        this.insertNode(this.root, newNode);
     }
 
-    // Move both pointers until first reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second.next;
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
     }
 
-    // second now points to the nth node from the end
-    return second;
+    // Search for a value in the binary search tree
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value === node.value) {
+            return true;
+        }
+        return value < node.value 
+            ? this.searchNode(node.left, value) 
+            : this.searchNode(node.right, value);
+    }
+
+    // In-order traversal of the tree
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
+    }
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(17);
 
-const nthNodeFromEnd = findNthFromEnd(head, 2); // should return the node with value 4
-console.log(nthNodeFromEnd?.value); // Output: 4
+console.log("In-order traversal:");
+bst.inOrderTraversal(value => console.log(value));
+
+console.log("Search for 7:", bst.search(7)); // true
+console.log("Search for 20:", bst.search(20)); // false
