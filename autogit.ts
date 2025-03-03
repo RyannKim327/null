@@ -1,14 +1,12 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Get the reversed string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Check if the normalized string is equal to its reverse
-    return normalizedStr === reversedStr;
+function factorial(n: number): number {
+    // Base case
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    // Recursive case
+    return n * factorial(n - 1);
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+const number = 5;
+console.log(`The factorial of ${number} is ${factorial(number)}`); // Output: The factorial of 5 is 120
