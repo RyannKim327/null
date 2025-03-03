@@ -1,43 +1,44 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function boyerMooreHorspool(haystack: string, needle: string): number[] {
+    const needleLength = needle.length;
+    const haystackLength = haystack.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    if (needleLength === 0) return []; // If the needle is empty, return an empty result
+    if (haystackLength < needleLength) return []; // If the haystack is smaller than the needle, return an empty result
+
+    // Create the bad character skip table
+    const skipTable: Record<string, number> = {};
+    for (let i = 0; i < needleLength; i++) {
+        skipTable[needle[i]] = needleLength - i - 1;
     }
-}
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
+    const result: number[] = []; // Store the starting indices of found occurrences
+    let i = 0;
 
-    function height(node: TreeNode | null): number {
-        if (node === null) {
-            return 0;
+    while (i <= haystackLength - needleLength) {
+        let j = needleLength - 1;
+
+        // Compare needle with the corresponding section of the haystack
+        while (j >= 0 && haystack[i + j] === needle[j]) {
+            j--;
         }
 
-        // Recursively find the height of the left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-
-        // Update the diameter if the path through the current node is larger
-        diameter = Math.max(diameter, leftHeight + rightHeight);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
+        // If we found a match, j will be -1
+        if (j < 0) {
+            result.push(i); // Record the starting index
+            // Shift by the length of the needle, or use the character in the haystack at i + needleLength if it's outside of the needle's last character
+            i += (i + needleLength < haystackLength) ? needleLength - (skipTable[haystack[i + needleLength]] || needleLength) : 1;
+        } else {
+            // Shift based on the skip table, defaulting to the length of the needle if character is not in needle
+            const skip = skipTable[haystack[i + j]] || needleLength;
+            i += skip;
+        }
     }
 
-    height(root);
-    return diameter;
+    return result; // Return all found starting indices
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3 (the path is 4 -> 2 -> 1 -> 3 or 5 -> 2 -> 1 -> 3)
+const haystack = "ababcabcabababd";
+const needle = "ababd";
+const result = boyerMooreHorspool(haystack, needle);
+console.log(result); // Output: [10]
