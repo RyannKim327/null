@@ -1,22 +1,17 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+let myArray: number[] = [1, 2, 3, 4, 5];
 
-    // If lengths are different, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
-    }
+console.log("Original array:", myArray); // Original array: [1, 2, 3, 4, 5]
 
-    // Sort the characters of both strings
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+// Reverse the array
+myArray.reverse();
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
-}
+console.log("Reversed array:", myArray); // Reversed array: [5, 4, 3, 2, 1]
+let myArray: number[] = [1, 2, 3, 4, 5];
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-console.log(areAnagrams("Dormitory", "Dirty room")); // true
+console.log("Original array:", myArray); // Original array: [1, 2, 3, 4, 5]
+
+// Create a new reversed array without modifying the original
+let reversedArray = [...myArray].reverse();
+
+console.log("Reversed array:", reversedArray); // Reversed array: [5, 4, 3, 2, 1]
+console.log("Original array unchanged:", myArray); // Original array unchanged: [1, 2, 3, 4, 5]
