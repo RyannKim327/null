@@ -1,40 +1,116 @@
-function getDigit(num: number, place: number): number {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+class Graph {
+    private adjList: Map<number, number[]>;
 
-function digitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-function mostDigits(nums: number[]): number {
-    let maxDigits = 0;
-    for (let num of nums) {
-        maxDigits = Math.max(maxDigits, digitCount(num));
+    constructor() {
+        this.adjList = new Map();
     }
-    return maxDigits;
-}
 
-function radixSort(nums: number[]): number[] {
-    const maxDigits = mostDigits(nums);
-    
-    for (let k = 0; k < maxDigits; k++) {
-        // Create buckets for base 10 digits
-        const buckets: number[][] = Array.from({ length: 10 }, () => []);
-        
-        for (let num of nums) {
-            const digit = getDigit(num, k);
-            buckets[digit].push(num);
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
         }
-        
-        // Flatten the buckets back into the nums array
-        nums = [].concat(...buckets);
+        this.adjList.get(v)!.push(w);
     }
-    
-    return nums;
+
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
+
+        const dfs = (v: number) => {
+            visited.add(v);
+            const neighbors = this.adjList.get(v) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(v);
+        };
+
+        for (const vertex of this.adjList.keys()) {
+            if (!visited.has(vertex)) {
+                dfs(vertex);
+            }
+        }
+
+        return stack.reverse(); // Return in reverse order
+    }
 }
 
-// Example Usage
-const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArray = radixSort(unsortedArray);
-console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
+class Graph {
+    private adjList: Map<number, number[]>;
+    private inDegree: Map<number, number>;
+
+    constructor() {
+        this.adjList = new Map();
+        this.inDegree = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+
+        // Update in-degree of the destination vertex
+        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
+        if (!this.inDegree.has(v)) {
+            this.inDegree.set(v, 0); // Ensure source vertex is in the in-degree map
+        }
+    }
+
+    topologicalSort(): number[] {
+        const queue: number[] = [];
+        const sortedOrder: number[] = [];
+
+        // Initialize the queue with all vertices with in-degree 0
+        for (const [vertex, degree] of this.inDegree.entries()) {
+            if (degree === 0) {
+                queue.push(vertex);
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            sortedOrder.push(current);
+
+            const neighbors = this.adjList.get(current) || [];
+            for (const neighbor of neighbors) {
+                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
+                if (this.inDegree.get(neighbor) === 0) {
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there was a cycle
+        if (sortedOrder.length !== this.inDegree.size) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+
+        return sortedOrder;
+    }
+}
+
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
