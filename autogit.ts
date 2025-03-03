@@ -1,24 +1,49 @@
-function areaOfTriangle(base: number, height: number): number {
-    return 0.5 * base * height;
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Example usage
-const base = 5;
-const height = 10;
-const area = areaOfTriangle(base, height);
-console.log(`Area of the triangle: ${area}`); // Output: Area of the triangle: 25
-function areaOfTriangleHeron(a: number, b: number, c: number): number {
-    // Calculate semi-perimeter
-    const s = (a + b + c) / 2;
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
 
-    // Calculate area using Heron's formula
-    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
-    return area;
+    function dfs(node: TreeNode | null): number {
+        if (node === null) {
+            return 0;
+        }
+
+        // Recursively find the height of the left and right subtrees
+        const leftHeight = dfs(node.left);
+        const rightHeight = dfs(node.right);
+
+        // Update the diameter if the path through the current node is longer
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        // Return the height of the tree rooted at the current node
+        return 1 + Math.max(leftHeight, rightHeight);
+    }
+
+    dfs(root);
+    return diameter;
 }
 
-// Example usage
-const sideA = 3;
-const sideB = 4;
-const sideC = 5;
-const areaHeron = areaOfTriangleHeron(sideA, sideB, sideC);
-console.log(`Area of the triangle: ${areaHeron}`); // Output: Area of the triangle: 6
+// Example usage:
+// Constructing the binary tree:
+//        1
+//       / \
+//      2   3
+//     / \
+//    4   5
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 4
