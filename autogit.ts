@@ -1,99 +1,69 @@
-interface Node {
-    id: string;
-    neighbors: Node[];
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
-    if (start === goal) return [start];
+class LinkedList {
+    head: ListNode | null;
 
-    // Queues for forward and backward searches
-    const forwardQueue: Node[] = [start];
-    const backwardQueue: Node[] = [goal];
+    constructor() {
+        this.head = null;
+    }
 
-    // Sets for visited nodes
-    const visitedFromStart = new Set<Node>();
-    const visitedFromGoal = new Set<Node>();
-
-    // Maps to find paths
-    const parentFromStart = new Map<Node, Node>();
-    const parentFromGoal = new Map<Node, Node>();
-
-    visitedFromStart.add(start);
-    visitedFromGoal.add(goal);
-
-    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-        // Expand from start side
-        const forwardNode = forwardQueue.shift();
-        if (forwardNode) {
-            for (const neighbor of forwardNode.neighbors) {
-                if (visitedFromGoal.has(neighbor)) {
-                    return reconstructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-
-                if (!visitedFromStart.has(neighbor)) {
-                    visitedFromStart.add(neighbor);
-                    parentFromStart.set(neighbor, forwardNode);
-                    forwardQueue.push(neighbor);
-                }
-            }
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-
-        // Expand from goal side
-        const backwardNode = backwardQueue.shift();
-        if (backwardNode) {
-            for (const neighbor of backwardNode.neighbors) {
-                if (visitedFromStart.has(neighbor)) {
-                    return reconstructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-
-                if (!visitedFromGoal.has(neighbor)) {
-                    visitedFromGoal.add(neighbor);
-                    parentFromGoal.set(neighbor, backwardNode);
-                    backwardQueue.push(neighbor);
-                }
-            }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
         }
+        current.next = newNode;
     }
 
-    return null; // No path found
+    // Method to print the list
+    print() {
+        let current = this.head;
+        const values: number[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
+    }
 }
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+    let next: ListNode | null = null;
 
-function reconstructPath(meetingNode: Node, parentFromStart: Map<Node, Node>, parentFromGoal: Map<Node, Node>): Node[] {
-    const pathFromStart = [];
-    let currentNode: Node | undefined = meetingNode;
-
-    // Trace back from the meeting node to the start
-    while (currentNode) {
-        pathFromStart.push(currentNode);
-        currentNode = parentFromStart.get(currentNode);
+    while (current) {
+        next = current.next; // Store the next node
+        current.next = prev; // Reverse the current node's pointer
+        prev = current;      // Move prev and current one step forward
+        current = next;
     }
-    pathFromStart.reverse();
-
-    currentNode = parentFromGoal.get(meetingNode);
-
-    // Trace back from the meeting node to the goal
-    const pathFromGoal = [];
-    while (currentNode) {
-        pathFromGoal.push(currentNode);
-        currentNode = parentFromGoal.get(currentNode);
-    }
-
-    // Combine paths
-    return pathFromStart.concat(pathFromGoal);
+    return prev; // New head of the reversed list
 }
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
-// Example Usage:
-const nodes: { [key: string]: Node } = {
-    a: { id: "a", neighbors: [] },
-    b: { id: "b", neighbors: [] },
-    c: { id: "c", neighbors: [] },
-    // Add more nodes and their neighbors as necessary
-};
+console.log("Original Linked List:");
+list.print();
 
-// Set up neighbors for each node
-nodes.a.neighbors.push(nodes.b);
-nodes.b.neighbors.push(nodes.c);
-nodes.c.neighbors.push(nodes.a); // e.g., creates a cycle
+list.head = reverseLinkedList(list.head);
 
-const path = biDirectionalSearch(nodes.a, nodes.c);
-console.log(path);
+console.log("Reversed Linked List:");
+list.print();
