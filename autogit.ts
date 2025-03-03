@@ -1,81 +1,53 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    constructor(start: number, end: number | null = null) {
-        this.children = new Map<string, SuffixTreeNode>();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
-    }
-
-    isLeaf(): boolean {
-        return this.children.size === 0;
-    }
-}
-
-class SuffixTree {
-    private root: SuffixTreeNode;
-    private text: string;
-    private size: number;
-
-    constructor(text: string) {
-        this.text = text;
-        this.size = text.length;
-        this.root = new SuffixTreeNode(-1); // Root node has no characters
-        this.build();
-    }
-
-    private build() {
-        for (let i = 0; i < this.size; i++) {
-            this.addSuffix(i);
-        }
-    }
-
-    private addSuffix(startIndex: number) {
-        let currentNode = this.root;
-        const suffix = this.text.substring(startIndex);
-
-        for (let char of suffix) {
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(startIndex);
-                currentNode.children.set(char, newNode);
-            }
-            currentNode = currentNode.children.get(char)!;
-            // Move to the next character after this
-            startIndex++;
-        }
-    }
-
-    public search(pattern: string): boolean {
-        let currentNode = this.root;
-
-        for (let char of pattern) {
-            if (currentNode.children.has(char)) {
-                currentNode = currentNode.children.get(char)!;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
             } else {
-                return false; // If the character not found, pattern doesn't exist
+                lps[i] = 0;
+                i++;
             }
         }
-        return true; // Pattern found
     }
-
-    public printTree(node: SuffixTreeNode = this.root, prefix: string = ''): void {
-        if (node.start >= 0) {
-            console.log(prefix + this.text.substring(node.start, node.end !== null ? node.end : this.size));
-        }
-        for (let [char, child] of node.children) {
-            this.printTree(child, prefix + char);
-        }
-    }
+    return lps;
 }
 
-// Usage Example:
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-const st = new SuffixTree("bananana");
-console.log(st.search("banana")); // true
-console.log(st.search("nana"));   // true
-console.log(st.search("nanana")); // false (not precisely the way you would due to it being a simple implementation)
-st.printTree();
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to result
+            j = lps[j - 1]; // Use LPS to continue searching
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters in the pattern
+            } else {
+                i++;
+            }
+        }
+    }
+    return result; // Return all starting indices of matches
+}
+
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", result);
