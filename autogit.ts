@@ -1,29 +1,22 @@
-function binarySearch(arr: number[], target: number, left: number = 0, right: number = arr.length - 1): number {
-    // Base case: if the left index exceeds the right index
-    if (left > right) {
-        return -1; // target not found
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    // Calculate the middle index
-    const mid: number = Math.floor((left + right) / 2);
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // target found
-    } 
-    // If the target is less than the middle element, search in the left half
-    else if (arr[mid] > target) {
-        return binarySearch(arr, target, left, mid - 1);
-    } 
-    // If the target is greater than the middle element, search in the right half
-    else {
-        return binarySearch(arr, target, mid + 1, right);
-    }
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 6;
-const result = binarySearch(sortedArray, target);
-
-console.log(result); // Should output the index of the target if found, -1 otherwise.
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("Dormitory", "Dirty room")); // true
