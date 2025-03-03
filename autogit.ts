@@ -1,29 +1,30 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+const newArray = array.filter(item => item !== elementToRemove);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3); // Get the index of the element
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove the element at that index
 }
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const indexToRemove = array.indexOf(elementToRemove);
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1);
 }
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = [...array].filter(item => item !== elementToRemove);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
+console.log(array); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
