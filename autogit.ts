@@ -1,33 +1,57 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Initial gap size
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Start with a big gap, then reduce the gap
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size.
-        // The first gap elements arr[0..gap-1] are already in gapped order
-        for (let i = gap; i < n; i++) {
-            // add arr[i] to the elements that have been gap sorted
-            // save arr[i] in temp and make a hole at position i
-            const temp = arr[i];
-            let j: number;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-            // shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                arr[j] = arr[j - gap];
-            }
-
-            // put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2); // Reduce the gap
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
     }
 
-    return arr;
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast && fast.next) {
+        slow = slow!.next; // Move slow by 1
+        fast = fast.next.next; // Move fast by 2
+    }
+
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to next node
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left!.next;
+        right = right.next;
+    }
+
+    return true; // It's a palindrome
 }
 
 // Example usage:
-const arr = [12, 34, 54, 2, 3];
-console.log("Unsorted array:", arr);
-const sortedArr = shellSort(arr);
-console.log("Sorted array:", sortedArr);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
