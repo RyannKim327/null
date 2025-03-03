@@ -1,24 +1,29 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
-
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
