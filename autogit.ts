@@ -1,64 +1,36 @@
-class TrieNode {
-    public children: Map<string, TrieNode>;
-    public isEndOfWord: boolean;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
+    }
+
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
     }
 }
 
-class Trie {
-    private root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the Trie
-    public insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        currentNode.isEndOfWord = true; // Mark the end of the word
-    }
-
-    // Search a word in the Trie
-    public search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if any words in the Trie start with the given prefix
-    public startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find the node corresponding to a given prefix/word
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null; // Not found
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-
-        return currentNode; // Return the node where the word/prefix ends
-    }
-}
-
-// Example Usage
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app"));   // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app")); // true
+// Example usage:
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
