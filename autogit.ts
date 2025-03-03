@@ -1,94 +1,70 @@
 class HashTable<K, V> {
-    private table: Array<[K, V] | null>;
+    private table: Array<Array<[K, V] | null>>;
     private size: number;
 
     constructor(size: number) {
         this.size = size;
-        this.table = new Array(size).fill(null);
+        this.table = new Array(size).fill(null).map(() => []);
     }
 
     private hash(key: K): number {
-        const stringKey = String(key);
         let hash = 0;
-        for (let i = 0; i < stringKey.length; i++) {
-            hash += stringKey.charCodeAt(i);
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
         }
         return hash % this.size;
     }
 
     public set(key: K, value: V): void {
         const index = this.hash(key);
-        this.table[index] = [key, value]; // This simple implementation overwrites existing items
+        const bucket = this.table[index];
 
-        // Handle collisions:
-        // Uncomment the following section if you want to handle collisions with chaining
-        /* 
-        if (this.table[index]) {
-            const existingEntry = this.table[index];
-            if (Array.isArray(existingEntry)) {
-                existingEntry.push([key, value]);
-            } else {
-                // If it is not null, it means collision occurred
-                this.table[index] = [[existingEntry[0], existingEntry[1]], [key, value]];
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
             }
-        } else {
-            this.table[index] = [key, value];
         }
-        */
+
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
     }
 
     public get(key: K): V | undefined {
         const index = this.hash(key);
-        const entry = this.table[index];
+        const bucket = this.table[index];
 
-        if (entry && Array.isArray(entry)) {
-            // Handle collisions
-            for (let [k, v] of entry) {
-                if (k === key) {
-                    return v;
-                }
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
             }
-        } else if (entry && entry[0] === key) {
-            return entry[1];
         }
+
         return undefined; // Key not found
     }
 
-    public delete(key: K): boolean {
+    public remove(key: K): boolean {
         const index = this.hash(key);
-        const entry = this.table[index];
+        const bucket = this.table[index];
 
-        if (entry && Array.isArray(entry)) {
-            // Handle collisions
-            for (let i = 0; i < entry.length; i++) {
-                if (entry[i][0] === key) {
-                    entry.splice(i, 1); // Remove the entry
-                    return true;
-                }
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
             }
-        } else if (entry && entry[0] === key) {
-            this.table[index] = null; // Delete the entry
-            return true;
         }
-        return false; // Key not found
-    }
 
-    public display(): void {
-        console.log(this.table);
+        return false; // Key not found
     }
 }
 
-// Usage
+// Example usage
 const hashTable = new HashTable<string, number>(10);
 hashTable.set("apple", 1);
 hashTable.set("banana", 2);
-hashTable.set("orange", 3);
-
 console.log(hashTable.get("apple")); // Output: 1
 console.log(hashTable.get("banana")); // Output: 2
-console.log(hashTable.get("grape")); // Output: undefined
-
-hashTable.delete("banana");
-console.log(hashTable.get("banana")); // Output: undefined
-
-hashTable.display(); // Displays the internal state of the hash table
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: undefined
