@@ -1,104 +1,24 @@
-class Graph {
-    private adjacencyList: Map<string, string[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
-    }
-
-    addEdge(vertex1: string, vertex2: string) {
-        if (!this.adjacencyList.has(vertex1)) {
-            this.adjacencyList.set(vertex1, []);
-        }
-        if (!this.adjacencyList.has(vertex2)) {
-            this.adjacencyList.set(vertex2, []);
-        }
-        this.adjacencyList.get(vertex1)!.push(vertex2);
-        this.adjacencyList.get(vertex2)!.push(vertex1); // For undirected graph
-    }
-
-    getNeighbors(vertex: string): string[] {
-        return this.adjacencyList.get(vertex) || [];
-    }
-
-    getVertices(): string[] {
-        return Array.from(this.adjacencyList.keys());
-    }
-}
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
-
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: Map<string, string | null> = new Map();
-    const parentFromGoal: Map<string, string | null> = new Map();
-
-    parentFromStart.set(start, null);
-    parentFromGoal.set(goal, null);
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentFromStart = queueFromStart.shift()!;
-        if (visitedFromGoal.has(currentFromStart)) {
-            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
-        }
-        visitedFromStart.add(currentFromStart);
-
-        for (const neighbor of graph.getNeighbors(currentFromStart)) {
-            if (!visitedFromStart.has(neighbor)) {
-                queueFromStart.push(neighbor);
-                visitedFromStart.add(neighbor);
-                parentFromStart.set(neighbor, currentFromStart);
-            }
-        }
-
-        // Search from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        if (visitedFromStart.has(currentFromGoal)) {
-            return constructPath(currentFromGoal, parentFromGoal, parentFromStart);
-        }
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph.getNeighbors(currentFromGoal)) {
-            if (!visitedFromGoal.has(neighbor)) {
-                queueFromGoal.push(neighbor);
-                visitedFromGoal.add(neighbor);
-                parentFromGoal.set(neighbor, currentFromGoal);
-            }
-        }
-    }
-
-    return null; // No path found
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(value => arr2.includes(value));
 }
 
-function constructPath(meetingPoint: string, parentFromStart: Map<string, string | null>, parentFromGoal: Map<string, string | null>): string[] {
-    const path: string[] = [];
-    let current: string | null = meetingPoint;
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-    // Construct path from start to meeting point
-    while (current !== null) {
-        path.push(current);
-        current = parentFromStart.get(current) || null;
-    }
-    path.reverse();
-
-    // Construct path from meeting point to goal
-    current = parentFromGoal.get(meetingPoint) || null;
-    while (current !== null) {
-        path.push(current);
-        current = parentFromGoal.get(current) || null;
-    }
-
-    return path;
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
+    
+    const commonElements = [...set1].filter(value => set2.has(value));
+    return commonElements;
 }
-const graph = new Graph();
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "D");
-graph.addEdge("D", "E");
-graph.addEdge("E", "F");
 
-const path = biDirectionalSearch(graph, "A", "F");
-console.log(path); // Output: ['A', 'B', 'D', 'E', 'F'] or similar
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
