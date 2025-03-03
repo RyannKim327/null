@@ -1,58 +1,39 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+npm install axios
+npm install --save-dev @types/axios
+import axios from 'axios';
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
-
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            // Store the last occurrence of each character in the pattern
-            table.set(pattern[i], i);
-        }
-
-        return table;
-    }
-
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    // If there's a mismatch, use the bad character rule
-                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - lastOccurrence);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found
-                return i; // Return the starting index of the match
-            }
-        }
-
-        return -1; // No match found
-    }
+// Define an interface for the response data
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const result = bm.search(text);
+async function fetchUsers() {
+  try {
+    // Make a GET request to the API
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
 
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found.");
+    // Assuming the response data is an array of users
+    const users: User[] = response.data;
+
+    // Log each user's details
+    users.forEach(user => {
+      console.log(`ID: ${user.id}`);
+      console.log(`Name: ${user.name}`);
+      console.log(`Username: ${user.username}`);
+      console.log(`Email: ${user.email}`);
+      console.log('----------------------');
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error message:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
 }
+
+// Call the function to fetch users
+fetchUsers();
