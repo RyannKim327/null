@@ -1,58 +1,43 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let len = 0; // length of the previous longest prefix suffix
-    let i = 1;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1]; // Use LPS to avoid redundant comparisons
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return lps;
 }
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
 
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+    function height(node: TreeNode | null): number {
+        if (node === null) {
+            return 0;
         }
 
-        if (j === pattern.length) {
-            // Found the pattern at index (i - j)
-            result.push(i - j);
-            j = lps[j - 1]; // Continue to search for the next match
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            // Mismatch after j matches
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS array to skip characters in the pattern
-            } else {
-                i++;
-            }
-        }
+        // Recursively find the height of the left and right subtrees
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
+
+        // Update the diameter if the path through the current node is larger
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        // Return the height of the current node
+        return Math.max(leftHeight, rightHeight) + 1;
     }
 
-    return result;
+    height(root);
+    return diameter;
 }
 
 // Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = KMPSearch(text, pattern);
-console.log(`Pattern found at indices: ${matches.join(', ')}`);
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3 (the path is 4 -> 2 -> 1 -> 3 or 5 -> 2 -> 1 -> 3)
