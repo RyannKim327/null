@@ -1,8 +1,16 @@
-function reverseString(str: string): string {
-    return str.split('').reverse().join('');
-}
+const originalArray: number[] = [1, 2, 3, 4, 5];
+console.log("Original Array:", originalArray);
 
-// Example usage
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: "!dlroW ,olleH"
+// Reverse the array
+const reversedArray: number[] = originalArray.reverse();
+console.log("Reversed Array:", reversedArray);
+const originalArray: number[] = [1, 2, 3, 4, 5];
+console.log("Original Array:", originalArray);
+
+// Create a copy and reverse it
+const reversedArray: number[] = [...originalArray].reverse();
+// or using slice
+// const reversedArray: number[] = originalArray.slice().reverse();
+
+console.log("Reversed Array:", reversedArray);
+console.log("Original Array after reversing:", originalArray);
