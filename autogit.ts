@@ -1,53 +1,22 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce<number[]>((acc, value) => {
+    if (!acc.includes(value)) {
+        acc.push(value);
     }
-}
-
-class BinaryTree {
-    root: TreeNode | null;
-
-    constructor() {
-        this.root = null;
+    return acc;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = [];
+array.forEach(value => {
+    if (!uniqueArray.includes(value)) {
+        uniqueArray.push(value);
     }
-
-    diameter(): number {
-        let maxDiameter = 0;
-
-        const height = (node: TreeNode | null): number => {
-            if (node === null) {
-                return 0;
-            }
-
-            // Recursively get the height of the left and right subtrees
-            const leftHeight = height(node.left);
-            const rightHeight = height(node.right);
-
-            // Update the diameter (maximum length of path between two nodes)
-            maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
-
-            // Return the height of the current node
-            return Math.max(leftHeight, rightHeight) + 1;
-        };
-
-        height(this.root);
-
-        return maxDiameter;
-    }
-}
-
-// Example Usage
-const tree = new BinaryTree();
-tree.root = new TreeNode(1);
-tree.root.left = new TreeNode(2);
-tree.root.right = new TreeNode(3);
-tree.root.left.left = new TreeNode(4);
-tree.root.left.right = new TreeNode(5);
-
-console.log("Diameter of the tree:", tree.diameter()); // Output: Diameter of the tree: 3
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
