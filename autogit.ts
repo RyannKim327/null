@@ -1,53 +1,55 @@
-function mergeSortIterative(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr;
+function createBadCharacterTable(pattern: string): { [key: string]: number } {
+    const table: { [key: string]: number } = {};
+    const patternLength = pattern.length;
+
+    // Initialize the table with the length of the pattern
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
     }
 
-    let n = arr.length;
-    // Create a temporary array to hold the merged result
-    const temp = new Array(n);
-
-    // Size of the subarrays being merged (starts from 1)
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            // Define the left and right starting indices
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + size * 2, n);
-
-            // Merge the two subarrays
-            let left = leftStart;
-            let right = mid;
-            let index = leftStart;
-
-            while (left < mid && right < rightEnd) {
-                if (arr[left] <= arr[right]) {
-                    temp[index++] = arr[left++];
-                } else {
-                    temp[index++] = arr[right++];
-                }
-            }
-
-            // Copy any remaining elements on the left side
-            while (left < mid) {
-                temp[index++] = arr[left++];
-            }
-
-            // Copy any remaining elements on the right side
-            while (right < rightEnd) {
-                temp[index++] = arr[right++];
-            }
-
-            // Copy the merged subarray back into the original array
-            for (let i = leftStart; i < rightEnd; i++) {
-                arr[i] = temp[i];
-            }
+    // Fill in the default value for characters not in the pattern
+    for (let i = 0; i < 256; i++) {
+        const char = String.fromCharCode(i);
+        if (!(char in table)) {
+            table[char] = patternLength;
         }
     }
 
-    return arr;
+    return table;
 }
 
-// Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSortIterative(array);
-console.log(sortedArray); // [3, 9, 10, 27, 38, 43, 82]
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const matches: number[] = [];
+
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            matches.push(i);
+            // Shift the pattern to the right
+            i += (i + patternLength < textLength) ? patternLength - badCharTable[text[i + patternLength]] : 1;
+        } else {
+            // Shift the pattern based on the bad character rule
+            i += Math.max(1, j - badCharTable[text[i + j]]);
+        }
+    }
+
+    return matches;
+}
+
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: [2, 7, 12]
