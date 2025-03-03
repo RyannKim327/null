@@ -1,39 +1,81 @@
-npm install axios
-import axios from 'axios';
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-// Define a type for the user data
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
-// Function to fetch user data from API
-const fetchUserData = async (userId: number): Promise<User> => {
-  try {
-    const response = await axios.get<User>(`https://jsonplaceholder.typicode.com/users/${userId}`);
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      // Handle known axios errors
-      console.error('Error message:', error.message);
-      throw new Error('Failed to fetch user data');
-    } else {
-      // Handle unexpected errors
-      console.error('Unexpected error:', error);
-      throw new Error('An unexpected error occurred');
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
-  }
-};
+}
+class LinkedList<T> {
+    head: Node<T> | null;
+    size: number;
 
-// Example usage
-const userId = 1;
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
 
-fetchUserData(userId)
-  .then(user => {
-    console.log('Fetched User Data:', user);
-  })
-  .catch(error => {
-    console.error('Error fetching user ', error.message);
-  });
+    // Add a new node at the end of the list
+    add(value: T): void {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+        this.size++;
+    }
+
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
+
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.size--;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                this.size--;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    // Display the list
+    display(): void {
+        let current = this.head;
+        const elements: T[] = [];
+        while (current) {
+            elements.push(current.value);
+            current = current.next;
+        }
+        console.log(elements.join(' -> '));
+    }
+
+    // Get the size of the list
+    getSize(): number {
+        return this.size;
+    }
+}
+const list = new LinkedList<number>();
+list.add(10);
+list.add(20);
+list.add(30);
+list.display(); // Output: 10 -> 20 -> 30
+
+list.remove(20);
+list.display(); // Output: 10 -> 30
+
+console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
