@@ -1,30 +1,22 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+npm install -g typescript
+// Import the 'readline' module to handle input from the console
+import * as readline from 'readline';
 
-const newArray = array.filter(item => item !== elementToRemove);
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
 
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Get the index of the element
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove the element at that index
+// Function to ask the user for their name and greet them
+function askForName() {
+    rl.question('Please enter your name: ', (name: string) => {
+        console.log(`Hello, ${name}!`);
+        rl.close(); // Close the interface
+    });
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const indexToRemove = array.indexOf(elementToRemove);
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1);
-}
-
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = [...array].filter(item => item !== elementToRemove);
-
-console.log(newArray); // Output: [1, 2, 4, 5]
-console.log(array); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+// Call the function to start the process
+askForName();
+tsc greet.ts
+node greet.js
