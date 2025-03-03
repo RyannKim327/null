@@ -1,15 +1,59 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The list of numbers is empty.");
+class Stack<T> {
+    private items: T[];
+
+    constructor() {
+        this.items = [];
     }
 
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
+    // Add an element to the top of the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
 
-    return mean;
+    // Remove and return the top element of the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Return the top element without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
+
+    // For debugging: print the stack
+    print(): void {
+        console.log(this.items);
+    }
 }
+const stack = new Stack<number>();
 
-// Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.peek());  // Output: 3
+console.log(stack.size());   // Output: 3
+
+console.log(stack.pop());    // Output: 3
+console.log(stack.pop());    // Output: 2
+
+stack.print();               // Output: [1]
+console.log(stack.isEmpty()); // Output: false
+
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
