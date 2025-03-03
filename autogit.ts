@@ -1,28 +1,36 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+function findMajorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
-
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
+    // First pass: Finding the candidate for majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
         } else {
-            right.push(arr[i]);
+            count--;
         }
     }
 
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // Second pass: Verifying that the candidate is actually the majority element
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    // Check if it actually appears more than n/2 times
+    if (count > nums.length / 2) {
+        return candidate;
+    }
+
+    return null; // No majority element found
 }
 
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+// Example usage:
+const nums = [3, 2, 3];
+const majorityElement = findMajorityElement(nums);
+console.log(majorityElement); // Output: 3
