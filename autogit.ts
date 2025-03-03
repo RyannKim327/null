@@ -1,28 +1,22 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce<number[]>((acc, value) => {
+    if (!acc.includes(value)) {
+        acc.push(value);
     }
-
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
-
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
+    return acc;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = [];
+array.forEach(value => {
+    if (!uniqueArray.includes(value)) {
+        uniqueArray.push(value);
     }
-
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
-}
-
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
