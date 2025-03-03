@@ -1,63 +1,40 @@
-type Graph = {
-    [key: string]: string[]; // Each node is a key, and its edges are the values (array of strings)
-};
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+}
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    // Mark the current node as visited
-    visited.add(start);
-    console.log(start); // Process the current node (e.g., print it)
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
 
-    // Recur for all the vertices adjacent to this vertex
-    const neighbors = graph[start] || [];
-    for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-            depthFirstSearch(graph, neighbor, visited);
+function mostDigits(nums: number[]): number {
+    let maxDigits = 0;
+    for (let num of nums) {
+        maxDigits = Math.max(maxDigits, digitCount(num));
+    }
+    return maxDigits;
+}
+
+function radixSort(nums: number[]): number[] {
+    const maxDigits = mostDigits(nums);
+    
+    for (let k = 0; k < maxDigits; k++) {
+        // Create buckets for base 10 digits
+        const buckets: number[][] = Array.from({ length: 10 }, () => []);
+        
+        for (let num of nums) {
+            const digit = getDigit(num, k);
+            buckets[digit].push(num);
         }
-    }
-}
-
-// Example of usage:
-const graph: Graph = {
-    a: ['b', 'c'],
-    b: ['d', 'e'],
-    c: ['f'],
-    d: [],
-    e: [],
-    f: []
-};
-
-depthFirstSearch(graph, 'a'); // Output: a, b, d, e, c, f
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function depthFirstSearchTree(node: TreeNode | null): void {
-    if (node === null) {
-        return;
+        
+        // Flatten the buckets back into the nums array
+        nums = [].concat(...buckets);
     }
     
-    console.log(node.value); // Process the current node (e.g., print it)
-
-    // Traverse the left subtree
-    depthFirstSearchTree(node.left);
-    
-    // Traverse the right subtree
-    depthFirstSearchTree(node.right);
+    return nums;
 }
 
-// Example of using DFS on a binary tree:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-depthFirstSearchTree(root); // Output: 1, 2, 4, 5, 3
+// Example Usage
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
