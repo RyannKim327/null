@@ -1,116 +1,81 @@
-class Graph {
-    private adjList: Map<number, number[]>;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-    constructor() {
-        this.adjList = new Map();
+    constructor(start: number, end: number | null = null) {
+        this.children = new Map<string, SuffixTreeNode>();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
     }
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        const dfs = (v: number) => {
-            visited.add(v);
-            const neighbors = this.adjList.get(v) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(v);
-        };
-
-        for (const vertex of this.adjList.keys()) {
-            if (!visited.has(vertex)) {
-                dfs(vertex);
-            }
-        }
-
-        return stack.reverse(); // Return in reverse order
+    isLeaf(): boolean {
+        return this.children.size === 0;
     }
 }
 
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+class SuffixTree {
+    private root: SuffixTreeNode;
+    private text: string;
+    private size: number;
 
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
-class Graph {
-    private adjList: Map<number, number[]>;
-    private inDegree: Map<number, number>;
-
-    constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
+    constructor(text: string) {
+        this.text = text;
+        this.size = text.length;
+        this.root = new SuffixTreeNode(-1); // Root node has no characters
+        this.build();
     }
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-
-        // Update in-degree of the destination vertex
-        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
-        if (!this.inDegree.has(v)) {
-            this.inDegree.set(v, 0); // Ensure source vertex is in the in-degree map
+    private build() {
+        for (let i = 0; i < this.size; i++) {
+            this.addSuffix(i);
         }
     }
 
-    topologicalSort(): number[] {
-        const queue: number[] = [];
-        const sortedOrder: number[] = [];
+    private addSuffix(startIndex: number) {
+        let currentNode = this.root;
+        const suffix = this.text.substring(startIndex);
 
-        // Initialize the queue with all vertices with in-degree 0
-        for (const [vertex, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                queue.push(vertex);
+        for (let char of suffix) {
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(startIndex);
+                currentNode.children.set(char, newNode);
+            }
+            currentNode = currentNode.children.get(char)!;
+            // Move to the next character after this
+            startIndex++;
+        }
+    }
+
+    public search(pattern: string): boolean {
+        let currentNode = this.root;
+
+        for (let char of pattern) {
+            if (currentNode.children.has(char)) {
+                currentNode = currentNode.children.get(char)!;
+            } else {
+                return false; // If the character not found, pattern doesn't exist
             }
         }
+        return true; // Pattern found
+    }
 
-        while (queue.length > 0) {
-            const current = queue.shift()!;
-            sortedOrder.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    queue.push(neighbor);
-                }
-            }
+    public printTree(node: SuffixTreeNode = this.root, prefix: string = ''): void {
+        if (node.start >= 0) {
+            console.log(prefix + this.text.substring(node.start, node.end !== null ? node.end : this.size));
         }
-
-        // Check if there was a cycle
-        if (sortedOrder.length !== this.inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        for (let [char, child] of node.children) {
+            this.printTree(child, prefix + char);
         }
-
-        return sortedOrder;
     }
 }
 
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+// Usage Example:
 
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
+const st = new SuffixTree("bananana");
+console.log(st.search("banana")); // true
+console.log(st.search("nana"));   // true
+console.log(st.search("nanana")); // false (not precisely the way you would due to it being a simple implementation)
+st.printTree();
