@@ -1,43 +1,25 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
-
-    function height(node: TreeNode | null): number {
-        if (node === null) {
-            return 0;
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    // Start with the largest gap and reduce it
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            const temp = arr[i];
+            let j = i;
+            // Shift earlier gap-sorted elements up until the correct location is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
-
-        // Recursively find the height of the left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-
-        // Update the diameter if the path through the current node is larger
-        diameter = Math.max(diameter, leftHeight + rightHeight);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
     }
-
-    height(root);
-    return diameter;
+    return arr;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Example usage
+const array = [5, 3, 8, 4, 2];
+console.log("Unsorted array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
