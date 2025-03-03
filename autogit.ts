@@ -1,50 +1,86 @@
-type Graph = {
-    [key: string]: { neighbor: string; weight: number }[];
-};
+class TreeNode {
+    public value: number;
+    public left: TreeNode | null = null;
+    public right: TreeNode | null = null;
 
-function dijkstra(graph: Graph, start: string): { [key: string]: number } {
-    const distances: { [key: string]: number } = {};
-    const priorityQueue: [string, number][] = [];
-    const visited: Set<string> = new Set();
-
-    // Initialize distances
-    for (const node in graph) {
-        distances[node] = Infinity;
+    constructor(value: number) {
+        this.value = value;
     }
-    distances[start] = 0;
-    priorityQueue.push([start, 0]);
+}
+class BinarySearchTree {
+    private root: TreeNode | null = null;
 
-    while (priorityQueue.length > 0) {
-        // Sort the queue by distance and get the node with the smallest distance
-        priorityQueue.sort((a, b) => a[1] - b[1]);
-        const [currentNode, currentDistance] = priorityQueue.shift()!;
-
-        if (visited.has(currentNode)) {
-            continue;
+    public insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
-        visited.add(currentNode);
+    }
 
-        // Explore neighbors
-        for (const { neighbor, weight } of graph[currentNode]) {
-            const newDistance = currentDistance + weight;
-
-            if (newDistance < distances[neighbor]) {
-                distances[neighbor] = newDistance;
-                priorityQueue.push([neighbor, newDistance]);
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            // Insert to the left
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            // Insert to the right
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    return distances;
+    public search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value === node.value) {
+            return true;
+        } else if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else {
+            return this.searchNode(node.right, value);
+        }
+    }
+
+    public inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
+    }
 }
+const bst = new BinarySearchTree();
+bst.insert(8);
+bst.insert(3);
+bst.insert(10);
+bst.insert(1);
+bst.insert(6);
+bst.insert(4);
+bst.insert(7);
+bst.insert(14);
+bst.insert(13);
 
-// Example usage
-const graph: Graph = {
-    A: [{ neighbor: 'B', weight: 1 }, { neighbor: 'C', weight: 4 }],
-    B: [{ neighbor: 'A', weight: 1 }, { neighbor: 'C', weight: 2 }, { neighbor: 'D', weight: 5 }],
-    C: [{ neighbor: 'A', weight: 4 }, { neighbor: 'B', weight: 2 }, { neighbor: 'D', weight: 1 }],
-    D: [{ neighbor: 'B', weight: 5 }, { neighbor: 'C', weight: 1 }],
-};
+// Searching for values
+console.log(bst.search(6));  // true
+console.log(bst.search(15)); // false
 
-const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths);
+// In-order traversal
+console.log('In-order traversal:');
+bst.inOrderTraversal(value => console.log(value));
