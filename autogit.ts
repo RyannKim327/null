@@ -1,27 +1,22 @@
-const numbers: number[] = [1, 5, 3, 9, 2];
-const max = Math.max(...numbers);
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lower case
+    const normalizedStr = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    let left = 0;
+    let right = normalizedStr.length - 1;
 
-let max = numbers[0]; // Assume the first element is the max initially
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > max) {
-        max = numbers[i];
+    while (left < right) {
+        if (normalizedStr[left] !== normalizedStr[right]) {
+            return false; // Characters don't match
+        }
+        left++;
+        right--;
     }
+
+    return true; // All characters matched
 }
 
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-
-const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-
-let max = numbers[0];
-numbers.forEach(num => {
-    if (num > max) {
-        max = num;
-    }
-});
-
-console.log(max); // Output: 9
+// Example usages
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
+console.log(isPalindrome("")); // true
