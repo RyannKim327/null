@@ -1,57 +1,39 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+npm install axios
+import axios from 'axios';
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+// Define a type for the user data
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
+// Function to fetch user data from API
+const fetchUserData = async (userId: number): Promise<User> => {
+  try {
+    const response = await axios.get<User>(`https://jsonplaceholder.typicode.com/users/${userId}`);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      // Handle known axios errors
+      console.error('Error message:', error.message);
+      throw new Error('Failed to fetch user data');
+    } else {
+      // Handle unexpected errors
+      console.error('Unexpected error:', error);
+      throw new Error('An unexpected error occurred');
     }
+  }
+};
 
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-    
-    while (fast && fast.next) {
-        slow = slow!.next; // Move slow by 1
-        fast = fast.next.next; // Move fast by 2
-    }
+// Example usage
+const userId = 1;
 
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
-
-    while (current) {
-        const nextTemp = current.next; // Store next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to current
-        current = nextTemp; // Move to next node
-    }
-
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
-
-    while (right) {
-        if (left!.value !== right.value) {
-            return false; // Not a palindrome
-        }
-        left = left!.next;
-        right = right.next;
-    }
-
-    return true; // It's a palindrome
-}
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(head)); // Output: true
+fetchUserData(userId)
+  .then(user => {
+    console.log('Fetched User Data:', user);
+  })
+  .catch(error => {
+    console.error('Error fetching user ', error.message);
+  });
