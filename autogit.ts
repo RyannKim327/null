@@ -1,50 +1,41 @@
-class ListNode {
+// Define the structure of a binary tree node
+class TreeNode {
     value: number;
-    next: ListNode | null;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    let main_ptr: ListNode | null = head;
-    let ref_ptr: ListNode | null = head;
-
-    // Move ref_ptr to nth node from head
-    let count = 0;
-    while (count < n) {
-        if (ref_ptr === null) {
-            // If n is greater than the number of nodes
-            return null;
-        }
-        ref_ptr = ref_ptr.next;
-        count++;
+// Function to sum all nodes of the binary tree
+function sumOfNodes(root: TreeNode | null): number {
+    // If the node is null, return 0
+    if (root === null) {
+        return 0;
     }
-
-    // Move both pointers until ref_ptr reaches the end
-    while (ref_ptr !== null) {
-        main_ptr = main_ptr?.next || null;
-        ref_ptr = ref_ptr.next;
-    }
-
-    return main_ptr; // main_ptr is now pointing to the nth node from the end
+    // Recursively sum the left and right subtrees and add the current node's value
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
 
 // Example usage:
+// Creating a simple binary tree
+/*
+       1
+      / \
+     2   3
+    / \
+   4   5
+*/
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-let head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-// Find the 2nd node from the end
-const nthNode = findNthFromEnd(head, 2);
-if (nthNode) {
-    console.log(nthNode.value); // Output: 4
-} else {
-    console.log("Node not found");
-}
+// Calculating the sum of all nodes
+const totalSum = sumOfNodes(root);
+console.log(totalSum); // Output: 15
