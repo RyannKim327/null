@@ -1,19 +1,41 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+// Definition for singly-linked list node
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-    // Filter the array to count occurrences of the word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+// Function to find the middle element of the linked list
+function findMiddle(head: ListNode | null): ListNode | null {
+    if (!head) return null; // If the list is empty
 
-    return count;
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    // Traverse the list with two pointers
+    while (fast && fast.next) {
+        slow = slow.next;        // Move slow pointer by one step
+        fast = fast.next.next;   // Move fast pointer by two steps
+    }
+
+    // slow pointer is now at the middle element
+    return slow;
 }
 
 // Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const middleNode = findMiddle(head);
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: 3
+} else {
+    console.log('The linked list is empty.');
+}
