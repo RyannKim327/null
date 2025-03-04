@@ -1,128 +1,163 @@
-class BTreeNode {
-    keys: number[];
-    children: BTreeNode[];
-    isLeaf: boolean;
-    t: number; // Minimum degree
+enum Color {
+    RED,
+    BLACK
+}
 
-    constructor(t: number, isLeaf: boolean) {
-        this.t = t;
-        this.isLeaf = isLeaf;
-        this.keys = [];
-        this.children = [];
+class Node {
+    public color: Color;
+    public left: Node | null;
+    public right: Node | null;
+    public parent: Node | null;
+    public value: number;
+
+    constructor(value: number) {
+        this.value = value;
+        this.color = Color.RED; // New nodes are red by default
+        this.left = null;
+        this.right = null;
+        this.parent = null;
     }
 }
-class BTree {
-    root: BTreeNode;
-    t: number; // Minimum degree
 
-    constructor(t: number) {
-        this.root = new BTreeNode(t, true);
-        this.t = t;
+class RedBlackTree {
+    private root: Node | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    // Actual insertion
-    insert(key: number) {
-        let root = this.root;
-        if (root.keys.length === 2 * this.t - 1) {
-            const newRoot = new BTreeNode(this.t, false);
-            newRoot.children.push(root);
-            newRoot.splitChild(0);
-            this.root = newRoot;
-            newRoot.insertNonFull(key);
+    private rotateLeft(x: Node) {
+        const y = x.right!;
+        x.right = y.left;
+
+        if (y.left !== null) {
+            y.left.parent = x;
+        }
+
+        y.parent = x.parent;
+
+        if (x.parent === null) {
+            this.root = y;
+        } else if (x === x.parent.left) {
+            x.parent.left = y;
         } else {
-            root.insertNonFull(key);
+            x.parent.right = y;
         }
+
+        y.left = x;
+        x.parent = y;
     }
 
-    search(key: number, node: BTreeNode = this.root): BTreeNode | null {
-        let i = 0;
-        while (i < node.keys.length && key > node.keys[i]) {
-            i++;
+    private rotateRight(y: Node) {
+        const x = y.left!;
+        y.left = x.right;
+
+        if (x.right !== null) {
+            x.right.parent = y;
         }
 
-        // If the key is found
-        if (i < node.keys.length && node.keys[i] === key) {
-            return node;
+        x.parent = y.parent;
+
+        if (y.parent === null) {
+            this.root = x;
+        } else if (y === y.parent.right) {
+            y.parent.right = x;
+        } else {
+            y.parent.left = x;
         }
 
-        // If it's a leaf node, key is not present
-        if (node.isLeaf) {
-            return null;
-        }
-
-        return this.search(key, node.children[i]);
+        x.right = y;
+        y.parent = x;
     }
 
-    // Print the tree structure
-    print(node: BTreeNode = this.root, level: number = 0): void {
-        console.log('Level ' + level + ': ', node.keys);
-        for (const child of node.children) {
-            this.print(child, level + 1);
-        }
-    }
-}
+    private fixInsert(z: Node) {
+        while (z.parent && z.parent.color === Color.RED) {
+            if (z.parent === z.parent.parent?.left) {
+                const y = z.parent.parent?.right;
 
-// Extend the BTreeNode class with splitChild and insertNonFull methods
-BTreeNode.prototype.splitChild = function (i: number) {
-    const t = this.t;
-    const y = this.children[i];
-    const z = new BTreeNode(t, y.isLeaf);
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.right) {
+                        z = z.parent;
+                        this.rotateLeft(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateRight(z.parent.parent!);
+                }
+            } else {
+                const y = z.parent.parent?.left;
 
-    // Move the last t-1 keys from y to z
-    for (let j = 0; j < t - 1; j++) {
-        z.keys.push(y.keys[j + t]);
-    }
-    if (!y.isLeaf) {
-        for (let j = 0; j < t; j++) {
-            z.children.push(y.children[j + t]);
-        }
-    }
-    this.children.splice(i + 1, 0, z);
-    this.keys.splice(i, 0, y.keys[t - 1]);
-    y.keys.splice(t - 1);
-};
-
-BTreeNode.prototype.insertNonFull = function (key: number) {
-    let i = this.keys.length - 1;
-    if (this.isLeaf) {
-        // Find location of new key to be inserted
-        while (i >= 0 && key < this.keys[i]) {
-            i--;
-        }
-        this.keys.splice(i + 1, 0, key); // Insert the new key
-    } else {
-        // Locate the child which is going to have the new key
-        while (i >= 0 && key < this.keys[i]) {
-            i--;
-        }
-        i++; // Go to the child
-        const child = this.children[i];
-        if (child.keys.length === 2 * this.t - 1) { // If the child is full
-            this.splitChild(i);
-            if (key > this.keys[i]) {
-                i++;
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.left) {
+                        z = z.parent;
+                        this.rotateRight(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateLeft(z.parent.parent!);
+                }
             }
         }
-        this.children[i].insertNonFull(key);
+        this.root!.color = Color.BLACK;
     }
-};
-const btree = new BTree(3); // Create a B-tree with minimum degree 3
-btree.insert(10);
-btree.insert(20);
-btree.insert(5);
-btree.insert(6);
-btree.insert(12);
-btree.insert(30);
-btree.insert(7);
-btree.insert(17);
 
-console.log("B-tree structure:");
-btree.print();
+    public insert(value: number) {
+        const newNode = new Node(value);
+        let y: Node | null = null;
+        let x: Node | null = this.root;
 
-// Searching for a key
-const foundNode = btree.search(10);
-if (foundNode) {
-    console.log("Key found in B-tree.");
-} else {
-    console.log("Key not found in B-tree.");
+        while (x !== null) {
+            y = x;
+            if (newNode.value < x.value) {
+                x = x.left;
+            } else {
+                x = x.right;
+            }
+        }
+
+        newNode.parent = y;
+
+        if (y === null) {
+            this.root = newNode;
+        } else if (newNode.value < y.value) {
+            y.left = newNode;
+        } else {
+            y.right = newNode;
+        }
+
+        this.fixInsert(newNode);
+    }
+
+    public inorderTraversal(node: Node | null = this.root): number[] {
+        const result: number[] = [];
+        if (node !== null) {
+            result.push(...this.inorderTraversal(node.left));
+            result.push(node.value);
+            result.push(...this.inorderTraversal(node.right));
+        }
+        return result;
+    }
+
+    public getRoot(): Node | null {
+        return this.root;
+    }
 }
+
+// Example usage
+const rbTree = new RedBlackTree();
+rbTree.insert(10);
+rbTree.insert(20);
+rbTree.insert(30);
+rbTree.insert(15);
+
+console.log(rbTree.inorderTraversal()); // Output: [10, 15, 20, 30]
