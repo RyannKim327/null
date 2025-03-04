@@ -1,61 +1,52 @@
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
+
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
-    
-    // Sort the array
-    const sortedArray = arr.slice().sort((a, b) => a - b);
-    
-    // Return the k-th smallest element (1-based index)
-    return sortedArray[k - 1];
-}
 
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
-function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
+    // Sort the rotations
+    rotations.sort();
 
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivotValue) {
-            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-            storeIndex++;
+    // Build the BWT result and find the original index
+    let bwtResult = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        const rotation = rotations[i];
+        bwtResult += rotation[n - 1]; // Last character of each sorted rotation
+        if (rotation === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
-    // Move pivot to its final place
-    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
-    return storeIndex;
+
+    return { transformed: bwtResult, index: originalIndex };
 }
 
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left];
+function inverseBurrowsWheelerTransform(bwt: string, originalIndex: number): string {
+    const n = bwt.length;
+    const table: string[] = new Array(n).fill('');
+
+    // Rebuild the table
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            table[j] = bwt[j] + table[j];
+        }
+        // Sort the table
+        table.sort();
     }
 
-    const pivotIndex = Math.floor((right - left) / 2) + left;
-    const newPivotIndex = partition(arr, left, right, pivotIndex);
-
-    if (k === newPivotIndex) {
-        return arr[k];
-    } else if (k < newPivotIndex) {
-        return quickSelect(arr, left, newPivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, newPivotIndex + 1, right, k);
-    }
+    // Return the original string
+    return table[originalIndex];
 }
 
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
-    return quickSelect(arr, 0, arr.length - 1, k - 1);
-}
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
 
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
+const original = inverseBurrowsWheelerTransform(transformed, index);
+console.log("Original:", original);
