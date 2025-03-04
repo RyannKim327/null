@@ -1,41 +1,92 @@
-// Definition for singly-linked list node
-class ListNode {
+class Node {
     value: number;
-    next: ListNode | null;
+    left: Node | null;
+    right: Node | null;
 
     constructor(value: number) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
+class BinarySearchTree {
+    root: Node | null;
 
-// Function to find the middle element of the linked list
-function findMiddle(head: ListNode | null): ListNode | null {
-    if (!head) return null; // If the list is empty
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    // Traverse the list with two pointers
-    while (fast && fast.next) {
-        slow = slow.next;        // Move slow pointer by one step
-        fast = fast.next.next;   // Move fast pointer by two steps
+    constructor() {
+        this.root = null;
     }
 
-    // slow pointer is now at the middle element
-    return slow;
-}
+    // Insert a new value into the BST
+    insert(value: number): void {
+        const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
+        }
+        this.insertNode(this.root, newNode);
+    }
 
-// Example usage
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+    private insertNode(node: Node, newNode: Node): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
 
-const middleNode = findMiddle(head);
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: 3
-} else {
-    console.log('The linked list is empty.');
+    // Search for a value in the BST
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: Node | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // value is found
+        }
+    }
+
+    // In-order traversal of the BST
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: Node | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
+    }
 }
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(18);
+
+// Search for a value
+console.log(bst.search(7)); // true
+console.log(bst.search(20)); // false
+
+// In-order traversal
+bst.inOrderTraversal(value => {
+    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
+});
