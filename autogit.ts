@@ -1,61 +1,46 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    let n = arr.length;
-    
-    // Initialize the Fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
-    }
+// Simulated API call
+const fetchData = async (): Promise<string> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("Data fetched successfully!");
+        }, 2000); // Simulate a 2-second network request
+    });
+};
 
-    // Marks the eliminated range from front
-    let offset = -1;
+const App: React.FC = () => {
+    const [data, setData] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check the index that is at the current Fibonacci number
-        let i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1; // Update to the previous two Fibonacci numbers
-            offset = i; // Update the offset to the new range
-        } 
-        // If x is less than the value at index i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 -= fibM1; // Update to the previous two Fibonacci numbers
-            fibM2 = fibM - fibM1;
-        } 
-        // Element found
-        else {
-            return i; // Return the index of the found element
+    const handleFetchData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await fetchData();
+            setData(result);
+        } catch (err) {
+            setError("Failed to fetch data");
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
-    // Comparing the last element with x
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1; // Return the index of the found element
-    }
+    useEffect(() => {
+        // Optionally fetch data on component mount
+        handleFetchData();
+    }, []);
 
-    // Element not found
-    return -1; 
-}
+    return (
+        <View style={{ padding: 20 }}>
+            <Button title="Fetch Data" onPress={handleFetchData} />
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
+            {data && <Text>{data}</Text>}
+        </View>
+    );
+};
 
-// Example usage:
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-
-const resultIndex = fibonacciSearch(arr, x);
-if (resultIndex !== -1) {
-    console.log(`Element found at index ${resultIndex}`);
-} else {
-    console.log(`Element not found`);
-}
+export default App;
