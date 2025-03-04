@@ -1,39 +1,44 @@
-function mergeSort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr; // Base case: an array of zero or one element is already sorted
+// Define the structure for a linked list node
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Split the array in half
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    // Recursively sort both halves and then merge them
-    return merge(mergeSort(left), mergeSort(right));
 }
 
-function merge(left: number[], right: number[]): number[] {
-    let sortedArray: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    // Merge the two arrays together in sorted order
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            sortedArray.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            sortedArray.push(right[rightIndex]);
-            rightIndex++;
-        }
+// Function to find the middle of the linked list
+function findMiddle(head: ListNode | null): ListNode | null {
+    if (head === null) {
+        return null; // If the list is empty, return null
     }
 
-    // Concatenating leftover elements (if any)
-    return sortedArray.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
+    let slow: ListNode | null = head; // Slow pointer
+    let fast: ListNode | null = head; // Fast pointer
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by one
+        fast = fast.next.next; // Move fast pointer by two
+    }
+
+    return slow; // When fast pointer reaches the end, slow is at the middle
 }
 
 // Example usage:
-const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray);
-[3, 9, 10, 27, 38, 43, 82]
+
+// Create linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+// Find and print the middle element
+const middleNode = findMiddle(head);
+if (middleNode) {
+    console.log('Middle element:', middleNode.value); // Output: 3
+} else {
+    console.log('The linked list is empty.');
+}
