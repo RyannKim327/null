@@ -1,80 +1,59 @@
-type Graph = { [key: string]: string[] };
+class SuffixTreeNode {
+    public children: Map<string, SuffixTreeNode>;
+    public isEnd: boolean;
 
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
-
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentFromStart = queueFromStart.shift()!;
-        if (visitedFromGoal.has(currentFromStart)) {
-            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
-        }
-        visitedFromStart.add(currentFromStart);
-
-        for (const neighbor of graph[currentFromStart] || []) {
-            if (!visitedFromStart.has(neighbor)) {
-                queueFromStart.push(neighbor);
-                visitedFromStart.add(neighbor);
-                parentFromStart[neighbor] = currentFromStart;
-            }
-        }
-
-        // Search from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        if (visitedFromStart.has(currentFromGoal)) {
-            return constructPath(currentFromGoal, parentFromGoal, parentFromStart);
-        }
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph[currentFromGoal] || []) {
-            if (!visitedFromGoal.has(neighbor)) {
-                queueFromGoal.push(neighbor);
-                visitedFromGoal.add(neighbor);
-                parentFromGoal[neighbor] = currentFromGoal;
-            }
-        }
+    constructor() {
+        this.children = new Map();
+        this.isEnd = false;
     }
-
-    return null; // No path found
 }
+class SuffixTree {
+    private root: SuffixTreeNode;
 
-function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
-    const path: string[] = [];
-    
-    // Construct path from start to meeting point
-    let current: string | null = meetingPoint;
-    while (current !== null) {
-        path.push(current);
-        current = parentFromStart[current];
-    }
-    path.reverse(); // Reverse to get the correct order
-
-    // Construct path from meeting point to goal
-    current = parentFromGoal[meetingPoint];
-    while (current !== null) {
-        path.push(current);
-        current = parentFromGoal[current];
+    constructor() {
+        this.root = new SuffixTreeNode();
     }
 
-    return path;
+    // Method to insert a suffix into the tree
+    public insert(suffix: string): void {
+        let currentNode = this.root;
+
+        for (let char of suffix) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new SuffixTreeNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        currentNode.isEnd = true;
+    }
+
+    // Function to build the suffix tree from the input string
+    public build(text: string): void {
+        const length = text.length;
+
+        // Insert all suffixes
+        for (let i = 0; i < length; i++) {
+            this.insert(text.substring(i));
+        }
+    }
+
+    // Method to search for a pattern in the suffix tree
+    public search(pattern: string): boolean {
+        let currentNode = this.root;
+
+        for (let char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return currentNode.isEnd; // Check if it is a complete suffix
+    }
 }
+const suffixTree = new SuffixTree();
+const text = "banana";
+suffixTree.build(text);
 
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E']
-};
-
-const path = biDirectionalSearch(graph, 'A', 'F');
-console.log(path); // Output: ['A', 'C', 'F'] or ['A', 'B', 'E', 'F']
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nana")); // true
+console.log(suffixTree.search("band")); // false
