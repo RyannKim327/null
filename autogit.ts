@@ -1,58 +1,24 @@
-type Graph = { [key: string]: string[] };
-
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If the node has already been visited, return
-    }
-
-    console.log(start); // Process the node (e.g., print it)
-    visited.add(start); // Mark the node as visited
-
-    for (const neighbor of graph[start]) {
-        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
-    }
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(value => arr2.includes(value));
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!; // Get the last element from the stack
-
-        if (!visited.has(node)) {
-            console.log(node); // Process the node (e.g., print it)
-            visited.add(node); // Mark the node as visited
-
-            // Add neighbors to the stack
-            for (const neighbor of graph[node]) {
-                stack.push(neighbor);
-            }
-        }
-    }
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
+    
+    const commonElements = [...set1].filter(value => set2.has(value));
+    return commonElements;
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
 
-depthFirstSearchIterative(graph, 'A');
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
