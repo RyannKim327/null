@@ -1,59 +1,20 @@
-class Node {
-    value: string;
-    children: Node[];
-
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function depthLimitedSearch(node: Node, depth: number, goal: string): Node | null {
-    // Check if we have reached the goal node
-    if (node.value === goal) {
-        return node;
-    }
-
-    // Check if we have reached the depth limit
-    if (depth <= 0) {
+function findSecondLargest(arr: number[]): number | null {
+    // Check if the array has at least two unique elements
+    if (arr.length < 2) {
         return null;
     }
 
-    // Recur for each child
-    for (const child of node.children) {
-        const result = depthLimitedSearch(child, depth - 1, goal);
-        if (result) {
-            return result;
-        }
-    }
+    // Use a Set to remove duplicates
+    const uniqueValues = Array.from(new Set(arr));
 
-    // If no child leads to the goal, return null
-    return null;
+    // Sort the unique values in descending order
+    uniqueValues.sort((a, b) => b - a);
+
+    // Return the second largest element
+    return uniqueValues[1] || null;
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
-const g = new Node("G");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
-c.addChild(g);
-
-const goalNode = depthLimitedSearch(root, 2, "F");
-if (goalNode) {
-    console.log(`Found node: ${goalNode.value}`);
-} else {
-    console.log("Node not found within depth limit.");
-}
+// Example usage:
+const numbers = [4, 1, 3, 2, 5, 5, 4];
+const secondLargest = findSecondLargest(numbers);
+console.log(`The second largest number is: ${secondLargest}`); // Output: The second largest number is: 4
