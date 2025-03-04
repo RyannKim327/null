@@ -1,70 +1,58 @@
-// Define a Node class
-class Node<T> {
-    value: T;
-    next: Node<T> | null = null;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(value: T) {
+    constructor(value: string) {
         this.value = value;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
 
-// Define a Queue class
-class Queue<T> {
-    private head: Node<T> | null = null;
-    private tail: Node<T> | null = null;
-    private size: number = 0;
+function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-    // Add an element to the end of the queue (enqueue)
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (this.tail) {
-            this.tail.next = newNode; // Link the old tail to the new node
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node;
         }
-        this.tail = newNode; // Update the tail to the new node
 
-        // If the queue was empty, update the head as well
-        if (!this.head) {
-            this.head = newNode;
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
         }
-        this.size++;
     }
 
-    // Remove and return the element from the front of the queue (dequeue)
-    dequeue(): T | null {
-        if (!this.head) {
-            return null; // Queue is empty
-        }
-        const dequeuedNode = this.head;
-        this.head = this.head.next; // Move head to the next node
-        if (!this.head) {
-            this.tail = null; // If queue is now empty, reset tail as well
-        }
-        this.size--;
-        return dequeuedNode.value; // Return dequeued value
-    }
-
-    // Peek at the front element of the queue without removing it
-    peek(): T | null {
-        return this.head ? this.head.value : null; // Return the head value if present
-    }
-
-    // Check if the queue is empty
-    isEmpty(): boolean {
-        return this.size === 0;
-    }
-
-    // Get the current size of the queue
-    getSize(): number {
-        return this.size;
-    }
+    // Goal not found within the depth limit
+    return null;
 }
 
 // Example usage
-const queue = new Queue<number>();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.peek());    // Output: 2
-console.log(queue.isEmpty()); // Output: false
-console.log(queue.getSize()); // Output: 2
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const goalNode = depthLimitedSearch(root, "E", 2);
+if (goalNode) {
+    console.log(`Found goal: ${goalNode.value}`);
+} else {
+    console.log("Goal not found within the depth limit.");
+}
