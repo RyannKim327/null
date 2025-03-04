@@ -1,40 +1,63 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
+type Node<T> = {
+  state: T;
+  score: number; // Change based on your scoring criteria
+};
 
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
+class BeamSearch<T> {
+  private beamWidth: number;
+  private scoringFunction: (state: T) => number;
+
+  constructor(beamWidth: number, scoringFunction: (state: T) => number) {
+    this.beamWidth = beamWidth;
+    this.scoringFunction = scoringFunction;
+  }
+
+  public search(initialStates: T[]): Node<T>[] {
+    let beams: Node<T>[] = initialStates.map(state => ({
+      state,
+      score: this.scoringFunction(state),
+    }));
+
+    while (!this.isFinished(beams)) {
+      const nextBeams: Node<T>[] = [];
+
+      for (const node of beams) {
+        const newStates = this.expand(node.state);
+        for (const state of newStates) {
+          nextBeams.push({
+            state,
+            score: this.scoringFunction(state),
+          });
         }
+      }
+
+      // Sort by score and take the top `beamWidth` candidates
+      nextBeams.sort((a, b) => b.score - a.score);
+      beams = nextBeams.slice(0, this.beamWidth);
     }
 
-    return count;
+    return beams;
+  }
+
+  // Dummy expand function, must be implemented based on the domain
+  private expand(state: T): T[] {
+    // Implement your logic to generate new states
+    return []; // Replace with actual expanded states
+  }
+
+  // Define your stopping condition
+  private isFinished(beams: Node<T>[]): boolean {
+    // Implement your stopping condition based on the problem
+    return beams.length === 0; // Example condition
+  }
 }
 
-// Example usage
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
+// Example usage of BeamSearch with a simple scoring function
+const scoringFunction = (state: string) => {
+  // Implement your custom scoring logic
+  return state.length; // Example: score based on length
+};
 
-// Example usage
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return Array.from(str).reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
-}
-
-// Example usage
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, "g");
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+const beamSearch = new BeamSearch<string>(3, scoringFunction);
+const result = beamSearch.search(["initial1", "initial2", "initial3"]);
+console.log(result);
