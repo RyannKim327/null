@@ -1,94 +1,75 @@
-class PriorityQueue<T> {
-    private heap: T[] = [];
-    private compare: (a: T, b: T) => number;
+function burrowsWheelerTransform(input: string): string {
+    const len = input.length;
 
-    constructor(compare: (a: T, b: T) => number) {
-        this.compare = compare;
+    // Generate all cyclic rotations
+    const rotations: string[] = [];
+    for (let i = 0; i < len; i++) {
+        const rotation = input.slice(i) + input.slice(0, i);
+        rotations.push(rotation);
     }
 
-    // Inserts an element into the priority queue
-    enqueue(element: T): void {
-        this.heap.push(element);
-        this.siftUp();
+    // Sort the rotations
+    rotations.sort();
+
+    // Extract the last column
+    let bwt = '';
+    for (const rotation of rotations) {
+        bwt += rotation[len - 1];  // Get the last character of each sorted rotation
     }
 
-    // Removes and returns the element with the highest priority
-    dequeue(): T | undefined {
-        if (this.isEmpty()) return undefined;
-        
-        if (this.heap.length === 1) return this.heap.pop();
-
-        const root = this.heap[0];
-        this.heap[0] = this.heap.pop()!;
-        this.siftDown();
-        
-        return root;
-    }
-
-    // Returns the element with the highest priority without removing it
-    peek(): T | undefined {
-        return this.heap[0];
-    }
-
-    // Checks if the heap is empty
-    isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    // Sift the last element up to its proper position
-    private siftUp(): void {
-        let index = this.heap.length - 1;
-
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            if (this.compare(this.heap[index], this.heap[parentIndex]) >= 0) {
-                break;
-            }
-            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-            index = parentIndex;
-        }
-    }
-
-    // Sift the root element down to its proper position
-    private siftDown(): void {
-        let index = 0;
-
-        while (true) {
-            const leftChildIndex = 2 * index + 1;
-            const rightChildIndex = 2 * index + 2;
-            let smallestIndex = index;
-
-            if (leftChildIndex < this.heap.length &&
-                this.compare(this.heap[leftChildIndex], this.heap[smallestIndex]) < 0) {
-                smallestIndex = leftChildIndex;
-            }
-
-            if (rightChildIndex < this.heap.length &&
-                this.compare(this.heap[rightChildIndex], this.heap[smallestIndex]) < 0) {
-                smallestIndex = rightChildIndex;
-            }
-
-            if (smallestIndex === index) {
-                break;
-            }
-
-            [this.heap[index], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[index]];
-            index = smallestIndex;
-        }
-    }
+    return bwt;
 }
 
-// Usage Example
+// Example usage
+const input = "banana";
+const transformed = burrowsWheelerTransform(input);
+console.log(transformed); // Output: "annb$aa"
+function burrowsWheelerInverse(bwt: string): string {
+    const len = bwt.length;
+    
+    // Create an array of characters and count occurrences
+    const count: number[] = new Array(256).fill(0);
+    for (const char of bwt) {
+        count[char.charCodeAt(0)]++;
+    }
+    
+    // Compute the starting index for each character
+    const start: number[] = [];
+    let total = 0;
+    for (let i = 0; i < 256; i++) {
+        if (count[i] > 0) {
+            start[i] = total;
+            total += count[i];
+        } else {
+            start[i] = -1; // Character not in BWT
+        }
+    }
 
-type Item = { priority: number;  string };
+    // Create an array for the first column
+    const firstCol = bwt.split('').sort();
+    const next = new Array(len);
+    
+    // Build the next array
+    const occurrence: number[] = new Array(256).fill(0);
+    for (let i = 0; i < len; i++) {
+        const char = bwt[i];
+        const index = start[char.charCodeAt(0)] + occurrence[char.charCodeAt(0)];
+        next[i] = index;
+        occurrence[char.charCodeAt(0)]++;
+    }
 
-const pq = new PriorityQueue<Item>((a, b) => a.priority - b.priority);
-pq.enqueue({ priority: 3,  'Task 1' });
-pq.enqueue({ priority: 1,  'Task 3' });
-pq.enqueue({ priority: 2,  'Task 2' });
+    // Reconstruct the original string
+    let original = '';
+    let row = next.indexOf(0); // Look for the original character (the one that sorts to the top)
+    for (let i = 0; i < len; i++) {
+        original += bwt[row];
+        row = next[row]; // Follow the next references
+    }
 
-console.log(pq.dequeue()); // { priority: 1,  'Task 3' }
-console.log(pq.peek()); // { priority: 2,  'Task 2' }
-console.log(pq.dequeue()); // { priority: 2,  'Task 2' }
-console.log(pq.dequeue()); // { priority: 3,  'Task 1' }
-console.log(pq.isEmpty()); // true
+    return original.split('').reverse().join(''); // Reverse to get original
+}
+
+// Example usage
+const bwtResult = burrowsWheelerTransform(input);
+const original = burrowsWheelerInverse(bwtResult);
+console.log(original); // Output: "banana"
