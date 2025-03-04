@@ -1,53 +1,46 @@
-type Edge = [number, number, number]; // [source, destination, weight]
+class Node<T> {
+    value: T;
+    next: Node<T> | null = null;
 
-class Graph {
-    private edges: Edge[];
-    private numVertices: number;
-
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
-    }
-
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push([source, destination, weight]);
-    }
-
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const [u, v, weight] of this.edges) {
-                if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-                    distances[v] = distances[u] + weight;
-                }
-            }
-        }
-
-        // Step 3: Check for negative-weight cycles
-        for (const [u, v, weight] of this.edges) {
-            if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-                return "Graph contains a negative-weight cycle";
-            }
-        }
-
-        return distances;
+    constructor(value: T) {
+        this.value = value;
     }
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+class LinkedList<T> {
+    head: Node<T> | null = null;
 
-const result = graph.bellmanFord(0);
-console.log(result); // Output the shortest distances from source vertex 0
+    // Method to append a new value at the end of the list
+    append(value: T) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+
+        while (current) {
+            count++;
+            current = current.next;
+        }
+
+        return count;
+    }
+}
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+
+console.log("Length of the linked list:", list.length()); // Output: Length of the linked list: 3
