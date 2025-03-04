@@ -1,29 +1,22 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+    // Assume the first string is the common prefix initially
+    let prefix = strs[0];
+
+    // Compare the prefix with each string in the array
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Shorten the prefix by removing the last character
+            prefix = prefix.substring(0, prefix.length - 1);
+            // If there's no common prefix, return an empty string
+            if (prefix === "") return "";
+        }
     }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+    return prefix;
 }
+
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
