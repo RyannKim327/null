@@ -8,65 +8,31 @@ class ListNode {
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    constructor() {
-        this.head = null;
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
+        }
     }
 
-    // A method to append a node to the linked list
-    append(value: number): void {
-        const newNode = new ListNode(value);
-        if (this.head === null) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next !== null) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // A method to print the linked list
-    printList(): void {
-        let current = this.head;
-        while (current !== null) {
-            process.stdout.write(`${current.value} -> `);
-            current = current.next;
-        }
-        console.log('null');
-    }
-
-    // A method to reverse the linked list
-    reverse(): void {
-        let prev: ListNode | null = null;
-        let current: ListNode | null = this.head;
-        let next: ListNode | null = null;
-
-        while (current !== null) {
-            next = current.next; // store next node
-            current.next = prev; // reverse the link
-            prev = current; // move prev to current
-            current = next; // move to next node
-        }
-        this.head = prev; // update head to the new first element
-    }
+    return false; // No cycle
 }
 
-// Example Usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.append(5);
+// Example usage:
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+head.next = second;
+second.next = third;
+// Uncomment the next line to create a cycle
+// third.next = head;
 
-console.log("Original Linked List:");
-linkedList.printList();
-
-linkedList.reverse();
-
-console.log("Reversed Linked List:");
-linkedList.printList();
+console.log(hasCycle(head)); // Output: false (or true if a cycle is created)
