@@ -1,58 +1,94 @@
-class Node {
-    value: string;
-    children: Node[];
+class PriorityQueue<T> {
+    private heap: T[] = [];
+    private compare: (a: T, b: T) => number;
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+    constructor(compare: (a: T, b: T) => number) {
+        this.compare = compare;
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
+    // Inserts an element into the priority queue
+    enqueue(element: T): void {
+        this.heap.push(element);
+        this.siftUp();
     }
-}
 
-function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+    // Removes and returns the element with the highest priority
+    dequeue(): T | undefined {
+        if (this.isEmpty()) return undefined;
+        
+        if (this.heap.length === 1) return this.heap.pop();
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
+        const root = this.heap[0];
+        this.heap[0] = this.heap.pop()!;
+        this.siftDown();
+        
+        return root;
+    }
 
-        // Check if the current node is the goal
-        if (node.value === goal) {
-            return node;
-        }
+    // Returns the element with the highest priority without removing it
+    peek(): T | undefined {
+        return this.heap[0];
+    }
 
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
+    // Checks if the heap is empty
+    isEmpty(): boolean {
+        return this.heap.length === 0;
+    }
+
+    // Sift the last element up to its proper position
+    private siftUp(): void {
+        let index = this.heap.length - 1;
+
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            if (this.compare(this.heap[index], this.heap[parentIndex]) >= 0) {
+                break;
             }
+            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+            index = parentIndex;
         }
     }
 
-    // Goal not found within the depth limit
-    return null;
+    // Sift the root element down to its proper position
+    private siftDown(): void {
+        let index = 0;
+
+        while (true) {
+            const leftChildIndex = 2 * index + 1;
+            const rightChildIndex = 2 * index + 2;
+            let smallestIndex = index;
+
+            if (leftChildIndex < this.heap.length &&
+                this.compare(this.heap[leftChildIndex], this.heap[smallestIndex]) < 0) {
+                smallestIndex = leftChildIndex;
+            }
+
+            if (rightChildIndex < this.heap.length &&
+                this.compare(this.heap[rightChildIndex], this.heap[smallestIndex]) < 0) {
+                smallestIndex = rightChildIndex;
+            }
+
+            if (smallestIndex === index) {
+                break;
+            }
+
+            [this.heap[index], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[index]];
+            index = smallestIndex;
+        }
+    }
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
+// Usage Example
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
+type Item = { priority: number;  string };
 
-const goalNode = depthLimitedSearch(root, "E", 2);
-if (goalNode) {
-    console.log(`Found goal: ${goalNode.value}`);
-} else {
-    console.log("Goal not found within the depth limit.");
-}
+const pq = new PriorityQueue<Item>((a, b) => a.priority - b.priority);
+pq.enqueue({ priority: 3,  'Task 1' });
+pq.enqueue({ priority: 1,  'Task 3' });
+pq.enqueue({ priority: 2,  'Task 2' });
+
+console.log(pq.dequeue()); // { priority: 1,  'Task 3' }
+console.log(pq.peek()); // { priority: 2,  'Task 2' }
+console.log(pq.dequeue()); // { priority: 2,  'Task 2' }
+console.log(pq.dequeue()); // { priority: 3,  'Task 1' }
+console.log(pq.isEmpty()); // true
