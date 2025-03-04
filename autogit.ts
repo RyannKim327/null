@@ -1,31 +1,112 @@
-function largestPrimeFactor(n: number): number {
-    // Variable to store the largest prime factor
-    let largestFactor = -1;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinaryTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    // n must be odd at this point, check odd factors from 3 onwards
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
-        // While i divides n, update n and largestFactor
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    // Insert a new value into the binary tree
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
     }
 
-    return largestFactor;
-}
+    // In-order traversal
+    inOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            this.inOrderTraversal(node.left);
+            console.log(node.value);
+            this.inOrderTraversal(node.right);
+        }
+    }
 
-// Example usage
-const number = 13195; // You can change this number to test with different inputs
-const largestFactor = largestPrimeFactor(number);
-console.log(`The largest prime factor of ${number} is ${largestFactor}.`);
+    // Pre-order traversal
+    preOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            console.log(node.value);
+            this.preOrderTraversal(node.left);
+            this.preOrderTraversal(node.right);
+        }
+    }
+
+    // Post-order traversal
+    postOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            this.postOrderTraversal(node.left);
+            this.postOrderTraversal(node.right);
+            console.log(node.value);
+        }
+    }
+
+    // Search for a value in the binary tree
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value === node.value) {
+            return true;
+        }
+        return value < node.value
+            ? this.searchNode(node.left, value)
+            : this.searchNode(node.right, value);
+    }
+}
+const tree = new BinaryTree();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+tree.insert(12);
+tree.insert(18);
+
+// In-order traversal
+console.log("In-order Traversal:");
+tree.inOrderTraversal(tree.root);
+
+// Pre-order traversal
+console.log("Pre-order Traversal:");
+tree.preOrderTraversal(tree.root);
+
+// Post-order traversal
+console.log("Post-order Traversal:");
+tree.postOrderTraversal(tree.root);
+
+// Search for a value
+console.log("Search for 7:", tree.search(7)); // true
+console.log("Search for 20:", tree.search(20)); // false
