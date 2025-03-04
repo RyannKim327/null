@@ -1,17 +1,19 @@
-function reverseWords(input: string): string {
-    // Split the string into an array of words
-    const wordsArray = input.split(' ');
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-    // Reverse the array of words
-    const reversedArray = wordsArray.reverse();
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-    // Join the array back into a string
-    const reversedString = reversedArray.join(' ');
+// Start the task
+task.start();
 
-    return reversedString;
-}
-
-// Example usage:
-const originalString = "Hello world this is TypeScript";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "TypeScript is this world Hello"
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
