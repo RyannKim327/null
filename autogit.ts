@@ -1,29 +1,31 @@
-function selectionSort(arr: number[]): number[] {
-    const n: number = arr.length;
-
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the current position is the minimum
-        let minIndex: number = i;
-
-        // Find the index of the minimum element in the unsorted portion
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if a new minimum is found
-            }
-        }
-
-        // Swap the found minimum element with the first element
-        if (minIndex !== i) {
-            const temp: number = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
+function countingSort(arr: number[], maxVal: number): number[] {
+    // Create an array to store the count of each unique value
+    const count: number[] = new Array(maxVal + 1).fill(0);
+    const output: number[] = new Array(arr.length);
+    
+    // Count each element in the input array
+    for (let num of arr) {
+        count[num]++;
+    }
+    
+    // Modify the count array such that each element at each index
+    // contains the actual position of this element in the output array
+    for (let i = 1; i <= maxVal; i++) {
+        count[i] += count[i - 1];
     }
 
-    return arr; // Return the sorted array
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const num = arr[i];
+        output[count[num] - 1] = num; // Place the number in the correct position
+        count[num]--; // Decrease the count for the duplicated number
+    }
+
+    return output;
 }
 
-// Example usage
-const unsortedArray: number[] = [64, 25, 12, 22, 11];
-const sortedArray: number[] = selectionSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const maxVal = Math.max(...arr);
+const sortedArray = countingSort(arr, maxVal);
+console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
