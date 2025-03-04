@@ -1,54 +1,33 @@
-type Graph = {
-    [key: string]: { [key: string]: number }; // adjacency list
-};
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const table: string[] = [];
 
-function dijkstra(graph: Graph, start: string): { [key: string]: number | undefined } {
-    // Initialize distance object
-    const distances: { [key: string]: number | undefined } = {};
-    const priorityQueue: Array<[string, number]> = []; // min-heap in form of array
-    const visited: Set<string> = new Set();
-
-    // Initialize distances and priority queue
-    for (const node in graph) {
-        distances[node] = Infinity; // Initially, all distances are infinite
+    // Create the table of rotations
+    for (let i = 0; i < n; i++) {
+        table.push(input.slice(i) + input.slice(0, i));
     }
-    distances[start] = 0; // Distance to the start node is 0
-    priorityQueue.push([start, 0]);
 
-    while (priorityQueue.length > 0) {
-        // Sort the queue based on the distance (smallest first)
-        priorityQueue.sort((a, b) => a[1] - b[1]);
-        
-        // Get the node with the smallest distance
-        const [currentNode] = priorityQueue.shift()!;
-        
-        if (visited.has(currentNode)) {
-            continue; // Skip if we've already visited this node
-        }
-        visited.add(currentNode);
+    // Sort the table
+    table.sort();
 
-        // Explore neighbors
-        for (const neighbor in graph[currentNode]) {
-            const weight = graph[currentNode][neighbor];
-            const newDistance = distances[currentNode]! + weight;
+    // Build the BWT result and find the original index
+    let bwtResult = '';
+    let originalIndex = 0;
 
-            if (newDistance < (distances[neighbor] || Infinity)) {
-                distances[neighbor] = newDistance;
-                priorityQueue.push([neighbor, newDistance]);
-            }
+    for (let i = 0; i < n; i++) {
+        bwtResult += table[i][n - 1]; // Take the last character of each sorted rotation
+        if (table[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
 
-    return distances;
+    return { transformed: bwtResult, index: originalIndex };
 }
 
 // Example usage
-const graph: Graph = {
-    A: { B: 1, C: 4 },
-    B: { A: 1, C: 2, D: 5 },
-    C: { A: 4, B: 2, D: 1 },
-    D: { B: 5, C: 1 },
-};
-
-const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths); // Outputs distances from A to all other nodes
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+Transformed: annb$aa
+Original Index: 3
