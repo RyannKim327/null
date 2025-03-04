@@ -1,79 +1,30 @@
-type Graph = { [key: string]: string[] };
-
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
-
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Explore from the start
-        const currentFromStart = queueFromStart.shift()!;
-        visitedFromStart.add(currentFromStart);
-
-        for (const neighbor of graph[currentFromStart] || []) {
-            if (!visitedFromStart.has(neighbor)) {
-                parentFromStart[neighbor] = currentFromStart;
-                queueFromStart.push(neighbor);
-                if (visitedFromGoal.has(neighbor)) {
-                    return constructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-            }
-        }
-
-        // Explore from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph[currentFromGoal] || []) {
-            if (!visitedFromGoal.has(neighbor)) {
-                parentFromGoal[neighbor] = currentFromGoal;
-                queueFromGoal.push(neighbor);
-                if (visitedFromStart.has(neighbor)) {
-                    return constructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-            }
-        }
-    }
-
-    return null; // No path found
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
-    const pathFromStart: string[] = [];
-    let current: string | null = meetingPoint;
-
-    while (current !== null) {
-        pathFromStart.push(current);
-        current = parentFromStart[current];
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
     }
 
-    const pathFromGoal: string[] = [];
-    current = parentFromGoal[meetingPoint];
-
-    while (current !== null) {
-        pathFromGoal.push(current);
-        current = parentFromGoal[current];
-    }
-
-    return pathFromStart.reverse().concat(pathFromGoal);
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
 }
 
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E']
-};
-
-const start = 'A';
-const goal = 'F';
-const path = biDirectionalSearch(graph, start, goal);
-console.log(path); // Output: ['A', 'C', 'F'] or similar path
+// Call the fetchPosts function and log the results
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
