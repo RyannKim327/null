@@ -1,70 +1,59 @@
-interface Node<T> {
-    state: T;               // The current state
-    score: number;         // The score of the state
-    parent?: Node<T>;      // The parent node for backtracking
+class Node {
+    value: string;
+    children: Node[];
+
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
+    }
 }
 
-type ExpandFunction<T> = (node: Node<T>) => Node<T>[]; // Function to expand a node into children
+function depthLimitedSearch(root: Node, target: string, depthLimit: number): Node | null {
+    // Create a stack for the iterative search
+    const stack: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
 
-function beamSearch<T>(
-    initialNode: Node<T>, 
-    beamWidth: number, 
-    expandFn: ExpandFunction<T>, 
-    isGoalFn: (node: Node<T>) => boolean 
-): Node<T> | null {
-    let currentBeam: Node<T>[] = [initialNode];
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!; // Get the last added node and its depth
 
-    while (currentBeam.length > 0) {
-        // We use an array to hold the next beam of nodes
-        const nextBeam: Node<T>[] = [];
-
-        for (const node of currentBeam) {
-            // Check if we've reached a goal state
-            if (isGoalFn(node)) {
-                return node; // Return the found goal node
-            }
-
-            // Expand the current node and add to the next beam
-            const children = expandFn(node);
-            nextBeam.push(...children);
+        // Check if this is the node we are looking for
+        if (node.value === target) {
+            return node; // Return the found node
         }
 
-        // Sort nodes in the next beam based on score and limit to beamWidth
-        nextBeam.sort((a, b) => b.score - a.score); // Sort in descending order
-        currentBeam = nextBeam.slice(0, beamWidth); // Include only the top beamWidth nodes
+        // If we have not reached the depth limit, push children onto the stack
+        if (depth < depthLimit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
     }
 
-    return null; // No solution found
+    return null; // Return null if the target is not found
 }
 
-// Example usage:
-interface MyState {
-    value: number; // Example state property
-}
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+const g = new Node("G");
 
-// Sample expand function
-const expand: ExpandFunction<MyState> = (node) => {
-    const children: Node<MyState>[] = [];
-    // Generate some example children (you would replace this with your logic)
-    for (let i = 1; i <= 3; i++) {
-        const childState: MyState = { value: node.state.value + i };
-        children.push({ state: childState, score: Math.random() * 100, parent: node });
-    }
-    return children;
-};
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+c.addChild(g);
 
-// Sample goal function
-const isGoal = (node: Node<MyState>): boolean => {
-    return node.state.value >= 10; // Define a simple goal condition
-};
-
-// Initial node
-const initialNode: Node<MyState> = { state: { value: 0 }, score: 0 };
-
-// Run the beam search
-const goalNode = beamSearch(initialNode, 2, expand, isGoal);
-if (goalNode) {
-    console.log(`Goal found with state:`, goalNode.state);
+const targetNode = depthLimitedSearch(root, "E", 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
 } else {
-    console.log(`No solution found.`);
+    console.log("Node not found within depth limit.");
 }
