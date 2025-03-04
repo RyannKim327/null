@@ -1,17 +1,8 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seenCharacters = new Set<string>();
-
-    for (const char of str) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenCharacters.add(char); // Add the character to the set
-    }
-
-    return null; // Return null if no repeated character is found
+function removeVowels(input: string): string {
+    return input.replace(/[aeiouAEIOU]/g, '');
 }
 
 // Example usage:
-const inputString = "abca";
-const result = firstRepeatedCharacter(inputString);
-console.log(result); // Output: "a"
+const originalString = "Hello, World!";
+const stringWithoutVowels = removeVowels(originalString);
+console.log(stringWithoutVowels); // Hll, Wrld!
