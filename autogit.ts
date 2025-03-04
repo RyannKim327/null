@@ -1,34 +1,29 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and word to lower case for case insensitive matching.
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Find the index of the element
+    // Split the text into words based on spaces, punctuation, etc.
+    const wordsArray = normalizedText.match(/\b\w+\b/g); // This regex captures word boundaries
 
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove the element at that index
-}
-
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
-const idToRemove = 2;
-
-const indexToRemove = array.findIndex(item => item.id === idToRemove);
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1);
-}
-
-console.log(array); // Output: [{ id: 1 }, { id: 3 }]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
+    // If no words are found, return 0
+    if (!wordsArray) {
+        return 0;
     }
-    return acc;
-}, []);
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+    // Count occurrences of the specified word
+    let count = 0;
+    for (const currentWord of wordsArray) {
+        if (currentWord === normalizedWord) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+// Example usage:
+const text = "Hello world! The world is beautiful. World over.";
+const wordToCount = "world";
+const occurrences = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${occurrences} times in the text.`);
