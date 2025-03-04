@@ -1,63 +1,53 @@
-type Node<T> = {
-  state: T;
-  score: number; // Change based on your scoring criteria
-};
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-class BeamSearch<T> {
-  private beamWidth: number;
-  private scoringFunction: (state: T) => number;
-
-  constructor(beamWidth: number, scoringFunction: (state: T) => number) {
-    this.beamWidth = beamWidth;
-    this.scoringFunction = scoringFunction;
-  }
-
-  public search(initialStates: T[]): Node<T>[] {
-    let beams: Node<T>[] = initialStates.map(state => ({
-      state,
-      score: this.scoringFunction(state),
-    }));
-
-    while (!this.isFinished(beams)) {
-      const nextBeams: Node<T>[] = [];
-
-      for (const node of beams) {
-        const newStates = this.expand(node.state);
-        for (const state of newStates) {
-          nextBeams.push({
-            state,
-            score: this.scoringFunction(state),
-          });
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
         }
-      }
-
-      // Sort by score and take the top `beamWidth` candidates
-      nextBeams.sort((a, b) => b.score - a.score);
-      beams = nextBeams.slice(0, this.beamWidth);
     }
 
-    return beams;
-  }
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
 
-  // Dummy expand function, must be implemented based on the domain
-  private expand(state: T): T[] {
-    // Implement your logic to generate new states
-    return []; // Replace with actual expanded states
-  }
-
-  // Define your stopping condition
-  private isFinished(beams: Node<T>[]): boolean {
-    // Implement your stopping condition based on the problem
-    return beams.length === 0; // Example condition
-  }
+    return count > nums.length / 2 ? candidate : null;
 }
 
-// Example usage of BeamSearch with a simple scoring function
-const scoringFunction = (state: string) => {
-  // Implement your custom scoring logic
-  return state.length; // Example: score based on length
-};
+// Example usage
+const nums = [3, 2, 3];
+const majority = majorityElement(nums);
+console.log(majority); // Output: 3
+function majorityElementUsingMap(nums: number[]): number | null {
+    const countMap: Record<number, number> = {};
+    const majorityThreshold = nums.length / 2;
 
-const beamSearch = new BeamSearch<string>(3, scoringFunction);
-const result = beamSearch.search(["initial1", "initial2", "initial3"]);
-console.log(result);
+    for (const num of nums) {
+        if (!countMap[num]) {
+            countMap[num] = 0;
+        }
+        countMap[num]++;
+        
+        if (countMap[num] > majorityThreshold) {
+            return num;
+        }
+    }
+
+    return null;
+}
+
+// Example usage
+const nums2 = [2, 2, 1, 1, 1, 2, 2];
+const majority2 = majorityElementUsingMap(nums2);
+console.log(majority2); // Output: 2
