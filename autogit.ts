@@ -1,22 +1,29 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    // Assume the first string is the common prefix initially
-    let prefix = strs[0];
+    do {
+        swapped = false;
 
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Shorten the prefix by removing the last character
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If there's no common prefix, return an empty string
-            if (prefix === "") return "";
+        // Loop through the array
+        for (let i = 0; i < n - 1; i++) {
+            // Compare adjacent items
+            if (arr[i] > arr[i + 1]) {
+                // Swap if they are in the wrong order
+                const temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
+
+                // Set swapped to true to indicate a swap occurred
+                swapped = true;
+            }
         }
-    }
+    } while (swapped); // Continue until no swaps are made
 
-    return prefix;
+    return arr;
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted array:", sortedArray);
