@@ -1,30 +1,43 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function longestCommonSubsequence(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
+
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
     }
 
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m;
+    let j = n;
+
+    while (i > 0 && j > 0) {
+        if (s1[i - 1] === s2[j - 1]) {
+            lcs = s1[i - 1] + lcs; // prepend current character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // move up
+        } else {
+            j--; // move left
+        }
+    }
+
+    return lcs; // return the LCS string
 }
 
-// Call the fetchPosts function and log the results
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Example usage:
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
+const result = longestCommonSubsequence(str1, str2);
+console.log(result); // Output: "ADH"
