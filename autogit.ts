@@ -1,43 +1,31 @@
-// Define the type for the graph's adjacency list
-type Graph = { [key: string]: string[] };
+function largestPrimeFactor(n: number): number {
+    // Variable to store the largest prime factor
+    let largestFactor = -1;
 
-// Function to perform Breadth-First Search
-function bfs(graph: Graph, startNode: string): string[] {
-    // Initialize an array to keep track of visited nodes
-    const visited: Set<string> = new Set();
-    const queue: string[] = [];
-    const result: string[] = [];
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
 
-    // Start the traversal with the starting node
-    queue.push(startNode);
-    visited.add(startNode);
-
-    while (queue.length > 0) {
-        // Dequeue the first node from the queue
-        const currentNode = queue.shift()!;
-        result.push(currentNode);
-
-        // Explore each neighbor of the current node
-        for (const neighbor of graph[currentNode] || []) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push(neighbor);
-            }
+    // n must be odd at this point, check odd factors from 3 onwards
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        // While i divides n, update n and largestFactor
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
         }
     }
 
-    return result;
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
 // Example usage
-const graph: Graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
-};
-
-const result = bfs(graph, 'A');
-console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+const number = 13195; // You can change this number to test with different inputs
+const largestFactor = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is ${largestFactor}.`);
