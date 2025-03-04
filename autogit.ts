@@ -1,19 +1,34 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleString());
-});
+const newArray = array.filter(item => item !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3); // Find the index of the element
 
-// Start the task
-task.start();
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove the element at that index
+}
 
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronExample.ts
-node cronExample.js
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const idToRemove = 2;
+
+const indexToRemove = array.findIndex(item => item.id === idToRemove);
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1);
+}
+
+console.log(array); // Output: [{ id: 1 }, { id: 3 }]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = array.reduce((acc, item) => {
+    if (item !== elementToRemove) {
+        acc.push(item);
+    }
+    return acc;
+}, []);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
