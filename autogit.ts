@@ -1,12 +1,17 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
+function firstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
+
+    for (const char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // Return the first repeated character
+        }
+        seenCharacters.add(char); // Add the character to the set
     }
-    return count;
+
+    return null; // Return null if no repeated character is found
 }
 
 // Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+const inputString = "abca";
+const result = firstRepeatedCharacter(inputString);
+console.log(result); // Output: "a"
