@@ -1,44 +1,23 @@
-// Define the structure for a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+mkdir typescript-cron-demo
+cd typescript-cron-demo
+npm init -y
+npm install node-cron typescript @types/node --save
+npx tsc --init
+import cron from 'node-cron';
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Cron job executed at: ' + new Date().toLocaleString());
+});
 
-// Function to find the middle of the linked list
-function findMiddle(head: ListNode | null): ListNode | null {
-    if (head === null) {
-        return null; // If the list is empty, return null
-    }
+// Start the cron job
+task.start();
+console.log('Cron job is scheduled. It will run every minute.');
 
-    let slow: ListNode | null = head; // Slow pointer
-    let fast: ListNode | null = head; // Fast pointer
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by one
-        fast = fast.next.next; // Move fast pointer by two
-    }
-
-    return slow; // When fast pointer reaches the end, slow is at the middle
-}
-
-// Example usage:
-
-// Create linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-// Find and print the middle element
-const middleNode = findMiddle(head);
-if (middleNode) {
-    console.log('Middle element:', middleNode.value); // Output: 3
-} else {
-    console.log('The linked list is empty.');
-}
+// Optional: To stop the task after some time
+setTimeout(() => {
+    task.stop();
+    console.log('Cron job stopped.');
+}, 5 * 60 * 1000); // Stops after 5 minutes
+npx tsc cronJob.ts
+node cronJob.js
