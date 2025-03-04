@@ -1,163 +1,34 @@
-enum Color {
-    RED,
-    BLACK
-}
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-class Node {
-    public color: Color;
-    public left: Node | null;
-    public right: Node | null;
-    public parent: Node | null;
-    public value: number;
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    constructor(value: number) {
-        this.value = value;
-        this.color = Color.RED; // New nodes are red by default
-        this.left = null;
-        this.right = null;
-        this.parent = null;
-    }
-}
-
-class RedBlackTree {
-    private root: Node | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    private rotateLeft(x: Node) {
-        const y = x.right!;
-        x.right = y.left;
-
-        if (y.left !== null) {
-            y.left.parent = x;
-        }
-
-        y.parent = x.parent;
-
-        if (x.parent === null) {
-            this.root = y;
-        } else if (x === x.parent.left) {
-            x.parent.left = y;
-        } else {
-            x.parent.right = y;
-        }
-
-        y.left = x;
-        x.parent = y;
-    }
-
-    private rotateRight(y: Node) {
-        const x = y.left!;
-        y.left = x.right;
-
-        if (x.right !== null) {
-            x.right.parent = y;
-        }
-
-        x.parent = y.parent;
-
-        if (y.parent === null) {
-            this.root = x;
-        } else if (y === y.parent.right) {
-            y.parent.right = x;
-        } else {
-            y.parent.left = x;
-        }
-
-        x.right = y;
-        y.parent = x;
-    }
-
-    private fixInsert(z: Node) {
-        while (z.parent && z.parent.color === Color.RED) {
-            if (z.parent === z.parent.parent?.left) {
-                const y = z.parent.parent?.right;
-
-                if (y && y.color === Color.RED) {
-                    z.parent.color = Color.BLACK;
-                    y.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    z = z.parent.parent!;
-                } else {
-                    if (z === z.parent.right) {
-                        z = z.parent;
-                        this.rotateLeft(z);
-                    }
-                    z.parent.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    this.rotateRight(z.parent.parent!);
-                }
-            } else {
-                const y = z.parent.parent?.left;
-
-                if (y && y.color === Color.RED) {
-                    z.parent.color = Color.BLACK;
-                    y.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    z = z.parent.parent!;
-                } else {
-                    if (z === z.parent.left) {
-                        z = z.parent;
-                        this.rotateRight(z);
-                    }
-                    z.parent.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    this.rotateLeft(z.parent.parent!);
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update ending index of the substring
                 }
             }
         }
-        this.root!.color = Color.BLACK;
     }
 
-    public insert(value: number) {
-        const newNode = new Node(value);
-        let y: Node | null = null;
-        let x: Node | null = this.root;
-
-        while (x !== null) {
-            y = x;
-            if (newNode.value < x.value) {
-                x = x.left;
-            } else {
-                x = x.right;
-            }
-        }
-
-        newNode.parent = y;
-
-        if (y === null) {
-            this.root = newNode;
-        } else if (newNode.value < y.value) {
-            y.left = newNode;
-        } else {
-            y.right = newNode;
-        }
-
-        this.fixInsert(newNode);
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
     }
-
-    public inorderTraversal(node: Node | null = this.root): number[] {
-        const result: number[] = [];
-        if (node !== null) {
-            result.push(...this.inorderTraversal(node.left));
-            result.push(node.value);
-            result.push(...this.inorderTraversal(node.right));
-        }
-        return result;
-    }
-
-    public getRoot(): Node | null {
-        return this.root;
-    }
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
 
-// Example usage
-const rbTree = new RedBlackTree();
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(30);
-rbTree.insert(15);
-
-console.log(rbTree.inorderTraversal()); // Output: [10, 15, 20, 30]
+// Example usage:
+const str1 = "abcde";
+const str2 = "abfce";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "ab"
