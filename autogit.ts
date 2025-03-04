@@ -1,54 +1,28 @@
-type Node = {
-    sequence: string; // The current sequence
-    score: number;    // The score of the sequence
-};
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-function beamSearch(
-    initialNode: Node,
-    expand: (node: Node) => Node[], // Function to expand a node into its children
-    beamWidth: number,
-    maxSteps: number
-): Node {
-    let currentNodes: Node[] = [initialNode];
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
 
-    for (let step = 0; step < maxSteps; step++) {
-        let allCandidates: Node[] = [];
-
-        // Expand all current nodes
-        for (const node of currentNodes) {
-            const children = expand(node);
-            allCandidates.push(...children);
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
         }
-
-        // Sort candidates by score and keep the top `beamWidth` candidates
-        allCandidates.sort((a, b) => b.score - a.score);
-        currentNodes = allCandidates.slice(0, beamWidth);
     }
 
-    // Return the best node after all steps
-    return currentNodes[0];
-}
-
-// Example expand function
-function expand(node: Node): Node[] {
-    // This is a placeholder for your actual expansion logic
-    // For example, you might generate new sequences based on the current sequence
-    const newNodes: Node[] = [];
-    const possibleExtensions = ['a', 'b', 'c']; // Example extensions
-
-    for (const extension of possibleExtensions) {
-        const newSequence = node.sequence + extension;
-        const newScore = Math.random(); // Replace with your scoring logic
-        newNodes.push({ sequence: newSequence, score: newScore });
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
     }
 
-    return newNodes;
+    return largestFactor;
 }
 
-// Example usage
-const initialNode: Node = { sequence: '', score: 0 };
-const beamWidth = 3;
-const maxSteps = 5;
-
-const bestNode = beamSearch(initialNode, expand, beamWidth, maxSteps);
-console.log('Best sequence:', bestNode.sequence, 'with score:', bestNode.score);
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
