@@ -1,8 +1,8 @@
-function removeSpaces(input: string): string {
-    return input.replace(/\s+/g, '');
+function decimalToBinary(decimal: number): string {
+    return decimal.toString(2);
 }
 
 // Example usage:
-const originalString = "Hello, how are you?";
-const stringWithoutSpaces = removeSpaces(originalString);
-console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
+const decimalNumber = 42;
+const binaryNumber = decimalToBinary(decimalNumber);
+console.log(`The binary representation of ${decimalNumber} is ${binaryNumber}`); // Output: The binary representation of 42 is 101010
