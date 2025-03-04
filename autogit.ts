@@ -1,53 +1,19 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-    // Initialize Fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci No.
-    let fibM1 = 1; // (m-1)'th Fibonacci No.
-    let fibM = fibM1 + fibM2; // m'th Fibonacci No.
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-    // fibM is the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
-    }
+// Start the task
+task.start();
 
-    // Marks the eliminated range from front
-    let offset = -1;
-
-    while (fibM > 1) {
-        // Check if fibM2 is a valid location
-        const i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i; // Update offset
-        }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found. Return index
-        else return i;
-    }
-
-    // Compare the last element with x
-    if (fibM1 && offset + 1 < n && arr[offset + 1] === x) {
-        return offset + 1;
-    }
-
-    // Element not found. Return -1
-    return -1;
-}
-
-// Example usage:
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
-console.log(result !== -1 ? `Found at index ${result}` : 'Not found');
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
