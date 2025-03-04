@@ -1,45 +1,61 @@
-function createBadCharacterTable(pattern: string): number[] {
-    const table: number[] = new Array(256).fill(-1);
-    const patternLength = pattern.length;
+// Define the Node structure for the linked list
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    for (let i = 0; i < patternLength; i++) {
-        table[pattern.charCodeAt(i)] = i;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return table;
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
+// Define the LinkedList class
+class LinkedList {
+    head: ListNode | null;
 
-    let skip: number = 0;
+    constructor() {
+        this.head = null;
+    }
 
-    for (let i = 0; i <= textLength - patternLength; i += skip) {
-        skip = 0;
-
-        for (let j = patternLength - 1; j >= 0; j--) {
-            if (pattern[j] !== text[i + j]) {
-                const badCharIndex = text.charCodeAt(i + j);
-                skip = Math.max(1, j - badCharTable[badCharIndex]);
-                break;
+    // Method to add a new node at the end of the list
+    add(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let currentNode = this.head;
+            while (currentNode.next) {
+                currentNode = currentNode.next;
             }
-        }
-
-        if (skip === 0) {
-            // Match found
-            occurrences.push(i);
-            skip = 1; // Move to the next character after the found pattern
+            currentNode.next = newNode;
         }
     }
 
-    return occurrences;
+    // Method to find the middle element
+    findMiddle(): number | null {
+        let slow: ListNode | null = this.head;
+        let fast: ListNode | null = this.head;
+
+        while (fast && fast.next) {
+            slow = slow?.next || null;   // Move slow pointer by one step
+            fast = fast.next.next;       // Move fast pointer by two steps
+        }
+
+        return slow ? slow.value : null; // Return the middle value or null if empty
+    }
 }
 
-// Example usage
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = boyerMooreHorspool(text, pattern);
-console.log(`Pattern found at indices: ${result.join(", ")}`);
+// Usage
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(4);
+list.add(5);
+console.log(list.findMiddle()); // Output: 3
+
+const list2 = new LinkedList();
+list2.add(1);
+list2.add(2);
+list2.add(3);
+console.log(list2.findMiddle()); // Output: 2
