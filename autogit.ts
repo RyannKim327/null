@@ -1,61 +1,22 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    isEndOfWord: boolean;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
+
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
-class SuffixTree {
-    root: SuffixTreeNode;
 
-    constructor() {
-        this.root = new SuffixTreeNode();
-    }
-
-    // Function to insert a suffix into the suffix tree
-    insertSuffix(suffix: string) {
-        let currentNode = this.root;
-        
-        for (const char of suffix) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new SuffixTreeNode());
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        currentNode.isEndOfWord = true; // Mark the end of the suffix
-    }
-
-    // Function to build the suffix tree from a string
-    buildSuffixTree(text: string) {
-        // Insert all suffixes into the tree
-        for (let i = 0; i < text.length; i++) {
-            this.insertSuffix(text.substring(i));
-        }
-    }
-
-    // Function to search for a substring in the suffix tree
-    search(substring: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of substring) {
-            if (!currentNode.children.has(char)) {
-                return false; // Char not found
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-
-        return true; // Found the substring
-    }
-}
-// Example usage
-const suffixTree = new SuffixTree();
-const text = "bananas";
-suffixTree.buildSuffixTree(text);
-
-// Search for substrings
-console.log(suffixTree.search("anana"));  // Output: true
-console.log(suffixTree.search("nan"));     // Output: true
-console.log(suffixTree.search("nana"));    // Output: true
-console.log(suffixTree.search("abcd"));     // Output: false
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("anagram", "nagaram")); // true
