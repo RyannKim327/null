@@ -1,61 +1,54 @@
-// Define the Node structure for the linked list
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Graph = {
+    [key: string]: { [key: string]: number }; // adjacency list
+};
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function dijkstra(graph: Graph, start: string): { [key: string]: number | undefined } {
+    // Initialize distance object
+    const distances: { [key: string]: number | undefined } = {};
+    const priorityQueue: Array<[string, number]> = []; // min-heap in form of array
+    const visited: Set<string> = new Set();
+
+    // Initialize distances and priority queue
+    for (const node in graph) {
+        distances[node] = Infinity; // Initially, all distances are infinite
     }
-}
+    distances[start] = 0; // Distance to the start node is 0
+    priorityQueue.push([start, 0]);
 
-// Define the LinkedList class
-class LinkedList {
-    head: ListNode | null;
+    while (priorityQueue.length > 0) {
+        // Sort the queue based on the distance (smallest first)
+        priorityQueue.sort((a, b) => a[1] - b[1]);
+        
+        // Get the node with the smallest distance
+        const [currentNode] = priorityQueue.shift()!;
+        
+        if (visited.has(currentNode)) {
+            continue; // Skip if we've already visited this node
+        }
+        visited.add(currentNode);
 
-    constructor() {
-        this.head = null;
-    }
+        // Explore neighbors
+        for (const neighbor in graph[currentNode]) {
+            const weight = graph[currentNode][neighbor];
+            const newDistance = distances[currentNode]! + weight;
 
-    // Method to add a new node at the end of the list
-    add(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let currentNode = this.head;
-            while (currentNode.next) {
-                currentNode = currentNode.next;
+            if (newDistance < (distances[neighbor] || Infinity)) {
+                distances[neighbor] = newDistance;
+                priorityQueue.push([neighbor, newDistance]);
             }
-            currentNode.next = newNode;
         }
     }
 
-    // Method to find the middle element
-    findMiddle(): number | null {
-        let slow: ListNode | null = this.head;
-        let fast: ListNode | null = this.head;
-
-        while (fast && fast.next) {
-            slow = slow?.next || null;   // Move slow pointer by one step
-            fast = fast.next.next;       // Move fast pointer by two steps
-        }
-
-        return slow ? slow.value : null; // Return the middle value or null if empty
-    }
+    return distances;
 }
 
-// Usage
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
-list.add(5);
-console.log(list.findMiddle()); // Output: 3
+// Example usage
+const graph: Graph = {
+    A: { B: 1, C: 4 },
+    B: { A: 1, C: 2, D: 5 },
+    C: { A: 4, B: 2, D: 1 },
+    D: { B: 5, C: 1 },
+};
 
-const list2 = new LinkedList();
-list2.add(1);
-list2.add(2);
-list2.add(3);
-console.log(list2.findMiddle()); // Output: 2
+const shortestPaths = dijkstra(graph, 'A');
+console.log(shortestPaths); // Outputs distances from A to all other nodes
