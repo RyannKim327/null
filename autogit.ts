@@ -1,122 +1,27 @@
-class Node<T> {
-    value: T;
-    forward: Node<T>[];
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: T, level: number) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
+
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
+
+    return arr;
 }
 
-class SkipList<T> {
-    private head: Node<T>;
-    private maxLevel: number;
-    private p: number; // Probability for random level generation
-    private level: number; // Current highest level
-
-    constructor(maxLevel: number = 16, p: number = 0.5) {
-        this.maxLevel = maxLevel;
-        this.p = p;
-        this.level = 0;
-        this.head = new Node<T>(null, maxLevel);
-    }
-
-    private randomLevel(): number {
-        let lvl = 0;
-        while (Math.random() < this.p && lvl < this.maxLevel) {
-            lvl++;
-        }
-        return lvl;
-    }
-
-    insert(value: T): void {
-        const update: Node<T>[] = new Array(this.maxLevel + 1);
-        let current: Node<T> = this.head;
-
-        // Find the position to insert the new value
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        // If the value is not already present, insert it
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            const newNode = new Node(value, newLevel);
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
-            }
-        }
-    }
-
-    search(value: T): boolean {
-        let current: Node<T> = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-
-        current = current.forward[0];
-
-        return current !== null && current.value === value;
-    }
-
-    delete(value: T): void {
-        const update: Node<T>[] = new Array(this.maxLevel + 1);
-        let current: Node<T> = this.head;
-
-        // Find the node to delete
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        // If found, remove it
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] !== current) break;
-                update[i].forward[i] = current.forward[i];
-            }
-
-            // Remove levels if necessary
-            while (this.level > 0 && this.head.forward[this.level] === null) {
-                this.level--;
-            }
-        }
-    }
-}
-
-// Example usage
-const skipList = new SkipList<number>();
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
-skipList.insert(17);
-
-console.log(skipList.search(6)); // true
-console.log(skipList.search(15)); // false
-
-skipList.delete(6);
-console.log(skipList.search(6)); // false
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
