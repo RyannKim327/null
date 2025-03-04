@@ -1,62 +1,63 @@
-// Define a Graph class
-class Graph {
-    private adjacencyList: Map<string, string[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
+function kthSmallestSorting(arr: number[], k: number): number {
+    if (k <= 0 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
-
-    // Add a vertex to the graph
-    addVertex(vertex: string) {
-        this.adjacencyList.set(vertex, []);
-    }
-
-    // Add an edge to the graph
-    addEdge(vertex1: string, vertex2: string) {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
-
-    // Implement BFS
-    bfs(startVertex: string): string[] {
-        const visited: Set<string> = new Set();
-        const queue: string[] = [];
-        const result: string[] = [];
-
-        // Start with the initial vertex
-        queue.push(startVertex);
-        visited.add(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift()!;
-            result.push(currentVertex);
-
-            // Get neighbors of the current vertex
-            const neighbors = this.adjacencyList.get(currentVertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        return result;
-    }
+    
+    // Sort the array
+    const sortedArray = arr.slice().sort((a, b) => a - b);
+    
+    // Return the k-th smallest element
+    return sortedArray[k - 1];
 }
 
 // Example usage
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
+const arr = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallestSorting(arr, k));  // Output: 7
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    // Move pivot to end
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
 
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "E");
+    for (let i = left; i < right; i++) {
+        if (arr[i] < pivotValue) {
+            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+            storeIndex++;
+        }
+    }
 
-const bfsResult = graph.bfs("A");
-console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D', 'E' ]
+    // Move pivot to its final place
+    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
+    return storeIndex;
+}
+
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left];  // The array contains only one element
+    }
+    
+    const pivotIndex = Math.floor(Math.random() * (right - left + 1)) + left;
+    const newPivotIndex = partition(arr, left, right, pivotIndex);
+
+    if (k === newPivotIndex) {
+        return arr[k];
+    } else if (k < newPivotIndex) {
+        return quickSelect(arr, left, newPivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, newPivotIndex + 1, right, k);
+    }
+}
+
+function kthSmallestQuickSelect(arr: number[], k: number): number {
+    if (k <= 0 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    
+    return quickSelect(arr, 0, arr.length - 1, k - 1);
+}
+
+// Example usage
+const arr2 = [7, 10, 4, 3, 20, 15];
+const k2 = 3;
+console.log(kthSmallestQuickSelect(arr2, k2));  // Output: 7
