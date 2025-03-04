@@ -1,32 +1,17 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const rotations: string[] = [];
+function reverseWords(input: string): string {
+    // Split the string into an array of words
+    const wordsArray = input.split(' ');
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
-    }
+    // Reverse the array of words
+    const reversedArray = wordsArray.reverse();
 
-    // Sort the rotations
-    rotations.sort();
+    // Join the array back into a string
+    const reversedString = reversedArray.join(' ');
 
-    // Build the BWT result and find the original index
-    let bwtResult = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        const rotation = rotations[i];
-        bwtResult += rotation[n - 1]; // Take the last character of each sorted rotation
-        if (rotation === input) {
-            originalIndex = i; // Store the index of the original string
-        }
-    }
-
-    return { transformed: bwtResult, index: originalIndex };
+    return reversedString;
 }
 
-// Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
+// Example usage:
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
