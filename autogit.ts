@@ -1,42 +1,58 @@
-function countingSort(arr: number[], exp: number): number[] {
-    const n = arr.length;
-    const output = new Array(n);
-    const count = new Array(10).fill(0); // Base 10 for single-digit numbers
+class RabinKarp {
+    private static readonly PRIME: number = 101; // A prime number for hashing
+    private static readonly BASE: number = 256; // Number of characters in the input alphabet
 
-    // Count occurrences of digits
-    for (let i = 0; i < n; i++) {
-        const digit = Math.floor((arr[i] / exp) % 10);
-        count[digit]++;
+    // Search for the pattern in the text
+    public static search(text: string, pattern: string): number[] {
+        const n: number = text.length;
+        const m: number = pattern.length;
+        const patternHash: number = this.calculateHash(pattern, m);
+        const textHash: number = this.calculateHash(text, m);
+        const result: number[] = [];
+
+        for (let i = 0; i <= n - m; i++) {
+            // Check for hash match
+            if (patternHash === textHash) {
+                // Verify the match to handle hash collisions
+                if (text.substring(i, i + m) === pattern) {
+                    result.push(i);
+                }
+            }
+
+            // Calculate the hash for the next substring
+            if (i < n - m) {
+                textHash = this.recalculateHash(text, i, m, textHash);
+            }
+        }
+
+        return result;
     }
 
-    // Change count[i] so that it contains the position of this digit in the output array
-    for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
+    // Calculate the initial hash value for a string
+    private static calculateHash(str: string, length: number): number {
+        let hash: number = 0;
+        for (let i = 0; i < length; i++) {
+            hash = (hash * this.BASE + str.charCodeAt(i)) % this.PRIME;
+        }
+        return hash;
     }
 
-    // Build the output array
-    for (let i = n - 1; i >= 0; i--) {
-        const digit = Math.floor((arr[i] / exp) % 10);
-        output[count[digit] - 1] = arr[i];
-        count[digit]--;
+    // Recalculate the hash (rolling hash) when sliding the window
+    private static recalculateHash(text: string, oldIndex: number, m: number, oldHash: number): number {
+        // Remove leading character
+        let newHash = (oldHash - text.charCodeAt(oldIndex) * Math.pow(this.BASE, m - 1)) % this.PRIME;
+        // Add trailing character
+        newHash = (newHash * this.BASE + text.charCodeAt(oldIndex + m)) % this.PRIME;
+        // Ensure newHash is non-negative
+        if (newHash < 0) {
+            newHash += this.PRIME;
+        }
+        return newHash;
     }
-
-    return output;
-}
-
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = Math.max(...arr);
-
-    // Apply counting sort to sort elements based on each digit
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        arr = countingSort(arr, exp);
-    }
-
-    return arr;
 }
 
 // Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const text = "ababcababcabc";
+const pattern = "abc";
+const positions = RabinKarp.search(text, pattern);
+console.log(`Pattern found at positions: ${positions}`);
