@@ -1,75 +1,59 @@
-function burrowsWheelerTransform(input: string): string {
-    const len = input.length;
+type Edge = {
+    source: number;
+    destination: number;
+    weight: number;
+};
 
-    // Generate all cyclic rotations
-    const rotations: string[] = [];
-    for (let i = 0; i < len; i++) {
-        const rotation = input.slice(i) + input.slice(0, i);
-        rotations.push(rotation);
+class Graph {
+    private edges: Edge[];
+    private numVertices: number;
+
+    constructor(numVertices: number) {
+        this.numVertices = numVertices;
+        this.edges = [];
     }
 
-    // Sort the rotations
-    rotations.sort();
-
-    // Extract the last column
-    let bwt = '';
-    for (const rotation of rotations) {
-        bwt += rotation[len - 1];  // Get the last character of each sorted rotation
+    addEdge(source: number, destination: number, weight: number) {
+        this.edges.push({ source, destination, weight });
     }
 
-    return bwt;
-}
+    bellmanFord(source: number): number[] | string {
+        // Step 1: Initialize distances from source to all vertices as infinite
+        const distances: number[] = new Array(this.numVertices).fill(Infinity);
+        distances[source] = 0;
 
-// Example usage
-const input = "banana";
-const transformed = burrowsWheelerTransform(input);
-console.log(transformed); // Output: "annb$aa"
-function burrowsWheelerInverse(bwt: string): string {
-    const len = bwt.length;
-    
-    // Create an array of characters and count occurrences
-    const count: number[] = new Array(256).fill(0);
-    for (const char of bwt) {
-        count[char.charCodeAt(0)]++;
-    }
-    
-    // Compute the starting index for each character
-    const start: number[] = [];
-    let total = 0;
-    for (let i = 0; i < 256; i++) {
-        if (count[i] > 0) {
-            start[i] = total;
-            total += count[i];
-        } else {
-            start[i] = -1; // Character not in BWT
+        // Step 2: Relax all edges |V| - 1 times
+        for (let i = 0; i < this.numVertices - 1; i++) {
+            for (const edge of this.edges) {
+                const { source, destination, weight } = edge;
+                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                    distances[destination] = distances[source] + weight;
+                }
+            }
         }
-    }
 
-    // Create an array for the first column
-    const firstCol = bwt.split('').sort();
-    const next = new Array(len);
-    
-    // Build the next array
-    const occurrence: number[] = new Array(256).fill(0);
-    for (let i = 0; i < len; i++) {
-        const char = bwt[i];
-        const index = start[char.charCodeAt(0)] + occurrence[char.charCodeAt(0)];
-        next[i] = index;
-        occurrence[char.charCodeAt(0)]++;
-    }
+        // Step 3: Check for negative-weight cycles
+        for (const edge of this.edges) {
+            const { source, destination, weight } = edge;
+            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                return "Graph contains negative weight cycle";
+            }
+        }
 
-    // Reconstruct the original string
-    let original = '';
-    let row = next.indexOf(0); // Look for the original character (the one that sorts to the top)
-    for (let i = 0; i < len; i++) {
-        original += bwt[row];
-        row = next[row]; // Follow the next references
+        return distances;
     }
-
-    return original.split('').reverse().join(''); // Reverse to get original
 }
 
-// Example usage
-const bwtResult = burrowsWheelerTransform(input);
-const original = burrowsWheelerInverse(bwtResult);
-console.log(original); // Output: "banana"
+// Example usage:
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
+
+const distances = graph.bellmanFord(0);
+console.log(distances);
