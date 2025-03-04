@@ -1,28 +1,53 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
+
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci No.
+    let fibM1 = 1; // (m-1)'th Fibonacci No.
+    let fibM = fibM1 + fibM2; // m'th Fibonacci No.
+
+    // fibM is the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    // Marks the eliminated range from front
+    let offset = -1;
 
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+    while (fibM > 1) {
+        // Check if fibM2 is a valid location
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i; // Update offset
         }
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found. Return index
+        else return i;
     }
 
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // Compare the last element with x
+    if (fibM1 && offset + 1 < n && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found. Return -1
+    return -1;
 }
 
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+// Example usage:
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
+console.log(result !== -1 ? `Found at index ${result}` : 'Not found');
