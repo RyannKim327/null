@@ -1,52 +1,43 @@
-type ScoringFunction = (item: string) => number;
+// Define the type for the graph's adjacency list
+type Graph = { [key: string]: string[] };
 
-// A simple function to generate a new set of candidates based on a current item
-const generateCandidates = (current: string): string[] => {
-    // For demonstration purposes, let's say we generate candidates by appending characters.
-    const characters = ['a', 'b', 'c'];
-    return characters.map(char => current + char);
-};
+// Function to perform Breadth-First Search
+function bfs(graph: Graph, startNode: string): string[] {
+    // Initialize an array to keep track of visited nodes
+    const visited: Set<string> = new Set();
+    const queue: string[] = [];
+    const result: string[] = [];
 
-const beamSearch = (initial: string, beamWidth: number, maxIterations: number, scoreFn: ScoringFunction): string => {
-    let candidates: string[] = [initial];
+    // Start the traversal with the starting node
+    queue.push(startNode);
+    visited.add(startNode);
 
-    for (let i = 0; i < maxIterations; i++) {
-        let scoredCandidates: { item: string, score: number }[] = candidates.map(item => ({
-            item,
-            score: scoreFn(item)
-        }));
+    while (queue.length > 0) {
+        // Dequeue the first node from the queue
+        const currentNode = queue.shift()!;
+        result.push(currentNode);
 
-        // Sort by score and keep only the top 'beamWidth' candidates
-        scoredCandidates.sort((a, b) => b.score - a.score); // Higher scores come first
-        candidates = scoredCandidates.slice(0, beamWidth).map(candidate => candidate.item);
-
-        // Generate new candidates from the remaining candidates
-        let newCandidates: string[] = [];
-        for (let candidate of candidates) {
-            newCandidates = [...newCandidates, ...generateCandidates(candidate)];
+        // Explore each neighbor of the current node
+        for (const neighbor of graph[currentNode] || []) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
+            }
         }
-        candidates = newCandidates;
-
-        // Optional: Check for termination condition. For instance, if we've reached a desirable state.
-        // if (terminationConditionMet(candidates)) {
-        //     return bestCandidate;
-        // }
     }
 
-    // Return the best candidate after maxIterations
-    const bestCandidate = candidates.reduce((best, current) => {
-        return scoreFn(current) > scoreFn(best) ? current : best;
-    }, initial);
+    return result;
+}
 
-    return bestCandidate;
+// Example usage
+const graph: Graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
 };
 
-// Example scoring function (replace this with your own logic)
-const exampleScoringFunction: ScoringFunction = (item: string) => {
-    // For instance, let's say we score based on the length of the string
-    return item.length; // Or any other scoring mechanism
-};
-
-// Running the beam search
-const result = beamSearch("start", 3, 5, exampleScoringFunction);
-console.log("Best result:", result);
+const result = bfs(graph, 'A');
+console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
