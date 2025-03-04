@@ -1,34 +1,61 @@
-function longestCommonSubstring(s1: string, s2: string): string {
-    const m = s1.length;
-    const n = s2.length;
-    let maxLength = 0;
-    let endingIndex = 0;
+function fibonacciSearch(arr: number[], x: number): number {
+    let n = arr.length;
+    
+    // Initialize the Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
 
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
+    }
 
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endingIndex = i; // Update ending index of the substring
-                }
-            }
+    // Marks the eliminated range from front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Check the index that is at the current Fibonacci number
+        let i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1; // Update to the previous two Fibonacci numbers
+            offset = i; // Update the offset to the new range
+        } 
+        // If x is less than the value at index i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 -= fibM1; // Update to the previous two Fibonacci numbers
+            fibM2 = fibM - fibM1;
+        } 
+        // Element found
+        else {
+            return i; // Return the index of the found element
         }
     }
 
-    // Extract the longest common substring
-    if (maxLength === 0) {
-        return ""; // No common substring found
+    // Comparing the last element with x
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1; // Return the index of the found element
     }
-    return s1.substring(endingIndex - maxLength, endingIndex);
+
+    // Element not found
+    return -1; 
 }
 
 // Example usage:
-const str1 = "abcde";
-const str2 = "abfce";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "ab"
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+
+const resultIndex = fibonacciSearch(arr, x);
+if (resultIndex !== -1) {
+    console.log(`Element found at index ${resultIndex}`);
+} else {
+    console.log(`Element not found`);
+}
