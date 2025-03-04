@@ -1,46 +1,29 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null = null;
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    constructor(value: T) {
-        this.value = value;
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
+
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        // While i divides n, update n and largestFactor
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-class LinkedList<T> {
-    head: Node<T> | null = null;
-
-    // Method to append a new value at the end of the list
-    append(value: T) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-
-        while (current) {
-            count++;
-            current = current.next;
-        }
-
-        return count;
-    }
-}
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-
-console.log("Length of the linked list:", list.length()); // Output: Length of the linked list: 3
+// Example usage:
+const number = 13195; // You can change this to any number
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
