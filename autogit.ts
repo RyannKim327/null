@@ -1,74 +1,70 @@
-class Graph {
-    private adjacencyList: number[][];
-    private index: number;
-    private stack: number[];
-    private indices: number[];
-    private lowLinks: number[];
-    private onStack: boolean[];
-    private sccs: number[][];
+// Define a Node class
+class Node<T> {
+    value: T;
+    next: Node<T> | null = null;
 
-    constructor(vertexCount: number) {
-        this.adjacencyList = Array.from({ length: vertexCount }, () => []);
-        this.index = 0;
-        this.stack = [];
-        this.indices = new Array(vertexCount).fill(-1);
-        this.lowLinks = new Array(vertexCount).fill(-1);
-        this.onStack = new Array(vertexCount).fill(false);
-        this.sccs = [];
-    }
-
-    addEdge(v: number, w: number) {
-        this.adjacencyList[v].push(w);
-    }
-
-    private strongconnect(v: number) {
-        this.indices[v] = this.index;
-        this.lowLinks[v] = this.index;
-        this.index++;
-        this.stack.push(v);
-        this.onStack[v] = true;
-
-        for (const w of this.adjacencyList[v]) {
-            if (this.indices[w] === -1) {
-                // Successor w has not yet been visited; recurse on it
-                this.strongconnect(w);
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
-            } else if (this.onStack[w]) {
-                // Successor w is in stack and hence in the current SCC
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
-            }
-        }
-
-        // If v is a root node, pop the stack and generate an SCC
-        if (this.lowLinks[v] === this.indices[v]) {
-            const scc: number[] = [];
-            let w: number;
-            do {
-                w = this.stack.pop()!;
-                this.onStack[w] = false;
-                scc.push(w);
-            } while (w !== v);
-            this.sccs.push(scc);
-        }
-    }
-
-    findSCCs(): number[][] {
-        for (let i = 0; i < this.adjacencyList.length; i++) {
-            if (this.indices[i] === -1) {
-                this.strongconnect(i);
-            }
-        }
-        return this.sccs;
+    constructor(value: T) {
+        this.value = value;
     }
 }
 
-// Example Usage
-const graph = new Graph(5);
-graph.addEdge(0, 2);
-graph.addEdge(2, 1);
-graph.addEdge(1, 0);
-graph.addEdge(0, 3);
-graph.addEdge(3, 4);
+// Define a Queue class
+class Queue<T> {
+    private head: Node<T> | null = null;
+    private tail: Node<T> | null = null;
+    private size: number = 0;
 
-const sccs = graph.findSCCs();
-console.log(sccs); // Outputs the strongly connected components
+    // Add an element to the end of the queue (enqueue)
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the old tail to the new node
+        }
+        this.tail = newNode; // Update the tail to the new node
+
+        // If the queue was empty, update the head as well
+        if (!this.head) {
+            this.head = newNode;
+        }
+        this.size++;
+    }
+
+    // Remove and return the element from the front of the queue (dequeue)
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Queue is empty
+        }
+        const dequeuedNode = this.head;
+        this.head = this.head.next; // Move head to the next node
+        if (!this.head) {
+            this.tail = null; // If queue is now empty, reset tail as well
+        }
+        this.size--;
+        return dequeuedNode.value; // Return dequeued value
+    }
+
+    // Peek at the front element of the queue without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null; // Return the head value if present
+    }
+
+    // Check if the queue is empty
+    isEmpty(): boolean {
+        return this.size === 0;
+    }
+
+    // Get the current size of the queue
+    getSize(): number {
+        return this.size;
+    }
+}
+
+// Example usage
+const queue = new Queue<number>();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek());    // Output: 2
+console.log(queue.isEmpty()); // Output: false
+console.log(queue.getSize()); // Output: 2
