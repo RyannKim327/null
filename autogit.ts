@@ -1,34 +1,45 @@
-interface User {
-    id: number;
-    name: string;
-    email: string;
+function createBadCharacterTable(pattern: string): number[] {
+    const table: number[] = new Array(256).fill(-1);
+    const patternLength = pattern.length;
+
+    for (let i = 0; i < patternLength; i++) {
+        table[pattern.charCodeAt(i)] = i;
+    }
+
+    return table;
 }
 
-// Function to fetch users from the Android API
-async function fetchUsers(apiUrl: string): Promise<User[]> {
-    try {
-        const response = await fetch(apiUrl);
-        
-        // Check if the response is OK (status in range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
+
+    let skip: number = 0;
+
+    for (let i = 0; i <= textLength - patternLength; i += skip) {
+        skip = 0;
+
+        for (let j = patternLength - 1; j >= 0; j--) {
+            if (pattern[j] !== text[i + j]) {
+                const badCharIndex = text.charCodeAt(i + j);
+                skip = Math.max(1, j - badCharTable[badCharIndex]);
+                break;
+            }
         }
 
-        const users: User[] = await response.json();
-        return users;
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        throw error; // Optionally rethrow for further handling
+        if (skip === 0) {
+            // Match found
+            occurrences.push(i);
+            skip = 1; // Move to the next character after the found pattern
+        }
     }
+
+    return occurrences;
 }
 
-// Usage of the function
-const apiUrl = 'http://your-api-endpoint/users';  // Replace with your API endpoint
-
-fetchUsers(apiUrl)
-    .then(users => {
-        console.log('Fetched users:', users);
-    })
-    .catch(error => {
-        console.error('Failed to fetch users:', error);
-    });
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const result = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at indices: ${result.join(", ")}`);
