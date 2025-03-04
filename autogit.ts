@@ -1,10 +1,4 @@
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenatedString: string = string1 + string2;
+let originalString: string = "Hello, World!";
+let lowerCaseString: string = originalString.toLowerCase();
 
-console.log(concatenatedString); // Output: Hello, world!
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenatedString: string = `${string1}${string2}`;
-
-console.log(concatenatedString); // Output: Hello, world!
+console.log(lowerCaseString); // Output: "hello, world!"
