@@ -1,53 +1,59 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+class Node {
+    value: string;
+    children: Node[];
 
-    // Phase 1: Find a candidate for the majority element
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
+    addChild(child: Node) {
+        this.children.push(child);
     }
-
-    return count > nums.length / 2 ? candidate : null;
 }
 
-// Example usage
-const nums = [3, 2, 3];
-const majority = majorityElement(nums);
-console.log(majority); // Output: 3
-function majorityElementUsingMap(nums: number[]): number | null {
-    const countMap: Record<number, number> = {};
-    const majorityThreshold = nums.length / 2;
+function depthLimitedSearch(node: Node, depth: number, goal: string): Node | null {
+    // Check if we have reached the goal node
+    if (node.value === goal) {
+        return node;
+    }
 
-    for (const num of nums) {
-        if (!countMap[num]) {
-            countMap[num] = 0;
-        }
-        countMap[num]++;
-        
-        if (countMap[num] > majorityThreshold) {
-            return num;
+    // Check if we have reached the depth limit
+    if (depth <= 0) {
+        return null;
+    }
+
+    // Recur for each child
+    for (const child of node.children) {
+        const result = depthLimitedSearch(child, depth - 1, goal);
+        if (result) {
+            return result;
         }
     }
 
+    // If no child leads to the goal, return null
     return null;
 }
 
 // Example usage
-const nums2 = [2, 2, 1, 1, 1, 2, 2];
-const majority2 = majorityElementUsingMap(nums2);
-console.log(majority2); // Output: 2
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+const g = new Node("G");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+c.addChild(g);
+
+const goalNode = depthLimitedSearch(root, 2, "F");
+if (goalNode) {
+    console.log(`Found node: ${goalNode.value}`);
+} else {
+    console.log("Node not found within depth limit.");
+}
