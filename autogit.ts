@@ -1,31 +1,14 @@
-function findMajorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
-
-    // Phase 1: Finding the candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
-    }
-
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    return count > nums.length / 2 ? candidate : null;
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    
+    // Get the reversed string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Check if the normalized string is equal to its reverse
+    return normalizedStr === reversedStr;
 }
 
 // Example usage:
-const arr = [3, 2, 3];
-const result = findMajorityElement(arr);
-console.log(result); // Output: 3
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
