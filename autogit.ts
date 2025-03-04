@@ -1,29 +1,23 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and word to lower case for case insensitive matching.
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
+    if (strs.length === 1) return strs[0];
 
-    // Split the text into words based on spaces, punctuation, etc.
-    const wordsArray = normalizedText.match(/\b\w+\b/g); // This regex captures word boundaries
+    // Start with the first string as the initial prefix
+    let prefix = strs[0];
 
-    // If no words are found, return 0
-    if (!wordsArray) {
-        return 0;
-    }
-
-    // Count occurrences of the specified word
-    let count = 0;
-    for (const currentWord of wordsArray) {
-        if (currentWord === normalizedWord) {
-            count++;
+    for (let i = 1; i < strs.length; i++) {
+        // Compare the current string with the prefix
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the length of the prefix by one character
+            prefix = prefix.substring(0, prefix.length - 1);
+            // If the prefix is empty, there is no common prefix
+            if (prefix === "") return "";
         }
     }
 
-    return count;
+    return prefix;
 }
 
 // Example usage:
-const text = "Hello world! The world is beautiful. World over.";
-const wordToCount = "world";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times in the text.`);
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
