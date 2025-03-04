@@ -1,43 +1,18 @@
-function longestCommonSubsequence(s1: string, s2: string): string {
-    const m = s1.length;
-    const n = s2.length;
-
-    // Create a 2D array to store lengths of longest common subsequence
-    const dp: number[][] = Array(m + 1).fill(null).map(() => Array(n + 1).fill(0));
-
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 3, 3, 4, 5, 5];
+const uniqueArray = array.reduce((accumulator, currentValue) => {
+    if (!accumulator.includes(currentValue)) {
+        accumulator.push(currentValue);
     }
-
-    // Backtrack to find the LCS
-    let lcs = '';
-    let i = m;
-    let j = n;
-
-    while (i > 0 && j > 0) {
-        if (s1[i - 1] === s2[j - 1]) {
-            lcs = s1[i - 1] + lcs; // prepend current character
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // move up
-        } else {
-            j--; // move left
-        }
-    }
-
-    return lcs; // return the LCS string
-}
-
-// Example usage:
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
-const result = longestCommonSubsequence(str1, str2);
-console.log(result); // Output: "ADH"
+    return accumulator;
+}, [] as number[]);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
