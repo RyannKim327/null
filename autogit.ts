@@ -1,17 +1,11 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seenCharacters = new Set<string>();
+const array: number[] = [1, 2, 3, 4, 5];
+console.log("Original array:", array);
 
-    for (const char of str) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenCharacters.add(char); // Add the character to the set
-    }
+array.reverse();
 
-    return null; // Return null if no repeated character is found
-}
+console.log("Reversed array:", array);
+const originalArray: number[] = [1, 2, 3, 4, 5];
+const reversedArray: number[] = originalArray.slice().reverse();
 
-// Example usage:
-const inputString = "abca";
-const result = firstRepeatedCharacter(inputString);
-console.log(result); // Output: "a"
+console.log("Original array:", originalArray);
+console.log("Reversed array:", reversedArray);
