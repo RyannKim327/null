@@ -1,35 +1,22 @@
-function countOccurrences(str: string, char: string): number {
-    let count = 0;
-    for (const ch of str) {
-        if (ch === char) {
-            count++;
-        }
-    }
-    return count;
-}
+npm install node-cron
+import cron from 'node-cron';
 
-// Example usage
-const myString = "Hello, World!";
-const myChar = 'o';
-const occurrences = countOccurrences(myString, myChar);
-console.log(`The character '${myChar}' occurs ${occurrences} times.`); // Output: The character 'o' occurs 2 times.
-function countOccurrences(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    const currentTime = new Date().toLocaleString();
+    console.log(`Task running at: ${currentTime}`);
+});
 
-// Example usage
-const myString = "Hello, World!";
-const myChar = 'o';
-const occurrences = countOccurrences(myString, myChar);
-console.log(`The character '${myChar}' occurs ${occurrences} times.`); // Output: The character 'o' occurs 2 times.
-function countOccurrences(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
+// Start the scheduled task
+task.start();
 
-// Example usage
-const myString = "Hello, World!";
-const myChar = 'o';
-const occurrences = countOccurrences(myString, myChar);
-console.log(`The character '${myChar}' occurs ${occurrences} times.`); // Output: The character 'o' occurs 2 times.
+// Log a message indicating that the cron job has started
+console.log('Cron job has started. It will log the current time every minute.');
+
+// Optional: Stop the task after 10 minutes for demonstration purposes
+setTimeout(() => {
+    task.stop();
+    console.log('Cron job has stopped.');
+}, 10 * 60 * 1000); // Stops after 10 minutes
+tsc your-file.ts
+node your-file.js
