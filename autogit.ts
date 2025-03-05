@@ -1,34 +1,32 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+function majorityElement(nums: number[]): number | null {
+    let count = 0;
+    let candidate: number | null = null;
 
-const commonElements = array1.filter(element => array2.includes(element));
-console.log(commonElements); // Output: [4, 5]
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const set = new Set(array2);
-const commonElements = array1.filter(element => set.has(element));
-console.log(commonElements); // Output: [4, 5]
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = array1.reduce((acc, element) => {
-    if (array2.includes(element)) {
-        acc.push(element);
+    // Phase 1: Find a candidate for majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
     }
-    return acc;
-}, [] as number[]);
 
-console.log(commonElements); // Output: [4, 5]
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements: number[] = [];
-
-array1.forEach(element => {
-    if (array2.includes(element)) {
-        commonElements.push(element);
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
     }
-});
 
-console.log(commonElements); // Output: [4, 5]
+    // Return the candidate if it's a majority element
+    return count > nums.length / 2 ? candidate : null;
+}
+
+// Example usage:
+const arr = [3, 2, 3];
+const result = majorityElement(arr);
+console.log(result); // Output: 3
