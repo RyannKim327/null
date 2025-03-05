@@ -1,46 +1,51 @@
-function createBadCharTable(pattern: string): number[] {
-    const badCharTable: number[] = new Array(256).fill(-1);
-    const patternLength = pattern.length;
+function longestIncreasingSubsequence(arr: number[]): number {
+    if (arr.length === 0) return 0;
 
-    for (let i = 0; i < patternLength; i++) {
-        badCharTable[pattern.charCodeAt(i)] = i;
-    }
+    const dp: number[] = new Array(arr.length).fill(1);
 
-    return badCharTable;
-}
-
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
-
-    let shift = 0;
-
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            occurrences.push(shift);
-            // Shift the pattern to the right
-            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(shift + patternLength)] : 1;
-        } else {
-            // Shift the pattern based on the bad character rule
-            shift += Math.max(1, j - badCharTable[text.charCodeAt(shift + j)]);
+    for (let i = 1; i < arr.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
     }
 
-    return occurrences;
+    return Math.max(...dp);
 }
 
 // Example usage
-const text = "ABAAABCDABABCDABCAABCDABCDABCD";
-const pattern = "ABCD";
-const result = boyerMooreHorspool(text, pattern);
-console.log(`Pattern found at indices: ${result.join(', ')}`);
+const array = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(array)); // Output: 4
+function longestIncreasingSubsequence(arr: number[]): number {
+    const tails: number[] = [];
+
+    for (let num of arr) {
+        let left = 0;
+        let right = tails.length;
+
+        // Binary search to find the insertion point
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (tails[mid] < num) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+
+        // If num is greater than all elements in tails
+        if (left === tails.length) {
+            tails.push(num);
+        } else {
+            // Update tails
+            tails[left] = num;
+        }
+    }
+
+    return tails.length;
+}
+
+// Example usage
+const array = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(array)); // Output: 4
