@@ -1,56 +1,86 @@
-class Node {
-    value: string;
-    children: Node[];
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
+interface User {
+  id: number;
+  name: string;
+  username: string;
 }
 
-function depthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+const App: React.FC = () => {
+  const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node;
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+        const  User[] = await response.json();
+        setUsers(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
-        }
-    }
+    fetchUsers();
+  }, []);
 
-    // Return null if the target is not found within the depth limit
-    return null;
-}
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
-// Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text>Error: {error}</Text>
+      </View>
+    );
+  }
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
+  return (
+    <FlatList
+      data={users}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <View style={styles.itemContainer}>
+          <Text style={styles.itemText}>{item.name}</Text>
+          <Text style={styles.itemText}>@{item.username}</Text>
+        </View>
+      )}
+    />
+  );
+};
 
-const targetNode = depthLimitedSearch(root, "E", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
-}
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  itemContainer: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  itemText: {
+    fontSize: 16,
+  },
+});
+
+export default App;
+npx react-native run-android
