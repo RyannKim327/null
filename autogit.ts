@@ -1,35 +1,20 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    // Start with a big gap, then reduce the gap
-    let gap = Math.floor(n / 2);
+    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
 
-    // Start with the largest gap and reduce it to 1
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size.
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be inserted
-            let temp = arr[i];
-            let j = i;
-
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
             }
-
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
         }
-
-        // Reduce the gap for the next element
-        gap = Math.floor(gap / 2);
     }
 
-    return arr;
+    return Math.max(...dp); // The length of the longest increasing subsequence
 }
 
-// Example usage
-const unsortedArray = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
+// Example usage:
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+const length = longestIncreasingSubsequence(nums);
+console.log(length); // Output: 4
