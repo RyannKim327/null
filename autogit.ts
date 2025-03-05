@@ -1,15 +1,19 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The list of numbers is empty.");
-    }
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and the word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
+    // Split the text into an array of words
+    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
 
-    return mean;
+    // Filter the array to count occurrences of the word
+    const occurrences = wordsArray.filter(w => w === normalizedWord).length;
+
+    return occurrences;
 }
 
-// Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+// Example usage
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const count = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${count} times.`);
