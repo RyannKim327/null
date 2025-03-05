@@ -1,59 +1,38 @@
-// Step 1: Define a node structure.
-class ListNode {
+class TreeNode {
     value: number;
-    next: ListNode | null;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: number) {
+    constructor(value: number, left: TreeNode | null = null, right: TreeNode | null = null) {
         this.value = value;
-        this.next = null;
+        this.left = left;
+        this.right = right;
     }
 }
 
-// Step 2: Create the linked list.
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    // Method to add a new node to the list
-    add(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
+    // If the current node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
     }
 
-    // Step 3: Function to find the middle element.
-    findMiddle(): ListNode | null {
-        let slow: ListNode | null = this.head;
-        let fast: ListNode | null = this.head;
-
-        while (fast !== null && fast.next !== null) {
-            slow = slow?.next || null; // Move slow one step
-            fast = fast.next.next; // Move fast two steps
-        }
-
-        return slow; // slow will be at the middle when fast reaches the end
-    }
+    // Recursive case: sum the leaf counts from left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
 // Example usage:
-const linkedList = new LinkedList();
-linkedList.add(1);
-linkedList.add(2);
-linkedList.add(3);
-linkedList.add(4);
-linkedList.add(5);
+const root = new TreeNode(1,
+    new TreeNode(2,
+        new TreeNode(4),
+        new TreeNode(5)
+    ),
+    new TreeNode(3)
+);
 
-const middleNode = linkedList.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
-}
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
