@@ -1,30 +1,16 @@
-function bubbleSort(arr: number[]): number[] {
-    const n: number = arr.length;
-    let swapped: boolean;
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let currentMax = nums[0]; // Initialize currentMax with the first element
 
-    // Loop through the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j + 1]
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
-
-        // If no two elements were swapped in the inner loop, then break
-        if (!swapped) {
-            break;
-        }
+    for (let i = 1; i < nums.length; i++) {
+        currentMax = Math.max(nums[i], currentMax + nums[i]); // Update currentMax
+        maxSoFar = Math.max(maxSoFar, currentMax); // Update maxSoFar if currentMax is greater
     }
 
-    return arr;
+    return maxSoFar; // Return the maximum sum found
 }
 
 // Example usage:
-const unsortedArray: number[] = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray: number[] = bubbleSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
