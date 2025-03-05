@@ -1,42 +1,10 @@
-ns create MyAsyncApp --template @nativescript/template-hello-world-ng
-cd MyAsyncApp
-npm install axios
-import { Component, OnInit } from '@angular/core';
-import axios from 'axios';
+const originalArray: number[] = [1, 2, 3, 4, 5];
+const reversedArray: number[] = originalArray.reverse();
 
-@Component({
-  selector: 'ns-app',
-  templateUrl: './app.component.html',
-})
-export class AppComponent implements OnInit {
-  public  any[] = [];
-  public loading: boolean = true;
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+console.log(originalArray); // Output: [5, 4, 3, 2, 1] (original array is also modified)
+const originalArray: number[] = [1, 2, 3, 4, 5];
+const reversedArray: number[] = originalArray.slice().reverse();
 
-  ngOnInit() {
-    this.fetchData();
-  }
-
-  private async fetchData() {
-    try {
-      this.loading = true;
-      const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-      this.data = response.data;
-    } catch (error) {
-      console.error('Error fetching ', error);
-    } finally {
-      this.loading = false;
-    }
-  }
-}
-<StackLayout *ngIf="loading">
-  <Label text="Loading..." class="loading-message"></Label>
-</StackLayout>
-
-<StackLayout *ngIf="!loading">
-  <ListView [items]="data">
-    <ng-template let-item="item">
-      <Label [text]="item.title" class="item-title"></Label>
-    </ng-template>
-  </ListView>
-</StackLayout>
-ns run android
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+console.log(originalArray); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
