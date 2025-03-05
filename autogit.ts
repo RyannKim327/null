@@ -1,57 +1,24 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+let str: string = "123";
+let num: number = parseInt(str, 10);
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+console.log(num);  // Output: 123
+let str: string = "123";
+let num: number = +str;
+
+console.log(num);  // Output: 123
+let str: string = "123";
+let num: number = Number(str);
+
+console.log(num);  // Output: 123
+let str: string = "123.45";
+let num: number = Math.floor(Number(str));
+
+console.log(num);  // Output: 123
+let str: string = "abc";
+let num: number = parseInt(str, 10);
+
+if (isNaN(num)) {
+    console.log("The string does not contain a valid number.");
+} else {
+    console.log(num);
 }
-
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
-    }
-
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next; // Move slow by 1
-        fast = fast.next.next; // Move fast by 2
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
-
-    while (current) {
-        const nextTemp = current.next; // Store next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to current
-        current = nextTemp; // Move to next node
-    }
-
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
-
-    while (right) {
-        if (left!.value !== right.value) {
-            return false; // Not a palindrome
-        }
-        left = left!.next;
-        right = right.next;
-    }
-
-    return true; // It's a palindrome
-}
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(head)); // Output: true
