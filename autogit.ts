@@ -1,24 +1,51 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
-}
+function buildBadCharacterTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - 1 - i;
+    }
     
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
+    return badCharTable;
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
+    }
+
+    const badCharTable = buildBadCharacterTable(pattern);
+    let offset = 0;
+
+    while (offset <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        while (j >= 0 && pattern[j] === text[offset + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            return offset; // Pattern found at index offset
+        } else {
+            const badCharShift = badCharTable[text[offset + j]] || patternLength;
+            offset += Math.max(1, j - badCharShift);
+        }
+    }
+
+    return -1; // Pattern not found
+}
+
+// Usage example:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const index = boyerMooreHorspool(text, pattern);
+
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
+}
