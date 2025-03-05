@@ -1,19 +1,8 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
-
-    while (left < right) {
-        if (s[left] !== s[right]) {
-            return false;
-        }
-        left++;
-        right--;
-    }
-
-    return true;
+function removeSpaces(input: string): string {
+    return input.replace(/\s+/g, ''); // This will replace all whitespace characters with an empty string
 }
 
-const inputString = "racecar";
-const isPalindromeResult = isPalindrome(inputString);
-
-console.log(isPalindromeResult); // Output: true
+// Example usage:
+const originalString = "Hello, how are you?";
+const stringWithoutSpaces = removeSpaces(originalString);
+console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
