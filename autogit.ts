@@ -1,25 +1,12 @@
-function maxSubArray(nums: number[]): number {
-    if (nums.length === 0) {
-        throw new Error("Array is empty");
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
     }
-
-    let maxCurrent = nums[0];
-    let maxGlobal = nums[0];
-
-    for (let i = 1; i < nums.length; i++) {
-        // Update the current maximum including the current number
-        maxCurrent = Math.max(nums[i], maxCurrent + nums[i]);
-
-        // Update the global maximum if the current maximum is larger
-        if (maxCurrent > maxGlobal) {
-            maxGlobal = maxCurrent;
-        }
-    }
-
-    return maxGlobal;
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const maxSum = maxSubArray(array);
-console.log(maxSum); // Output: 6 (subarray: [4, -1, 2, 1])
+const number = 5;
+console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
