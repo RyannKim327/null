@@ -1,20 +1,35 @@
-function countOccurrences(text: string, word: string): number {
-    // Normalize the text and word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
-    
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
-
-    // Count occurrences by filtering the array
-    const count = wordsArray.filter(w => w === normalizedWord).length;
-
+function countOccurrences(str: string, char: string): number {
+    let count = 0;
+    for (const ch of str) {
+        if (ch === char) {
+            count++;
+        }
+    }
     return count;
 }
 
 // Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countOccurrences(text, wordToCount);
+const myString = "Hello, World!";
+const myChar = 'o';
+const occurrences = countOccurrences(myString, myChar);
+console.log(`The character '${myChar}' occurs ${occurrences} times.`); // Output: The character 'o' occurs 2 times.
+function countOccurrences(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
 
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+// Example usage
+const myString = "Hello, World!";
+const myChar = 'o';
+const occurrences = countOccurrences(myString, myChar);
+console.log(`The character '${myChar}' occurs ${occurrences} times.`); // Output: The character 'o' occurs 2 times.
+function countOccurrences(str: string, char: string): number {
+    const regex = new RegExp(char, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage
+const myString = "Hello, World!";
+const myChar = 'o';
+const occurrences = countOccurrences(myString, myChar);
+console.log(`The character '${myChar}' occurs ${occurrences} times.`); // Output: The character 'o' occurs 2 times.
