@@ -1,13 +1,46 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings by removing spaces and converting to lower case
-    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
-    
-    // Normalize both strings and check if they are equal
-    return normalize(str1) === normalize(str2);
+function createBadCharTable(pattern: string): number[] {
+    const badCharTable: number[] = new Array(256).fill(-1);
+    const patternLength = pattern.length;
+
+    for (let i = 0; i < patternLength; i++) {
+        badCharTable[pattern.charCodeAt(i)] = i;
+    }
+
+    return badCharTable;
+}
+
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
+
+    let shift = 0;
+
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            occurrences.push(shift);
+            // Shift the pattern to the right
+            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(shift + patternLength)] : 1;
+        } else {
+            // Shift the pattern based on the bad character rule
+            shift += Math.max(1, j - badCharTable[text.charCodeAt(shift + j)]);
+        }
+    }
+
+    return occurrences;
 }
 
 // Example usage
-const str1 = "Listen";
-const str2 = "Silent";
-
-console.log(areAnagrams(str1, str2)); // Output: true
+const text = "ABAAABCDABABCDABCAABCDABCDABCD";
+const pattern = "ABCD";
+const result = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at indices: ${result.join(', ')}`);
