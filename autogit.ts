@@ -1,28 +1,14 @@
-function randomSort(arr: number[]): number[] {
-    const isSorted = (arr: number[]): boolean => {
-        for (let i = 0; i < arr.length - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                return false;
-            }
-        }
-        return true;
-    };
-
-    let sortedArray = [...arr]; // Create a copy of the original array
-
-    while (!isSorted(sortedArray)) {
-        // Shuffle the array randomly
-        for (let i = sortedArray.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [sortedArray[i], sortedArray[j]] = [sortedArray[j], sortedArray[i]];
-        }
-    }
-
-    return sortedArray;
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    
+    // Get the reversed string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Check if the normalized string is equal to its reverse
+    return normalizedStr === reversedStr;
 }
 
-// Example Usage
-const arrayToSort = [5, 3, 8, 1, 4];
-const sortedArray = randomSort(arrayToSort);
-console.log("Original Array:", arrayToSort);
-console.log("Sorted Array:", sortedArray);
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
