@@ -1,29 +1,27 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+import * as readline from 'readline';
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum element is the first unsorted element
-        let minIndex = i;
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-        // Iterate through the unsorted elements
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if a smaller element is found
-            }
-        }
-
-        // Swap the found minimum element with the first unsorted element
-        if (minIndex !== i) {
-            const temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
-    }
-    
-    return arr;
+// Function to ask a question and handle the response
+function askQuestion(query: string): Promise<string> {
+    return new Promise((resolve) => {
+        rl.question(query, (answer) => {
+            resolve(answer);
+        });
+    });
 }
 
-// Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    console.log(`Hello, ${name}! Welcome to TypeScript.`);
+    
+    rl.close(); // Close the readline interface
+}
+
+// Run the main function
+main();
