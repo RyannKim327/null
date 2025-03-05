@@ -1,32 +1,46 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-    // Start with the largest gap and reduce the gap until it is 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
+// Simulated API call
+const fetchData = async (): Promise<string> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("Data fetched successfully!");
+        }, 2000); // Simulate a 2-second network request
+    });
+};
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
+const App: React.FC = () => {
+    const [data, setData] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
+    const handleFetchData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await fetchData();
+            setData(result);
+        } catch (err) {
+            setError("Failed to fetch data.");
+        } finally {
+            setLoading(false);
         }
-        gap = Math.floor(gap / 2); // Reduce the gap
-    }
+    };
 
-    return arr;
-}
+    useEffect(() => {
+        // Optionally fetch data on component mount
+        handleFetchData();
+    }, []);
 
-// Example usage:
-const array = [12, 34, 54, 2, 3];
-console.log("Original array:", array);
-const sortedArray = shellSort(array);
-console.log("Sorted array:", sortedArray);
+    return (
+        <View style={{ padding: 20 }}>
+            <Button title="Fetch Data" onPress={handleFetchData} />
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
+            {data && <Text>{data}</Text>}
+        </View>
+    );
+};
+
+export default App;
