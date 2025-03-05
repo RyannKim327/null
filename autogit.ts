@@ -1,52 +1,15 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    if (n < 2) return arr; // Base case: an array of 0 or 1 element is already sorted
+// Example array
+let numbers: number[] = [1, 2, 3, 4, 5];
 
-    // Create a temporary array to hold merged results
-    const temp = new Array(n);
+// Reverse the array
+numbers.reverse();
 
-    // Start with a size of 1 and double it each iteration
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + size * 2, n);
-            merge(arr, temp, leftStart, mid, rightEnd);
-        }
-        // Copy the sorted subarray back to the original array
-        for (let i = 0; i < n; i++) {
-            arr[i] = temp[i];
-        }
-    }
+console.log(numbers); // Output: [5, 4, 3, 2, 1]
+// Example array
+let numbers: number[] = [1, 2, 3, 4, 5];
 
-    return arr;
-}
+// Create a new reversed array
+let reversedNumbers: number[] = numbers.slice().reverse();
 
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
-    let left = leftStart; // Starting index for left subarray
-    let right = mid;      // Starting index for right subarray
-    let index = leftStart; // Starting index to be merged
-
-    // Merge the two subarrays into temp[]
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
-        } else {
-            temp[index++] = arr[right++];
-        }
-    }
-
-    // Copy remaining elements of left subarray, if any
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
-
-    // Copy remaining elements of right subarray, if any
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
-}
-
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+console.log(reversedNumbers); // Output: [5, 4, 3, 2, 1]
+console.log(numbers); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
