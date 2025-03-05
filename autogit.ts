@@ -1,54 +1,58 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinaryTree {
-    root: TreeNode | null;
-
-    constructor() {
-        this.root = null;
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    // Function to find the diameter of the binary tree
-    diameter(): number {
-        let diameter = 0;
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
 
-        const height = (node: TreeNode | null): number => {
-            if (node === null) {
-                return 0;
+        for (let i = 0; i < patternLength; i++) {
+            // Store the last occurrence of each character in the pattern
+            table.set(pattern[i], i);
+        }
+
+        return table;
+    }
+
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    // If there's a mismatch, use the bad character rule
+                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - lastOccurrence);
+                    break;
+                }
             }
 
-            // Recursively find the height of left and right subtrees
-            const leftHeight = height(node.left);
-            const rightHeight = height(node.right);
+            if (skip === 0) {
+                // Match found
+                return i; // Return the starting index of the match
+            }
+        }
 
-            // Update the diameter at this node
-            diameter = Math.max(diameter, leftHeight + rightHeight);
-
-            // Return the height of the tree rooted at this node
-            return Math.max(leftHeight, rightHeight) + 1;
-        };
-
-        height(this.root); // Initialize DFS from the root
-        return diameter;    // Return the computed diameter
+        return -1; // No match found
     }
 }
 
-// Example Usage
-const tree = new BinaryTree();
-tree.root = new TreeNode(1);
-tree.root.left = new TreeNode(2);
-tree.root.right = new TreeNode(3);
-tree.root.left.left = new TreeNode(4);
-tree.root.left.right = new TreeNode(5);
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
 
-const diameter = tree.diameter();
-console.log(`Diameter of the binary tree: ${diameter}`);  // Output: 3
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
+}
