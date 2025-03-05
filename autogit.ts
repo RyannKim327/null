@@ -1,36 +1,31 @@
-function findMajorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-    // Phase 1: Find a candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
+    // Start with the largest gap and reduce the gap until it is 0
+    while (gap > 0) {
+        // Perform a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
+
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
 
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Return the candidate if it is a majority element
-    if (count > nums.length / 2) {
-        return candidate;
-    }
-
-    return null; // No majority element found
+    return arr;
 }
 
-// Example usage
-const nums = [3, 2, 3];
-const majorityElement = findMajorityElement(nums);
-console.log(majorityElement); // Output: 3
+// Example usage:
+const array = [12, 34, 54, 2, 3];
+const sortedArray = shellSort(array);
+console.log(sortedArray); // Output: [2, 3, 12, 34, 54]
