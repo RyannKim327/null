@@ -1,9 +1,17 @@
-function decimalToBinary(decimal: number): string {
-    return decimal.toString(2);
+function firstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
+
+    for (const char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // Return the first repeated character
+        }
+        seenCharacters.add(char); // Add the character to the set
+    }
+
+    return null; // Return null if no repeated character is found
 }
 
 // Example usage:
-const decimalNumber = 42;
-const binaryString = decimalToBinary(decimalNumber);
-console.log(`The binary representation of ${decimalNumber} is ${binaryString}`);
-The binary representation of 42 is 101010
+const input = "abca";
+const result = firstRepeatedCharacter(input);
+console.log(result); // Output: "a"
