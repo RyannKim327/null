@@ -1,53 +1,34 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    if (n < 2) return arr; // Base case: if the array has 0 or 1 element, it's already sorted.
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    // Create a temporary array to hold the sorted elements
-    const temp = new Array(n);
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-    // Start with a size of 1 and double it each iteration
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + size * 2, n);
-            merge(arr, temp, leftStart, mid, rightEnd);
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found at index pos
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else { // If target is smaller, ignore the right half
+            high = pos - 1;
         }
     }
 
-    return arr;
+    return -1; // Target not found
 }
 
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
-    let left = leftStart; // Starting index for left subarray
-    let right = mid;      // Starting index for right subarray
-    let index = leftStart; // Starting index to be merged
+// Example usage
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const index = interpolationSearch(sortedArray, targetValue);
 
-    // Merge the two subarrays into temp[]
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
-        } else {
-            temp[index++] = arr[right++];
-        }
-    }
-
-    // Copy the remaining elements of the left subarray, if any
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
-
-    // Copy the remaining elements of the right subarray, if any
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
-
-    // Copy the sorted subarray back into the original array
-    for (let i = leftStart; i < rightEnd; i++) {
-        arr[i] = temp[i];
-    }
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found in the array.');
 }
-
-// Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
