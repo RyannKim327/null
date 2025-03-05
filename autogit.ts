@@ -8,33 +8,50 @@ class ListNode {
     }
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (first === null) return null; // n is larger than the length of the list
-        first = first.next;
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second?.next || null;
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        slow = slow!.next; // Move slow by 1
+        fast = fast.next.next; // Move fast by 2
     }
 
-    return second; // second pointer is now at the nth node from the end
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to next node
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left!.next;
+        right = right.next;
+    }
+
+    return true; // It's a palindrome
 }
 
 // Example usage:
-// Create a linked list 1 -> 2 -> 3 -> 4 -> 5
 const head = new ListNode(1);
 head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
 
-// Find the 2nd node from the end
-const result = findNthFromEnd(head, 2);
-console.log(result ? result.value : 'Node not found');
+console.log(isPalindrome(head)); // Output: true
