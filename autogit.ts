@@ -1,54 +1,28 @@
-function createBadCharTable(pattern: string): { [key: string]: number } {
-    const badCharTable: { [key: string]: number } = {};
-    const patternLength = pattern.length;
-
-    // Initialize the bad character table
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern[i]] = patternLength - 1 - i;
+function longestCommonPrefix(strs: string[]): string {
+    // If the array is empty, return an empty string
+    if (strs.length === 0) {
+        return "";
     }
 
-    return badCharTable;
-}
+    // Assume the first string is the longest common prefix initially
+    let prefix = strs[0];
 
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
-    }
-
-    const badCharTable = createBadCharTable(pattern);
-    let shift = 0;
-
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            return shift; // Return the starting index of the match
-        } else {
-            // Shift the pattern based on the bad character table
-            const badCharShift = badCharTable[text[shift + j]] || patternLength;
-            shift += Math.max(1, j - badCharShift);
+    // Loop through all strings in the array starting from the second string
+    for (let i = 1; i < strs.length; i++) {
+        // Update the prefix until it matches the start of the current string
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by removing the last character
+            prefix = prefix.slice(0, -1);
+            // If there is no common prefix
+            if (prefix === "") {
+                return "";
+            }
         }
     }
 
-    return -1; // Pattern not found
+    return prefix;
 }
 
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
