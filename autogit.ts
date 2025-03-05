@@ -1,25 +1,20 @@
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
+function insertionSort(arr: number[]): number[] {
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The element to be placed at the correct position
+        let j = i - 1;
+
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key; // Place the key in its correct position
     }
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * factorialRecursive(n - 1);
+    return arr;
 }
 
-// Example usage:
-console.log(factorialRecursive(5)); // Output: 120
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
-
-// Example usage:
-console.log(factorialIterative(5)); // Output: 120
+// Example usage
+const array = [12, 11, 13, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [5, 6, 11, 12, 13]
