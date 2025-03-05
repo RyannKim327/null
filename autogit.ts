@@ -1,28 +1,57 @@
-function quickSort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
     }
 
-    // Choose a pivot (we can choose the last element as a pivot)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast && fast.next) {
+        slow = slow!.next; // Move slow by 1
+        fast = fast.next.next; // Move fast by 2
+    }
 
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to next node
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false; // Not a palindrome
         }
+        left = left!.next;
+        right = right.next;
     }
 
-    // Recursively sort the left and right arrays and concatenate the results with the pivot
-    return [...quickSort(left), pivot, ...quickSort(right)];
+    return true; // It's a palindrome
 }
 
 // Example usage:
-const unsortedArray = [10, 7, 8, 9, 1, 5];
-const sortedArray = quickSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 5, 7, 8, 9, 10]
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
