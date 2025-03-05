@@ -1,54 +1,62 @@
-function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
-    const m = pattern.length;
-    const n = text.length;
-    const result: number[] = [];
-    let p = 0; // hash value for pattern
-    let t = 0; // hash value for text
-    let h = 1;
+type Graph = { [key: string]: string[] };
 
-    // The value of h would be "pow(d, m-1)%q"
-    for (let i = 0; i < m - 1; i++) {
-        h = (h * d) % q;
+function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If already visited, return
     }
 
-    // Calculate the hash value of pattern and first window of text
-    for (let i = 0; i < m; i++) {
-        p = (d * p + pattern.charCodeAt(i)) % q;
-        t = (d * t + text.charCodeAt(i)) % q;
+    console.log(start); // Process the node
+    visited.add(start); // Mark the node as visited
+
+    for (const neighbor of graph[start]) {
+        dfsRecursive(graph, neighbor, visited); // Recur for each neighbor
     }
-
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check the hash values of current window of text and pattern.
-        if (p === t) {
-            // Check for characters one by one
-            let j;
-            for (j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    break;
-                }
-            }
-            if (j === m) {
-                result.push(i); // Pattern found at index i
-            }
-        }
-
-        // Calculate hash value for next window of text: Remove leading digit, add trailing digit
-        if (i < n - m) {
-            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
-
-            // We might get negative value of t, converting it to positive
-            if (t < 0) {
-                t = t + q;
-            }
-        }
-    }
-
-    return result;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = rabinKarp(text, pattern);
-console.log("Pattern found at indices:", result);
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
+
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function dfsIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (visited.has(node)) {
+            continue; // If already visited, skip
+        }
+
+        console.log(node); // Process the node
+        visited.add(node); // Mark the node as visited
+
+        // Push all unvisited neighbors onto the stack
+        for (const neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                stack.push(neighbor);
+            }
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
+
+dfsIterative(graph, 'A');
