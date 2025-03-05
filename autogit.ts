@@ -1,10 +1,12 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
+}
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
-
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
-
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+// Example usage:
+const number = 5;
+console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
