@@ -1,10 +1,12 @@
-let string1: string = "Hello";
-let string2: string = "World";
-let result: string = string1 + " " + string2;
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
+    }
+    return count;
+}
 
-console.log(result); // Output: Hello World
-let string1: string = "Hello";
-let string2: string = "World";
-let result: string = `${string1} ${string2}`;
-
-console.log(result); // Output: Hello World
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`);
