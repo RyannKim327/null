@@ -1,22 +1,28 @@
-npm install node-cron
-import cron from 'node-cron';
+function quickSort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    const currentTime = new Date().toLocaleString();
-    console.log(`Task running at: ${currentTime}`);
-});
+    // Choose a pivot (we can choose the last element as a pivot)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
 
-// Start the scheduled task
-task.start();
+    // Partitioning the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
 
-// Log a message indicating that the cron job has started
-console.log('Cron job has started. It will log the current time every minute.');
+    // Recursively sort the left and right arrays and concatenate the results with the pivot
+    return [...quickSort(left), pivot, ...quickSort(right)];
+}
 
-// Optional: Stop the task after 10 minutes for demonstration purposes
-setTimeout(() => {
-    task.stop();
-    console.log('Cron job has stopped.');
-}, 10 * 60 * 1000); // Stops after 10 minutes
-tsc your-file.ts
-node your-file.js
+// Example usage:
+const unsortedArray = [10, 7, 8, 9, 1, 5];
+const sortedArray = quickSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 5, 7, 8, 9, 10]
