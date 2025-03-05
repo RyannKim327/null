@@ -1,20 +1,59 @@
-function insertionSort(arr: number[]): number[] {
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i]; // The element to be placed at the correct position
-        let j = i - 1;
+// Step 1: Define a node structure.
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key; // Place the key in its correct position
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-    return arr;
 }
 
-// Example usage
-const array = [12, 11, 13, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [5, 6, 11, 12, 13]
+// Step 2: Create the linked list.
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node to the list
+    add(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Step 3: Function to find the middle element.
+    findMiddle(): ListNode | null {
+        let slow: ListNode | null = this.head;
+        let fast: ListNode | null = this.head;
+
+        while (fast !== null && fast.next !== null) {
+            slow = slow?.next || null; // Move slow one step
+            fast = fast.next.next; // Move fast two steps
+        }
+
+        return slow; // slow will be at the middle when fast reaches the end
+    }
+}
+
+// Example usage:
+const linkedList = new LinkedList();
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.add(4);
+linkedList.add(5);
+
+const middleNode = linkedList.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
