@@ -1,24 +1,40 @@
-let str: string = "123";
-let num: number = parseInt(str, 10);
+function longestCommonSubsequence(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from(Array(m + 1), () => Array(n + 1).fill(0));
+    
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
 
-console.log(num);  // Output: 123
-let str: string = "123";
-let num: number = +str;
+    // Backtrack to find the longest common subsequence
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (s1[i - 1] === s2[j - 1]) {
+            lcs = s1[i - 1] + lcs; // Append character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
 
-console.log(num);  // Output: 123
-let str: string = "123";
-let num: number = Number(str);
-
-console.log(num);  // Output: 123
-let str: string = "123.45";
-let num: number = Math.floor(Number(str));
-
-console.log(num);  // Output: 123
-let str: string = "abc";
-let num: number = parseInt(str, 10);
-
-if (isNaN(num)) {
-    console.log("The string does not contain a valid number.");
-} else {
-    console.log(num);
+    return lcs;
 }
+
+// Example usage:
+const s1 = "AGGTAB";
+const s2 = "GXTXAYB";
+console.log(longestCommonSubsequence(s1, s2)); // Output: "GTAB"
