@@ -1,86 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator } from 'react-native';
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if the left index exceeds the right index, the target is not found
+    if (left > right) {
+        return -1; // Target not found
+    }
 
-interface User {
-  id: number;
-  name: string;
-  username: string;
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
+
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found, return the index
+    } 
+    // If the target is less than the middle element, search in the left half
+    else if (arr[mid] > target) {
+        return binarySearch(arr, target, left, mid - 1);
+    } 
+    // If the target is greater than the middle element, search in the right half
+    else {
+        return binarySearch(arr, target, mid + 1, right);
+    }
 }
 
-const App: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// Function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
+}
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const  User[] = await response.json();
-        setUsers(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const targetValue = 7;
 
-    fetchUsers();
-  }, []);
-
-  if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
-  }
-
-  if (error) {
-    return (
-      <View style={styles.errorContainer}>
-        <Text>Error: {error}</Text>
-      </View>
-    );
-  }
-
-  return (
-    <FlatList
-      data={users}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={({ item }) => (
-        <View style={styles.itemContainer}>
-          <Text style={styles.itemText}>{item.name}</Text>
-          <Text style={styles.itemText}>@{item.username}</Text>
-        </View>
-      )}
-    />
-  );
-};
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  itemContainer: {
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  itemText: {
-    fontSize: 16,
-  },
-});
-
-export default App;
-npx react-native run-android
+const result = search(sortedArray, targetValue);
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found');
+}
