@@ -1,76 +1,54 @@
-// Node class
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function createBadCharTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    // Initialize the bad character table
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - 1 - i;
     }
+
+    return badCharTable;
 }
 
-// Queue class
-class Queue<T> {
-    private head: Node<T> | null = null; // points to the first element
-    private tail: Node<T> | null = null; // points to the last element
-    private length: number = 0; // tracks the number of elements in the queue
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
 
-    // Enqueue method to add an element to the end of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (this.tail) {
-            this.tail.next = newNode; // Link the old tail to the new node
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
+    }
+
+    const badCharTable = createBadCharTable(pattern);
+    let shift = 0;
+
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
         }
-        this.tail = newNode; // Set the new node as the tail
-        if (!this.head) {
-            this.head = newNode; // If the queue was empty, set the head to the new node
+
+        // If the pattern is found
+        if (j < 0) {
+            return shift; // Return the starting index of the match
+        } else {
+            // Shift the pattern based on the bad character table
+            const badCharShift = badCharTable[text[shift + j]] || patternLength;
+            shift += Math.max(1, j - badCharShift);
         }
-        this.length++; // Increase the length of the queue
     }
 
-    // Dequeue method to remove and return the front element of the queue
-    dequeue(): T | null {
-        if (!this.head) {
-            return null; // If the queue is empty
-        }
-        const removedNode = this.head; // Get the current head
-        this.head = this.head.next; // Move the head to the next node
-        if (!this.head) {
-            this.tail = null; // If the queue is now empty
-        }
-        this.length--; // Decrease the length of the queue
-        return removedNode.value; // Return the value of the removed node
-    }
-
-    // Peek method to return the front element without removing it
-    peek(): T | null {
-        return this.head ? this.head.value : null; // Return the head value if it exists
-    }
-
-    // isEmpty method to check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
-    }
-
-    // Size method to get the number of elements in the queue
-    size(): number {
-        return this.length;
-    }
+    return -1; // Pattern not found
 }
 
-// Example usage:
-const queue = new Queue<number>();
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Outputs: 1
-console.log(queue.peek()); // Outputs: 2
-console.log(queue.size()); // Outputs: 2
-console.log(queue.isEmpty()); // Outputs: false
-
-queue.dequeue();
-queue.dequeue();
-
-console.log(queue.isEmpty()); // Outputs: true
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
