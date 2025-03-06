@@ -1,62 +1,34 @@
-type Graph = { [key: string]: { neighbor: string; weight: number }[] };
-
-class PriorityQueue {
-    private elements: { node: string; priority: number }[] = [];
-
-    isEmpty() {
-        return this.elements.length === 0;
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if the left index exceeds the right index, the target is not found
+    if (left > right) {
+        return -1; // Target not found
     }
 
-    enqueue(node: string, priority: number) {
-        this.elements.push({ node, priority });
-        this.elements.sort((a, b) => a.priority - b.priority); // Sort by priority
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
+
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
     }
 
-    dequeue() {
-        return this.elements.shift();
+    // If the target is less than the middle element, search in the left half
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, left, mid - 1);
     }
+
+    // If the target is greater than the middle element, search in the right half
+    return binarySearch(arr, target, mid + 1, right);
 }
 
-function dijkstra(graph: Graph, source: string): { [key: string]: number } {
-    const distances: { [key: string]: number } = {};
-    const priorityQueue = new PriorityQueue();
-    
-    // Initialize distances and priority queue
-    for (const node in graph) {
-        distances[node] = Infinity; // Start with infinite distance
-    }
-    distances[source] = 0;
-    priorityQueue.enqueue(source, 0);
-
-    while (!priorityQueue.isEmpty()) {
-        const current = priorityQueue.dequeue();
-        if (!current) continue; // Safety check for TypeScript
-
-        const currentNode = current.node;
-
-        // Explore neighbors
-        for (const edge of graph[currentNode]) {
-            const { neighbor, weight } = edge;
-            const newDistance = distances[currentNode] + weight;
-
-            // Only consider this new path if it's better
-            if (newDistance < distances[neighbor]) {
-                distances[neighbor] = newDistance;
-                priorityQueue.enqueue(neighbor, newDistance);
-            }
-        }
-    }
-
-    return distances;
+// Helper function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
 }
 
-// Example Usage
-const graph: Graph = {
-    A: [{ neighbor: 'B', weight: 1 }, { neighbor: 'C', weight: 4 }],
-    B: [{ neighbor: 'C', weight: 2 }, { neighbor: 'D', weight: 5 }],
-    C: [{ neighbor: 'D', weight: 1 }],
-    D: [],
-};
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 5;
+const result = search(sortedArray, target);
 
-const distances = dijkstra(graph, 'A');
-console.log(distances); // Outputs shortest paths from A to all other nodes
+console.log(result); // Output: 4 (index of the target in the array)
