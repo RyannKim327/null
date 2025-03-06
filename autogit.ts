@@ -1,12 +1,19 @@
-let str: string = "   Hello, TypeScript!   ";
-let trimmed: string = str.trim();
-console.log(trimmed); // "Hello, TypeScript!"
-let str: string = "  H e l  l o,  \n T y p e S c r i p t!   ";
-let noWhitespace: string = str.replace(/\s+/g, '');
-console.log(noWhitespace); // "Hello,TypeScript!"
-let str: string = "  Hello, TypeScript!  ";
-let noSpaces: string = str.replace(/ /g, '');
-console.log(noSpaces); // "Hello,TypeScript!"
-let str: string = "  Hello,    TypeScript!  ";
-let normalized: string = str.trim().replace(/\s+/g, ' ');
-console.log(normalized); // "Hello, TypeScript!"
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
+
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
+
+// Start the task
+task.start();
+
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
