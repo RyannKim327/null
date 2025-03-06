@@ -1,19 +1,12 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let currentMax = nums[0]; // Initialize currentMax with the first element
-
-    for (let i = 1; i < nums.length; i++) {
-        // Update currentMax to be the maximum of the current element or the currentMax plus the current element
-        currentMax = Math.max(nums[i], currentMax + nums[i]);
-        
-        // Update maxSoFar if currentMax is greater
-        maxSoFar = Math.max(maxSoFar, currentMax);
-    }
-
-    return maxSoFar; // Return the maximum sum found
-}
-
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
+let str: string = "   Hello, TypeScript!   ";
+let trimmed: string = str.trim();
+console.log(trimmed); // "Hello, TypeScript!"
+let str: string = "  H e l  l o,  \n T y p e S c r i p t!   ";
+let noWhitespace: string = str.replace(/\s+/g, '');
+console.log(noWhitespace); // "Hello,TypeScript!"
+let str: string = "  Hello, TypeScript!  ";
+let noSpaces: string = str.replace(/ /g, '');
+console.log(noSpaces); // "Hello,TypeScript!"
+let str: string = "  Hello,    TypeScript!  ";
+let normalized: string = str.trim().replace(/\s+/g, ' ');
+console.log(normalized); // "Hello, TypeScript!"
