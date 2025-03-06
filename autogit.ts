@@ -1,63 +1,128 @@
-class TrieNode {
-    // Each node has children and a flag to indicate if it's the end of a word
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class Graph {
+    private adjacencyList: Map<string, string[]> = new Map();
 
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
+    addVertex(vertex: string) {
+        this.adjacencyList.set(vertex, []);
+    }
+
+    addEdge(v1: string, v2: string) {
+        this.adjacencyList.get(v1)?.push(v2);
+    }
+
+    topologicalSort(): string[] {
+        const visited: Set<string> = new Set();
+        const stack: string[] = [];
+
+        const dfs = (vertex: string) => {
+            visited.add(vertex);
+
+            const neighbors = this.adjacencyList.get(vertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+
+            stack.push(vertex);
+        };
+
+        for (const vertex of this.adjacencyList.keys()) {
+            if (!visited.has(vertex)) {
+                dfs(vertex);
+            }
+        }
+
+        return stack.reverse(); // Reverse the stack to get the correct topological order
     }
 }
 
-class Trie {
-    private root: TrieNode;
+// Usage example:
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
 
-    constructor() {
-        this.root = new TrieNode();
+graph.addEdge('A', 'D');
+graph.addEdge('F', 'B');
+graph.addEdge('B', 'D');
+graph.addEdge('F', 'A');
+graph.addEdge('D', 'C');
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder);
+class Graph {
+    private adjacencyList: Map<string, string[]> = new Map();
+
+    addVertex(vertex: string) {
+        this.adjacencyList.set(vertex, []);
     }
 
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children.has(char)) {
-                node.children.set(char, new TrieNode());
+    addEdge(v1: string, v2: string) {
+        this.adjacencyList.get(v1)?.push(v2);
+    }
+
+    topologicalSort(): string[] {
+        const inDegree: Map<string, number> = new Map();
+        const queue: string[] = [];
+        const result: string[] = [];
+
+        // Calculate in-degrees
+        this.adjacencyList.forEach((_, vertex) => {
+            inDegree.set(vertex, 0);
+        });
+        this.adjacencyList.forEach(edges => {
+            for (const edge of edges) {
+                inDegree.set(edge, (inDegree.get(edge) || 0) + 1);
             }
-            node = node.children.get(char)!; // Non-null assertion since we've checked if it exists
-        }
-        node.isEndOfWord = true; // Mark the end of the word
-    }
+        });
 
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord; // Confirm it's end of a word
-    }
-
-    // Search for a prefix in the Trie
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null; // Just need to check existence of the prefix
-    }
-
-    // Helper function to find a node corresponding to the given word or prefix
-    private findNode(word: string): TrieNode | null {
-        let node = this.root;
-        for (const char of word) {
-            if (!node.children.has(char)) {
-                return null; // Prefix doesn't exist
+        // Enqueue vertices with in-degree 0
+        inDegree.forEach((degree, vertex) => {
+            if (degree === 0) {
+                queue.push(vertex);
             }
-            node = node.children.get(char)!; // Move to the next child
+        });
+
+        // Process vertices
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            result.push(current);
+
+            const neighbors = this.adjacencyList.get(current) || [];
+            for (const neighbor of neighbors) {
+                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+                if (inDegree.get(neighbor) === 0) {
+                    queue.push(neighbor);
+                }
+            }
         }
-        return node; // Return the node corresponding to the end of word/prefix
+
+        // Check for cycles
+        if (result.length !== this.adjacencyList.size) {
+            throw new Error('Graph is not a DAG (contains a cycle)');
+        }
+
+        return result;
     }
 }
 
-// Example usage
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("helium");
+// Usage example:
+const graph = new Graph();
+graph.addVertex('A');
+graph.addVertex('B');
+graph.addVertex('C');
+graph.addVertex('D');
+graph.addVertex('E');
+graph.addVertex('F');
 
-console.log(trie.search("hello")); // Output: true
-console.log(trie.search("hell")); // Output: false
-console.log(trie.startsWith("hel")); // Output: true
-console.log(trie.startsWith("hey")); // Output: false
+graph.addEdge('A', 'D');
+graph.addEdge('F', 'B');
+graph.addEdge('B', 'D');
+graph.addEdge('F', 'A');
+graph.addEdge('D', 'C');
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder);
