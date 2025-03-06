@@ -1,30 +1,17 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings
+    const normalizedStr1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-    }
-}
-
-// Call the function to fetch posts
-fetchPosts();
+// Example usage:
+const str1 = "listen";
+const str2 = "silent";
+console.log(areAnagrams(str1, str2)); // Output: true
