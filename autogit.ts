@@ -1,78 +1,34 @@
-type Graph = { [key: string]: string[] };
-
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
-
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentFromStart = queueFromStart.shift()!;
-        visitedFromStart.add(currentFromStart);
-
-        for (const neighbor of graph[currentFromStart] || []) {
-            if (!visitedFromStart.has(neighbor)) {
-                parentFromStart[neighbor] = currentFromStart;
-                queueFromStart.push(neighbor);
-                if (visitedFromGoal.has(neighbor)) {
-                    return constructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-            }
-        }
-
-        // Search from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph[currentFromGoal] || []) {
-            if (!visitedFromGoal.has(neighbor)) {
-                parentFromGoal[neighbor] = currentFromGoal;
-                queueFromGoal.push(neighbor);
-                if (visitedFromStart.has(neighbor)) {
-                    return constructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-            }
-        }
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if left index exceeds right index, target is not found
+    if (left > right) {
+        return -1;
     }
 
-    return null; // No path found
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
+
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found, return index
+    }
+
+    // If target is less than the middle element, search in the left sub-array
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, left, mid - 1);
+    } else {
+        // If target is greater than the middle element, search in the right sub-array
+        return binarySearch(arr, target, mid + 1, right);
+    }
 }
 
-function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
-    const path: string[] = [];
-    
-    // Trace back from the meeting point to the start
-    let current: string | null = meetingPoint;
-    while (current !== null) {
-        path.push(current);
-        current = parentFromStart[current];
-    }
-    path.reverse(); // Reverse to get the path from start to meeting point
-
-    // Trace back from the meeting point to the goal
-    current = parentFromGoal[meetingPoint];
-    while (current !== null) {
-        path.push(current);
-        current = parentFromGoal[current];
-    }
-
-    return path;
+// Helper function to initiate the binary search
+function findIndex(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
 }
 
 // Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E']
-};
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const targetValue = 6;
+const index = findIndex(sortedArray, targetValue);
 
-const path = biDirectionalSearch(graph, 'A', 'F');
-console.log(path); // Output: ['A', 'C', 'F'] or similar path
+console.log(index);  // Output: 5 (the index of the target value in the array)
