@@ -1,58 +1,58 @@
-class Node<T> {
-  value: T;
-  children: Node<T>[] = [];
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-  constructor(value: T) {
-    this.value = value;
-  }
-}
-
-function breadthLimitedSearch<T>(root: Node<T>, target: T, maxDepth: number): Node<T> | null {
-  const queue: Node<T>[] = [root];
-  const visited: Set<Node<T>> = new Set();
-  let currentDepth = 0;
-
-  while (queue.length > 0) {
-    const levelSize = queue.length;
-
-    for (let i = 0; i < levelSize; i++) {
-      const currentNode = queue.shift()!;
-
-      if (currentNode.value === target) {
-        return currentNode;
-      }
-
-      if (currentDepth < maxDepth) {
-        for (const child of currentNode.children) {
-          if (!visited.has(child)) {
-            visited.add(child);
-            queue.push(child);
-          }
-        }
-      }
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    currentDepth++;
-  }
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
 
-  return null;
+        for (let i = 0; i < patternLength; i++) {
+            // Store the last occurrence of each character in the pattern
+            table.set(pattern[i], i);
+        }
+
+        return table;
+    }
+
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    // If there's a mismatch, use the bad character rule
+                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - lastOccurrence);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found
+                return i; // Return the starting index of the match
+            }
+        }
+
+        return -1; // No match found
+    }
 }
 
-// Example usage
-const root = new Node(1);
-const node2 = new Node(2);
-const node3 = new Node(3);
-const node4 = new Node(4);
-const node5 = new Node(5);
-const node6 = new Node(6);
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const result = bm.search(text);
 
-root.children.push(node2, node3);
-node2.children.push(node4, node5);
-node3.children.push(node6);
-
-const targetNode = breadthLimitedSearch(root, 6, 2);
-if (targetNode) {
-  console.log(`Found target node: ${targetNode.value}`);
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
 } else {
-  console.log('Target node not found');
+    console.log("Pattern not found");
 }
