@@ -1,83 +1,38 @@
-type Graph = { [key: string]: string[] };
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-// Create a bi-directional search function
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    // Edge case
-    if (start === goal) return [start];
-
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart = [start];
-    const queueFromGoal = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentStart = queueFromStart.shift()!;
-        if (visitedFromGoal.has(currentStart)) {
-            return constructPath(currentStart, parentFromStart, parentFromGoal);
-        }
-
-        visitedFromStart.add(currentStart);
-        for (const neighbor of graph[currentStart] || []) {
-            if (!visitedFromStart.has(neighbor)) {
-                queueFromStart.push(neighbor);
-                visitedFromStart.add(neighbor);
-                parentFromStart[neighbor] = currentStart;
-            }
-        }
-
-        // Search from the goal
-        const currentGoal = queueFromGoal.shift()!;
-        if (visitedFromStart.has(currentGoal)) {
-            return constructPath(currentGoal, parentFromGoal, parentFromStart);
-        }
-
-        visitedFromGoal.add(currentGoal);
-        for (const neighbor of graph[currentGoal] || []) {
-            if (!visitedFromGoal.has(neighbor)) {
-                queueFromGoal.push(neighbor);
-                visitedFromGoal.add(neighbor);
-                parentFromGoal[neighbor] = currentGoal;
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return null; // No path found
 }
 
-function constructPath(meetingPoint: string, parentFromStart: any, parentFromGoal: any): string[] {
-    const path: string[] = [];
-    
-    // Build path from start to meeting point
-    let current: string | null = meetingPoint;
-    while (current !== null) {
-        path.push(current);
-        current = parentFromStart[current];
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
     }
-  
-    path.reverse(); // Reverse to get the correct order
-  
-    // Build path from meeting point to goal
-    current = parentFromGoal[meetingPoint];
-    while (current !== null) {
-        path.push(current);
-        current = parentFromGoal[current];
-    }
-  
-    return path;
+
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Example usage
-const graph: Graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-};
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-const path = biDirectionalSearch(graph, 'A', 'F');
-console.log(path); // Output: ['A', 'C', 'F'] or ['A', 'B', 'E', 'F']
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
