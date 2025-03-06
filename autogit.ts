@@ -1,26 +1,58 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-  const m = str1.length;
-  const n = str2.length;
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    Array(n + 1).fill(0)
-  );
-  let maxLength = 0;
-  let maxSubstring = '';
+class Node {
+    value: string;
+    children: Node[];
 
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          maxSubstring = str1.substring(i - maxLength, i);
-        }
-      }
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
-  }
 
-  return maxSubstring;
+    addChild(child: Node) {
+        this.children.push(child);
+    }
 }
-console.log(longestCommonSubstring('abcdefg', 'xyzabcd')); // Output: "abcd"
-console.log(longestCommonSubstring('hello', 'world')); // Output: "lo"
-console.log(longestCommonSubstring('apple', 'banana')); // Output: ""
+
+function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    if (limit < 0) {
+        return null; // Limit reached, return null
+    }
+
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Target found
+        }
+
+        // If we haven't reached the limit, add children to the queue
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // Target not found within the limit
+}
+
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const targetNode = breadthLimitedSearch(root, "E", 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the limit.");
+}
