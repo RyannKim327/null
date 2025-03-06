@@ -1,53 +1,58 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    if (n < 2) return arr; // Base case: if the array has 0 or 1 element, it's already sorted.
+class Node<T> {
+  value: T;
+  children: Node<T>[] = [];
 
-    // Create a temporary array to hold the sorted elements
-    const temp = new Array(n);
-
-    // Start with a size of 1 and double it each iteration
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + size * 2, n);
-            merge(arr, temp, leftStart, mid, rightEnd);
-        }
-    }
-
-    return arr;
+  constructor(value: T) {
+    this.value = value;
+  }
 }
 
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
-    let left = leftStart; // Starting index for left subarray
-    let right = mid;      // Starting index for right subarray
-    let index = leftStart; // Starting index to be merged
+function breadthLimitedSearch<T>(root: Node<T>, target: T, maxDepth: number): Node<T> | null {
+  const queue: Node<T>[] = [root];
+  const visited: Set<Node<T>> = new Set();
+  let currentDepth = 0;
 
-    // Merge the two subarrays into temp[]
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
-        } else {
-            temp[index++] = arr[right++];
+  while (queue.length > 0) {
+    const levelSize = queue.length;
+
+    for (let i = 0; i < levelSize; i++) {
+      const currentNode = queue.shift()!;
+
+      if (currentNode.value === target) {
+        return currentNode;
+      }
+
+      if (currentDepth < maxDepth) {
+        for (const child of currentNode.children) {
+          if (!visited.has(child)) {
+            visited.add(child);
+            queue.push(child);
+          }
         }
+      }
     }
 
-    // Copy the remaining elements of the left subarray, if any
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
+    currentDepth++;
+  }
 
-    // Copy the remaining elements of the right subarray, if any
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
-
-    // Copy the sorted subarray back into the original array
-    for (let i = leftStart; i < rightEnd; i++) {
-        arr[i] = temp[i];
-    }
+  return null;
 }
 
-// Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Example usage
+const root = new Node(1);
+const node2 = new Node(2);
+const node3 = new Node(3);
+const node4 = new Node(4);
+const node5 = new Node(5);
+const node6 = new Node(6);
+
+root.children.push(node2, node3);
+node2.children.push(node4, node5);
+node3.children.push(node6);
+
+const targetNode = breadthLimitedSearch(root, 6, 2);
+if (targetNode) {
+  console.log(`Found target node: ${targetNode.value}`);
+} else {
+  console.log('Target node not found');
+}
