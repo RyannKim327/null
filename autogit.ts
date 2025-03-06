@@ -1,50 +1,35 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-    // Helper function to heapify a subtree rooted at index i.
-    const heapify = (i: number, length: number) => {
-        let largest = i;  // Initialize largest as root
-        const left = 2 * i + 1; // Left child index
-        const right = 2 * i + 2; // Right child index
+const newArray = array.filter(item => item !== valueToRemove);
 
-        // If left child is larger than root
-        if (left < length && arr[left] > arr[largest]) {
-            largest = left;
-        }
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3); // Find the index
 
-        // If right child is larger than largest so far
-        if (right < length && arr[right] > arr[largest]) {
-            largest = right;
-        }
-
-        // If largest is not root
-        if (largest !== i) {
-            // Swap arr[i] with arr[largest]
-            [arr[i], arr[largest]] = [arr[largest], arr[i]]; // ES6 destructuring swap
-
-            // Recursively heapify the affected subtree
-            heapify(largest, length);
-        }
-    };
-
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(i, n);
-    }
-
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end (swap)
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-
-        // Call heapify on the reduced heap
-        heapify(0, i);
-    }
-
-    return arr;
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove the element at that index
 }
 
-// Example usage:
-const array = [12, 11, 13, 5, 6, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [5, 6, 7, 11, 12, 13]
+console.log(array); // Output: [1, 2, 4, 5]
+const array = ['apple', 'banana', 'cherry', 'date'];
+const fruitToRemove = 'cherry';
+
+const indexToRemove = array.findIndex(fruit => fruit === fruitToRemove);
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1);
+}
+
+console.log(array); // Output: ['apple', 'banana', 'date']
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
+
+const newArray = array.reduce((acc, item) => {
+    if (item !== valueToRemove) {
+        acc.push(item);
+    }
+    return acc;
+}, []);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
