@@ -1,28 +1,17 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
+function reverseWords(str: string): string {
+  // Split the string into an array of words
+  const words = str.split(' ');
 
-  constructor(val: number) {
-    this.val = val;
-    this.next = null;
-  }
+  // Reverse the order of the words
+  const reversedWords = words.reverse();
+
+  // Join the reversed words back into a string
+  const reversedStr = reversedWords.join(' ');
+
+  return reversedStr;
 }
 
-function hasCycle(head: ListNode | null): boolean {
-  if (!head || !head.next) {
-    return false; // Empty list or single node
-  }
-
-  let slow = head;
-  let fast = head.next;
-
-  while (slow !== fast) {
-    if (!fast || !fast.next) {
-      return false; // Reached the end of the list
-    }
-    slow = slow.next!;
-    fast = fast.next.next!;
-  }
-
-  return true; // Cycle detected
-}
+// Example usage
+const originalString = "The quick brown fox jumps over the lazy dog.";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "dog. lazy the over jumps fox brown quick The"
