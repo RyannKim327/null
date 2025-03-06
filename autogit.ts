@@ -1,32 +1,12 @@
-npm install axios
-import axios from 'axios';
-
-// Define an interface for the data we expect to receive
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
-// Function to fetch users from a public API
-const fetchUsers = async (): Promise<void> => {
-    try {
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        const users = response.data;
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
 
-        // Log the users to the console
-        users.forEach(user => {
-            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-        });
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-    }
-};
-
-// Call the function to fetch users
-fetchUsers();
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
