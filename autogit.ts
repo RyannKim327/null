@@ -1,34 +1,63 @@
-function binarySearch(arr: number[], target: number, left: number, right: number): number {
-    // Base case: if the left index exceeds the right index, the target is not found
-    if (left > right) {
-        return -1; // Target not found
+class TrieNode {
+    // Each node has children and a flag to indicate if it's the end of a word
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
+
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
     }
-
-    // Calculate the middle index
-    const mid = Math.floor((left + right) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
-    }
-
-    // If the target is less than the middle element, search in the left half
-    if (target < arr[mid]) {
-        return binarySearch(arr, target, left, mid - 1);
-    }
-
-    // If the target is greater than the middle element, search in the right half
-    return binarySearch(arr, target, mid + 1, right);
 }
 
-// Helper function to initiate the binary search
-function search(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+class Trie {
+    private root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                node.children.set(char, new TrieNode());
+            }
+            node = node.children.get(char)!; // Non-null assertion since we've checked if it exists
+        }
+        node.isEndOfWord = true; // Mark the end of the word
+    }
+
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord; // Confirm it's end of a word
+    }
+
+    // Search for a prefix in the Trie
+    startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null; // Just need to check existence of the prefix
+    }
+
+    // Helper function to find a node corresponding to the given word or prefix
+    private findNode(word: string): TrieNode | null {
+        let node = this.root;
+        for (const char of word) {
+            if (!node.children.has(char)) {
+                return null; // Prefix doesn't exist
+            }
+            node = node.children.get(char)!; // Move to the next child
+        }
+        return node; // Return the node corresponding to the end of word/prefix
+    }
 }
 
 // Example usage
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const result = search(sortedArray, target);
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("helium");
 
-console.log(result); // Output: 6 (index of the target in the array)
+console.log(trie.search("hello")); // Output: true
+console.log(trie.search("hell")); // Output: false
+console.log(trie.startsWith("hel")); // Output: true
+console.log(trie.startsWith("hey")); // Output: false
