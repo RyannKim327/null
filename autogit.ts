@@ -1,29 +1,12 @@
-function interpolationSearch<T>(arr: T[], target: T, compareFn: (a: T, b: T) => number): number {
-  let low = 0;
-  let high = arr.length - 1;
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-  while (low <= high && arr[low] !== arr[high]) {
-    const mid = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-    if (compareFn(arr[mid], target) === 0) {
-      return mid;
-    } else if (compareFn(arr[mid], target) < 0) {
-      low = mid + 1;
-    } else {
-      high = mid - 1;
-    }
-  }
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-  if (arr[low] === target) {
-    return low;
-  }
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
 
-  return -1;
-}
-
-// Example usage
-const numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 11;
-
-const result = interpolationSearch(numbers, target, (a, b) => a - b);
-console.log(result); // Output: 5
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
