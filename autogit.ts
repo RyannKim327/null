@@ -1,56 +1,53 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    if (n < 2) return arr; // Base case: if the array has 0 or 1 element, it's already sorted.
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
+    // Create a temporary array to hold the sorted elements
+    const temp = new Array(n);
+
+    // Start with a size of 1 and double it each iteration
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
+            const mid = Math.min(leftStart + size, n);
+            const rightEnd = Math.min(leftStart + size * 2, n);
+            merge(arr, temp, leftStart, mid, rightEnd);
+        }
     }
 
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
+    return arr;
+}
 
-        for (let i = 0; i < patternLength; i++) {
-            table.set(pattern[i], i);
+function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
+    let left = leftStart; // Starting index for left subarray
+    let right = mid;      // Starting index for right subarray
+    let index = leftStart; // Starting index to be merged
+
+    // Merge the two subarrays into temp[]
+    while (left < mid && right < rightEnd) {
+        if (arr[left] <= arr[right]) {
+            temp[index++] = arr[left++];
+        } else {
+            temp[index++] = arr[right++];
         }
-
-        return table;
     }
 
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
+    // Copy the remaining elements of the left subarray, if any
+    while (left < mid) {
+        temp[index++] = arr[left++];
+    }
 
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
+    // Copy the remaining elements of the right subarray, if any
+    while (right < rightEnd) {
+        temp[index++] = arr[right++];
+    }
 
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found
-                return i; // Return the starting index of the match
-            }
-        }
-
-        return -1; // No match found
+    // Copy the sorted subarray back into the original array
+    for (let i = leftStart; i < rightEnd; i++) {
+        arr[i] = temp[i];
     }
 }
 
 // Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const result = bm.search(text);
-
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
