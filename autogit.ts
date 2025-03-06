@@ -1,32 +1,37 @@
 function shellSort(arr: number[]): number[] {
     const n = arr.length;
-    let gap = Math.floor(n / 2);
+    
+    // Start with a big gap, then reduce the gap
+    let gap = Math.floor(n / 2); // Initial gap size
 
-    // Start with a large gap, then reduce the gap
+    // Do a gapped insertion sort for this gap size
+    // The first gap elements arr[0..gap-1] are already in gapped order
+    // Keep adding one more element until the entire array is gap sorted
     while (gap > 0) {
         // Do a gapped insertion sort for this gap size
         for (let i = gap; i < n; i++) {
             // add arr[i] to the elements that have been gap sorted
             // save arr[i] in temp and make a hole at position i
             const temp = arr[i];
-            let j;
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            // shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            let j: number;
             for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
                 arr[j] = arr[j - gap];
             }
 
-            // Put temp (the original arr[i]) in its correct location
+            // put temp (the original arr[i]) in its correct location
             arr[j] = temp;
         }
-        // Reduce the gap for the next step
-        gap = Math.floor(gap / 2);
+
+        gap = Math.floor(gap / 2); // Reduce gap size
     }
 
     return arr;
 }
 
 // Example usage
-const arrayToSort = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(arrayToSort);
-console.log(sortedArray);
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
