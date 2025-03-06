@@ -1,58 +1,60 @@
-class Node {
-    value: string;
-    children: Node[];
+type Graph = { [key: string]: string[] };
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If the node has already been visited, return
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
+    console.log(start); // Process the node (e.g., print it)
+    visited.add(start); // Mark the node as visited
+
+    for (const neighbor of graph[start]) {
+        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
     }
 }
 
-function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    if (limit < 0) {
-        return null; // Limit reached, return null
-    }
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
 
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+depthFirstSearch(graph, 'A');
+type Graph = { [key: string]: string[] };
 
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
+function depthFirstSearchIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
-        }
+    while (stack.length > 0) {
+        const node = stack.pop()!; // Get the last node from the stack
 
-        // If we haven't reached the limit, add children to the queue
-        if (depth < limit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
+        if (!visited.has(node)) {
+            console.log(node); // Process the node (e.g., print it)
+            visited.add(node); // Mark the node as visited
+
+            // Add all unvisited neighbors to the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
             }
         }
     }
-
-    return null; // Target not found within the limit
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const targetNode = breadthLimitedSearch(root, "D", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
-}
+depthFirstSearchIterative(graph, 'A');
