@@ -1,34 +1,55 @@
-function binarySearch(arr: number[], target: number, left: number, right: number): number {
-    // Base case: if the left index exceeds the right index, the target is not found
-    if (left > right) {
-        return -1; // Target not found
+class Node {
+    value: string;
+    children: Node[];
+
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    // Calculate the middle index
-    const mid = Math.floor((left + right) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
+    addChild(child: Node) {
+        this.children.push(child);
     }
-
-    // If the target is less than the middle element, search in the left half
-    if (target < arr[mid]) {
-        return binarySearch(arr, target, left, mid - 1);
-    }
-
-    // If the target is greater than the middle element, search in the right half
-    return binarySearch(arr, target, mid + 1, right);
 }
 
-// Helper function to initiate the binary search
-function search(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+function depthLimitedSearch(root: Node, target: string, limit: number): boolean {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return true;
+        }
+
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
+    }
+
+    // Target not found within the depth limit
+    return false;
 }
 
-// Example usage
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
-const result = search(sortedArray, target);
+// Example usage:
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
 
-console.log(result); // Output: 4 (index of the target in the array)
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const target = "E";
+const limit = 2;
+
+const found = depthLimitedSearch(root, target, limit);
+console.log(`Target ${target} found: ${found}`);
