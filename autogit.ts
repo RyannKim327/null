@@ -1,50 +1,70 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-  if (nums.length === 0) return 0;
+type Node<T> = {
+    state: T; // Current state
+    cost: number; // Cost associated with the state
+    parent?: Node<T>; // Optional parent to trace the path
+};
 
-  const dp: number[] = new Array(nums.length).fill(1);
+type BeamSearch<T> = {
+    beamWidth: number;
+    evaluate: (node: Node<T>) => number; // Function to evaluate nodes
+    getChildren: (node: Node<T>) => Node<T>[]; // Function to get children of a node
+};
 
-  for (let i = 1; i < nums.length; i++) {
-    for (let j = 0; j < i; j++) {
-      if (nums[i] > nums[j]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
-      }
+function beamSearch<T>(initialState: T, search: BeamSearch<T>): Node<T> | null {
+    const initialNode: Node<T> = { state: initialState, cost: 0 };
+    let currentLevel: Node<T>[] = [initialNode];
+
+    while (currentLevel.length > 0) {
+        // Expand all current nodes
+        const nextLevel: Node<T>[] = [];
+        
+        for (const node of currentLevel) {
+            const children = search.getChildren(node);
+            nextLevel.push(...children);
+        }
+
+        // Evaluate and sort nodes by their score
+        const scoredNodes = nextLevel.map(node => ({
+            ...node,
+            score: search.evaluate(node)
+        }));
+
+        // Sort nodes by score (higher score or lower cost depending on your evaluation function)
+        scoredNodes.sort((a, b) => a.score - b.score);
+
+        // Keep only the top `beamWidth` nodes
+        currentLevel = scoredNodes.slice(0, search.beamWidth);
+        
+        // Optionally check for goal states
+        for (const node of currentLevel) {
+            if (isGoal(node)) { // Implement your goal test
+                return node; // Return the goal node
+            }
+        }
     }
-  }
 
-  return Math.max(...dp);
+    return null; // No solution found
+}
+
+// Example evaluation and children functions
+function isGoal<T>(node: Node<T>): boolean {
+    // Implement your termination condition here
+    return false; // Placeholder
 }
 
 // Example usage
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(nums)); // Output: 4
-function longestIncreasingSubsequence(nums: number[]): number {
-  const tails: number[] = [];
-  
-  for (const num of nums) {
-    let left = 0;
-    let right = tails.length;
-
-    // Binary search to find the insertion point
-    while (left < right) {
-      const mid = Math.floor((left + right) / 2);
-      if (tails[mid] < num) {
-        left = mid + 1;
-      } else {
-        right = mid;
-      }
+const search = {
+    beamWidth: 3,
+    evaluate: (node: Node<number>) => node.cost, // Placeholder evaluation function
+    getChildren: (node: Node<number>) => {
+        // Generate children nodes (dummy implementation)
+        return [
+            { state: node.state + 1, cost: node.cost + 1 },
+            { state: node.state + 2, cost: node.cost + 2 },
+            { state: node.state + 3, cost: node.cost + 3 }
+        ];
     }
+};
 
-    // If `left` is equal to the length of tails, it means num is larger than any element in tails
-    if (left === tails.length) {
-      tails.push(num);
-    } else {
-      tails[left] = num; // Update the position with the new smallest tail value
-    }
-  }
-
-  return tails.length;
-}
-
-// Example usage
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(nums)); // Output: 4
+const result = beamSearch(0, search);
+console.log(result);
