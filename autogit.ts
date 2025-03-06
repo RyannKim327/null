@@ -1,19 +1,17 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+// Example array
+let myArray: number[] = [1, 2, 3, 4, 5];
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleString());
-});
+// Reversing the array
+myArray.reverse();
 
-// Start the task
-task.start();
+console.log(myArray); // Output: [5, 4, 3, 2, 1]
+// Example array
+let myArray: number[] = [1, 2, 3, 4, 5];
 
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronExample.ts
-node cronExample.js
+// Creating a new array and reversing it
+let reversedArray = [...myArray].reverse(); // Using spread operator
+// or
+// let reversedArray = myArray.slice().reverse(); // Using slice
+
+console.log(myArray);        // Output: [1, 2, 3, 4, 5]
+console.log(reversedArray);  // Output: [5, 4, 3, 2, 1]
