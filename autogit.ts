@@ -1,29 +1,116 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Create a count array to store the count of each unique value
-    const count: number[] = new Array(max + 1).fill(0);
-    const output: number[] = new Array(arr.length);
+class Graph {
+    private adjList: Map<number, number[]>;
 
-    // Count each element in the input array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+    constructor() {
+        this.adjList = new Map();
     }
 
-    // Update the count array to store the cumulative count
-    for (let i = 1; i <= max; i++) {
-        count[i] += count[i - 1];
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
     }
 
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
 
-    return output;
+        const dfs = (v: number) => {
+            visited.add(v);
+            const neighbors = this.adjList.get(v) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(v);
+        };
+
+        for (const vertex of this.adjList.keys()) {
+            if (!visited.has(vertex)) {
+                dfs(vertex);
+            }
+        }
+
+        return stack.reverse(); // Return in reverse order
+    }
 }
 
 // Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
+class Graph {
+    private adjList: Map<number, number[]>;
+    private inDegree: Map<number, number>;
+
+    constructor() {
+        this.adjList = new Map();
+        this.inDegree = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+
+        // Update in-degree of the destination vertex
+        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
+        if (!this.inDegree.has(v)) {
+            this.inDegree.set(v, 0);
+        }
+    }
+
+    topologicalSort(): number[] {
+        const zeroInDegreeQueue: number[] = [];
+        const sortedOrder: number[] = [];
+
+        // Initialize the queue with all vertices with in-degree of 0
+        for (const [vertex, degree] of this.inDegree.entries()) {
+            if (degree === 0) {
+                zeroInDegreeQueue.push(vertex);
+            }
+        }
+
+        while (zeroInDegreeQueue.length > 0) {
+            const vertex = zeroInDegreeQueue.shift()!;
+            sortedOrder.push(vertex);
+
+            const neighbors = this.adjList.get(vertex) || [];
+            for (const neighbor of neighbors) {
+                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
+                if (this.inDegree.get(neighbor) === 0) {
+                    zeroInDegreeQueue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there was a cycle
+        if (sortedOrder.length !== this.inDegree.size) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+
+        return sortedOrder;
+    }
+}
+
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
