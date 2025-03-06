@@ -1,15 +1,12 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The list of numbers is empty.");
-    }
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an Email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
-
-    return mean;
+    // Test the email against the regex
+    return emailRegex.test(email);
 }
 
-// Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+// Example usage
+const emailToTest = "example@example.com";
+const isValid = validateEmail(emailToTest);
+console.log(`Is the email "${emailToTest}" valid? `, isValid); // Output: true
