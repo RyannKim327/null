@@ -1,51 +1,16 @@
-class Stack<T> {
-    private items: T[];
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
 
-    constructor() {
-        this.items = [];
+    for (let i = 1; i < nums.length; i++) {
+        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
+        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar if needed
     }
 
-    // Add an item to the top of the stack
-    public push(item: T): void {
-        this.items.push(item);
-    }
-
-    // Remove and return the item from the top of the stack
-    public pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Return the item at the top of the stack without removing it
-    public peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    public isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Return the size of the stack
-    public size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    public clear(): void {
-        this.items = [];
-    }
+    return maxSoFar; // Return the maximum sum found
 }
 
-// Example usage
-const stack = new Stack<number>();
-
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-console.log(stack.pop()); // Output: 3
-console.log(stack.peek()); // Output: 2
-console.log(stack.isEmpty()); // Output: false
-console.log(stack.size()); // Output: 2
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
