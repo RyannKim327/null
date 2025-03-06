@@ -1,55 +1,113 @@
-class Node {
-    value: string;
-    children: Node[];
+class SkipListNode<T> {
+    value: T;
+    forward: SkipListNode<T>[];
 
-    constructor(value: string) {
+    constructor(value: T, level: number) {
         this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
+        this.forward = new Array(level + 1).fill(null);
     }
 }
 
-function depthLimitedSearch(root: Node, target: string, limit: number): boolean {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+class SkipList<T> {
+    private head: SkipListNode<T>;
+    private maxLevel: number;
+    private probability: number;
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
+    constructor(maxLevel: number = 16, probability: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.probability = probability;
+        this.head = new SkipListNode<T>(null, maxLevel);
+    }
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return true;
+    private randomLevel(): number {
+        let level = 0;
+        while (Math.random() < this.probability && level < this.maxLevel) {
+            level++;
+        }
+        return level;
+    }
+
+    insert(value: T): void {
+        const updates = new Array<SkipListNode<T>>(this.maxLevel + 1);
+        let current = this.head;
+
+        // Find the position to insert the new node
+        for (let i = this.maxLevel; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            updates[i] = current;
         }
 
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
+        current = current.forward[0];
+
+        // Only insert if the value is not already present
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+            const newNode = new SkipListNode(value, newLevel);
+
+            // Update pointers for the new node
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = updates[i].forward[i];
+                updates[i].forward[i] = newNode;
             }
         }
     }
 
-    // Target not found within the depth limit
-    return false;
+    search(value: T): boolean {
+        let current = this.head;
+
+        for (let i = this.maxLevel; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+
+        return current !== null && current.value === value;
+    }
+
+    remove(value: T): boolean {
+        const updates = new Array<SkipListNode<T>>(this.maxLevel + 1);
+        let current = this.head;
+
+        // Find the position of the node to remove
+        for (let i = this.maxLevel; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            updates[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the current node is the node to be removed
+        if (current !== null && current.value === value) {
+            // Update pointers to remove the node
+            for (let i = 0; i <= this.maxLevel; i++) {
+                if (updates[i].forward[i] !== current) break;
+                updates[i].forward[i] = current.forward[i];
+            }
+            return true;
+        }
+
+        return false;
+    }
 }
 
 // Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
+const skipList = new SkipList<number>();
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
 
-const target = "E";
-const limit = 2;
+console.log(skipList.search(7));  // Output: true
+console.log(skipList.search(15)); // Output: false
 
-const found = depthLimitedSearch(root, target, limit);
-console.log(`Target ${target} found: ${found}`);
+skipList.remove(3);
+console.log(skipList.search(3)); // Output: false
