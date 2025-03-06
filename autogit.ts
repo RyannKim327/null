@@ -1,113 +1,130 @@
-class SkipListNode<T> {
-    value: T;
-    forward: SkipListNode<T>[];
+class BTreeNode {
+    keys: number[];
+    children: BTreeNode[];
+    isLeaf: boolean;
+    t: number; // Minimum degree (defines the range for number of keys)
 
-    constructor(value: T, level: number) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
+    constructor(t: number, isLeaf: boolean) {
+        this.t = t;
+        this.isLeaf = isLeaf;
+        this.keys = [];
+        this.children = [];
+    }
+
+    // Function to traverse all nodes in a subtree rooted with this node
+    traverse() {
+        let i: number;
+        for (i = 0; i < this.keys.length; i++) {
+            // If this is not a leaf, then before the next key, traverse the child
+            if (!this.isLeaf) {
+                this.children[i].traverse();
+            }
+            console.log(this.keys[i]);
+        }
+
+        // Finally, traverse the last child
+        if (!this.isLeaf) {
+            this.children[i].traverse();
+        }
+    }
+
+    // Function to insert a new key in this node
+    insertNonFull(key: number) {
+        let i = this.keys.length - 1;
+
+        // If this is a leaf node
+        if (this.isLeaf) {
+            // Find the location of new key to be inserted
+            while (i >= 0 && key < this.keys[i]) {
+                i--;
+            }
+            // Insert the new key at found location
+            this.keys.splice(i + 1, 0, key);
+        } else {
+            // Find the child which is going to have the new key
+            while (i >= 0 && key < this.keys[i]) {
+                i--;
+            }
+            // Check if the found child is full
+            if (this.children[i + 1].keys.length === 2 * this.t - 1) {
+                // If the child is full, then split it
+                this.splitChild(i + 1);
+                // After split, the middle key of child goes up and
+                // this key is going to be inserted in the appropriate child
+                if (key > this.keys[i + 1]) {
+                    i++;
+                }
+            }
+            this.children[i + 1].insertNonFull(key);
+        }
+    }
+
+    // Function to split the child of this node. `i` is index of the child
+    // in the children array
+    splitChild(i: number) {
+        const t = this.t;
+        const y = this.children[i];
+        const z = new BTreeNode(t, y.isLeaf);
+
+        // Give z the last t-1 keys of y
+        for (let j = 0; j < t - 1; j++) {
+            z.keys.push(y.keys[j + t]);
+        }
+
+        // If y is not a leaf, then give z the last t children of y
+        if (!y.isLeaf) {
+            for (let j = 0; j < t; j++) {
+                z.children.push(y.children[j + t]);
+            }
+        }
+
+        // Reduce the number of keys in y
+        y.keys.length = t - 1;
+
+        // Since this node is going to have a new child, create space for it
+        this.children.splice(i + 1, 0, z);
+
+        // A key of y will move to this node. Find location of new key
+        // and move a key to this node
+        this.keys.splice(i, 0, y.keys.pop()!);
     }
 }
 
-class SkipList<T> {
-    private head: SkipListNode<T>;
-    private maxLevel: number;
-    private probability: number;
+class BTree {
+    root: BTreeNode;
+    t: number; // Minimum degree
 
-    constructor(maxLevel: number = 16, probability: number = 0.5) {
-        this.maxLevel = maxLevel;
-        this.probability = probability;
-        this.head = new SkipListNode<T>(null, maxLevel);
+    constructor(t: number) {
+        this.root = new BTreeNode(t, true);
+        this.t = t;
     }
 
-    private randomLevel(): number {
-        let level = 0;
-        while (Math.random() < this.probability && level < this.maxLevel) {
-            level++;
-        }
-        return level;
+    // Function to traverse the tree
+    traverse() {
+        this.root.traverse();
     }
 
-    insert(value: T): void {
-        const updates = new Array<SkipListNode<T>>(this.maxLevel + 1);
-        let current = this.head;
+    // Function to insert a new key
+    insert(key: number) {
+        const root = this.root;
 
-        // Find the position to insert the new node
-        for (let i = this.maxLevel; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            updates[i] = current;
+        // If root is full, then tree grows in height
+        if (root.keys.length === 2 * this.t - 1) {
+            const newRoot = new BTreeNode(this.t, false);
+            newRoot.children.push(root);
+            newRoot.splitChild(0);
+            newRoot.insertNonFull(key);
+            this.root = newRoot;
+        } else {
+            root.insertNonFull(key);
         }
-
-        current = current.forward[0];
-
-        // Only insert if the value is not already present
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-            const newNode = new SkipListNode(value, newLevel);
-
-            // Update pointers for the new node
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = updates[i].forward[i];
-                updates[i].forward[i] = newNode;
-            }
-        }
-    }
-
-    search(value: T): boolean {
-        let current = this.head;
-
-        for (let i = this.maxLevel; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-
-        current = current.forward[0];
-
-        return current !== null && current.value === value;
-    }
-
-    remove(value: T): boolean {
-        const updates = new Array<SkipListNode<T>>(this.maxLevel + 1);
-        let current = this.head;
-
-        // Find the position of the node to remove
-        for (let i = this.maxLevel; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            updates[i] = current;
-        }
-
-        current = current.forward[0];
-
-        // If the current node is the node to be removed
-        if (current !== null && current.value === value) {
-            // Update pointers to remove the node
-            for (let i = 0; i <= this.maxLevel; i++) {
-                if (updates[i].forward[i] !== current) break;
-                updates[i].forward[i] = current.forward[i];
-            }
-            return true;
-        }
-
-        return false;
     }
 }
 
-// Example usage:
-const skipList = new SkipList<number>();
-
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
-
-console.log(skipList.search(7));  // Output: true
-console.log(skipList.search(15)); // Output: false
-
-skipList.remove(3);
-console.log(skipList.search(3)); // Output: false
+// Example usage
+const bTree = new BTree(3); // A B-tree with minimum degree 3
+bTree.insert(10);
+bTree.insert(20);
+bTree.insert(5);
+bTree.insert(6);
+bTree.insert(
