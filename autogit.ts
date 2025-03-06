@@ -1,61 +1,54 @@
-function fibonacciSearch(arr: number[], target: number): number {
-    const n = arr.length;
+function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const result: number[] = [];
+    let p = 0; // hash value for pattern
+    let t = 0; // hash value for text
+    let h = 1;
 
-    // Initialize the Fibonacci numbers
-    let fibM2 = 0;  // (m-2)'th Fibonacci number
-    let fibM1 = 1;  // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
-
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+    // The value of h would be "pow(d, m-1)%q"
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * d) % q;
     }
 
-    // Marks the eliminated range from the front
-    let offset = -1;
+    // Calculate the hash value of pattern and first window of text
+    for (let i = 0; i < m; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % q;
+        t = (d * t + text.charCodeAt(i)) % q;
+    }
 
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check the index that we compare
-        const i = Math.min(offset + fibM2, n - 1);
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of the current window of text and pattern.
+        if (p === t) {
+            // If the hash values match, check for characters one by one
+            let j;
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
+            }
+            if (j === m) {
+                result.push(i); // Pattern found at index i
+            }
+        }
 
-        // If target is greater than the value at index i, cut the subarray after i
-        if (arr[i] < target) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i; // Update the offset
-        }
-        // If target is found, return the index
-        else if (arr[i] > target) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found at index i
-        else {
-            return i;
+        // Calculate hash value for next window of text: Remove leading digit, add trailing digit
+        if (i < n - m) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get negative value of t, converting it to positive
+            if (t < 0) {
+                t = t + q;
+            }
         }
     }
 
-    // Comparing the last element with target
-    if (fibM1 && arr[offset + 1] === target) {
-        return offset + 1;
-    }
-
-    // Element not found
-    return -1;
+    return result;
 }
 
-// Example usage:
-const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const target = 85;
-const result = fibonacciSearch(sortedArray, target);
-
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log('Element not found in the array');
-}
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", result);
