@@ -1,58 +1,41 @@
-class Node {
-    value: string;
-    children: Node[];
+function findLCS(str1: string, str2: string): string {
+  const m = str1.length;
+  const n = str2.length;
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+  // Create a 2D array to store the lengths of LCS of substrings
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+  // Build the dp table
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
     }
+  }
 
-    addChild(child: Node) {
-        this.children.push(child);
+  // Reconstruct the LCS string
+  let lcs = '';
+  let i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
     }
-}
+  }
 
-function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    if (limit < 0) {
-        return null; // Limit reached, return null
-    }
-
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
-        }
-
-        // If we haven't reached the limit, add children to the queue
-        if (depth < limit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
-        }
-    }
-
-    return null; // Target not found within the limit
+  return lcs;
 }
 
 // Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const targetNode = breadthLimitedSearch(root, "E", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the limit.");
-}
+const str1 = 'ABCBDAB';
+const str2 = 'BDCABA';
+const lcs = findLCS(str1, str2);
+console.log(`LCS: ${lcs}`); // Output: LCS: BCBA
