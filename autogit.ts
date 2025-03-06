@@ -1,12 +1,19 @@
-function validateEmail(email: string): boolean {
-    // Regular expression for validating an Email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    // Test the email against the regex
-    return emailRegex.test(email);
+const str = "   Hello, World!   ";
+const trimmedStr = str.trim();
+console.log(trimmedStr); // "Hello, World!"
+const str = "  Hello,   World! \n  ";
+const noWhitespaceStr = str.replace(/\s+/g, '');
+console.log(noWhitespaceStr); // "Hello,World!"
+const str = "  Hello,   World!  ";
+const noSpacesStr = str.replace(/ +/g, '');
+console.log(noSpacesStr); // "Hello,World!"
+function cleanString(input: string, removeAllWhitespace: boolean = false): string {
+    if (removeAllWhitespace) {
+        return input.replace(/\s+/g, '');
+    }
+    return input.trim();
 }
 
-// Example usage
-const emailToTest = "example@example.com";
-const isValid = validateEmail(emailToTest);
-console.log(`Is the email "${emailToTest}" valid? `, isValid); // Output: true
+const original = "   Hello,   World!   ";
+console.log(cleanString(original));         // "Hello,   World!"
+console.log(cleanString(original, true));   // "Hello,World!"
