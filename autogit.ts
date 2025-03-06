@@ -12,21 +12,21 @@ class SkipList<T> {
     private head: Node<T>;
     private maxLevel: number;
     private p: number; // Probability for random level generation
-    private level: number; // Current highest level
+    private level: number;
 
     constructor(maxLevel: number = 16, p: number = 0.5) {
         this.maxLevel = maxLevel;
         this.p = p;
         this.level = 0;
-        this.head = new Node<T>(null, maxLevel);
+        this.head = new Node<T>(null, this.maxLevel);
     }
 
     private randomLevel(): number {
-        let lvl = 0;
-        while (Math.random() < this.p && lvl < this.maxLevel) {
-            lvl++;
+        let level = 0;
+        while (Math.random() < this.p && level < this.maxLevel) {
+            level++;
         }
-        return lvl;
+        return level;
     }
 
     insert(value: T): void {
@@ -46,7 +46,6 @@ class SkipList<T> {
         // If the value is not already present, insert it
         if (current === null || current.value !== value) {
             const newLevel = this.randomLevel();
-
             if (newLevel > this.level) {
                 for (let i = this.level + 1; i <= newLevel; i++) {
                     update[i] = this.head;
@@ -72,11 +71,10 @@ class SkipList<T> {
         }
 
         current = current.forward[0];
-
         return current !== null && current.value === value;
     }
 
-    delete(value: T): void {
+    delete(value: T): boolean {
         const update: Node<T>[] = new Array(this.maxLevel + 1);
         let current: Node<T> = this.head;
 
@@ -90,7 +88,7 @@ class SkipList<T> {
 
         current = current.forward[0];
 
-        // If found, delete it
+        // If the value is found, delete it
         if (current !== null && current.value === value) {
             for (let i = 0; i <= this.level; i++) {
                 if (update[i].forward[i] !== current) break;
@@ -101,7 +99,9 @@ class SkipList<T> {
             while (this.level > 0 && this.head.forward[this.level] === null) {
                 this.level--;
             }
+            return true;
         }
+        return false;
     }
 }
 
@@ -113,10 +113,9 @@ skipList.insert(7);
 skipList.insert(9);
 skipList.insert(12);
 skipList.insert(19);
-skipList.insert(17);
 
-console.log(skipList.search(6)); // true
+console.log(skipList.search(7)); // true
 console.log(skipList.search(15)); // false
 
-skipList.delete(6);
-console.log(skipList.search(6)); // false
+skipList.delete(3);
+console.log(skipList.search(3)); // false
