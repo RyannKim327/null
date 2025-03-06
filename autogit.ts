@@ -1,12 +1,56 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
+    }
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+        for (let i = 0; i < patternLength; i++) {
+            table.set(pattern[i], i);
+        }
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+        return table;
+    }
+
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found
+                return i; // Return the starting index of the match
+            }
+        }
+
+        return -1; // No match found
+    }
+}
+
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const result = bm.search(text);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
