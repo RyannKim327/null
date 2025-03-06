@@ -1,17 +1,46 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings
-    const normalizedStr1 = str1.replace(/[^a-zA-Z]/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/[^a-zA-Z]/g, '').toLowerCase();
+class Stack<T> {
+    private items: T[] = [];
 
-    // Sort the characters of both strings
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
 // Example usage:
-const str1 = "listen";
-const str2 = "silent";
-console.log(areAnagrams(str1, str2)); // Output: true
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
