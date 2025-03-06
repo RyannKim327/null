@@ -1,116 +1,22 @@
-class Graph {
-    private adjList: Map<number, number[]>;
-
-    constructor() {
-        this.adjList = new Map();
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce<number[]>((acc, value) => {
+    if (!acc.includes(value)) {
+        acc.push(value);
     }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
+    return acc;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = [];
+array.forEach(value => {
+    if (!uniqueArray.includes(value)) {
+        uniqueArray.push(value);
     }
-
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        const dfs = (v: number) => {
-            visited.add(v);
-            const neighbors = this.adjList.get(v) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(v);
-        };
-
-        for (const vertex of this.adjList.keys()) {
-            if (!visited.has(vertex)) {
-                dfs(vertex);
-            }
-        }
-
-        return stack.reverse(); // Return in reverse order
-    }
-}
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
-class Graph {
-    private adjList: Map<number, number[]>;
-    private inDegree: Map<number, number>;
-
-    constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-
-        // Update in-degree of the destination vertex
-        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
-        if (!this.inDegree.has(v)) {
-            this.inDegree.set(v, 0);
-        }
-    }
-
-    topologicalSort(): number[] {
-        const zeroInDegreeQueue: number[] = [];
-        const sortedOrder: number[] = [];
-
-        // Initialize the queue with all vertices with in-degree of 0
-        for (const [vertex, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                zeroInDegreeQueue.push(vertex);
-            }
-        }
-
-        while (zeroInDegreeQueue.length > 0) {
-            const vertex = zeroInDegreeQueue.shift()!;
-            sortedOrder.push(vertex);
-
-            const neighbors = this.adjList.get(vertex) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    zeroInDegreeQueue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there was a cycle
-        if (sortedOrder.length !== this.inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-
-        return sortedOrder;
-    }
-}
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
