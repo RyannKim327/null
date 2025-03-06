@@ -1,34 +1,60 @@
-function binarySearch(arr: number[], target: number, left: number, right: number): number {
-    // Base case: if left index exceeds right index, target is not found
-    if (left > right) {
-        return -1;
+class HashTable<K, V> {
+    private table: Array<[K, V] | undefined>;
+    private size: number;
+
+    // Initial size of the hash table
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size);
     }
 
-    // Calculate the middle index
-    const mid = Math.floor((left + right) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found, return index
+    // A simple hash function
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
+        }
+        return hash % this.size;
     }
 
-    // If target is less than the middle element, search in the left sub-array
-    if (target < arr[mid]) {
-        return binarySearch(arr, target, left, mid - 1);
-    } else {
-        // If target is greater than the middle element, search in the right sub-array
-        return binarySearch(arr, target, mid + 1, right);
+    // Insert a key-value pair
+    public insert(key: K, value: V): void {
+        const index = this.hash(key);
+        this.table[index] = [key, value];
     }
-}
 
-// Helper function to initiate the binary search
-function findIndex(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+    // Retrieve a value by key
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const pair = this.table[index];
+        if (pair && pair[0] === key) {
+            return pair[1];
+        }
+        return undefined;
+    }
+
+    // Remove a key-value pair
+    public remove(key: K): void {
+        const index = this.hash(key);
+        this.table[index] = undefined;
+    }
+
+    // Display the contents of the hash table (for debugging purposes)
+    public display(): void {
+        this.table.forEach((pair, index) => {
+            if (pair) {
+                console.log(`Index ${index}: Key = ${pair[0]}, Value = ${pair[1]}`);
+            }
+        });
+    }
 }
 
 // Example usage
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const targetValue = 6;
-const index = findIndex(sortedArray, targetValue);
-
-console.log(index);  // Output: 5 (the index of the target value in the array)
+const ht = new HashTable<string, number>(10);
+ht.insert("apple", 1);
+ht.insert("banana", 2);
+ht.insert("orange", 3);
+console.log(ht.get("banana")); // Output: 2
+ht.remove("apple");
+ht.display();
