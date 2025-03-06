@@ -1,57 +1,25 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
-    }
-
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+function countingSort(arr: number[], max: number): number[] {
+    // Create a count array with a size of max + 1 (to include max value)
+    const count: number[] = new Array(max + 1).fill(0);
     
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
+    // Count occurrences of each number in the input array
+    for (let num of arr) {
+        count[num]++;
     }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
-
-    while (current) {
-        const nextTemp = current.next;
-        current.next = prev;
-        prev = current;
-        current = nextTemp;
-    }
-
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
-
-    while (right) {
-        if (left.value !== right.value) {
-            return false; // Not a palindrome
+    
+    // Build the output array
+    const output: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        for (let j = 0; j < count[i]; j++) {
+            output.push(i);
         }
-        left = left.next;
-        right = right.next;
     }
-
-    return true; // It's a palindrome
+    
+    return output;
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(head)); // Output: true
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr);
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
