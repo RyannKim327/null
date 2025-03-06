@@ -1,40 +1,34 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-    // Create a 2D array to store lengths of longest common subsequence
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+const newArray = array.filter(item => item !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3); // Find the index of the element
 
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max
-            }
-        }
-    }
-
-    // Backtrack to find the LCS
-    let lcs = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // Append character to LCS
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move up
-        } else {
-            j--; // Move left
-        }
-    }
-
-    return lcs; // Return the longest common subsequence
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove the element at that index
 }
 
-// Example usage
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const idToRemove = 2;
+
+const indexToRemove = array.findIndex(item => item.id === idToRemove);
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1);
+}
+
+console.log(array); // Output: [{ id: 1 }, { id: 3 }]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = array.reduce((acc, item) => {
+    if (item !== elementToRemove) {
+        acc.push(item);
+    }
+    return acc;
+}, [] as number[]);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
