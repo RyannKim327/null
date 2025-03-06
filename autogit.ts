@@ -1,49 +1,78 @@
-// Define the Node interface
-class Node<T> {
-    value: T;
-    next: Node<T> | null = null;
+type Graph = { [key: string]: string[] };
 
-    constructor(value: T) {
-        this.value = value;
-    }
-}
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
 
-// Define the LinkedList class
-class LinkedList<T> {
-    head: Node<T> | null = null;
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: { [key: string]: string | null } = { [start]: null };
+    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
 
-    // Function to add a node at the end of the list
-    add(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Search from the start
+        const currentFromStart = queueFromStart.shift()!;
+        visitedFromStart.add(currentFromStart);
+
+        for (const neighbor of graph[currentFromStart] || []) {
+            if (!visitedFromStart.has(neighbor)) {
+                parentFromStart[neighbor] = currentFromStart;
+                queueFromStart.push(neighbor);
+                if (visitedFromGoal.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
             }
-            current.next = newNode;
+        }
+
+        // Search from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph[currentFromGoal] || []) {
+            if (!visitedFromGoal.has(neighbor)) {
+                parentFromGoal[neighbor] = currentFromGoal;
+                queueFromGoal.push(neighbor);
+                if (visitedFromStart.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
+            }
         }
     }
 
-    // Function to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-
-        while (current) {
-            count++;
-            current = current.next;
-        }
-
-        return count;
-    }
+    return null; // No path found
 }
 
-// Example usage:
-const list = new LinkedList<number>();
-list.add(1);
-list.add(2);
-list.add(3);
+function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
+    const path: string[] = [];
+    
+    // Trace back from the meeting point to the start
+    let current: string | null = meetingPoint;
+    while (current !== null) {
+        path.push(current);
+        current = parentFromStart[current];
+    }
+    path.reverse(); // Reverse to get the path from start to meeting point
 
-console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
+    // Trace back from the meeting point to the goal
+    current = parentFromGoal[meetingPoint];
+    while (current !== null) {
+        path.push(current);
+        current = parentFromGoal[current];
+    }
+
+    return path;
+}
+
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E']
+};
+
+const path = biDirectionalSearch(graph, 'A', 'F');
+console.log(path); // Output: ['A', 'C', 'F'] or similar path
