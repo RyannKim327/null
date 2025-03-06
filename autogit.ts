@@ -1,30 +1,32 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2);
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    // Start with a large gap, then reduce the gap
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // add arr[i] to the elements that have been gap sorted
+            // save arr[i] in temp and make a hole at position i
+            const temp = arr[i];
+            let j;
+
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
+
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+        // Reduce the gap for the next step
+        gap = Math.floor(gap / 2);
     }
+
+    return arr;
 }
 
-// Call the function to fetch posts
-fetchPosts();
+// Example usage
+const arrayToSort = [12, 34, 54, 2, 3];
+const sortedArray = shellSort(arrayToSort);
+console.log(sortedArray);
