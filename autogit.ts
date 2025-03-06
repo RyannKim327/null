@@ -1,62 +1,49 @@
-type Graph = { [key: string]: string[] };
+function burrowsWheelerTransform(input: string): { transformed: string, originalIndex: number } {
+    // Step 1: Create a list of all the cyclic rotations of the input string
+    const rotations = [];
+    const n = input.length;
 
-function depthFirstSearchRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return;
+    for (let i = 0; i < n; i++) {
+        const rotation = input.slice(i) + input.slice(0, i);
+        rotations.push(rotation);
     }
-    
-    console.log(start);  // Process the node (e.g., print it)
-    visited.add(start);
 
-    const neighbors = graph[start] || [];
-    for (const neighbor of neighbors) {
-        depthFirstSearchRecursive(graph, neighbor, visited);
+    // Step 2: Sort the rotations lexicographically
+    rotations.sort();
+
+    // Step 3: Create the BWT output and find the original index
+    let bwtResult = '';
+    let originalIndex = -1;
+
+    for (let i = 0; i < n; i++) {
+        const rotation = rotations[i];
+        bwtResult += rotation[n - 1]; // Take the last character of each sorted rotation
+        if (rotation === input) {
+            originalIndex = i; // Store the index of the original string
+        }
     }
+
+    return { transformed: bwtResult, originalIndex };
+}
+
+function burrowsWheelerInverse(bwt: string, originalIndex: number): string {
+    const n = bwt.length;
+    const table: string[] = new Array(n).fill('');
+
+    // Step 1: Reconstruct the original string's columns in sorted order
+    for (let i = 0; i < n; i++) {
+        table = table.map((row, index) => bwt[index] + row); // Prepend each character in bwt to the corresponding row
+        table.sort(); // Sort the table
+    }
+
+    return table[originalIndex]; // The row corresponding to the original index will be the original string
 }
 
 // Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: [],
-};
+const inputString = "banana";
+const { transformed, originalIndex } = burrowsWheelerTransform(inputString);
+console.log("BWT Result:", transformed); // Output the transformed string
+console.log("Original Index:", originalIndex); // Output the index of the original string
 
-depthFirstSearchRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (visited.has(node)) {
-            continue;
-        }
-        
-        console.log(node);  // Process the node (e.g., print it)
-        visited.add(node);
-
-        const neighbors = graph[node] || [];
-        // Push neighbors to the stack in reverse order to maintain the proper order of processing
-        for (let i = neighbors.length - 1; i >= 0; i--) {
-            stack.push(neighbors[i]);
-        }
-    }
-}
-
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: [],
-};
-
-depthFirstSearchIterative(graph, 'A');
+const originalString = burrowsWheelerInverse(transformed, originalIndex);
+console.log("Reconstructed Original String:", originalString); // Should match the inputString
