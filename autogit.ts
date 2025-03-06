@@ -1,58 +1,45 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    const dp: number[] = new Array(nums.length).fill(1);
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
-    }
-
-    // Step 1: Find the midpoint using the slow and fast pointers
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next; // Move slow by one
-        fast = fast.next.next; // Move fast by two
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
-
-    while (current) {
-        const nextTemp = current.next; // Store next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to this node
-        current = nextTemp; // Move to the next node
-    }
-
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is now the head of the reversed second half
-
-    while (right) {
-        if (left!.value !== right.value) {
-            return false; // Not a palindrome
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
-        left = left!.next;
-        right = right.next;
     }
-
-    return true; // It's a palindrome
+    
+    return Math.max(...dp);
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(2);
-head.next.next.next.next = new ListNode(1);
+// Example usage
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
+function longestIncreasingSubsequence(nums: number[]): number {
+    const tails: number[] = [];
 
-console.log(isPalindrome(head)); // Output: true
+    for (const num of nums) {
+        let left = 0, right = tails.length;
+
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (tails[mid] < num) left = mid + 1;
+            else right = mid;
+        }
+
+        // If left is equal to the length of tails, it means num is larger than any element in tails
+        if (left === tails.length) {
+            tails.push(num);
+        } else {
+            tails[left] = num; // Replace the smallest tail value that is >= num
+        }
+    }
+
+    return tails.length;
+}
+
+// Example usage
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
