@@ -1,46 +1,36 @@
-class Stack<T> {
-    private items: T[] = [];
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
     }
 
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
     }
 
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
     }
 }
 
 // Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty()); // Output: false
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
