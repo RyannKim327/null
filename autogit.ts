@@ -1,25 +1,34 @@
-function calculateTriangleArea(base: number, height: number): number {
-    return 0.5 * base * height;
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if the left index exceeds the right index, the target is not found
+    if (left > right) {
+        return -1; // Target not found
+    }
+
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
+
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
+    }
+
+    // If the target is less than the middle element, search in the left half
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, left, mid - 1);
+    }
+
+    // If the target is greater than the middle element, search in the right half
+    return binarySearch(arr, target, mid + 1, right);
 }
 
-// Example usage:
-const base = 5;
-const height = 10;
-const area = calculateTriangleArea(base, height);
-console.log(`The area of the triangle is: ${area}`);
-interface Point {
-    x: number;
-    y: number;
+// Helper function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
 }
 
-function calculateTriangleAreaByVertices(p1: Point, p2: Point, p3: Point): number {
-    return Math.abs((p1.x * (p2.y - p3.y) + p2.x * (p3.y - p1.y) + p3.x * (p1.y - p2.y)) / 2);
-}
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = search(sortedArray, target);
 
-// Example usage:
-const vertex1: Point = { x: 0, y: 0 };
-const vertex2: Point = { x: 5, y: 0 };
-const vertex3: Point = { x: 0, y: 10 };
-
-const areaByVertices = calculateTriangleAreaByVertices(vertex1, vertex2, vertex3);
-console.log(`The area of the triangle formed by the vertices is: ${areaByVertices}`);
+console.log(result); // Output: 6 (index of the target in the array)
