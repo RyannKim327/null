@@ -1,22 +1,29 @@
-function radixSort(arr: number[]): number[] {
-  const maxDigits = Math.max(...arr).toString().length; // Find the maximum number of digits
+function interpolationSearch<T>(arr: T[], target: T, compareFn: (a: T, b: T) => number): number {
+  let low = 0;
+  let high = arr.length - 1;
 
-  for (let digit = 0; digit < maxDigits; digit++) {
-    // Perform counting sort for each digit
-    const buckets: number[][] = Array.from({ length: 10 }, () => []); // Create 10 buckets for each digit value
+  while (low <= high && arr[low] !== arr[high]) {
+    const mid = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-    for (const num of arr) {
-      const digitValue = Math.floor(num / Math.pow(10, digit)) % 10; // Extract the digit at the current position
-      buckets[digitValue].push(num); // Add the number to the corresponding bucket
+    if (compareFn(arr[mid], target) === 0) {
+      return mid;
+    } else if (compareFn(arr[mid], target) < 0) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
     }
-
-    arr = [].concat(...buckets); // Flatten the buckets back into the original array
   }
 
-  return arr;
+  if (arr[low] === target) {
+    return low;
+  }
+
+  return -1;
 }
 
-// Example usage:
-const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedNumbers = radixSort(numbers);
-console.log(sortedNumbers); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage
+const numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+const target = 11;
+
+const result = interpolationSearch(numbers, target, (a, b) => a - b);
+console.log(result); // Output: 5
