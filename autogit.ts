@@ -1,69 +1,16 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: change to lower case and remove spaces
+    const normalizedStr1 = str1.toLowerCase().replace(/[^a-z0-9]/g, '').split('').sort().join('');
+    const normalizedStr2 = str2.toLowerCase().replace(/[^a-z0-9]/g, '').split('').sort().join('');
+    
+    // Compare the normalized strings
+    return normalizedStr1 === normalizedStr2;
 }
 
-class LinkedList {
-    head: ListNode | null;
+// Example usage:
+const string1 = "Listen";
+const string2 = "Silent";
+const string3 = "Hello";
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print the list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
-}
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
-
-    while (current) {
-        next = current.next; // Store the next node
-        current.next = prev; // Reverse the current node's pointer
-        prev = current;      // Move prev and current one step forward
-        current = next;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original Linked List:");
-list.print();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed Linked List:");
-list.print();
+console.log(areAnagrams(string1, string2)); // true
+console.log(areAnagrams(string1, string3)); // false
