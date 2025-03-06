@@ -1,47 +1,20 @@
-type Graph = {
-    [key: string]: string[];
-};
+function findSecondLargest(arr: number[]): number | null {
+    // Remove duplicates by converting the array to a Set and back to an array
+    const uniqueArr = Array.from(new Set(arr));
 
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E'],
-};
-function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) return;
-
-    visited.add(start);
-    console.log(start); // Process the node
-
-    for (const neighbor of graph[start]) {
-        dfsRecursive(graph, neighbor, visited);
+    // If there are less than 2 unique elements, return null
+    if (uniqueArr.length < 2) {
+        return null;
     }
+
+    // Sort the array in descending order
+    uniqueArr.sort((a, b) => b - a);
+
+    // Return the second largest element
+    return uniqueArr[1];
 }
 
-// Usage
-console.log("DFS Recursive:");
-dfsRecursive(graph, 'A'); // Start from node 'A'
-function dfsIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited = new Set<string>();
-
-    while (stack.length > 0) {
-        const node = stack.pop();
-        if (!node || visited.has(node)) continue;
-
-        visited.add(node);
-        console.log(node); // Process the node
-
-        // Push neighbors to stack (reverse order to maintain left-right traversal)
-        for (const neighbor of graph[node].reverse()) {
-            stack.push(neighbor);
-        }
-    }
-}
-
-// Usage
-console.log("DFS Iterative:");
-dfsIterative(graph, 'A'); // Start from node 'A'
+// Example usage:
+const numbers = [3, 5, 1, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
