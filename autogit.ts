@@ -1,34 +1,38 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const table: string[] = [];
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Create the table of rotations
-    for (let i = 0; i < n; i++) {
-        const rotation = input.slice(i) + input.slice(0, i);
-        table.push(rotation);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    // Sort the table
-    table.sort();
-
-    // Build the BWT result and find the original index
-    let bwtResult = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        bwtResult += table[i][n - 1]; // Take the last character of each sorted rotation
-        if (table[i] === input) {
-            originalIndex = i; // Store the index of the original string
-        }
-    }
-
-    return { transformed: bwtResult, index: originalIndex };
 }
 
-// Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
-Transformed: annb$aa
-Original Index: 5
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
+    }
+
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
+}
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
