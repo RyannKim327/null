@@ -1,49 +1,34 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+const newArray = array.filter(item => item !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3); // Find the index of the element
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove the element at that index
 }
 
-class LinkedList {
-    head: ListNode | null;
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const idToRemove = 2;
 
-    constructor() {
-        this.head = null;
-    }
+const indexToRemove = array.findIndex(item => item.id === idToRemove);
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1);
 }
 
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
+console.log(array); // Output: [{ id: 1 }, { id: 3 }]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = array.reduce((acc, item) => {
+    if (item !== elementToRemove) {
+        acc.push(item);
+    }
+    return acc;
+}, []);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
