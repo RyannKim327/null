@@ -1,59 +1,58 @@
-type Edge = {
-    source: number;
-    destination: number;
-    weight: number;
-};
+type Graph = { [key: string]: string[] };
 
-class Graph {
-    private edges: Edge[];
-    private numVertices: number;
-
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
+function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If the node has already been visited, return
     }
 
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push({ source, destination, weight });
-    }
+    console.log(start); // Process the node (e.g., print it)
+    visited.add(start); // Mark the node as visited
 
-    bellmanFord(startVertex: number): number[] | string {
-        // Step 1: Initialize distances from startVertex to all other vertices as INFINITE
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[startVertex] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const edge of this.edges) {
-                const { source, destination, weight } = edge;
-                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                    distances[destination] = distances[source] + weight;
-                }
-            }
-        }
-
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            const { source, destination, weight } = edge;
-            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                return "Graph contains a negative-weight cycle";
-            }
-        }
-
-        return distances;
+    for (const neighbor of graph[start]) {
+        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
     }
 }
 
 // Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
 
-const distances = graph.bellmanFord(0);
-console.log(distances);
+depthFirstSearch(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearchIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!; // Get the last node from the stack
+
+        if (!visited.has(node)) {
+            console.log(node); // Process the node (e.g., print it)
+            visited.add(node); // Mark the node as visited
+
+            // Add neighbors to the stack
+            for (const neighbor of graph[node]) {
+                stack.push(neighbor);
+            }
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearchIterative(graph, 'A');
