@@ -1,24 +1,47 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+type Graph = {
+    [key: string]: { neighbor: string; weight: number }[];
+};
+
+function dijkstra(graph: Graph, start: string): { [key: string]: number } {
+    const distances: { [key: string]: number } = {};
+    const priorityQueue: { node: string; distance: number }[] = [];
+    const visited: Set<string> = new Set();
+
+    // Initialize distances and priority queue
+    for (const node in graph) {
+        distances[node] = Infinity;
+    }
+    distances[start] = 0;
+    priorityQueue.push({ node: start, distance: 0 });
+
+    while (priorityQueue.length > 0) {
+        // Sort the queue by distance
+        priorityQueue.sort((a, b) => a.distance - b.distance);
+        const { node } = priorityQueue.shift()!;
+
+        if (visited.has(node)) continue;
+        visited.add(node);
+
+        // Update distances to neighbors
+        for (const { neighbor, weight } of graph[node]) {
+            const newDistance = distances[node] + weight;
+            if (newDistance < distances[neighbor]) {
+                distances[neighbor] = newDistance;
+                priorityQueue.push({ node: neighbor, distance: newDistance });
+            }
+        }
+    }
+
+    return distances;
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+// Example usage
+const graph: Graph = {
+    A: [{ neighbor: 'B', weight: 1 }, { neighbor: 'C', weight: 4 }],
+    B: [{ neighbor: 'A', weight: 1 }, { neighbor: 'C', weight: 2 }, { neighbor: 'D', weight: 5 }],
+    C: [{ neighbor: 'A', weight: 4 }, { neighbor: 'B', weight: 2 }, { neighbor: 'D', weight: 1 }],
+    D: [{ neighbor: 'B', weight: 5 }, { neighbor: 'C', weight: 1 }],
+};
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
-}
-
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+const shortestPaths = dijkstra(graph, 'A');
+console.log(shortestPaths);
