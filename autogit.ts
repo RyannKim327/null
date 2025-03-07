@@ -1,72 +1,38 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
-
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
+    
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
     }
+    
+    let result = '';
+    let i = m, j = n;
+    
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            result = str1[i - 1] + result;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+    
+    return result;
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
+const str1 = "ABCDGH";
+const str2 = "AEDFHR";
 
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
-    }
-
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
-        }
-    }
-
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                return;
-            }
-            currentNode = currentNode.children.get(char)!;
-            // If we reach the end of the current node's edge, we can stop
-            if (currentNode.end === null) {
-                currentNode.end = i;
-                return;
-            }
-        }
-    }
-
-    search(pattern: string): boolean {
-        let currentNode = this.root;
-        let index = 0;
-
-        while (index < pattern.length) {
-            const char = pattern[index];
-            if (!currentNode.children.has(char)) {
-                return false; // Not found
-            }
-            currentNode = currentNode.children.get(char)!;
-            index++;
-        }
-        return true; // Found
-    }
-}
-
-// Example usage:
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // false
+console.log(longestCommonSubsequence(str1, str2)); // Output: "ADH"
