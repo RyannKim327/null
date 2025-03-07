@@ -1,118 +1,53 @@
-class Node<T> {
-    value: T;
-    forward: Node<T>[];
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    constructor(value: T, level: number) {
-        this.value = value;
-        this.forward = new Array(level + 1).fill(null);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
+    return lps;
 }
-class SkipList<T> {
-    private head: Node<T>;
-    private maxLevel: number;
-    private p: number; // Probability factor
-    private level: number; // Current level of the skip list
 
-    constructor(maxLevel: number = 16, p: number = 0.5) {
-        this.maxLevel = maxLevel;
-        this.p = p;
-        this.level = 0;
-        this.head = new Node<T>(null, this.maxLevel);
-    }
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    private randomLevel(): number {
-        let level = 0;
-        while (Math.random() < this.p && level < this.maxLevel) {
-            level++;
-        }
-        return level;
-    }
-
-    insert(value: T): void {
-        const update: Node<T>[] = new Array(this.maxLevel + 1);
-        let current: Node<T> = this.head;
-
-        // Find the position to insert the new value
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        current = current.forward[0];
-
-        // If the value is not already present, insert it
-        if (current === null || current.value !== value) {
-            const newLevel = this.randomLevel();
-            if (newLevel > this.level) {
-                for (let i = this.level + 1; i <= newLevel; i++) {
-                    update[i] = this.head;
-                }
-                this.level = newLevel;
-            }
-
-            const newNode = new Node(value, newLevel);
-            for (let i = 0; i <= newLevel; i++) {
-                newNode.forward[i] = update[i].forward[i];
-                update[i].forward[i] = newNode;
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to result
+            j = lps[j - 1]; // Use LPS to continue searching
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters in the pattern
+            } else {
+                i++;
             }
         }
     }
-
-    search(value: T): boolean {
-        let current: Node<T> = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-        }
-
-        current = current.forward[0];
-        return current !== null && current.value === value;
-    }
-
-    delete(value: T): void {
-        const update: Node<T>[] = new Array(this.maxLevel + 1);
-        let current: Node<T> = this.head;
-
-        // Find the position to delete the value
-        for (let i = this.level; i >= 0; i--) {
-            while (current.forward[i] !== null && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        current = current.forward[0];
-
-        // If the value is found, delete it
-        if (current !== null && current.value === value) {
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i].forward[i] !== current) break;
-                update[i].forward[i] = current.forward[i];
-            }
-
-            // Remove levels if necessary
-            while (this.level > 0 && this.head.forward[this.level] === null) {
-                this.level--;
-            }
-        }
-    }
+    return result; // Return all starting indices of matches
 }
-const skipList = new SkipList<number>();
 
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
-skipList.insert(17);
-
-console.log(skipList.search(6)); // true
-console.log(skipList.search(15)); // false
-
-skipList.delete(6);
-console.log(skipList.search(6)); // false
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", result);
