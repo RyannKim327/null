@@ -1,29 +1,50 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Create a count array to store the count of each unique object
-    const count: number[] = new Array(max + 1).fill(0);
-    const output: number[] = new Array(arr.length);
-
-    // Store the count of each number in the count array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // Change count[i] so that it contains the actual position of this number in output array
-    for (let i = 1; i <= max; i++) {
-        count[i] += count[i - 1];
-    }
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return output;
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
+
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sortedArray.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sortedArray.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return sortedArray;
+}
+
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
