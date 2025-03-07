@@ -1,104 +1,117 @@
 class Graph {
-    private adjacencyList: Map<string, string[]>;
+    private adjList: Map<number, number[]>;
 
     constructor() {
-        this.adjacencyList = new Map();
+        this.adjList = new Map();
     }
 
-    addEdge(vertex1: string, vertex2: string) {
-        if (!this.adjacencyList.has(vertex1)) {
-            this.adjacencyList.set(vertex1, []);
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
         }
-        if (!this.adjacencyList.has(vertex2)) {
-            this.adjacencyList.set(vertex2, []);
-        }
-        this.adjacencyList.get(vertex1)!.push(vertex2);
-        this.adjacencyList.get(vertex2)!.push(vertex1); // For undirected graph
+        this.adjList.get(v)!.push(w);
     }
 
-    getNeighbors(vertex: string): string[] {
-        return this.adjacencyList.get(vertex) || [];
-    }
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
 
-    getVertices(): string[] {
-        return Array.from(this.adjacencyList.keys());
-    }
-}
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
+        const dfs = (node: number) => {
+            visited.add(node);
+            const neighbors = this.adjList.get(node) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(node);
+        };
 
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: Map<string, string | null> = new Map();
-    const parentFromGoal: Map<string, string | null> = new Map();
-
-    parentFromStart.set(start, null);
-    parentFromGoal.set(goal, null);
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentFromStart = queueFromStart.shift()!;
-        if (visitedFromGoal.has(currentFromStart)) {
-            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
-        }
-        visitedFromStart.add(currentFromStart);
-
-        for (const neighbor of graph.getNeighbors(currentFromStart)) {
-            if (!visitedFromStart.has(neighbor)) {
-                queueFromStart.push(neighbor);
-                visitedFromStart.add(neighbor);
-                parentFromStart.set(neighbor, currentFromStart);
+        for (const node of this.adjList.keys()) {
+            if (!visited.has(node)) {
+                dfs(node);
             }
         }
 
-        // Search from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        if (visitedFromStart.has(currentFromGoal)) {
-            return constructPath(currentFromGoal, parentFromGoal, parentFromStart);
-        }
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph.getNeighbors(currentFromGoal)) {
-            if (!visitedFromGoal.has(neighbor)) {
-                queueFromGoal.push(neighbor);
-                visitedFromGoal.add(neighbor);
-                parentFromGoal.set(neighbor, currentFromGoal);
-            }
-        }
+        return stack.reverse(); // Reverse the stack to get the topological order
     }
-
-    return null; // No path found
 }
 
-function constructPath(meetingPoint: string, parentFromStart: Map<string, string | null>, parentFromGoal: Map<string, string | null>): string[] {
-    const path: string[] = [];
-    let current: string | null = meetingPoint;
-
-    // Construct path from start to meeting point
-    while (current !== null) {
-        path.push(current);
-        current = parentFromStart.get(current)!;
-    }
-    path.reverse();
-
-    // Construct path from meeting point to goal
-    current = parentFromGoal.get(meetingPoint)!;
-    while (current !== null) {
-        path.push(current);
-        current = parentFromGoal.get(current)!;
-    }
-
-    return path;
-}
+// Example usage:
 const graph = new Graph();
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "D");
-graph.addEdge("D", "E");
-graph.addEdge("E", "F");
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
 
-const path = biDirectionalSearch(graph, "A", "F");
-console.log(path); // Output: [ 'A', 'B', 'D', 'E', 'F' ] or similar
+const order = graph.topologicalSort();
+console.log(order); // Output: A valid topological order
+class Graph {
+    private adjList: Map<number, number[]>;
+    private inDegree: Map<number, number>;
+
+    constructor() {
+        this.adjList = new Map();
+        this.inDegree = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+
+        // Update in-degree of the destination node
+        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
+        // Ensure the source node is in the in-degree map
+        if (!this.inDegree.has(v)) {
+            this.inDegree.set(v, 0);
+        }
+    }
+
+    topologicalSort(): number[] {
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        // Initialize the queue with nodes having in-degree of 0
+        for (const [node, degree] of this.inDegree.entries()) {
+            if (degree === 0) {
+                queue.push(node);
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            result.push(current);
+
+            const neighbors = this.adjList.get(current) || [];
+            for (const neighbor of neighbors) {
+                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
+                if (this.inDegree.get(neighbor) === 0) {
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there was a cycle
+        if (result.length !== this.inDegree.size) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+
+        return result;
+    }
+}
+
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const order = graph.topologicalSort();
+console.log(order); // Output: A valid topological order
