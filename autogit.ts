@@ -1,32 +1,4 @@
-npm install axios
-import axios from 'axios';
+let originalString: string = "Hello, World!";
+let lowerCaseString: string = originalString.toLowerCase();
 
-// Define an interface for the data we expect from the API
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-}
-
-// Function to fetch users from the API
-const fetchUsers = async (): Promise<void> => {
-    try {
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        const users = response.data;
-
-        // Log the users to the console
-        users.forEach(user => {
-            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-        });
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-    }
-};
-
-// Call the function to fetch users
-fetchUsers();
+console.log(lowerCaseString); // Output: "hello, world!"
