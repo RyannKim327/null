@@ -1,64 +1,29 @@
-class Graph {
-    private adjacencyList: Map<string, { node: string, weight: number }[]>;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
-
-    addVertex(vertex: string) {
-        this.adjacencyList.set(vertex, []);
-    }
-
-    addEdge(vertex1: string, vertex2: string, weight: number) {
-        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
-        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // For undirected graph
-    }
-
-    dijkstra(start: string): Map<string, number> {
-        const distances = new Map<string, number>();
-        const priorityQueue: { node: string, distance: number }[] = [];
-        const visited = new Set<string>();
-
-        // Initialize distances
-        for (const vertex of this.adjacencyList.keys()) {
-            distances.set(vertex, Infinity);
-        }
-        distances.set(start, 0);
-        priorityQueue.push({ node: start, distance: 0 });
-
-        while (priorityQueue.length > 0) {
-            // Sort the queue by distance
-            priorityQueue.sort((a, b) => a.distance - b.distance);
-            const { node } = priorityQueue.shift()!;
-
-            if (visited.has(node)) continue;
-            visited.add(node);
-
-            const neighbors = this.adjacencyList.get(node) || [];
-            for (const { node: neighbor, weight } of neighbors) {
-                const newDistance = distances.get(node)! + weight;
-                if (newDistance < distances.get(neighbor)!) {
-                    distances.set(neighbor, newDistance);
-                    priorityQueue.push({ node: neighbor, distance: newDistance });
-                }
-            }
-        }
-
-        return distances;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
 
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+}
 // Example usage:
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addEdge("A", "B", 1);
-graph.addEdge("A", "C", 4);
-graph.addEdge("B", "C", 2);
-graph.addEdge("B", "D", 5);
-graph.addEdge("C", "D", 1);
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-const distances = graph.dijkstra("A");
-console.log(distances); // Output the shortest distances from A
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
