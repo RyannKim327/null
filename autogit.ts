@@ -1,35 +1,27 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+const numbers: number[] = [1, 5, 3, 9, 2];
+const max = Math.max(...numbers);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-
-        // Check if the target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found, return the index
-        }
-
-        // If target is greater, ignore the left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            // If target is smaller, ignore the right half
-            right = mid - 1;
-        }
+let max = numbers[0]; // Assume the first element is the max initially
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
     }
-
-    // Target was not found in the array
-    return -1;
 }
 
-// Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const result = binarySearch(sortedArray, target);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
 
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found in the array.');
-}
+const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+let max = numbers[0];
+numbers.forEach(num => {
+    if (num > max) {
+        max = num;
+    }
+});
+
+console.log(max); // Output: 9
