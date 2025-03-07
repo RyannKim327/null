@@ -1,22 +1,12 @@
-function firstNonRepeatingCharacter(s: string): string | null {
-    const charCount: { [key: string]: number } = {};
-
-    // Count the occurrences of each character
-    for (const char of s) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
-
-    // Find the first non-repeating character
-    for (const char of s) {
-        if (charCount[char] === 1) {
-            return char; // Return the first non-repeating character
-        }
-    }
-
-    return null; // Return null if there is no non-repeating character
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
-// Example usage:
-const input = "swiss";
-const result = firstNonRepeatingCharacter(input);
-console.log(result); // Output: "w"
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
+
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
