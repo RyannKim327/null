@@ -1,60 +1,96 @@
-type Graph = { [key: string]: string[] };
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If the node has already been visited, return
-    }
-
-    console.log(start); // Process the node (e.g., print it)
-    visited.add(start); // Mark the node as visited
-
-    for (const neighbor of graph[start]) {
-        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
     }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
 
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
+        }
+    }
 
-    while (stack.length > 0) {
-        const node = stack.pop()!; // Get the last node from the stack
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
 
-        if (!visited.has(node)) {
-            console.log(node); // Process the node (e.g., print it)
-            visited.add(node); // Mark the node as visited
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
 
-            // Add all unvisited neighbors to the stack
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    stack.push(neighbor);
-                }
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            // If we reach the end of the current edge, we can continue
+            if (currentNode.end === null) {
+                currentNode.end = i;
+                return;
+            }
+
+            // If we need to split the edge
+            const edgeLength = currentNode.end! - currentNode.start + 1;
+            if (i - start < edgeLength) {
+                // Split the edge
+                const splitNode = new SuffixTreeNode(currentNode.start, currentNode.start + i - start - 1);
+                currentNode.start += i - start;
+                currentNode.children.set(this.text[currentNode.start], currentNode);
+                currentNode.children.set(this.text[splitNode.start], splitNode);
+                return;
             }
         }
     }
+
+    // Function to search for a substring
+    search(substring: string): boolean {
+        let currentNode = this.root;
+        let index = 0;
+
+        while (index < substring.length) {
+            const char = substring[index];
+
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            const edgeLength = currentNode.end === null ? this.text.length - currentNode.start : currentNode.end - currentNode.start + 1;
+
+            for (let i = 0; i < edgeLength; i++) {
+                if (index >= substring.length || this.text[currentNode.start + i] !== substring[index]) {
+                    return false; // Not found
+                }
+                index++;
+            }
+        }
+
+        return true; // Found
+    }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-depthFirstSearchIterative(graph, 'A');
+// Example usage
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // false
