@@ -1,31 +1,24 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
-
-    // Start with the largest gap and reduce the gap until it is 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
-
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2); // Reduce the gap
-    }
-
-    return arr;
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(value => arr2.includes(value));
 }
 
 // Example usage:
-const array = [12, 34, 54, 2, 3];
-console.log("Original array:", array);
-const sortedArray = shellSort(array);
-console.log("Sorted array:", sortedArray);
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
+    
+    const commonElements = [...set1].filter(value => set2.has(value));
+    return commonElements;
+}
+
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
