@@ -1,50 +1,64 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array has 1 or 0 elements, it is already sorted
-    if (arr.length <= 1) {
-        return arr;
+class Graph {
+    private adjacencyList: Map<string, { node: string, weight: number }[]>;
+
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    // Split the array into two halves
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
+    addVertex(vertex: string) {
+        this.adjacencyList.set(vertex, []);
+    }
 
-    // Recursively sort both halves
-    return merge(mergeSort(left), mergeSort(right));
-}
+    addEdge(vertex1: string, vertex2: string, weight: number) {
+        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
+        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // For undirected graph
+    }
 
-function merge(left: number[], right: number[]): number[] {
-    const sortedArray: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+    dijkstra(start: string): Map<string, number> {
+        const distances = new Map<string, number>();
+        const priorityQueue: { node: string, distance: number }[] = [];
+        const visited = new Set<string>();
 
-    // Merge the two arrays while there are elements in both
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            sortedArray.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            sortedArray.push(right[rightIndex]);
-            rightIndex++;
+        // Initialize distances
+        for (const vertex of this.adjacencyList.keys()) {
+            distances.set(vertex, Infinity);
         }
-    }
+        distances.set(start, 0);
+        priorityQueue.push({ node: start, distance: 0 });
 
-    // If there are remaining elements in the left array, add them
-    while (leftIndex < left.length) {
-        sortedArray.push(left[leftIndex]);
-        leftIndex++;
-    }
+        while (priorityQueue.length > 0) {
+            // Sort the queue by distance
+            priorityQueue.sort((a, b) => a.distance - b.distance);
+            const { node } = priorityQueue.shift()!;
 
-    // If there are remaining elements in the right array, add them
-    while (rightIndex < right.length) {
-        sortedArray.push(right[rightIndex]);
-        rightIndex++;
-    }
+            if (visited.has(node)) continue;
+            visited.add(node);
 
-    return sortedArray;
+            const neighbors = this.adjacencyList.get(node) || [];
+            for (const { node: neighbor, weight } of neighbors) {
+                const newDistance = distances.get(node)! + weight;
+                if (newDistance < distances.get(neighbor)!) {
+                    distances.set(neighbor, newDistance);
+                    priorityQueue.push({ node: neighbor, distance: newDistance });
+                }
+            }
+        }
+
+        return distances;
+    }
 }
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Example usage:
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 2);
+graph.addEdge("B", "D", 5);
+graph.addEdge("C", "D", 1);
+
+const distances = graph.dijkstra("A");
+console.log(distances); // Output the shortest distances from A
