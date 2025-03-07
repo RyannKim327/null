@@ -1,31 +1,40 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the maximum
+            }
         }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-        return posts;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        return [];
     }
+
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Append character to LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
+        } else {
+            j--; // Move left
+        }
+    }
+
+    return lcs; // Return the longest common subsequence
 }
 
-// Call the function and log the results
-fetchPosts().then(posts => {
-    console.log('Fetched posts:', posts);
-});
+// Example usage
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
