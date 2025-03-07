@@ -1,29 +1,50 @@
-class TreeNode {
+class ListNode {
     value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+    next: ListNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (!head || n <= 0) {
+        return null; // Return null if the list is empty or n is invalid
     }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+    let firstPointer: ListNode | null = head;
+    let secondPointer: ListNode | null = head;
+
+    // Move the first pointer n nodes ahead
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            return null; // n is greater than the length of the list
+        }
+        firstPointer = firstPointer.next;
+    }
+
+    // Move both pointers until the first pointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    // The second pointer is now at the nth node from the end
+    return secondPointer;
 }
+
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
 
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+const n = 2;
+const nthNode = findNthFromEnd(head, n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
+}
