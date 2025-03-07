@@ -1,31 +1,25 @@
-function longestCommonSubstring(s1: string, s2: string): string {
-    const m = s1.length;
-    const n = s2.length;
-    let maxLength = 0;
-    let endingIndex = 0;
-
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endingIndex = i; // Update the ending index of the longest substring
-                }
-            }
-        }
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
-
-    // Extract the longest common substring
-    return s1.substring(endingIndex - maxLength, endingIndex);
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    return n * factorialRecursive(n - 1);
 }
 
-// Example usage
-const str1 = "abcdef";
-const str2 = "zcdemf";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "cd"
+// Example usage:
+console.log(factorialRecursive(5)); // Output: 120
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
+    }
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
+
+// Example usage:
+console.log(factorialIterative(5)); // Output: 120
