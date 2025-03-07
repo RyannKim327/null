@@ -1,34 +1,52 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Find the index of the element
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove the element at that index
-}
-
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
-const idToRemove = 2;
-
-const indexToRemove = array.findIndex(item => item.id === idToRemove);
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1);
-}
-
-console.log(array); // Output: [{ id: 1 }, { id: 3 }]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
     }
-    return acc;
-}, [] as number[]);
+}
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
+
+    private buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
+        }
+    }
+
+    private insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                currentNode = newNode;
+            } else {
+                currentNode = currentNode.children.get(char)!;
+            }
+        }
+    }
+
+    // Additional methods can be added here (e.g., search, display, etc.)
+}
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+
+// You can add methods to search for substrings, display the tree, etc.
