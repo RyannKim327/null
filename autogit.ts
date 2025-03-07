@@ -1,70 +1,31 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the nth node from the end
-    findNthFromEnd(n: number): ListNode | null {
-        let firstPointer: ListNode | null = this.head;
-        let secondPointer: ListNode | null = this.head;
-
-        // Move firstPointer n nodes ahead
-        for (let i = 0; i < n; i++) {
-            if (firstPointer === null) {
-                return null; // n is greater than the length of the list
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update the ending index of the longest substring
+                }
             }
-            firstPointer = firstPointer.next;
         }
-
-        // Move both pointers until firstPointer reaches the end
-        while (firstPointer !== null) {
-            firstPointer = firstPointer.next;
-            secondPointer = secondPointer.next;
-        }
-
-        // secondPointer is now at the nth node from the end
-        return secondPointer;
     }
+
+    // Extract the longest common substring
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
 
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const n = 2;
-const nthNode = list.findNthFromEnd(n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
-}
+// Example usage
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
