@@ -1,59 +1,52 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    if (n < 2) return arr; // Base case: an array of 0 or 1 element is already sorted
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-    }
-}
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
+    // Create a temporary array to hold the sorted elements
+    const temp = new Array(n);
 
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
-    }
-
-    private buildSuffixTree() {
-        const n = this.text.length;
+    // Start with a size of 1 and double it each iteration
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
+            const mid = Math.min(leftStart + size, n);
+            const rightEnd = Math.min(leftStart + size * 2, n);
+            merge(arr, temp, leftStart, mid, rightEnd);
+        }
+        // Copy the sorted elements back into the original array
         for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
+            arr[i] = temp[i];
         }
     }
 
-    private insertSuffix(index: number) {
-        let currentNode = this.root;
-        const suffix = this.text.substring(index);
+    return arr;
+}
 
-        for (let char of suffix) {
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(index, null);
-                currentNode.children.set(char, newNode);
-            }
-            currentNode = currentNode.children.get(char)!;
-            currentNode.end = index + suffix.length; // Update end index
+function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
+    let left = leftStart; // Starting index for left subarray
+    let right = mid;      // Starting index for right subarray
+    let index = leftStart; // Starting index to be merged
+
+    // Merge the two subarrays
+    while (left < mid && right < rightEnd) {
+        if (arr[left] <= arr[right]) {
+            temp[index++] = arr[left++];
+        } else {
+            temp[index++] = arr[right++];
         }
     }
 
-    public search(pattern: string): boolean {
-        let currentNode = this.root;
-        for (let char of pattern) {
-            if (!currentNode.children.has(char)) {
-                return false; // Pattern not found
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return true; // Pattern found
+    // Copy the remaining elements of the left subarray, if any
+    while (left < mid) {
+        temp[index++] = arr[left++];
+    }
+
+    // Copy the remaining elements of the right subarray, if any
+    while (right < rightEnd) {
+        temp[index++] = arr[right++];
     }
 }
-const text = "banana";
-const suffixTree = new SuffixTree(text);
 
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // true
-console.log(suffixTree.search("bat")); // false
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
