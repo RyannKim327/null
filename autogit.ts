@@ -1,58 +1,57 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
     }
 
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast && fast.next) {
+        slow = slow!.next; // Move slow by 1
+        fast = fast.next.next; // Move fast by 2
+    }
 
-        for (let i = 0; i < patternLength; i++) {
-            // Store the last occurrence of each character in the pattern
-            table.set(pattern[i], i);
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to next node
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false; // Not a palindrome
         }
-
-        return table;
+        left = left!.next;
+        right = right.next;
     }
 
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    // If there's a mismatch, use the bad character rule
-                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - lastOccurrence);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found
-                return i; // Return the starting index of the match
-            }
-        }
-
-        return -1; // No match found
-    }
+    return true; // It's a palindrome
 }
 
 // Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const result = bm.search(text);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
 
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found.");
-}
+console.log(isPalindrome(head)); // Output: true
