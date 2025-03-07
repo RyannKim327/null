@@ -1,36 +1,19 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let currentMax = nums[0]; // Initialize currentMax with the first element
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+    for (let i = 1; i < nums.length; i++) {
+        // Update currentMax to be the maximum of the current element or the currentMax plus the current element
+        currentMax = Math.max(nums[i], currentMax + nums[i]);
+        
+        // Update maxSoFar if currentMax is greater
+        maxSoFar = Math.max(maxSoFar, currentMax);
     }
 
-    // If the node is a leaf node, return 1
-    if (root.left === null && root.right === null) {
-        return 1;
-    }
-
-    // Recursively count the leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+    return maxSoFar; // Return the maximum sum found
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
