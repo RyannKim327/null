@@ -1,38 +1,30 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+// Define an interface for the data we expect to receive
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // Cycle detected
+// Function to fetch posts
+async function fetchPosts(): Promise<void> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        
+        // Check if the response is ok (status in the range 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    }
 
-    return false; // No cycle
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
+
+        // Log the posts to the console
+        console.log(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+    }
 }
 
-// Example usage:
-const head = new ListNode(1);
-const second = new ListNode(2);
-const third = new ListNode(3);
-head.next = second;
-second.next = third;
-// Uncomment the next line to create a cycle
-// third.next = head;
-
-console.log(hasCycle(head)); // Output: false (or true if a cycle is created)
+// Call the function to fetch posts
+fetchPosts();
