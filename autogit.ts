@@ -1,45 +1,65 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+// Define a Node interface to represent each node in the graph/tree
+interface Node {
+    value: any;
+    children: Node[];
 }
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+// Depth-Limited Search function
+function depthLimitedSearch(node: Node, depthLimit: number, target: any): Node | null {
+    // If the current node is null, return null
+    if (node === null) {
+        return null;
+    }
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+    // If the target value is found, return the current node
+    if (node.value === target) {
+        return node;
+    }
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
+    // If the depth limit is reached, return null
+    if (depthLimit <= 0) {
+        return null;
+    }
 
-        if (slow === fast) {
-            return true; // Cycle detected
+    // Explore each child node
+    for (const child of node.children) {
+        const result = depthLimitedSearch(child, depthLimit - 1, target);
+        if (result !== null) {
+            return result; // Return the found node
         }
     }
 
-    return false; // No cycle
+    // If the target is not found in this path, return null
+    return null;
 }
 
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+// Example usage
+const rootNode: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
+        }
+    ]
+};
 
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
+const targetValue = 5;
+const depthLimit = 2;
+const result = depthLimitedSearch(rootNode, depthLimit, targetValue);
 
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+if (result) {
+    console.log(`Found node with value: ${result.value}`);
+} else {
+    console.log('Target not found within depth limit.');
+}
