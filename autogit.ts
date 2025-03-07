@@ -1,70 +1,59 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
     }
 }
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the nth node from the end
-    findNthFromEnd(n: number): ListNode | null {
-        let firstPointer: ListNode | null = this.head;
-        let secondPointer: ListNode | null = this.head;
-
-        // Move firstPointer n nodes ahead
+    private buildSuffixTree() {
+        const n = this.text.length;
         for (let i = 0; i < n; i++) {
-            if (firstPointer === null) {
-                return null; // n is greater than the length of the list
+            this.insertSuffix(i);
+        }
+    }
+
+    private insertSuffix(index: number) {
+        let currentNode = this.root;
+        const suffix = this.text.substring(index);
+
+        for (let char of suffix) {
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(index, null);
+                currentNode.children.set(char, newNode);
             }
-            firstPointer = firstPointer.next;
+            currentNode = currentNode.children.get(char)!;
+            currentNode.end = index + suffix.length; // Update end index
         }
+    }
 
-        // Move both pointers until firstPointer reaches the end
-        while (firstPointer !== null) {
-            firstPointer = firstPointer.next;
-            secondPointer = secondPointer.next;
+    public search(pattern: string): boolean {
+        let currentNode = this.root;
+        for (let char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return false; // Pattern not found
+            }
+            currentNode = currentNode.children.get(char)!;
         }
-
-        // secondPointer is now at the nth node from the end
-        return secondPointer;
+        return true; // Pattern found
     }
 }
+const text = "banana";
+const suffixTree = new SuffixTree(text);
 
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const n = 2;
-const nthNode = list.findNthFromEnd(n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
-}
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("bat")); // false
