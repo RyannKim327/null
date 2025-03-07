@@ -1,50 +1,46 @@
-type Graph = {
-    [key: string]: { neighbor: string; weight: number }[];
-};
+class Stack<T> {
+    private items: T[] = [];
 
-function dijkstra(graph: Graph, start: string): { [key: string]: number } {
-    const distances: { [key: string]: number } = {};
-    const visited: Set<string> = new Set();
-    const priorityQueue: { node: string; distance: number }[] = [];
-
-    // Initialize distances
-    for (const node in graph) {
-        distances[node] = Infinity;
-    }
-    distances[start] = 0;
-    priorityQueue.push({ node: start, distance: 0 });
-
-    while (priorityQueue.length > 0) {
-        // Sort the queue by distance
-        priorityQueue.sort((a, b) => a.distance - b.distance);
-        const { node: currentNode } = priorityQueue.shift()!;
-
-        if (visited.has(currentNode)) {
-            continue;
-        }
-        visited.add(currentNode);
-
-        // Explore neighbors
-        for (const { neighbor, weight } of graph[currentNode]) {
-            const newDistance = distances[currentNode] + weight;
-
-            if (newDistance < distances[neighbor]) {
-                distances[neighbor] = newDistance;
-                priorityQueue.push({ node: neighbor, distance: newDistance });
-            }
-        }
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    return distances;
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
-// Example usage
-const graph: Graph = {
-    A: [{ neighbor: 'B', weight: 1 }, { neighbor: 'C', weight: 4 }],
-    B: [{ neighbor: 'A', weight: 1 }, { neighbor: 'C', weight: 2 }, { neighbor: 'D', weight: 5 }],
-    C: [{ neighbor: 'A', weight: 4 }, { neighbor: 'B', weight: 2 }, { neighbor: 'D', weight: 1 }],
-    D: [{ neighbor: 'B', weight: 5 }, { neighbor: 'C', weight: 1 }],
-};
+// Example usage:
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths);
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
