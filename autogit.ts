@@ -1,38 +1,46 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-    
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-    
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+class Stack<T> {
+    private items: T[] = [];
+
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
-    
-    let result = '';
-    let i = m, j = n;
-    
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            result = str1[i - 1] + result;
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
+
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
     }
-    
-    return result;
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
-const str1 = "ABCDGH";
-const str2 = "AEDFHR";
+// Example usage:
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-console.log(longestCommonSubsequence(str1, str2)); // Output: "ADH"
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
