@@ -1,15 +1,12 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
-        }
-    }
-    return true; // All elements are in ascending order
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [1, 3, 2, 4, 5];
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
 
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
