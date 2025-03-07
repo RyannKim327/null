@@ -1,47 +1,45 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const table: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - 1 - i;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return table;
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    let i = 0; // index for text
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // index for pattern
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
 
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            occurrences.push(i);
-            // Shift the pattern to the right
-            i += (i + patternLength < textLength) ? patternLength - badCharTable[text[i + patternLength]] || 1 : 1;
-        } else {
-            // Shift the pattern based on the bad character rule
-            const shift = badCharTable[text[i + j]] || patternLength;
-            i += shift;
+        if (slow === fast) {
+            return true; // Cycle detected
         }
     }
 
-    return occurrences;
+    return false; // No cycle
 }
 
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: [2, 7, 12]
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
