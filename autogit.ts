@@ -1,41 +1,15 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-
-    // Create a 2D array to store lengths of longest common subsequence
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max
-            }
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
         }
     }
-
-    // Backtrack to find the LCS
-    let lcs = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // Append character to LCS
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move up
-        } else {
-            j--; // Move left
-        }
-    }
-
-    return lcs;
+    return true; // All elements are in ascending order
 }
 
-// Example usage
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-const lcs = longestCommonSubsequence(str1, str2);
-console.log(`Longest Common Subsequence: ${lcs}`); // Output: "GTAB"
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [1, 3, 2, 4, 5];
+
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
