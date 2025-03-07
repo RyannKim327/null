@@ -1,86 +1,31 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function longestCommonSubstring(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
-    }
-}
-class LinkedList<T> {
-    head: Node<T> | null;
-    tail: Node<T> | null;
-    length: number;
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.length = 0;
-    }
-
-    // Add a new node to the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            if (this.tail) {
-                this.tail.next = newNode;
-            }
-            this.tail = newNode;
-        }
-        this.length++;
-    }
-
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.length--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                if (current.next === null) {
-                    this.tail = current; // Update tail if needed
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update the ending index of the substring
                 }
-                this.length--;
-                return true;
             }
-            current = current.next;
         }
-        return false;
     }
 
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const values: T[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
-
-    // Get the size of the list
-    size(): number {
-        return this.length;
-    }
+    // Extract the longest common substring
+    return str1.substring(endingIndex - maxLength, endingIndex);
 }
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-list.display(); // Output: 1 -> 2 -> 3
 
-list.remove(2);
-list.display(); // Output: 1 -> 3
-
-console.log(`Size of the list: ${list.size()}`); // Output: Size of the list: 2
+// Example usage:
+const str1 = "abcde";
+const str2 = "abfce";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "ab"
