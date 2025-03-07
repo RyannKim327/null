@@ -1,20 +1,148 @@
-function isPrime(num: number): boolean {
-    // Check if the number is less than 2
-    if (num < 2) return false;
+enum Color {
+    RED,
+    BLACK
+}
 
-    // Check for factors from 2 to the square root of num
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // num is divisible by i, so it's not prime
-        }
+class Node {
+    public key: number;
+    public color: Color;
+    public left: Node | null;
+    public right: Node | null;
+    public parent: Node | null;
+
+    constructor(key: number) {
+        this.key = key;
+        this.color = Color.RED; // New nodes are red by default
+        this.left = null;
+        this.right = null;
+        this.parent = null;
     }
-    return true; // num is prime
 }
 
-// Example usage:
-const numberToCheck = 29;
-if (isPrime(numberToCheck)) {
-    console.log(`${numberToCheck} is a prime number.`);
-} else {
-    console.log(`${numberToCheck} is not a prime number.`);
+class RedBlackTree {
+    private root: Node | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    private rotateLeft(x: Node) {
+        const y = x.right!;
+        x.right = y.left;
+
+        if (y.left !== null) {
+            y.left.parent = x;
+        }
+
+        y.parent = x.parent;
+
+        if (x.parent === null) {
+            this.root = y;
+        } else if (x === x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+
+        y.left = x;
+        x.parent = y;
+    }
+
+    private rotateRight(y: Node) {
+        const x = y.left!;
+        y.left = x.right;
+
+        if (x.right !== null) {
+            x.right.parent = y;
+        }
+
+        x.parent = y.parent;
+
+        if (y.parent === null) {
+            this.root = x;
+        } else if (y === y.parent.right) {
+            y.parent.right = x;
+        } else {
+            y.parent.left = x;
+        }
+
+        x.right = y;
+        y.parent = x;
+    }
+
+    private fixViolation(z: Node) {
+        while (z.parent && z.parent.color === Color.RED) {
+            if (z.parent === z.parent.parent?.left) {
+                const y = z.parent.parent?.right;
+
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.right) {
+                        z = z.parent;
+                        this.rotateLeft(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateRight(z.parent.parent!);
+                }
+            } else {
+                const y = z.parent.parent?.left;
+
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.left) {
+                        z = z.parent;
+                        this.rotateRight(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateLeft(z.parent.parent!);
+                }
+            }
+        }
+        this.root!.color = Color.BLACK;
+    }
+
+    public insert(key: number) {
+        const newNode = new Node(key);
+        let y: Node | null = null;
+        let x: Node | null = this.root;
+
+        while (x !== null) {
+            y = x;
+            if (newNode.key < x.key) {
+                x = x.left;
+            } else {
+                x = x.right;
+            }
+        }
+
+        newNode.parent = y;
+
+        if (y === null) {
+            this.root = newNode;
+        } else if (newNode.key < y.key) {
+            y.left = newNode;
+        } else {
+            y.right = newNode;
+        }
+
+        this.fixViolation(newNode);
+    }
+
+    // Additional methods like delete, search, and traversal can be added here
 }
+
+// Example usage
+const rbTree = new RedBlackTree();
+rbTree.insert(10);
+rbTree.insert(20);
+rbTree.insert(30);
