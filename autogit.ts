@@ -1,32 +1,28 @@
-npm install axios
-import axios from 'axios';
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-// Define an interface for the data we expect to receive
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-}
+    // Choose a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
 
-// Function to fetch users from a public API
-const fetchUsers = async (): Promise<void> => {
-    try {
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        const users = response.data;
-
-        // Log the users to the console
-        users.forEach(user => {
-            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-        });
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
+    // Partitioning the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
         } else {
-            console.error('Unexpected error:', error);
+            right.push(arr[i]);
         }
     }
-};
 
-// Call the function to fetch users
-fetchUsers();
+    // Recursively sort the left and right arrays, and concatenate with the pivot
+    return [...quicksort(left), pivot, ...quicksort(right)];
+}
+
+// Example usage:
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
