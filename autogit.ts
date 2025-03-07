@@ -1,126 +1,29 @@
-class BTreeNode {
-    keys: number[];
-    children: BTreeNode[];
-    isLeaf: boolean;
-    t: number; // Minimum degree (defines the range for number of keys)
+function countingSort(arr: number[], max: number): number[] {
+    // Create a count array to store the count of each unique object
+    const count: number[] = new Array(max + 1).fill(0);
+    const output: number[] = new Array(arr.length);
 
-    constructor(t: number, isLeaf: boolean) {
-        this.t = t;
-        this.isLeaf = isLeaf;
-        this.keys = [];
-        this.children = [];
+    // Store the count of each number in the count array
+    for (let i = 0; i < arr.length; i++) {
+        count[arr[i]]++;
     }
 
-    // Function to traverse all nodes in a subtree rooted with this node
-    traverse() {
-        let i: number;
-        for (i = 0; i < this.keys.length; i++) {
-            // If this is not a leaf, then before the key, traverse the child
-            if (!this.isLeaf) {
-                this.children[i].traverse();
-            }
-            console.log(this.keys[i]);
-        }
-
-        // Finally, traverse the last child
-        if (!this.isLeaf) {
-            this.children[i].traverse();
-        }
+    // Change count[i] so that it contains the actual position of this number in output array
+    for (let i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
     }
 
-    // Function to search a key in the subtree rooted with this node
-    search(key: number): BTreeNode | null {
-        let i = 0;
-        while (i < this.keys.length && key > this.keys[i]) {
-            i++;
-        }
-
-        // If the found key is equal to the key, return this node
-        if (i < this.keys.length && this.keys[i] === key) {
-            return this;
-        }
-
-        // If this node is a leaf node, then the key is not present
-        if (this.isLeaf) {
-            return null;
-        }
-
-        // Go to the appropriate child
-        return this.children[i].search(key);
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i]] - 1] = arr[i];
+        count[arr[i]]--;
     }
 
-    // Function to insert a new key in this node
-    insertNonFull(key: number) {
-        let i = this.keys.length - 1;
-
-        // If this is a leaf node
-        if (this.isLeaf) {
-            // Find the location of new key to be inserted
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            // Insert the new key at found location
-            this.keys.splice(i + 1, 0, key);
-        } else {
-            // Find the child which is going to have the new key
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            // Check if the found child is full
-            if (this.children[i + 1].keys.length === 2 * this.t - 1) {
-                // If the child is full, then split it
-                this.splitChild(i + 1);
-                // After split, the middle key of child goes up and this
-                // node will have two children. Decide which of the two
-                // children is going to have the new key
-                if (key > this.keys[i + 1]) {
-                    i++;
-                }
-            }
-            this.children[i + 1].insertNonFull(key);
-        }
-    }
-
-    // Function to split the child of this node. `i` is index of the child
-    // in this node. The child must be full when this function is called
-    splitChild(i: number) {
-        const t = this.t;
-        const y = this.children[i];
-        const z = new BTreeNode(t, y.isLeaf);
-
-        // Give z the last t-1 keys of y
-        for (let j = 0; j < t - 1; j++) {
-            z.keys.push(y.keys[j + t]);
-        }
-
-        // If y is not a leaf, then give z the last t children of y
-        if (!y.isLeaf) {
-            for (let j = 0; j < t; j++) {
-                z.children.push(y.children[j + t]);
-            }
-        }
-
-        // Reduce the number of keys in y
-        y.keys.length = t - 1;
-
-        // Since this node is going to have a new child, create space for
-        // the new child
-        this.children.splice(i + 1, 0, z);
-
-        // A key of y will move to this node and will be inserted
-        // in this node. Find location of the new key and move all
-        // greater keys one space ahead
-        this.keys.splice(i, 0, y.keys.pop()!);
-    }
+    return output;
 }
 
-class BTree {
-    root: BTreeNode;
-    t: number; // Minimum degree
-
-    constructor(t: number) {
-        this.root = new BTreeNode(t, true);
-        this.t = t;
-    }
-
-    //
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
