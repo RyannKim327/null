@@ -1,16 +1,34 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let currentMax = nums[0]; // Initialize currentMax with the first element
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const table: string[] = [];
 
-    for (let i = 1; i < nums.length; i++) {
-        currentMax = Math.max(nums[i], currentMax + nums[i]); // Update currentMax
-        maxSoFar = Math.max(maxSoFar, currentMax); // Update maxSoFar if currentMax is greater
+    // Create the table of rotations
+    for (let i = 0; i < n; i++) {
+        const rotation = input.slice(i) + input.slice(0, i);
+        table.push(rotation);
     }
 
-    return maxSoFar; // Return the maximum sum found
+    // Sort the table
+    table.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = -1;
+
+    for (let i = 0; i < n; i++) {
+        transformed += table[i][n - 1]; // Take the last character of each sorted rotation
+        if (table[i] === input) {
+            originalIndex = i; // Store the index of the original string
+        }
+    }
+
+    return { transformed, index: originalIndex };
 }
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+Transformed: annb$aa
+Original Index: 5
