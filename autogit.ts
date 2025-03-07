@@ -29,30 +29,31 @@ class LinkedList {
         current.next = newNode;
     }
 
-    // Method to print the linked list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
-}
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
+    // Method to find the nth node from the end
+    findNthFromEnd(n: number): ListNode | null {
+        let firstPointer: ListNode | null = this.head;
+        let secondPointer: ListNode | null = this.head;
 
-    while (current) {
-        next = current.next; // Store the next node
-        current.next = prev; // Reverse the current node's pointer
-        prev = current;      // Move prev and current one step forward
-        current = next;
+        // Move firstPointer n nodes ahead
+        for (let i = 0; i < n; i++) {
+            if (firstPointer === null) {
+                return null; // n is greater than the length of the list
+            }
+            firstPointer = firstPointer.next;
+        }
+
+        // Move both pointers until firstPointer reaches the end
+        while (firstPointer !== null) {
+            firstPointer = firstPointer.next;
+            secondPointer = secondPointer.next;
+        }
+
+        // secondPointer is now at the nth node from the end
+        return secondPointer;
     }
-    return prev; // New head of the reversed list
 }
+
+// Example usage:
 const list = new LinkedList();
 list.append(1);
 list.append(2);
@@ -60,10 +61,10 @@ list.append(3);
 list.append(4);
 list.append(5);
 
-console.log("Original Linked List:");
-list.print();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed Linked List:");
-list.print();
+const n = 2;
+const nthNode = list.findNthFromEnd(n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
+}
