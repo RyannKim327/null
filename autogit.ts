@@ -1,12 +1,30 @@
-function validateEmail(email: string): boolean {
-    // Regular expression for validating an email address
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example usage
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
 
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
+}
+
+// Call the fetchPosts function and log the results
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
