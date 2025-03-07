@@ -1,30 +1,72 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
     }
 }
 
-// Call the function to fetch posts
-fetchPosts();
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
+
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
+
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
+        }
+    }
+
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+            currentNode = currentNode.children.get(char)!;
+            // If we reach the end of the current node's edge, we can stop
+            if (currentNode.end === null) {
+                currentNode.end = i;
+                return;
+            }
+        }
+    }
+
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+        let index = 0;
+
+        while (index < pattern.length) {
+            const char = pattern[index];
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+            currentNode = currentNode.children.get(char)!;
+            index++;
+        }
+        return true; // Found
+    }
+}
+
+// Example usage:
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // false
