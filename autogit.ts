@@ -1,96 +1,92 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+class Node {
+    value: number;
+    left: Node | null;
+    right: Node | null;
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
+class BinarySearchTree {
+    root: Node | null;
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
-
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
+    constructor() {
+        this.root = null;
     }
 
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
+    // Insert a new value into the BST
+    insert(value: number): void {
+        const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
         }
+        this.insertNode(this.root, newNode);
     }
 
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                return;
+    private insertNode(node: Node, newNode: Node): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
             }
-
-            currentNode = currentNode.children.get(char)!;
-            // If we reach the end of the current edge, we can continue
-            if (currentNode.end === null) {
-                currentNode.end = i;
-                return;
-            }
-
-            // If we need to split the edge
-            const edgeLength = currentNode.end! - currentNode.start + 1;
-            if (i - start < edgeLength) {
-                // Split the edge
-                const splitNode = new SuffixTreeNode(currentNode.start, currentNode.start + i - start - 1);
-                currentNode.start += i - start;
-                currentNode.children.set(this.text[currentNode.start], currentNode);
-                currentNode.children.set(this.text[splitNode.start], splitNode);
-                return;
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    // Function to search for a substring
-    search(substring: string): boolean {
-        let currentNode = this.root;
-        let index = 0;
+    // Search for a value in the BST
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
 
-        while (index < substring.length) {
-            const char = substring[index];
-
-            if (!currentNode.children.has(char)) {
-                return false; // Not found
-            }
-
-            currentNode = currentNode.children.get(char)!;
-            const edgeLength = currentNode.end === null ? this.text.length - currentNode.start : currentNode.end - currentNode.start + 1;
-
-            for (let i = 0; i < edgeLength; i++) {
-                if (index >= substring.length || this.text[currentNode.start + i] !== substring[index]) {
-                    return false; // Not found
-                }
-                index++;
-            }
+    private searchNode(node: Node | null, value: number): boolean {
+        if (node === null) {
+            return false;
         }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // value is found
+        }
+    }
 
-        return true; // Found
+    // In-order traversal of the BST
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: Node | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
     }
 }
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(18);
 
-// Example usage
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // false
+// Search for a value
+console.log(bst.search(7));  // true
+console.log(bst.search(20)); // false
+
+// In-order traversal
+bst.inOrderTraversal(value => {
+    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
+});
