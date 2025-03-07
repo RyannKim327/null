@@ -1,148 +1,54 @@
-enum Color {
-    RED,
-    BLACK
+function createBadCharTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
+
+    // Initialize the bad character table
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - 1 - i;
+    }
+
+    return badCharTable;
 }
 
-class Node {
-    public key: number;
-    public color: Color;
-    public left: Node | null;
-    public right: Node | null;
-    public parent: Node | null;
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
 
-    constructor(key: number) {
-        this.key = key;
-        this.color = Color.RED; // New nodes are red by default
-        this.left = null;
-        this.right = null;
-        this.parent = null;
-    }
-}
-
-class RedBlackTree {
-    private root: Node | null;
-
-    constructor() {
-        this.root = null;
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
     }
 
-    private rotateLeft(x: Node) {
-        const y = x.right!;
-        x.right = y.left;
+    const badCharTable = createBadCharTable(pattern);
+    let shift = 0;
 
-        if (y.left !== null) {
-            y.left.parent = x;
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
         }
 
-        y.parent = x.parent;
-
-        if (x.parent === null) {
-            this.root = y;
-        } else if (x === x.parent.left) {
-            x.parent.left = y;
+        // If the pattern is found
+        if (j < 0) {
+            return shift; // Return the starting index of the match
         } else {
-            x.parent.right = y;
+            // Shift the pattern based on the bad character table
+            const badCharShift = badCharTable[text[shift + j]] || patternLength;
+            shift += Math.max(1, j - badCharShift);
         }
-
-        y.left = x;
-        x.parent = y;
     }
 
-    private rotateRight(y: Node) {
-        const x = y.left!;
-        y.left = x.right;
-
-        if (x.right !== null) {
-            x.right.parent = y;
-        }
-
-        x.parent = y.parent;
-
-        if (y.parent === null) {
-            this.root = x;
-        } else if (y === y.parent.right) {
-            y.parent.right = x;
-        } else {
-            y.parent.left = x;
-        }
-
-        x.right = y;
-        y.parent = x;
-    }
-
-    private fixViolation(z: Node) {
-        while (z.parent && z.parent.color === Color.RED) {
-            if (z.parent === z.parent.parent?.left) {
-                const y = z.parent.parent?.right;
-
-                if (y && y.color === Color.RED) {
-                    z.parent.color = Color.BLACK;
-                    y.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    z = z.parent.parent!;
-                } else {
-                    if (z === z.parent.right) {
-                        z = z.parent;
-                        this.rotateLeft(z);
-                    }
-                    z.parent.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    this.rotateRight(z.parent.parent!);
-                }
-            } else {
-                const y = z.parent.parent?.left;
-
-                if (y && y.color === Color.RED) {
-                    z.parent.color = Color.BLACK;
-                    y.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    z = z.parent.parent!;
-                } else {
-                    if (z === z.parent.left) {
-                        z = z.parent;
-                        this.rotateRight(z);
-                    }
-                    z.parent.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    this.rotateLeft(z.parent.parent!);
-                }
-            }
-        }
-        this.root!.color = Color.BLACK;
-    }
-
-    public insert(key: number) {
-        const newNode = new Node(key);
-        let y: Node | null = null;
-        let x: Node | null = this.root;
-
-        while (x !== null) {
-            y = x;
-            if (newNode.key < x.key) {
-                x = x.left;
-            } else {
-                x = x.right;
-            }
-        }
-
-        newNode.parent = y;
-
-        if (y === null) {
-            this.root = newNode;
-        } else if (newNode.key < y.key) {
-            y.left = newNode;
-        } else {
-            y.right = newNode;
-        }
-
-        this.fixViolation(newNode);
-    }
-
-    // Additional methods like delete, search, and traversal can be added here
+    return -1; // Pattern not found
 }
 
 // Example usage
-const rbTree = new RedBlackTree();
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(30);
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
