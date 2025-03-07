@@ -1,63 +1,50 @@
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
-    
-    // Sort the array
-    const sortedArray = arr.slice().sort((a, b) => a - b);
-    
-    // Return the k-th smallest element (1-based index)
-    return sortedArray[k - 1];
+
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
-function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivotValue) {
-            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-            storeIndex++;
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
         }
     }
-    // Move pivot to its final place
-    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
-    return storeIndex;
-}
 
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left];
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sortedArray.push(left[leftIndex]);
+        leftIndex++;
     }
 
-    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
-    const newPivotIndex = partition(arr, left, right, pivotIndex);
-
-    if (k === newPivotIndex) {
-        return arr[k];
-    } else if (k < newPivotIndex) {
-        return quickSelect(arr, left, newPivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, newPivotIndex + 1, right, k);
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sortedArray.push(right[rightIndex]);
+        rightIndex++;
     }
+
+    return sortedArray;
 }
 
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
-    
-    // Convert k to 0-based index
-    return quickSelect(arr, 0, arr.length - 1, k - 1);
-}
-
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
