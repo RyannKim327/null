@@ -1,10 +1,9 @@
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenated: string = string1 + string2;
+function decimalToBinary(decimal: number): string {
+    return decimal.toString(2);
+}
 
-console.log(concatenated); // Output: Hello, world!
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenated: string = `${string1}${string2}`;
-
-console.log(concatenated); // Output: Hello, world!
+// Example usage:
+const decimalNumber = 42;
+const binaryString = decimalToBinary(decimalNumber);
+console.log(`The binary representation of ${decimalNumber} is ${binaryString}`);
+The binary representation of 42 is 101010
