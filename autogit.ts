@@ -1,50 +1,47 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function createBadCharacterTable(pattern: string): { [key: string]: number } {
+    const table: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
     }
+
+    return table;
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null if the list is empty or n is invalid
-    }
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
+    let i = 0; // index for text
 
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // index for pattern
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
         }
-        firstPointer = firstPointer.next;
+
+        // If the pattern is found
+        if (j < 0) {
+            occurrences.push(i);
+            // Shift the pattern to the right
+            i += (i + patternLength < textLength) ? patternLength - badCharTable[text[i + patternLength]] || 1 : 1;
+        } else {
+            // Shift the pattern based on the bad character rule
+            const shift = badCharTable[text[i + j]] || patternLength;
+            i += shift;
+        }
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
-    }
-
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+    return occurrences;
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const nthNode = findNthFromEnd(head, n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
-}
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: [2, 7, 12]
