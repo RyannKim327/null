@@ -7,60 +7,75 @@ class Node<T> {
         this.next = null;
     }
 }
-class Queue<T> {
-    private front: Node<T> | null = null;
-    private back: Node<T> | null = null;
-    private length: number = 0;
+class LinkedList<T> {
+    head: Node<T> | null;
+    size: number;
 
-    // Enqueue: Add an element to the back of the queue
-    enqueue(value: T): void {
+    constructor() {
+        this.head = null;
+        this.size = 0;
+    }
+
+    // Add a new node at the end of the list
+    append(value: T): void {
         const newNode = new Node(value);
-        if (this.back) {
-            this.back.next = newNode; // Link the old back to the new node
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
         }
-        this.back = newNode; // Update the back to the new node
-        if (!this.front) {
-            this.front = newNode; // If the queue was empty, set front to the new node
-        }
-        this.length++;
+        this.size++;
     }
 
-    // Dequeue: Remove and return the element from the front of the queue
-    dequeue(): T | null {
-        if (!this.front) {
-            return null; // Queue is empty
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
+
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.size--;
+            return true;
         }
-        const value = this.front.value; // Get the value from the front node
-        this.front = this.front.next; // Move the front pointer to the next node
-        if (!this.front) {
-            this.back = null; // If the queue is now empty, set back to null
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                this.size--;
+                return true;
+            }
+            current = current.next;
         }
-        this.length--;
-        return value;
+        return false;
     }
 
-    // Peek: Get the value at the front of the queue without removing it
-    peek(): T | null {
-        return this.front ? this.front.value : null;
+    // Display the list
+    display(): void {
+        let current = this.head;
+        const elements: T[] = [];
+        while (current) {
+            elements.push(current.value);
+            current = current.next;
+        }
+        console.log(elements.join(' -> '));
     }
 
-    // Size: Get the number of elements in the queue
-    size(): number {
-        return this.length;
-    }
-
-    // IsEmpty: Check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
+    // Get the size of the list
+    getSize(): number {
+        return this.size;
     }
 }
-const queue = new Queue<number>();
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.append(30);
+list.display(); // Output: 10 -> 20 -> 30
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
+list.remove(20);
+list.display(); // Output: 10 -> 30
 
-console.log(queue.peek()); // Output: 1
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.size()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
+console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
