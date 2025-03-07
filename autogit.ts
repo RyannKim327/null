@@ -1,31 +1,59 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-    let maxLength = 0;
-    let endingIndex = 0;
+type Graph = { [key: string]: string[] };
 
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    // Mark the current node as visited
+    visited.add(start);
+    console.log(start); // Process the current node
 
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endingIndex = i; // Update the ending index of the substring
+    // Recur for all the vertices adjacent to this vertex
+    for (const neighbor of graph[start]) {
+        if (!visited.has(neighbor)) {
+            depthFirstSearch(graph, neighbor, visited);
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
+
+depthFirstSearch(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearchIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop();
+        if (node && !visited.has(node)) {
+            visited.add(node);
+            console.log(node); // Process the current node
+
+            // Push all unvisited neighbors onto the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
                 }
             }
         }
     }
-
-    // Extract the longest common substring
-    return str1.substring(endingIndex - maxLength, endingIndex);
 }
 
 // Example usage:
-const str1 = "abcde";
-const str2 = "abfce";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "ab"
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
+
+depthFirstSearchIterative(graph, 'A');
