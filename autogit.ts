@@ -1,27 +1,59 @@
-import * as readline from 'readline';
+type Edge = {
+    source: number;
+    destination: number;
+    weight: number;
+};
 
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+class Graph {
+    private edges: Edge[];
+    private numVertices: number;
 
-// Function to ask a question and handle the response
-function askQuestion(query: string): Promise<string> {
-    return new Promise((resolve) => {
-        rl.question(query, (answer) => {
-            resolve(answer);
-        });
-    });
+    constructor(numVertices: number) {
+        this.numVertices = numVertices;
+        this.edges = [];
+    }
+
+    addEdge(source: number, destination: number, weight: number) {
+        this.edges.push({ source, destination, weight });
+    }
+
+    bellmanFord(startVertex: number): number[] | string {
+        // Step 1: Initialize distances from startVertex to all other vertices as INFINITE
+        const distances: number[] = new Array(this.numVertices).fill(Infinity);
+        distances[startVertex] = 0;
+
+        // Step 2: Relax all edges |V| - 1 times
+        for (let i = 0; i < this.numVertices - 1; i++) {
+            for (const edge of this.edges) {
+                const { source, destination, weight } = edge;
+                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                    distances[destination] = distances[source] + weight;
+                }
+            }
+        }
+
+        // Step 3: Check for negative-weight cycles
+        for (const edge of this.edges) {
+            const { source, destination, weight } = edge;
+            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                return "Graph contains a negative-weight cycle";
+            }
+        }
+
+        return distances;
+    }
 }
 
-// Main function to run the program
-async function main() {
-    const name = await askQuestion("What is your name? ");
-    console.log(`Hello, ${name}! Welcome to TypeScript.`);
-    
-    rl.close(); // Close the readline interface
-}
+// Example usage:
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
 
-// Run the main function
-main();
+const distances = graph.bellmanFord(0);
+console.log(distances);
