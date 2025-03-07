@@ -1,7 +1,22 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
+
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
+        }
+    } while (swapped);
+
+    return arr;
 }
 
-// Example usage:
-const randomNum = getRandomNumberInRange(1, 10);
-console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
+// Example usage
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
