@@ -1,45 +1,21 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    let left = 0;
+    let right = normalizedString.length - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // Cycle detected
+    while (left < right) {
+        if (normalizedString[left] !== normalizedString[right]) {
+            return false; // Not a palindrome
         }
+        left++;
+        right--;
     }
 
-    return false; // No cycle
+    return true; // Is a palindrome
 }
 
 // Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
