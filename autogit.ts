@@ -1,24 +1,34 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if the left index exceeds the right index, the target is not found
+    if (left > right) {
+        return -1; // Target not found
+    }
+
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
+
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
+    }
+
+    // If the target is less than the middle element, search in the left half
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, left, mid - 1);
+    }
+
+    // If the target is greater than the middle element, search in the right half
+    return binarySearch(arr, target, mid + 1, right);
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
+// Helper function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
 }
 
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 5;
+const result = search(sortedArray, target);
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+console.log(result); // Output: 4 (the index of the target in the array)
