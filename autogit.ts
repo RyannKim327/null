@@ -1,57 +1,70 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const table: string[] = [];
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-    // Create the table of rotations
-    for (let i = 0; i < n; i++) {
-        const rotated = input.slice(i) + input.slice(0, i);
-        table.push(rotated);
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
     }
 
-    // Sort the table
-    table.sort();
-
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        transformed += table[i][n - 1]; // Take the last character of each sorted rotation
-        if (table[i] === input) {
-            originalIndex = i; // Store the index of the original string
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
         }
+        return hash % this.size;
     }
 
-    return { transformed, index: originalIndex };
-}
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
 
-function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
-    const n = transformed.length;
-    const table: string[] = new Array(n);
-
-    // Initialize the table with empty strings
-    for (let i = 0; i < n; i++) {
-        table[i] = '';
-    }
-
-    // Rebuild the table
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n; j++) {
-            table[j] = transformed[j] + table[j]; // Prepend the character
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
+            }
         }
-        // Sort the table
-        table.sort();
+
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
     }
 
-    // Return the original string
-    return table[index];
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
+            }
+        }
+
+        return undefined; // Key not found
+    }
+
+    public remove(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
 }
 
 // Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
-
-const original = inverseBurrowsWheelerTransform(transformed, index);
-console.log("Original:", original);
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: undefined
