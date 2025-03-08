@@ -1,10 +1,14 @@
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenated: string = string1 + string2;
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    
+    // Reverse the normalized string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Compare the normalized string with the reversed string
+    return normalizedStr === reversedStr;
+}
 
-console.log(concatenated); // Output: Hello, world!
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenated: string = `${string1}${string2}`;
-
-console.log(concatenated); // Output: Hello, world!
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
