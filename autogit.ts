@@ -1,27 +1,29 @@
-import * as readline from 'readline';
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-// Function to ask a question and handle the response
-function askQuestion(query: string): Promise<string> {
-    return new Promise((resolve) => {
-        rl.question(query, (answer) => {
-            resolve(answer);
-        });
-    });
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
 
-// Main function to run the program
-async function main() {
-    const name = await askQuestion("What is your name? ");
-    console.log(`Hello, ${name}! Welcome to TypeScript.`);
-    
-    rl.close(); // Close the readline interface
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-// Run the main function
-main();
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
