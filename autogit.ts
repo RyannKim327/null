@@ -1,54 +1,35 @@
-class Edge {
-    constructor(public from: number, public to: number, public weight: number) {}
-}
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-class Graph {
-    private edges: Edge[] = [];
-    private vertexCount: number;
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    constructor(vertexCount: number) {
-        this.vertexCount = vertexCount;
-    }
-
-    addEdge(from: number, to: number, weight: number) {
-        this.edges.push(new Edge(from, to, weight));
-    }
-
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.vertexCount).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.vertexCount - 1; i++) {
-            for (const edge of this.edges) {
-                if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
-                    distances[edge.to] = distances[edge.from] + edge.weight;
-                }
-            }
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return the index
         }
 
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
-                return "Graph contains a negative-weight cycle";
-            }
+        // If target is greater, ignore the left half
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            right = mid - 1;
         }
-
-        return distances;
     }
+
+    // Target was not found in the array
+    return -1;
 }
 
 // Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = binarySearch(sortedArray, target);
 
-const distances = graph.bellmanFord(0);
-console.log(distances);
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found in the array.');
+}
