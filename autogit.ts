@@ -1,16 +1,17 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
+function firstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
 
-    for (let i = 1; i < nums.length; i++) {
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
-        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar if needed
+    for (const char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // Return the first repeated character
+        }
+        seenCharacters.add(char); // Add the character to the set
     }
 
-    return maxSoFar; // Return the maximum sum found
+    return null; // Return null if no repeated character is found
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
+const inputString = "abca";
+const result = firstRepeatedCharacter(inputString);
+console.log(result); // Output: "a"
