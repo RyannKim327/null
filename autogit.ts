@@ -1,30 +1,28 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
-
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    // Choose a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
+
+    // Partitioning the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    // Recursively sort the left and right arrays, and concatenate with the pivot
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-// Call the function to fetch posts
-fetchPosts();
+// Example usage
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
