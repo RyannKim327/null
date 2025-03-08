@@ -1,117 +1,19 @@
-class Graph {
-    private adjList: Map<number, number[]>;
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    constructor() {
-        this.adjList = new Map();
-    }
+    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        const dfs = (v: number) => {
-            visited.add(v);
-            const neighbors = this.adjList.get(v) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(v);
-        };
-
-        for (const vertex of this.adjList.keys()) {
-            if (!visited.has(vertex)) {
-                dfs(vertex);
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
             }
         }
-
-        return stack.reverse(); // Return in reverse order
     }
+
+    return Math.max(...dp); // The length of the longest increasing subsequence
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
-class Graph {
-    private adjList: Map<number, number[]>;
-    private inDegree: Map<number, number>;
-
-    constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-
-        // Update in-degree of the destination vertex
-        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
-        // Ensure the source vertex is in the in-degree map
-        if (!this.inDegree.has(v)) {
-            this.inDegree.set(v, 0);
-        }
-    }
-
-    topologicalSort(): number[] {
-        const zeroInDegreeQueue: number[] = [];
-        const sortedOrder: number[] = [];
-
-        // Initialize the queue with all vertices with in-degree of 0
-        for (const [vertex, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                zeroInDegreeQueue.push(vertex);
-            }
-        }
-
-        while (zeroInDegreeQueue.length > 0) {
-            const current = zeroInDegreeQueue.shift()!;
-            sortedOrder.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    zeroInDegreeQueue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there was a cycle
-        if (sortedOrder.length !== this.inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-
-        return sortedOrder;
-    }
-}
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
