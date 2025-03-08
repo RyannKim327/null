@@ -1,30 +1,11 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
-
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+function findMaxValue(arr: number[]): number | null {
+    if (arr.length === 0) {
+        return null; // Return null for an empty array
     }
-
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
+    return Math.max(...arr);
 }
 
-// Call the fetchPosts function and log the results
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Example usage:
+const numbers = [1, 5, 3, 9, 2];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Output: 9
