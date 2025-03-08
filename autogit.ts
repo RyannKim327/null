@@ -1,43 +1,44 @@
-type Node = {
-    state: string; // The current state or sequence
-    score: number; // The score of the current state
-};
+function createBadCharacterTable(pattern: string): number[] {
+    const table: number[] = new Array(256).fill(-1); // ASCII character set
+    const patternLength = pattern.length;
 
-function beamSearch(initialState: string, beamWidth: number, maxSteps: number): string {
-    let beams: Node[] = [{ state: initialState, score: 0 }];
-
-    for (let step = 0; step < maxSteps; step++) {
-        const newBeams: Node[] = [];
-
-        // Expand each beam
-        for (const beam of beams) {
-            const expandedNodes = expandNode(beam);
-            newBeams.push(...expandedNodes);
-        }
-
-        // Sort new beams by score and keep the top `beamWidth` beams
-        newBeams.sort((a, b) => b.score - a.score);
-        beams = newBeams.slice(0, beamWidth);
+    for (let i = 0; i < patternLength; i++) {
+        table[pattern.charCodeAt(i)] = i; // Store the last occurrence of each character
     }
 
-    // Return the best beam's state
-    return beams[0].state;
+    return table;
 }
 
-function expandNode(node: Node): Node[] {
-    // This function should generate new nodes based on the current node's state.
-    // For demonstration, let's assume we generate two new states with random scores.
-    const newStates: Node[] = [
-        { state: node.state + "A", score: node.score + Math.random() },
-        { state: node.state + "B", score: node.score + Math.random() },
-    ];
-    return newStates;
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
+
+    let skip: number = 0;
+
+    for (let i = 0; i <= textLength - patternLength; i += skip) {
+        skip = 0;
+
+        for (let j = patternLength - 1; j >= 0; j--) {
+            if (pattern[j] !== text[i + j]) {
+                const badCharIndex = text.charCodeAt(i + j);
+                skip = Math.max(1, j - badCharTable[badCharIndex]);
+                break;
+            }
+        }
+
+        if (skip === 0) {
+            occurrences.push(i); // Match found
+            skip = 1; // Move to the next character after the match
+        }
+    }
+
+    return occurrences;
 }
 
-// Example usage
-const initialState = "Start";
-const beamWidth = 3;
-const maxSteps = 5;
-
-const result = beamSearch(initialState, beamWidth, maxSteps);
-console.log("Best sequence found:", result);
+// Example usage:
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log("Pattern found at indices:", result);
