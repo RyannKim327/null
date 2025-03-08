@@ -1,55 +1,41 @@
-function createBadCharTable(pattern: string): { [key: string]: number } {
-    const badCharTable: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-    // Initialize the bad character table
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern[i]] = patternLength - 1 - i;
-    }
+// Simulated async function to fetch data
+const fetchData = async (): Promise<string> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("Data fetched successfully!");
+        }, 2000); // Simulate a 2-second network request
+    });
+};
 
-    return badCharTable;
-}
+const App: React.FC = () => {
+    const [data, setData] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
-    }
-
-    const badCharTable = createBadCharTable(pattern);
-    let i = 0; // Index for text
-    let j: number; // Index for pattern
-
-    while (i <= textLength - patternLength) {
-        j = patternLength - 1;
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
+    const handleFetchData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await fetchData();
+            setData(result);
+        } catch (err) {
+            setError("Failed to fetch data");
+        } finally {
+            setLoading(false);
         }
+    };
 
-        // If the pattern is found
-        if (j < 0) {
-            return i; // Return the starting index of the match
-        } else {
-            // Shift the pattern based on the bad character table
-            const badCharShift = badCharTable[text[i + j]] || patternLength;
-            i += badCharShift;
-        }
-    }
+    return (
+        <View style={{ padding: 20 }}>
+            <Button title="Fetch Data" onPress={handleFetchData} />
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+            {data && <Text>{data}</Text>}
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
+        </View>
+    );
+};
 
-    return -1; // Pattern not found
-}
-
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+export default App;
