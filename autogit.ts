@@ -1,15 +1,22 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
-        }
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce<number[]>((acc, value) => {
+    if (!acc.includes(value)) {
+        acc.push(value);
     }
-    return true; // All elements are in ascending order
-}
-
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [1, 3, 2, 4, 5];
-
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+    return acc;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = [];
+array.forEach(value => {
+    if (!uniqueArray.includes(value)) {
+        uniqueArray.push(value);
+    }
+});
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
