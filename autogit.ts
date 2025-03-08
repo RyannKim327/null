@@ -1,27 +1,10 @@
-import * as readline from 'readline';
-
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-// Function to ask a question and handle the response
-function askQuestion(query: string): Promise<string> {
-    return new Promise((resolve) => {
-        rl.question(query, (answer) => {
-            resolve(answer);
-        });
-    });
+function reverseWords(input: string): string {
+    return input.split(' ') // Step 1: Split the string into an array of words
+                .reverse()   // Step 2: Reverse the array
+                .join(' ');  // Step 3: Join the reversed array back into a string
 }
 
-// Main function to run the program
-async function main() {
-    const name = await askQuestion("What is your name? ");
-    console.log(`Hello, ${name}! Welcome to TypeScript.`);
-    
-    rl.close(); // Close the readline interface
-}
-
-// Run the main function
-main();
+// Example usage:
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
