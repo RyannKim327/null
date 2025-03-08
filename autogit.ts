@@ -1,92 +1,55 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    if (n <= 1) return arr;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Create a temporary array to hold the sorted elements
+    const temp = new Array(n);
+
+    // Start with a size of 1 and double it each iteration
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += 2 * size) {
+            // Find the starting point of the two subarrays to merge
+            const mid = Math.min(leftStart + size, n);
+            const rightEnd = Math.min(leftStart + 2 * size, n);
+
+            // Merge the two subarrays
+            merge(arr, temp, leftStart, mid, rightEnd);
+        }
+        // Copy the sorted elements back into the original array
+        for (let i = 0; i < n; i++) {
+            arr[i] = temp[i];
+        }
+    }
+
+    return arr;
+}
+
+function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number) {
+    let left = leftStart; // Starting index for left subarray
+    let right = mid;      // Starting index for right subarray
+    let index = leftStart; // Starting index to be merged
+
+    // Merge the two subarrays into temp
+    while (left < mid && right < rightEnd) {
+        if (arr[left] <= arr[right]) {
+            temp[index++] = arr[left++];
+        } else {
+            temp[index++] = arr[right++];
+        }
+    }
+
+    // Copy the remaining elements of the left subarray, if any
+    while (left < mid) {
+        temp[index++] = arr[left++];
+    }
+
+    // Copy the remaining elements of the right subarray, if any
+    while (right < rightEnd) {
+        temp[index++] = arr[right++];
     }
 }
-class BinarySearchTree {
-    root: Node | null;
 
-    constructor() {
-        this.root = null;
-    }
-
-    // Insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is found
-        }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
-}
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
-
-// Search for a value
-console.log(bst.search(7));  // true
-console.log(bst.search(20)); // false
-
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
