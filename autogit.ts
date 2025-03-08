@@ -1,72 +1,42 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+function createBadCharacterTable(pattern: string): number[] {
+    const table: number[] = new Array(256).fill(-1);
+    const patternLength = pattern.length;
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
+    for (let i = 0; i < patternLength; i++) {
+        table[pattern.charCodeAt(i)] = i;
     }
+
+    return table;
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
 
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
-    }
+    let skip: number = 0;
 
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
+    while (textLength - skip >= patternLength) {
+        let j: number = patternLength - 1;
+
+        while (j >= 0 && pattern[j] === text[skip + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            occurrences.push(skip);
+            skip += (skip + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(skip + patternLength)] : 1;
+        } else {
+            skip += Math.max(1, j - badCharTable[text.charCodeAt(skip + j)]);
         }
     }
 
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                return;
-            }
-            currentNode = currentNode.children.get(char)!;
-            // If we reach the end of the current node's edge, we can stop
-            if (currentNode.end === null) {
-                currentNode.end = i;
-                return;
-            }
-        }
-    }
-
-    search(pattern: string): boolean {
-        let currentNode = this.root;
-        let index = 0;
-
-        while (index < pattern.length) {
-            const char = pattern[index];
-            if (!currentNode.children.has(char)) {
-                return false; // Not found
-            }
-            currentNode = currentNode.children.get(char)!;
-            index++;
-        }
-        return true; // Found
-    }
+    return occurrences;
 }
 
-// Example usage
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // false
+// Example usage:
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: [2, 7, 12]
