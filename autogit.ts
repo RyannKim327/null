@@ -1,42 +1,43 @@
-function createBadCharacterTable(pattern: string): number[] {
-    const table: number[] = new Array(256).fill(-1);
-    const patternLength = pattern.length;
+type Node = {
+    state: string; // The current state or sequence
+    score: number; // The score of the current state
+};
 
-    for (let i = 0; i < patternLength; i++) {
-        table[pattern.charCodeAt(i)] = i;
-    }
+function beamSearch(initialState: string, beamWidth: number, maxSteps: number): string {
+    let beams: Node[] = [{ state: initialState, score: 0 }];
 
-    return table;
-}
+    for (let step = 0; step < maxSteps; step++) {
+        const newBeams: Node[] = [];
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
-
-    let skip: number = 0;
-
-    while (textLength - skip >= patternLength) {
-        let j: number = patternLength - 1;
-
-        while (j >= 0 && pattern[j] === text[skip + j]) {
-            j--;
+        // Expand each beam
+        for (const beam of beams) {
+            const expandedNodes = expandNode(beam);
+            newBeams.push(...expandedNodes);
         }
 
-        if (j < 0) {
-            occurrences.push(skip);
-            skip += (skip + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(skip + patternLength)] : 1;
-        } else {
-            skip += Math.max(1, j - badCharTable[text.charCodeAt(skip + j)]);
-        }
+        // Sort new beams by score and keep the top `beamWidth` beams
+        newBeams.sort((a, b) => b.score - a.score);
+        beams = newBeams.slice(0, beamWidth);
     }
 
-    return occurrences;
+    // Return the best beam's state
+    return beams[0].state;
 }
 
-// Example usage:
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: [2, 7, 12]
+function expandNode(node: Node): Node[] {
+    // This function should generate new nodes based on the current node's state.
+    // For demonstration, let's assume we generate two new states with random scores.
+    const newStates: Node[] = [
+        { state: node.state + "A", score: node.score + Math.random() },
+        { state: node.state + "B", score: node.score + Math.random() },
+    ];
+    return newStates;
+}
+
+// Example usage
+const initialState = "Start";
+const beamWidth = 3;
+const maxSteps = 5;
+
+const result = beamSearch(initialState, beamWidth, maxSteps);
+console.log("Best sequence found:", result);
