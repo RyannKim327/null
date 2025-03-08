@@ -1,28 +1,27 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+const numbers: number[] = [1, 5, 3, 9, 2];
+const max = Math.max(...numbers);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+let max = numbers[0]; // Assume the first element is the max initially
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
     }
-
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
-
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+let max = numbers[0];
+numbers.forEach(num => {
+    if (num > max) {
+        max = num;
+    }
+});
+
+console.log(max); // Output: 9
