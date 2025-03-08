@@ -1,45 +1,21 @@
-class Stack<T> {
-    private items: T[] = [];
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
+    const dp: number[] = new Array(nums.length).fill(1);
+    let maxLength = 1;
+
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+        maxLength = Math.max(maxLength, dp[i]);
     }
 
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
+    return maxLength;
 }
 
 // Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty()); // Output: false
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
