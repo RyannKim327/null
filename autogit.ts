@@ -1,35 +1,45 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class Stack<T> {
+    private items: T[] = [];
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target
-        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos; // Target found at index pos
-        }
-
-        // If target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } else {
-            // If target is smaller, ignore the right half
-            high = pos - 1;
-        }
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    return -1; // Target not found
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
-// Example usage
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const targetValue = 70;
-const index = interpolationSearch(sortedArray, targetValue);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found in the array.');
-}
+// Example usage:
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
