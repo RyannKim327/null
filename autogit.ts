@@ -1,50 +1,38 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array has 1 or 0 elements, it is already sorted
-    if (arr.length <= 1) {
-        return arr;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Split the array into two halves
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    // Recursively sort both halves
-    return merge(mergeSort(left), mergeSort(right));
 }
 
-function merge(left: number[], right: number[]): number[] {
-    const sortedArray: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    // Merge the two arrays while there are elements in both
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            sortedArray.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            sortedArray.push(right[rightIndex]);
-            rightIndex++;
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
         }
     }
 
-    // If there are remaining elements in the left array, add them
-    while (leftIndex < left.length) {
-        sortedArray.push(left[leftIndex]);
-        leftIndex++;
-    }
-
-    // If there are remaining elements in the right array, add them
-    while (rightIndex < right.length) {
-        sortedArray.push(right[rightIndex]);
-        rightIndex++;
-    }
-
-    return sortedArray;
+    return false; // No cycle
 }
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Example usage:
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+head.next = second;
+second.next = third;
+// Uncomment the next line to create a cycle
+// third.next = second;
+
+console.log(hasCycle(head)); // Output: false (or true if a cycle is created)
