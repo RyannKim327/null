@@ -1,27 +1,16 @@
-const numbers: number[] = [1, 5, 3, 9, 2];
-const max = Math.max(...numbers);
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
 
-let max = numbers[0]; // Assume the first element is the max initially
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > max) {
-        max = numbers[i];
+    for (let i = 1; i < nums.length; i++) {
+        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
+        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar if needed
     }
+
+    return maxSoFar; // Return the maximum sum found
 }
 
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-
-const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-
-let max = numbers[0];
-numbers.forEach(num => {
-    if (num > max) {
-        max = num;
-    }
-});
-
-console.log(max); // Output: 9
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
