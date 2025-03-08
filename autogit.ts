@@ -1,32 +1,17 @@
-npm install axios
-import axios from 'axios';
+function countOccurrences(text: string, word: string): number {
+    // Normalize the text and the word to lower case for case-insensitive comparison
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-// Define an interface for the data we expect from the API
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
+    // Split the text by spaces and filter the results
+    const wordsArray = normalizedText.split(/\s+/);
+    const count = wordsArray.filter(w => w === normalizedWord).length;
+
+    return count;
 }
 
-// Function to fetch users from the API
-const fetchUsers = async (): Promise<void> => {
-    try {
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        const users = response.data;
-
-        // Log the users to the console
-        users.forEach(user => {
-            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-        });
-    } catch (error) {
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-    }
-};
-
-// Call the function to fetch users
-fetchUsers();
+// Example usage
+const text = "Hello world! This is a test. Hello again, world!";
+const word = "hello";
+const occurrences = countOccurrences(text, word);
+console.log(`The word "${word}" occurs ${occurrences} times.`);
