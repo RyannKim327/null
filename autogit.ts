@@ -1,12 +1,35 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found at index pos
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            high = pos - 1;
+        }
     }
-    // Recursive case: n! = n * (n - 1)!
-    return n * factorial(n - 1);
+
+    return -1; // Target not found
 }
 
 // Example usage:
-const number = 5;
-console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
+const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const target = 70;
+const index = interpolationSearch(arr, target);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found in the array.');
+}
