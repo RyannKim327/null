@@ -1,15 +1,21 @@
-// Example array
-let numbers: number[] = [1, 2, 3, 4, 5];
+function insertionSort(arr: number[]): number[] {
+    // Loop through the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The element to be compared
+        let j = i - 1; // The index of the last sorted element
 
-// Reverse the array
-numbers.reverse();
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key; // Place the key in its correct position
+    }
+    return arr; // Return the sorted array
+}
 
-console.log(numbers); // Output: [5, 4, 3, 2, 1]
-// Example array
-let numbers: number[] = [1, 2, 3, 4, 5];
-
-// Create a new reversed array
-let reversedNumbers: number[] = numbers.slice().reverse();
-
-console.log(reversedNumbers); // Output: [5, 4, 3, 2, 1]
-console.log(numbers); // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
+// Example usage:
+const array = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
