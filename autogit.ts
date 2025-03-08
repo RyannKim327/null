@@ -1,35 +1,19 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-        // Check if the target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found, return the index
-        }
+// Start the task
+task.start();
 
-        // If target is greater, ignore the left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            // If target is smaller, ignore the right half
-            right = mid - 1;
-        }
-    }
-
-    // Target was not found in the array
-    return -1;
-}
-
-// Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const result = binarySearch(sortedArray, target);
-
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found in the array.');
-}
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
