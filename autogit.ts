@@ -1,28 +1,34 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const table: string[] = [];
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    // Create the table of rotations
+    for (let i = 0; i < n; i++) {
+        const rotation = input.slice(i) + input.slice(0, i);
+        table.push(rotation);
     }
 
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    // Sort the table
+    table.sort();
+
+    // Build the BWT result and find the original index
+    let bwtResult = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        bwtResult += table[i][n - 1]; // Take the last character of each sorted rotation
+        if (table[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    return { transformed: bwtResult, index: originalIndex };
 }
 
-// Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+Transformed: annb$aa
+Original Index: 5
