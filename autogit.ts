@@ -1,70 +1,21 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function insertionSort(arr: number[]): number[] {
+    // Loop through the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The element to be positioned
+        let j = i - 1; // The index of the last sorted element
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key; // Place the key in its correct position
     }
+    return arr; // Return the sorted array
 }
-class Queue<T> {
-    private front: Node<T> | null = null;
-    private back: Node<T> | null = null;
-    private length: number = 0;
 
-    // Enqueue: Add an element to the back of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (this.back) {
-            this.back.next = newNode; // Link the old back to the new node
-        }
-        this.back = newNode; // Update the back to the new node
-        if (!this.front) {
-            this.front = newNode; // If the queue was empty, set front to the new node
-        }
-        this.length++;
-    }
-
-    // Dequeue: Remove and return the element from the front of the queue
-    dequeue(): T | null {
-        if (!this.front) {
-            return null; // Queue is empty
-        }
-        const value = this.front.value; // Get the value from the front node
-        this.front = this.front.next; // Move the front pointer to the next node
-        if (!this.front) {
-            this.back = null; // If the queue is now empty, set back to null
-        }
-        this.length--;
-        return value;
-    }
-
-    // Peek: Get the value at the front of the queue without removing it
-    peek(): T | null {
-        return this.front ? this.front.value : null;
-    }
-
-    // Size: Get the number of elements in the queue
-    size(): number {
-        return this.length;
-    }
-
-    // IsEmpty: Check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
-    }
-}
-const queue = new Queue<number>();
-
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.peek());     // Output: 2
-console.log(queue.size());     // Output: 2
-console.log(queue.isEmpty());  // Output: false
-
-queue.dequeue();
-queue.dequeue();
-console.log(queue.isEmpty());  // Output: true
+// Example usage:
+const array = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
