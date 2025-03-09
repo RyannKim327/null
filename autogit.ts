@@ -1,20 +1,78 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Remove duplicates by converting the array to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
+type Graph = { [key: string]: string[] };
 
-    // If there are less than 2 unique elements, return null
-    if (uniqueArr.length < 2) {
-        return null;
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
+
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: { [key: string]: string | null } = { [start]: null };
+    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
+
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Search from the start
+        const currentFromStart = queueFromStart.shift()!;
+        if (visitedFromGoal.has(currentFromStart)) {
+            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
+        }
+        visitedFromStart.add(currentFromStart);
+
+        for (const neighbor of graph[currentFromStart] || []) {
+            if (!visitedFromStart.has(neighbor)) {
+                queueFromStart.push(neighbor);
+                parentFromStart[neighbor] = currentFromStart;
+            }
+        }
+
+        // Search from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        if (visitedFromStart.has(currentFromGoal)) {
+            return constructPath(currentFromGoal, parentFromGoal, parentFromStart);
+        }
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph[currentFromGoal] || []) {
+            if (!visitedFromGoal.has(neighbor)) {
+                queueFromGoal.push(neighbor);
+                parentFromGoal[neighbor] = currentFromGoal;
+            }
+        }
     }
 
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
-
-    // Return the second largest element
-    return uniqueArr[1];
+    return null; // No path found
 }
 
-// Example usage:
-const numbers = [3, 5, 1, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+function constructPath(meetingPoint: string, parentFromOne: { [key: string]: string | null }, parentFromOther: { [key: string]: string | null }): string[] {
+    const path: string[] = [];
+    let current: string | null = meetingPoint;
+
+    // Backtrack from the meeting point to the start
+    while (current !== null) {
+        path.push(current);
+        current = parentFromOne[current];
+    }
+    path.reverse();
+
+    // Backtrack from the meeting point to the goal
+    current = parentFromOther[meetingPoint];
+    while (current !== null) {
+        path.push(current);
+        current = parentFromOther[current];
+    }
+
+    return path;
+}
+
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
+
+const path = biDirectionalSearch(graph, 'A', 'F');
+console.log(path); // Output: ['A', 'C', 'F'] or similar path
