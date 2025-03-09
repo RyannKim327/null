@@ -1,72 +1,146 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+class TreeNode {
+    key: number;
+    height: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
+    constructor(key: number) {
+        this.key = key;
+        this.height = 1; // New node is initially added at leaf
+        this.left = null;
+        this.right = null;
     }
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
+class AVLTree {
+    root: TreeNode | null;
 
-    constructor(text: string) {
-        this.text = text;
-        this.root = new SuffixTreeNode(-1, null);
-        this.buildSuffixTree();
+    constructor() {
+        this.root = null;
     }
 
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
+    // Get the height of the node
+    getHeight(node: TreeNode | null): number {
+        return node ? node.height : 0;
+    }
+
+    // Get the balance factor of the node
+    getBalance(node: TreeNode | null): number {
+        if (!node) return 0;
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
+
+    // Right rotate the subtree rooted with y
+    rightRotate(y: TreeNode): TreeNode {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+
+        // Return the new root
+        return x;
+    }
+
+    // Left rotate the subtree rooted with x
+    leftRotate(x: TreeNode): TreeNode {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+
+        // Return the new root
+        return y;
+    }
+
+    // Insert a node
+    insert(node: TreeNode | null, key: number): TreeNode {
+        // Perform the normal BST insert
+        if (!node) return new TreeNode(key);
+
+        if (key < node.key) {
+            node.left = this.insert(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.insert(node.right, key);
+        } else {
+            // Duplicate keys are not allowed in the AVL tree
+            return node;
+        }
+
+        // Update the height of this ancestor node
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+
+        // Get the balance factor of this ancestor node to check whether
+        // this node became unbalanced
+        const balance = this.getBalance(node);
+
+        // If this node becomes unbalanced, then there are 4 cases
+
+        // Left Left Case
+        if (balance > 1 && key < node.left!.key) {
+            return this.rightRotate(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && key > node.right!.key) {
+            return this.leftRotate(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && key > node.left!.key) {
+            node.left = this.leftRotate(node.left!);
+            return this.rightRotate(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && key < node.right!.key) {
+            node.right = this.rightRotate(node.right!);
+            return this.leftRotate(node);
+        }
+
+        // Return the (unchanged) node pointer
+        return node;
+    }
+
+    // Public method to insert a key
+    public insertKey(key: number): void {
+        this.root = this.insert(this.root, key);
+    }
+
+    // Inorder traversal of the tree
+    inorder(node: TreeNode | null): void {
+        if (node) {
+            this.inorder(node.left);
+            console.log(node.key);
+            this.inorder(node.right);
         }
     }
 
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                return;
-            }
-            currentNode = currentNode.children.get(char)!;
-            // If we reach the end of the current node's edge, we can stop
-            if (currentNode.end === null) {
-                currentNode.end = i;
-                return;
-            }
-        }
-    }
-
-    search(pattern: string): boolean {
-        let currentNode = this.root;
-        let index = 0;
-
-        while (index < pattern.length) {
-            const char = pattern[index];
-            if (!currentNode.children.has(char)) {
-                return false; // Not found
-            }
-            currentNode = currentNode.children.get(char)!;
-            index++;
-        }
-        return true; // Found
+    // Public method to perform inorder traversal
+    public inorderTraversal(): void {
+        this.inorder(this.root);
     }
 }
 
-// Example usage:
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // false
+// Example usage
+const avlTree = new AVLTree();
+avlTree.insertKey(10);
+avlTree.insertKey(20);
+avlTree.insertKey(30);
+avlTree.insertKey(40);
+avlTree.insertKey(50);
+avlTree.insertKey(25);
+
+console.log("Inorder traversal of the AVL tree is:");
+avlTree.inorderTraversal();
