@@ -1,12 +1,32 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+    // Sort the rotations
+    rotations.sort();
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+    // Build the BWT result and find the original index
+    let bwtResult = '';
+    let originalIndex = 0;
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+    for (let i = 0; i < n; i++) {
+        const rotation = rotations[i];
+        bwtResult += rotation[n - 1]; // Take the last character of each sorted rotation
+        if (rotation === input) {
+            originalIndex = i; // Store the index of the original string
+        }
+    }
+
+    return { transformed: bwtResult, index: originalIndex };
+}
+
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
