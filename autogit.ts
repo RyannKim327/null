@@ -1,20 +1,21 @@
-function isPrime(num: number): boolean {
-    // Check if the number is less than 2
-    if (num < 2) return false;
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    let left = 0;
+    let right = normalizedString.length - 1;
 
-    // Check for factors from 2 to the square root of num
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // num is divisible by i, so it's not prime
+    while (left < right) {
+        if (normalizedString[left] !== normalizedString[right]) {
+            return false; // Not a palindrome
         }
+        left++;
+        right--;
     }
-    return true; // num is prime
+
+    return true; // Is a palindrome
 }
 
-// Example usage
-const numberToCheck = 29;
-if (isPrime(numberToCheck)) {
-    console.log(`${numberToCheck} is a prime number.`);
-} else {
-    console.log(`${numberToCheck} is not a prime number.`);
-}
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
