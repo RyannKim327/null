@@ -1,15 +1,56 @@
-// Example array
-let array: number[] = [1, 2, 3, 4, 5];
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-// Reverse the array
-array.reverse();
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-console.log(array); // Output: [5, 4, 3, 2, 1]
-// Example array
-let originalArray: number[] = [1, 2, 3, 4, 5];
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
 
-// Create a new reversed array
-let reversedArray: number[] = originalArray.slice().reverse();
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
 
-console.log(originalArray); // Output: [1, 2, 3, 4, 5]
-console.log(reversedArray);  // Output: [5, 4, 3, 2, 1]
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        return result;
+    }
+}
+
+// Example usage:
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
