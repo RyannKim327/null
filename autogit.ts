@@ -1,97 +1,56 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(size: number = 53) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
-        }
-        return hash % this.size;
-    }
-
-    set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket[i][1] = value; // Update the value
-                return;
-            }
-        }
-
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
-    }
-
-    get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return bucket[i][1]; // Return the value
-            }
-        }
-
-        return undefined; // Key not found
-    }
-
-    remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
-            }
-        }
-
-        return false; // Key not found
-    }
-
-    keys(): K[] {
-        const keys: K[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    keys.push(entry[0]);
-                }
-            }
-        }
-        return keys;
-    }
-
-    values(): V[] {
-        const values: V[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    values.push(entry[1]);
-                }
-            }
-        }
-        return values;
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
 
-// Example usage
-const hashTable = new HashTable<string, number>();
-hashTable.set("one", 1);
-hashTable.set("two", 2);
-hashTable.set("three", 3);
+function depthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-console.log(hashTable.get("two")); // Output: 2
-hashTable.remove("two");
-console.log(hashTable.get("two")); // Output: undefined
-console.log(hashTable.keys()); // Output: ['one', 'three']
-console.log(hashTable.values()); // Output: [1, 3]
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node;
+        }
+
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
+    }
+
+    // Return null if the target is not found within the depth limit
+    return null;
+}
+
+// Example usage:
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const targetNode = depthLimitedSearch(root, "E", 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
