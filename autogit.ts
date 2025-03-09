@@ -1,53 +1,58 @@
-type Edge = [number, number, number]; // [source, destination, weight]
+type Node = {
+    value: string;
+    children: Node[];
+};
 
-class Graph {
-    private edges: Edge[];
-    private numVertices: number;
+function depthLimitedSearch(root: Node, goal: string, depthLimit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
-    }
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
 
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push([source, destination, weight]);
-    }
-
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const [u, v, weight] of this.edges) {
-                if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-                    distances[v] = distances[u] + weight;
-                }
-            }
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node; // Goal found
         }
 
-        // Step 3: Check for negative-weight cycles
-        for (const [u, v, weight] of this.edges) {
-            if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-                return "Graph contains a negative-weight cycle";
+        // If the current depth is less than the depth limit, explore children
+        if (depth < depthLimit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
             }
         }
-
-        return distances;
     }
+
+    return null; // Goal not found within depth limit
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+// Example usage
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                { value: 'D', children: [] },
+                { value: 'E', children: [] }
+            ]
+        },
+        {
+            value: 'C',
+            children: [
+                { value: 'F', children: [] },
+                { value: 'G', children: [] }
+            ]
+        }
+    ]
+};
 
-const distances = graph.bellmanFord(0);
-console.log(distances);
+const goalNodeValue = 'E';
+const depthLimit = 2;
+
+const result = depthLimitedSearch(rootNode, goalNodeValue, depthLimit);
+if (result) {
+    console.log(`Goal node found: ${result.value}`);
+} else {
+    console.log('Goal node not found within depth limit.');
+}
