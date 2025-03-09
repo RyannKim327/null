@@ -1,9 +1,25 @@
-function calculateMean(numbers: number[]): number {
-    const sum = numbers.reduce((acc, val) => acc + val, 0);
-    const mean = sum / numbers.length;
-    return mean;
-}
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-const numbers = [1, 2, 3, 4, 5];
-const mean = calculateMean(numbers);
-console.log("Mean:", mean);
+if (str.includes(substring)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
+}
+const str: string = "Hello, world!";
+const substring: string = "world";
+
+if (str.indexOf(substring) !== -1) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
+}
+const str: string = "Hello, world!";
+const substring: string = "world";
+const regex = new RegExp(substring);
+
+if (regex.test(str)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
+}
