@@ -1,57 +1,64 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Graph {
+    private adjacencyList: Map<string, { node: string, weight: number }[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next; // Move slow by 1
-        fast = fast.next.next; // Move fast by 2
+    addVertex(vertex: string) {
+        this.adjacencyList.set(vertex, []);
     }
 
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
-
-    while (current) {
-        const nextTemp = current.next; // Store next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to current
-        current = nextTemp; // Move to next node
+    addEdge(vertex1: string, vertex2: string, weight: number) {
+        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
+        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // For undirected graph
     }
 
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
+    dijkstra(start: string): Map<string, number> {
+        const distances = new Map<string, number>();
+        const priorityQueue: { node: string, distance: number }[] = [];
+        const visited = new Set<string>();
 
-    while (right) {
-        if (left!.value !== right.value) {
-            return false; // Not a palindrome
+        // Initialize distances
+        for (const vertex of this.adjacencyList.keys()) {
+            distances.set(vertex, Infinity);
         }
-        left = left!.next;
-        right = right.next;
-    }
+        distances.set(start, 0);
+        priorityQueue.push({ node: start, distance: 0 });
 
-    return true; // It's a palindrome
+        while (priorityQueue.length > 0) {
+            // Sort the queue by distance
+            priorityQueue.sort((a, b) => a.distance - b.distance);
+            const { node } = priorityQueue.shift()!;
+
+            if (visited.has(node)) continue;
+            visited.add(node);
+
+            const neighbors = this.adjacencyList.get(node) || [];
+            for (const { node: neighbor, weight } of neighbors) {
+                const newDistance = distances.get(node)! + weight;
+                if (newDistance < distances.get(neighbor)!) {
+                    distances.set(neighbor, newDistance);
+                    priorityQueue.push({ node: neighbor, distance: newDistance });
+                }
+            }
+        }
+
+        return distances;
+    }
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 2);
+graph.addEdge("B", "D", 5);
+graph.addEdge("C", "D", 1);
 
-console.log(isPalindrome(head)); // Output: true
+const distances = graph.dijkstra("A");
+console.log(distances); // Output the shortest distances from A
