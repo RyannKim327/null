@@ -1,19 +1,7 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+function getRandomNumberInRange(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleString());
-});
-
-// Start the task
-task.start();
-
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronExample.ts
-node cronExample.js
+// Example usage:
+const randomNum = getRandomNumberInRange(1, 10);
+console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
