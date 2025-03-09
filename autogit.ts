@@ -1,95 +1,67 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
-
-    constructor(text: string) {
-        this.text = text;
-        this.root = new SuffixTreeNode(-1, null);
-        this.buildSuffixTree();
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
     }
-
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.addSuffix(i);
-        }
-    }
-
-    addSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                return;
-            }
-
-            currentNode = currentNode.children.get(char)!;
-            if (currentNode.end === null) {
-                currentNode.end = i;
-                return;
-            }
-
-            // If we reach here, we need to split the edge
-            const edgeLength = currentNode.end! - currentNode.start + 1;
-            if (i - start < edgeLength) {
-                // Split the edge
-                const splitNode = new SuffixTreeNode(currentNode.start, currentNode.start + i - start - 1);
-                currentNode.start += i - start;
-                currentNode.children.set(this.text[currentNode.start], currentNode);
-                currentNode.children.set(this.text[splitNode.start], splitNode);
-                return;
-            }
-            start += edgeLength;
-        }
-    }
-
-    // Function to search for a substring
-    search(substring: string): boolean {
-        let currentNode = this.root;
-        let index = 0;
-
-        while (index < substring.length) {
-            const char = substring[index];
-
-            if (!currentNode.children.has(char)) {
-                return false; // Not found
-            }
-
-            currentNode = currentNode.children.get(char)!;
-            const edgeLength = currentNode.end === null ? this.text.length - currentNode.start : currentNode.end - currentNode.start + 1;
-
-            for (let i = 0; i < edgeLength; i++) {
-                if (index >= substring.length || this.text[currentNode.start + i] !== substring[index]) {
-                    return false; // Not found
-                }
-                index++;
-            }
-        }
-        return true; // Found
-    }
+    return length;
 }
 
-// Example usage
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // false
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the start of both lists
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
+        }
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
+        }
+    }
+
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
+}
+
+// Example usage:
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
+
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
+
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
+
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : "No intersection");
