@@ -1,58 +1,57 @@
-type Node = {
-    value: string;
-    children: Node[];
-};
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function depthLimitedSearch(root: Node, goal: string, depthLimit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the goal
-        if (node.value === goal) {
-            return node; // Goal found
-        }
-
-        // If the current depth is less than the depth limit, explore children
-        if (depth < depthLimit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
-        }
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
     }
 
-    return null; // Goal not found within depth limit
-}
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-// Example usage
-const rootNode: Node = {
-    value: 'A',
-    children: [
-        {
-            value: 'B',
-            children: [
-                { value: 'D', children: [] },
-                { value: 'E', children: [] }
-            ]
-        },
-        {
-            value: 'C',
-            children: [
-                { value: 'F', children: [] },
-                { value: 'G', children: [] }
-            ]
+    while (fast && fast.next) {
+        slow = slow!.next; // Move slow by 1
+        fast = fast.next.next; // Move fast by 2
+    }
+
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to next node
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false; // Not a palindrome
         }
-    ]
-};
+        left = left!.next;
+        right = right.next;
+    }
 
-const goalNodeValue = 'E';
-const depthLimit = 2;
-
-const result = depthLimitedSearch(rootNode, goalNodeValue, depthLimit);
-if (result) {
-    console.log(`Goal node found: ${result.value}`);
-} else {
-    console.log('Goal node not found within depth limit.');
+    return true; // It's a palindrome
 }
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
