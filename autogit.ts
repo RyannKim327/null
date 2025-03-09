@@ -1,56 +1,38 @@
-class Node {
-    value: string;
-    children: Node[];
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: string) {
+    constructor(value: number) {
         this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
+        this.left = null;
+        this.right = null;
     }
 }
 
-function depthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node;
-        }
-
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
-        }
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
     }
 
-    // Return null if the target is not found within the depth limit
-    return null;
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
 // Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const targetNode = depthLimitedSearch(root, "E", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
-}
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
