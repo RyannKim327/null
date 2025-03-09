@@ -1,27 +1,148 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+enum Color {
+    RED,
+    BLACK
+}
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted part
-        let minIndex = i;
+class Node {
+    public key: number;
+    public color: Color;
+    public left: Node | null;
+    public right: Node | null;
+    public parent: Node | null;
 
-        // Find the index of the minimum element in the unsorted part
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
+    constructor(key: number) {
+        this.key = key;
+        this.color = Color.RED; // New nodes are red by default
+        this.left = null;
+        this.right = null;
+        this.parent = null;
+    }
+}
+
+class RedBlackTree {
+    private root: Node | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    private rotateLeft(x: Node) {
+        const y = x.right!;
+        x.right = y.left;
+
+        if (y.left !== null) {
+            y.left.parent = x;
+        }
+
+        y.parent = x.parent;
+
+        if (x.parent === null) {
+            this.root = y;
+        } else if (x === x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+
+        y.left = x;
+        x.parent = y;
+    }
+
+    private rotateRight(y: Node) {
+        const x = y.left!;
+        y.left = x.right;
+
+        if (x.right !== null) {
+            x.right.parent = y;
+        }
+
+        x.parent = y.parent;
+
+        if (y.parent === null) {
+            this.root = x;
+        } else if (y === y.parent.right) {
+            y.parent.right = x;
+        } else {
+            y.parent.left = x;
+        }
+
+        x.right = y;
+        y.parent = x;
+    }
+
+    private fixInsert(z: Node) {
+        while (z.parent && z.parent.color === Color.RED) {
+            if (z.parent === z.parent.parent?.left) {
+                const y = z.parent.parent?.right;
+
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.right) {
+                        z = z.parent;
+                        this.rotateLeft(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateRight(z.parent.parent!);
+                }
+            } else {
+                const y = z.parent.parent?.left;
+
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.left) {
+                        z = z.parent;
+                        this.rotateRight(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateLeft(z.parent.parent!);
+                }
+            }
+        }
+        this.root!.color = Color.BLACK;
+    }
+
+    public insert(key: number) {
+        const newNode = new Node(key);
+        let y: Node | null = null;
+        let x: Node | null = this.root;
+
+        while (x !== null) {
+            y = x;
+            if (newNode.key < x.key) {
+                x = x.left;
+            } else {
+                x = x.right;
             }
         }
 
-        // Swap the found minimum element with the first element of the unsorted part
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        newNode.parent = y;
+
+        if (y === null) {
+            this.root = newNode;
+        } else if (newNode.key < y.key) {
+            y.left = newNode;
+        } else {
+            y.right = newNode;
         }
+
+        this.fixInsert(newNode);
     }
 
-    return arr;
+    // Additional methods like delete, search, and traversal can be added here
 }
 
-// Example usage:
-const array = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+// Example usage
+const rbt = new RedBlackTree();
+rbt.insert(10);
+rbt.insert(20);
+rbt.insert(15);
