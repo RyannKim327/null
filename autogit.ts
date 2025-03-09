@@ -1,7 +1,55 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+// Define a type for the graph nodes
+type Node = {
+    value: string;
+    children: Node[];
+};
+
+// Depth-Limited Search function
+function depthLimitedSearch(node: Node, depth: number, target: string): boolean {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
+    }
+
+    // If the depth limit is reached, return false
+    if (depth === 0) {
+        return false;
+    }
+
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depth - 1, target)) {
+            return true;
+        }
+    }
+
+    // If the target is not found in this path, return false
+    return false;
 }
 
-// Example usage:
-const randomNum = getRandomNumberInRange(1, 10);
-console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
+// Example usage
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                { value: 'D', children: [] },
+                { value: 'E', children: [] }
+            ]
+        },
+        {
+            value: 'C',
+            children: [
+                { value: 'F', children: [] },
+                { value: 'G', children: [] }
+            ]
+        }
+    ]
+};
+
+const targetValue = 'E';
+const depthLimit = 2;
+
+const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
