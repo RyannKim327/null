@@ -1,78 +1,27 @@
-type Graph = { [key: string]: string[] };
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
 
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentFromStart = queueFromStart.shift()!;
-        if (visitedFromGoal.has(currentFromStart)) {
-            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
-        }
-        visitedFromStart.add(currentFromStart);
-
-        for (const neighbor of graph[currentFromStart] || []) {
-            if (!visitedFromStart.has(neighbor)) {
-                queueFromStart.push(neighbor);
-                parentFromStart[neighbor] = currentFromStart;
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
         }
 
-        // Search from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        if (visitedFromStart.has(currentFromGoal)) {
-            return constructPath(currentFromGoal, parentFromGoal, parentFromStart);
-        }
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph[currentFromGoal] || []) {
-            if (!visitedFromGoal.has(neighbor)) {
-                queueFromGoal.push(neighbor);
-                parentFromGoal[neighbor] = currentFromGoal;
-            }
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         }
     }
 
-    return null; // No path found
+    return arr;
 }
 
-function constructPath(meetingPoint: string, parentFromOne: { [key: string]: string | null }, parentFromOther: { [key: string]: string | null }): string[] {
-    const path: string[] = [];
-    let current: string | null = meetingPoint;
-
-    // Backtrack from the meeting point to the start
-    while (current !== null) {
-        path.push(current);
-        current = parentFromOne[current];
-    }
-    path.reverse();
-
-    // Backtrack from the meeting point to the goal
-    current = parentFromOther[meetingPoint];
-    while (current !== null) {
-        path.push(current);
-        current = parentFromOther[current];
-    }
-
-    return path;
-}
-
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E'],
-};
-
-const path = biDirectionalSearch(graph, 'A', 'F');
-console.log(path); // Output: ['A', 'C', 'F'] or similar path
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
