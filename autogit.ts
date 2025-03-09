@@ -1,69 +1,46 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+// Simulated API call
+const fetchData = async (): Promise<string> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("Data fetched successfully!");
+        }, 2000); // Simulate a 2-second network request
+    });
+};
 
-class LinkedList {
-    head: ListNode | null;
+const App: React.FC = () => {
+    const [data, setData] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+    const handleFetchData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await fetchData();
+            setData(result);
+        } catch (err) {
+            setError("Failed to fetch data");
+        } finally {
+            setLoading(false);
         }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
+    };
 
-    // Method to print the list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
-}
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
+    useEffect(() => {
+        // Optionally fetch data on component mount
+        handleFetchData();
+    }, []);
 
-    while (current) {
-        next = current.next; // Store the next node
-        current.next = prev; // Reverse the current node's pointer
-        prev = current;      // Move prev and current one step forward
-        current = next;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
+    return (
+        <View style={{ padding: 20 }}>
+            <Button title="Fetch Data" onPress={handleFetchData} />
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
+            {data && <Text>{data}</Text>}
+        </View>
+    );
+};
 
-console.log("Original Linked List:");
-list.print();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed Linked List:");
-list.print();
+export default App;
