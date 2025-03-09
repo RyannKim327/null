@@ -1,31 +1,65 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-        return posts;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        return [];
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
     }
 }
 
-// Call the function and log the results
-fetchPosts().then(posts => {
-    console.log('Fetched posts:', posts);
-});
+class Trie {
+    private root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        currentNode.isEndOfWord = true;
+    }
+
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if there is any word in the Trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null;
+    }
+
+    // Helper function to find the node corresponding to a given word/prefix
+    private findNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return null;
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        return currentNode;
+    }
+}
+
+// Example usage:
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+
+console.log(trie.search("hello")); // true
+console.log(trie.search("hell"));  // false
+console.log(trie.startsWith("hell")); // true
+console.log(trie.startsWith("wor")); // true
+console.log(trie.search("world")); // true
