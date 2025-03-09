@@ -1,34 +1,128 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class BTreeNode {
+    keys: number[];
+    children: BTreeNode[];
+    isLeaf: boolean;
+    t: number; // Minimum degree (defines the range for number of keys)
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target
-        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+    constructor(t: number, isLeaf: boolean) {
+        this.t = t;
+        this.isLeaf = isLeaf;
+        this.keys = [];
+        this.children = [];
+    }
 
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos; // Target found, return the index
+    // Function to traverse all nodes in a subtree rooted with this node
+    traverse() {
+        let i: number;
+        for (i = 0; i < this.keys.length; i++) {
+            // If this is not a leaf, then before the key, traverse the child
+            if (!this.isLeaf) {
+                this.children[i].traverse();
+            }
+            console.log(this.keys[i]);
         }
 
-        // If target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } else { // If target is smaller, ignore the right half
-            high = pos - 1;
+        // Finally, traverse the last child
+        if (!this.isLeaf) {
+            this.children[i].traverse();
         }
     }
 
-    return -1; // Target not found
+    // Function to insert a new key in this node
+    insertNonFull(key: number) {
+        let i = this.keys.length - 1;
+
+        // If this is a leaf node
+        if (this.isLeaf) {
+            // Find the location of new key to be inserted
+            while (i >= 0 && this.keys[i] > key) {
+                i--;
+            }
+            // Insert the new key at found location
+            this.keys.splice(i + 1, 0, key);
+        } else {
+            // Find the child which is going to have the new key
+            while (i >= 0 && this.keys[i] > key) {
+                i--;
+            }
+            // Check if the found child is full
+            if (this.children[i + 1].keys.length === 2 * this.t - 1) {
+                // If the child is full, then split it
+                this.splitChild(i + 1);
+                // After split, the middle key of child goes up and this
+                // node will have two children. Decide which of the two
+                // children to recurse on
+                if (this.keys[i + 1] < key) {
+                    i++;
+                }
+            }
+            this.children[i + 1].insertNonFull(key);
+        }
+    }
+
+    // Function to split the child of this node. `i` is index of the child
+    // to be split. The child will be split into two nodes and a key
+    // will be moved to this node.
+    splitChild(i: number) {
+        const t = this.t;
+        const y = this.children[i];
+        const z = new BTreeNode(t, y.isLeaf);
+
+        // Give z the last t-1 keys of y
+        for (let j = 0; j < t - 1; j++) {
+            z.keys.push(y.keys[j + t]);
+        }
+
+        // If y is not a leaf, then give z the last t children of y
+        if (!y.isLeaf) {
+            for (let j = 0; j < t; j++) {
+                z.children.push(y.children[j + t]);
+            }
+        }
+
+        // Reduce the number of keys in y
+        y.keys.length = t - 1;
+
+        // Since this node is going to have a new child,
+        // create space for the new child
+        this.children.splice(i + 1, 0, z);
+
+        // A key of y will move to this node. Find location of
+        // new key and move all greater keys one space ahead
+        this.keys.splice(i, 0, y.keys.pop()!);
+    }
 }
 
-// Example usage:
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const targetValue = 70;
-const index = interpolationSearch(sortedArray, targetValue);
+class BTree {
+    root: BTreeNode;
+    t: number; // Minimum degree
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found in the array.');
+    constructor(t: number) {
+        this.root = new BTreeNode(t, true);
+        this.t = t;
+    }
+
+    // Function to traverse the tree
+    traverse() {
+        this.root.traverse();
+    }
+
+    // Function to insert a new key
+    insert(key: number) {
+        const root = this.root;
+
+        // If root is full, then tree grows in height
+        if (root.keys.length === 2 * this.t - 1) {
+            const newRoot = new BTreeNode(this.t, false);
+            newRoot.children.push(root);
+            newRoot.splitChild(0);
+            newRoot.insertNonFull(key);
+            this.root = newRoot;
+        } else {
+            root.insertNonFull(key);
+        }
+    }
 }
+
+// Example usage
+const bTree = new BTree(3); // A B
