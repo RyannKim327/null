@@ -1,65 +1,28 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
-
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
-}
-
-class Trie {
-    private root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
+    // Choose a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
 
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
+    // Partitioning the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
         }
-        currentNode.isEndOfWord = true; // Mark the end of the word
     }
 
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find the node corresponding to a given word/prefix
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null; // Not found
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        return currentNode; // Return the node corresponding to the last character
-    }
+    // Recursively sort the left and right arrays, and concatenate with the pivot
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
 // Example usage
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("wor")); // true
-console.log(trie.startsWith("hell")); // true
-console.log(trie.startsWith("hi")); // false
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
