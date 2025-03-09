@@ -1,29 +1,31 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Create a count array to store the count of each unique value
-    const count: number[] = new Array(max + 1).fill(0);
-    const output: number[] = new Array(arr.length);
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-    // Count the occurrences of each number in the input array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+    // Start with the largest gap and reduce the gap until it is 0
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
+
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
+        }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
 
-    // Update the count array to store the cumulative count
-    for (let i = 1; i <= max; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return output;
+    return arr;
 }
 
 // Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
