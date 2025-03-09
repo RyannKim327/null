@@ -1,14 +1,31 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Get the reversed string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Check if the normalized string is equal to its reverse
-    return normalizedStr === reversedStr;
+// Define an interface for the data we expect to receive
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+
+        // Check if the response is ok (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
+        return posts;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        return [];
+    }
+}
+
+// Call the function and log the results
+fetchPosts().then(posts => {
+    console.log('Fetched posts:', posts);
+});
