@@ -1,22 +1,25 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
-
-    // Start with the first string as the initial prefix
-    let prefix = strs[0];
-
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If the prefix is empty, return it
-            if (prefix === "") return "";
-        }
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
-
-    return prefix;
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+console.log(factorialIterative(5)); // Output: 120
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
+    }
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    return n * factorialRecursive(n - 1);
+}
+
+// Example usage:
+console.log(factorialRecursive(5)); // Output: 120
