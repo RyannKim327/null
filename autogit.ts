@@ -1,28 +1,35 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return the index
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[mid] < target) {
+            left = mid + 1;
         } else {
-            right.push(arr[i]);
+            // If target is smaller, ignore the right half
+            right = mid - 1;
         }
     }
 
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // Target was not found in the array
+    return -1;
 }
 
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = binarySearch(sortedArray, target);
+
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found in the array.');
+}
