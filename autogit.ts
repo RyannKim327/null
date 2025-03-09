@@ -1,46 +1,108 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-// Simulated API call
-const fetchData = async (): Promise<string> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve("Data fetched successfully!");
-        }, 2000); // Simulate a 2-second network request
-    });
-};
+    constructor(size: number = 42) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
+    }
 
-const App: React.FC = () => {
-    const [data, setData] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const handleFetchData = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const result = await fetchData();
-            setData(result);
-        } catch (err) {
-            setError("Failed to fetch data");
-        } finally {
-            setLoading(false);
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
         }
-    };
+        return hash % this.size;
+    }
 
-    useEffect(() => {
-        // Optionally fetch data on component mount
-        handleFetchData();
-    }, []);
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
 
-    return (
-        <View style={{ padding: 20 }}>
-            <Button title="Fetch Data" onPress={handleFetchData} />
-            {loading && <ActivityIndicator size="large" color="#0000ff" />}
-            {error && <Text style={{ color: 'red' }}>{error}</Text>}
-            {data && <Text>{data}</Text>}
-        </View>
-    );
-};
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
+            }
+        }
 
-export default App;
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
+    }
+
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
+            }
+        }
+
+        return undefined; // Key not found
+    }
+
+    public delete(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
+
+    public has(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return true; // Key exists
+            }
+        }
+
+        return false; // Key not found
+    }
+
+    public keys(): K[] {
+        const keys: K[] = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    keys.push(entry[0]); // Collect keys
+                }
+            }
+        }
+        return keys;
+    }
+
+    public values(): V[] {
+        const values: V[] = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    values.push(entry[1]); // Collect values
+                }
+            }
+        }
+        return values;
+    }
+}
+
+// Example usage
+const hashTable = new HashTable<string, number>();
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.has("banana")); // Output: true
+hashTable.delete("apple");
+console.log(hashTable.get("apple")); // Output: undefined
+console.log(hashTable.keys()); // Output: ["banana"]
