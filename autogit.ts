@@ -1,57 +1,51 @@
-type Node = {
-    state: string; // The current state
-    cost: number;  // The cost to reach this state
-    path: string[]; // The path taken to reach this state
-};
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    const len1 = nums1.length;
+    const len2 = nums2.length;
 
-function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
-    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
-    
-    while (currentLevel.length > 0) {
-        // Generate successors for all nodes in the current level
-        let nextLevel: Node[] = [];
-        
-        for (const node of currentLevel) {
-            const successors = generateSuccessors(node.state);
-            nextLevel.push(...successors);
-        }
-
-        // Filter out nodes that reach the goal state
-        const goalNodes = nextLevel.filter(node => node.state === goalState);
-        if (goalNodes.length > 0) {
-            // Return the path of the first goal node found
-            return goalNodes[0].path;
-        }
-
-        // Sort the next level by cost (or any other heuristic) and keep only the best nodes
-        nextLevel.sort((a, b) => a.cost - b.cost);
-        currentLevel = nextLevel.slice(0, beamWidth);
+    // Ensure nums1 is the smaller array
+    if (len1 > len2) {
+        [nums1, nums2] = [nums2, nums1];
     }
 
-    // If no solution is found
-    return null;
-}
+    const totalLength = len1 + len2;
+    const half = Math.floor(totalLength / 2);
+    let left = 0;
+    let right = len1;
 
-// Example of a successor function
-function generateSuccessors(state: string): Node[] {
-    // This is a placeholder for generating successors
-    // Replace this with your actual logic to generate new states
-    const successors: Node[] = [];
-    const possibleStates = ['A', 'B', 'C']; // Example states
+    while (left <= right) {
+        const partition1 = Math.floor((left + right) / 2);
+        const partition2 = half - partition1;
 
-    for (const s of possibleStates) {
-        if (s !== state) {
-            successors.push({ state: s, cost: Math.random(), path: [state, s] }); // Random cost for demonstration
+        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
+        const minRight1 = partition1 === len1 ? Infinity : nums1[partition1];
+
+        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
+        const minRight2 = partition2 === len2 ? Infinity : nums2[partition2];
+
+        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
+            // We have found the correct partitions
+            if (totalLength % 2 === 0) {
+                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
+            } else {
+                return Math.max(maxLeft1, maxLeft2);
+            }
+        } else if (maxLeft1 > minRight2) {
+            // Move towards the left in nums1
+            right = partition1 - 1;
+        } else {
+            // Move towards the right in nums1
+            left = partition1 + 1;
         }
     }
 
-    return successors;
+    throw new Error("Input arrays are not sorted.");
 }
 
-// Example usage
-const initialState = 'A';
-const goalState = 'C';
-const beamWidth = 2;
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
 
-const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
-console.log(result);
+const nums3 = [1, 2];
+const nums4 = [3, 4];
+console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
