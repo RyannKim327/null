@@ -1,41 +1,31 @@
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    // Store count of occurrences of each digit
-    for (let i = 0; i < arr.length; i++) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        count[index]++;
-    }
+    // Loop through all elements in the array
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
 
-    // Change count[i] so that it contains the actual position of this digit in output[]
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
+        // Last i elements are already sorted
+        for (let j = 0; j < n - 1 - i; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
+        }
 
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    return output;
-}
-
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = Math.max(...arr);
-
-    // Apply counting sort to sort elements based on place value
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        arr = countingSort(arr, exp);
+        // If no two elements were swapped in the inner loop, then the array is sorted
+        if (!swapped) {
+            break;
+        }
     }
 
     return arr;
 }
 
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage:
+const array = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
