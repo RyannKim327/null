@@ -1,38 +1,22 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function firstNonRepeatingCharacter(s: string): string | null {
+    const charCount: { [key: string]: number } = {};
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+    // Count the occurrences of each character
+    for (const char of s) {
+        charCount[char] = (charCount[char] || 0) + 1;
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    // Find the first non-repeating character
+    for (const char of s) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
 
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    return null; // Return null if there is no non-repeating character
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+const input = "swiss";
+const result = firstNonRepeatingCharacter(input);
+console.log(result); // Output: "w"
