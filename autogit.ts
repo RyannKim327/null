@@ -1,163 +1,19 @@
-enum Color {
-    RED,
-    BLACK
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let currentMax = nums[0]; // Initialize currentMax with the first element
+
+    for (let i = 1; i < nums.length; i++) {
+        // Update currentMax to be the maximum of the current element or the currentMax plus the current element
+        currentMax = Math.max(nums[i], currentMax + nums[i]);
+        
+        // Update maxSoFar if currentMax is greater
+        maxSoFar = Math.max(maxSoFar, currentMax);
+    }
+
+    return maxSoFar; // Return the maximum sum found
 }
 
-class Node {
-    public color: Color;
-    public left: Node | null;
-    public right: Node | null;
-    public parent: Node | null;
-    public value: number;
-
-    constructor(value: number) {
-        this.value = value;
-        this.color = Color.RED; // New nodes are red by default
-        this.left = null;
-        this.right = null;
-        this.parent = null;
-    }
-}
-
-class RedBlackTree {
-    private root: Node | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    private rotateLeft(x: Node) {
-        const y = x.right!;
-        x.right = y.left;
-
-        if (y.left !== null) {
-            y.left.parent = x;
-        }
-
-        y.parent = x.parent;
-
-        if (x.parent === null) {
-            this.root = y;
-        } else if (x === x.parent.left) {
-            x.parent.left = y;
-        } else {
-            x.parent.right = y;
-        }
-
-        y.left = x;
-        x.parent = y;
-    }
-
-    private rotateRight(y: Node) {
-        const x = y.left!;
-        y.left = x.right;
-
-        if (x.right !== null) {
-            x.right.parent = y;
-        }
-
-        x.parent = y.parent;
-
-        if (y.parent === null) {
-            this.root = x;
-        } else if (y === y.parent.right) {
-            y.parent.right = x;
-        } else {
-            y.parent.left = x;
-        }
-
-        x.right = y;
-        y.parent = x;
-    }
-
-    private fixInsert(z: Node) {
-        while (z.parent && z.parent.color === Color.RED) {
-            if (z.parent === z.parent.parent?.left) {
-                const y = z.parent.parent?.right;
-
-                if (y && y.color === Color.RED) {
-                    z.parent.color = Color.BLACK;
-                    y.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    z = z.parent.parent!;
-                } else {
-                    if (z === z.parent.right) {
-                        z = z.parent;
-                        this.rotateLeft(z);
-                    }
-                    z.parent.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    this.rotateRight(z.parent.parent!);
-                }
-            } else {
-                const y = z.parent.parent?.left;
-
-                if (y && y.color === Color.RED) {
-                    z.parent.color = Color.BLACK;
-                    y.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    z = z.parent.parent!;
-                } else {
-                    if (z === z.parent.left) {
-                        z = z.parent;
-                        this.rotateRight(z);
-                    }
-                    z.parent.color = Color.BLACK;
-                    z.parent.parent!.color = Color.RED;
-                    this.rotateLeft(z.parent.parent!);
-                }
-            }
-        }
-        this.root!.color = Color.BLACK;
-    }
-
-    public insert(value: number) {
-        const newNode = new Node(value);
-        let y: Node | null = null;
-        let x: Node | null = this.root;
-
-        while (x !== null) {
-            y = x;
-            if (newNode.value < x.value) {
-                x = x.left;
-            } else {
-                x = x.right;
-            }
-        }
-
-        newNode.parent = y;
-
-        if (y === null) {
-            this.root = newNode;
-        } else if (newNode.value < y.value) {
-            y.left = newNode;
-        } else {
-            y.right = newNode;
-        }
-
-        this.fixInsert(newNode);
-    }
-
-    public inorderTraversal(node: Node | null = this.root): number[] {
-        const result: number[] = [];
-        if (node !== null) {
-            result.push(...this.inorderTraversal(node.left));
-            result.push(node.value);
-            result.push(...this.inorderTraversal(node.right));
-        }
-        return result;
-    }
-
-    public getRoot(): Node | null {
-        return this.root;
-    }
-}
-
-// Example usage
-const rbt = new RedBlackTree();
-rbt.insert(10);
-rbt.insert(20);
-rbt.insert(30);
-rbt.insert(15);
-
-console.log(rbt.inorderTraversal()); // Output: [10, 15, 20, 30]
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
