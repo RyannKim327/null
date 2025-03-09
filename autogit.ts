@@ -1,30 +1,30 @@
-// Define an interface for the data we expect from the API
-interface Post {
-    userId: number;
+npm install axios
+import axios from 'axios';
+
+// Define an interface for the data we expect to receive
+interface User {
     id: number;
-    title: string;
-    body: string;
+    name: string;
+    username: string;
+    email: string;
 }
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+async function fetchUsers() {
+    try {
+        // Make a GET request to the JSONPlaceholder API
+        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+        
+        // Log the response data
+        console.log('Users:', response.data);
+    } catch (error) {
+        // Handle any errors
+        if (axios.isAxiosError(error)) {
+            console.error('Error message:', error.message);
+        } else {
+            console.error('Unexpected error:', error);
+        }
     }
-
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
 }
 
-// Call the fetchPosts function and log the results
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Call the function to fetch users
+fetchUsers();
