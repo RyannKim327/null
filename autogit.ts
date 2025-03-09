@@ -1,77 +1,163 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+enum Color {
+    RED,
+    BLACK
+}
 
-    constructor(value: T) {
+class Node {
+    public color: Color;
+    public left: Node | null;
+    public right: Node | null;
+    public parent: Node | null;
+    public value: number;
+
+    constructor(value: number) {
         this.value = value;
-        this.next = null;
+        this.color = Color.RED; // New nodes are red by default
+        this.left = null;
+        this.right = null;
+        this.parent = null;
     }
 }
-class Queue<T> {
-    private front: Node<T> | null;
-    private back: Node<T> | null;
-    private length: number;
+
+class RedBlackTree {
+    private root: Node | null;
 
     constructor() {
-        this.front = null;
-        this.back = null;
-        this.length = 0;
+        this.root = null;
     }
 
-    // Add an item to the back of the queue
-    enqueue(value: T): void {
+    private rotateLeft(x: Node) {
+        const y = x.right!;
+        x.right = y.left;
+
+        if (y.left !== null) {
+            y.left.parent = x;
+        }
+
+        y.parent = x.parent;
+
+        if (x.parent === null) {
+            this.root = y;
+        } else if (x === x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+
+        y.left = x;
+        x.parent = y;
+    }
+
+    private rotateRight(y: Node) {
+        const x = y.left!;
+        y.left = x.right;
+
+        if (x.right !== null) {
+            x.right.parent = y;
+        }
+
+        x.parent = y.parent;
+
+        if (y.parent === null) {
+            this.root = x;
+        } else if (y === y.parent.right) {
+            y.parent.right = x;
+        } else {
+            y.parent.left = x;
+        }
+
+        x.right = y;
+        y.parent = x;
+    }
+
+    private fixInsert(z: Node) {
+        while (z.parent && z.parent.color === Color.RED) {
+            if (z.parent === z.parent.parent?.left) {
+                const y = z.parent.parent?.right;
+
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.right) {
+                        z = z.parent;
+                        this.rotateLeft(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateRight(z.parent.parent!);
+                }
+            } else {
+                const y = z.parent.parent?.left;
+
+                if (y && y.color === Color.RED) {
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.left) {
+                        z = z.parent;
+                        this.rotateRight(z);
+                    }
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateLeft(z.parent.parent!);
+                }
+            }
+        }
+        this.root!.color = Color.BLACK;
+    }
+
+    public insert(value: number) {
         const newNode = new Node(value);
-        if (this.back) {
-            this.back.next = newNode; // Link the old back to the new node
+        let y: Node | null = null;
+        let x: Node | null = this.root;
+
+        while (x !== null) {
+            y = x;
+            if (newNode.value < x.value) {
+                x = x.left;
+            } else {
+                x = x.right;
+            }
         }
-        this.back = newNode; // Update the back to the new node
-        if (!this.front) {
-            this.front = newNode; // If the queue was empty, set front to the new node
+
+        newNode.parent = y;
+
+        if (y === null) {
+            this.root = newNode;
+        } else if (newNode.value < y.value) {
+            y.left = newNode;
+        } else {
+            y.right = newNode;
         }
-        this.length++;
+
+        this.fixInsert(newNode);
     }
 
-    // Remove and return the item from the front of the queue
-    dequeue(): T | null {
-        if (!this.front) {
-            return null; // Queue is empty
+    public inorderTraversal(node: Node | null = this.root): number[] {
+        const result: number[] = [];
+        if (node !== null) {
+            result.push(...this.inorderTraversal(node.left));
+            result.push(node.value);
+            result.push(...this.inorderTraversal(node.right));
         }
-        const value = this.front.value; // Get the value from the front node
-        this.front = this.front.next; // Move the front pointer to the next node
-        if (!this.front) {
-            this.back = null; // If the queue is now empty, set back to null
-        }
-        this.length--;
-        return value;
+        return result;
     }
 
-    // Peek at the front item without removing it
-    peek(): T | null {
-        return this.front ? this.front.value : null;
-    }
-
-    // Check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
-    }
-
-    // Get the size of the queue
-    size(): number {
-        return this.length;
+    public getRoot(): Node | null {
+        return this.root;
     }
 }
-const queue = new Queue<number>();
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
+// Example usage
+const rbt = new RedBlackTree();
+rbt.insert(10);
+rbt.insert(20);
+rbt.insert(30);
+rbt.insert(15);
 
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.peek());     // Output: 2
-console.log(queue.size());     // Output: 2
-console.log(queue.isEmpty());  // Output: false
-
-queue.dequeue();
-queue.dequeue();
-
-console.log(queue.isEmpty());  // Output: true
+console.log(rbt.inorderTraversal()); // Output: [10, 15, 20, 30]
