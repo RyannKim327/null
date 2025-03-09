@@ -1,53 +1,12 @@
-type Node = {
-    value: any;
-    children: Node[];
-};
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-function depthLimitedSearch(node: Node, depth: number, target: any): boolean {
-    // Check if the current node is the target
-    if (node.value === target) {
-        return true;
-    }
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-    // If the depth limit is reached, return false
-    if (depth === 0) {
-        return false;
-    }
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-    // Recursively search in the children nodes
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, depth - 1, target)) {
-            return true;
-        }
-    }
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
 
-    // If the target is not found in this path, return false
-    return false;
-}
-
-// Example usage:
-const tree: Node = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ]
-        },
-        {
-            value: 3,
-            children: [
-                { value: 6, children: [] },
-                { value: 7, children: [] }
-            ]
-        }
-    ]
-};
-
-const targetValue = 5;
-const depthLimit = 2;
-
-const found = depthLimitedSearch(tree, depthLimit, targetValue);
-console.log(`Target ${targetValue} found: ${found}`);
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
