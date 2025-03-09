@@ -1,108 +1,133 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+class BTreeNode {
+    keys: number[];
+    children: BTreeNode[];
+    isLeaf: boolean;
+    t: number; // Minimum degree
 
-    constructor(size: number = 42) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
+    constructor(t: number, isLeaf: boolean) {
+        this.t = t;
+        this.isLeaf = isLeaf;
+        this.keys = [];
+        this.children = [];
     }
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
-        }
-        return hash % this.size;
-    }
-
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket[i][1] = value; // Update the value
-                return;
+    // Function to traverse all keys in the node
+    traverse() {
+        let i: number;
+        for (i = 0; i < this.keys.length; i++) {
+            // If this is not a leaf, traverse the child before the key
+            if (!this.isLeaf) {
+                this.children[i].traverse();
             }
+            console.log(this.keys[i]);
         }
-
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
+        // Traverse the last child
+        if (!this.isLeaf) {
+            this.children[i].traverse();
+        }
     }
 
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
+    // Function to insert a new key in this node
+    insertNonFull(key: number) {
+        let i = this.keys.length - 1;
 
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return bucket[i][1]; // Return the value
+        // If this is a leaf node
+        if (this.isLeaf) {
+            // Find the location to insert the new key
+            while (i >= 0 && key < this.keys[i]) {
+                i--;
             }
-        }
-
-        return undefined; // Key not found
-    }
-
-    public delete(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
+            this.keys.splice(i + 1, 0, key); // Insert the new key
+        } else {
+            // Find the child which is going to have the new key
+            while (i >= 0 && key < this.keys[i]) {
+                i--;
             }
-        }
+            i++;
 
-        return false; // Key not found
-    }
+            // Check if the found child is full
+            if (this.children[i].keys.length === 2 * this.t - 1) {
+                // Split the child
+                this.splitChild(i);
 
-    public has(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return true; // Key exists
-            }
-        }
-
-        return false; // Key not found
-    }
-
-    public keys(): K[] {
-        const keys: K[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    keys.push(entry[0]); // Collect keys
+                // After split, the middle key of child goes up and
+                // we need to check which of the two children to insert the key
+                if (key > this.keys[i]) {
+                    i++;
                 }
             }
+            this.children[i].insertNonFull(key);
         }
-        return keys;
     }
 
-    public values(): V[] {
-        const values: V[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    values.push(entry[1]); // Collect values
-                }
+    // Function to split the child of this node
+    splitChild(i: number) {
+        const t = this.t;
+        const y = this.children[i];
+        const z = new BTreeNode(t, y.isLeaf);
+
+        // Move the last t-1 keys of y to z
+        for (let j = 0; j < t - 1; j++) {
+            z.keys.push(y.keys[j + t]);
+        }
+
+        // If y is not a leaf, move the last t children of y to z
+        if (!y.isLeaf) {
+            for (let j = 0; j < t; j++) {
+                z.children.push(y.children[j + t]);
             }
         }
-        return values;
+
+        // Reduce the number of keys in y
+        y.keys.length = t - 1;
+
+        // Insert the new child into this node
+        this.children.splice(i + 1, 0, z);
+        this.keys.splice(i, 0, y.keys.pop()!); // Move the median key up
+    }
+}
+
+class BTree {
+    root: BTreeNode;
+    t: number; // Minimum degree
+
+    constructor(t: number) {
+        this.root = new BTreeNode(t, true);
+        this.t = t;
+    }
+
+    // Function to traverse the B-tree
+    traverse() {
+        this.root.traverse();
+    }
+
+    // Function to insert a new key
+    insert(key: number) {
+        const root = this.root;
+
+        // If root is full, then tree grows in height
+        if (root.keys.length === 2 * this.t - 1) {
+            const newRoot = new BTreeNode(this.t, false);
+            newRoot.children.push(root);
+            newRoot.splitChild(0);
+            newRoot.insertNonFull(key);
+            this.root = newRoot;
+        } else {
+            root.insertNonFull(key);
+        }
     }
 }
 
 // Example usage
-const hashTable = new HashTable<string, number>();
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.has("banana")); // Output: true
-hashTable.delete("apple");
-console.log(hashTable.get("apple")); // Output: undefined
-console.log(hashTable.keys()); // Output: ["banana"]
+const bTree = new BTree(3); // A B-tree with minimum degree 3
+bTree.insert(10);
+bTree.insert(20);
+bTree.insert(5);
+bTree.insert(6);
+bTree.insert(12);
+bTree.insert(30);
+bTree.insert(7);
+bTree.insert(17);
+
+console.log("Traversal of the B-tree:");
+bTree.traverse();
