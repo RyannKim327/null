@@ -1,30 +1,10 @@
-npm install axios
-import axios from 'axios';
-
-// Define an interface for the data we expect to receive
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
+function reverseWords(input: string): string {
+    return input.split(' ') // Step 1: Split the string into an array of words
+                .reverse()   // Step 2: Reverse the array
+                .join(' ');  // Step 3: Join the reversed array back into a string
 }
 
-async function fetchUsers() {
-    try {
-        // Make a GET request to the JSONPlaceholder API
-        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-        
-        // Log the response data
-        console.log('Users:', response.data);
-    } catch (error) {
-        // Handle any errors
-        if (axios.isAxiosError(error)) {
-            console.error('Error message:', error.message);
-        } else {
-            console.error('Unexpected error:', error);
-        }
-    }
-}
-
-// Call the function to fetch users
-fetchUsers();
+// Example usage:
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
