@@ -1,10 +1,22 @@
-function reverseWords(input: string): string {
-    return input.split(' ') // Step 1: Split the string into an array of words
-                .reverse()   // Step 2: Reverse the array
-                .join(' ');  // Step 3: Join the reversed array back into a string
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
+
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
+        }
+    } while (swapped);
+
+    return arr;
 }
 
-// Example usage:
-const originalString = "Hello world this is TypeScript";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "TypeScript is this world Hello"
+// Example usage
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
