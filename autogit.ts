@@ -1,67 +1,35 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    const lenA = getLength(headA);
-    const lenB = getLength(headB);
-
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the start of both lists
-    if (lenA > lenB) {
-        for (let i = 0; i < lenA - lenB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lenB - lenA; i++) {
-            currentB = currentB!.next;
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update the ending index of the substring
+                }
+            }
         }
     }
 
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
     }
 
-    return null; // No intersection
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
 
 // Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
-
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
