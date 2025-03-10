@@ -1,22 +1,20 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+function isPrime(num: number): boolean {
+    // Check if the number is less than 2
+    if (num < 2) return false;
 
-    // Start with the first string as the prefix
-    let prefix = strs[0];
-
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If the prefix is empty, return it
-            if (prefix === "") return "";
+    // Check for factors from 2 to the square root of num
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false; // num is divisible by i, so it's not prime
         }
     }
-
-    return prefix;
+    return true; // num is prime
 }
 
-// Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+// Example usage
+const numberToCheck = 29;
+if (isPrime(numberToCheck)) {
+    console.log(`${numberToCheck} is a prime number.`);
+} else {
+    console.log(`${numberToCheck} is not a prime number.`);
+}
