@@ -1,64 +1,76 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class Graph {
+    private vertices: number;
+    private adjList: Map<number, number[]>;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
-}
-
-class Trie {
-    root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = new Map<number, number[]>();
     }
 
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
         }
-        currentNode.isEndOfWord = true;
+        this.adjList.get(v)!.push(w);
     }
 
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
+    tarjan(): number[][] {
+        const index: number[] = new Array(this.vertices).fill(-1);
+        const lowlink: number[] = new Array(this.vertices).fill(-1);
+        const onStack: boolean[] = new Array(this.vertices).fill(false);
+        const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
 
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
 
-    // Helper function to find the node corresponding to a word or prefix
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null;
+            const neighbors = this.adjList.get(v) || [];
+            for (const w of neighbors) {
+                if (index[w] === -1) {
+                    // Successor w has not yet been visited; recurse on it
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    // Successor w is in stack and hence in the current SCC
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
+                }
             }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
+
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
+        };
+
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
+            }
         }
-        return currentNode;
+
+        return result;
     }
 }
 
 // Example usage:
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("hell")); // true
-console.log(trie.startsWith("wor")); // true
-console.log(trie.search("worlds")); // false
+const graph = new Graph(5);
+graph.addEdge(0, 1);
+graph.addEdge(1, 2);
+graph.addEdge(2, 0);
+graph.addEdge(1, 3);
+graph.addEdge(3, 4);
+
+const sccs = graph.tarjan();
+console.log(sccs); // Output: [[2, 1, 0], [4], [3]]
