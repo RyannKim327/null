@@ -1,76 +1,29 @@
-class Graph {
-    private vertices: number;
-    private adjList: Map<number, number[]>;
+function countingSort(arr: number[], max: number): number[] {
+    // Create a count array to store the count of each unique value
+    const count: number[] = new Array(max + 1).fill(0);
+    const output: number[] = new Array(arr.length);
 
-    constructor(vertices: number) {
-        this.vertices = vertices;
-        this.adjList = new Map<number, number[]>();
+    // Count each element in the input array
+    for (let i = 0; i < arr.length; i++) {
+        count[arr[i]]++;
     }
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
+    // Update the count array to store the cumulative count
+    for (let i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
     }
 
-    tarjan(): number[][] {
-        const index: number[] = new Array(this.vertices).fill(-1);
-        const lowlink: number[] = new Array(this.vertices).fill(-1);
-        const onStack: boolean[] = new Array(this.vertices).fill(false);
-        const stack: number[] = [];
-        const result: number[][] = [];
-        let currentIndex = 0;
-
-        const strongConnect = (v: number) => {
-            index[v] = currentIndex;
-            lowlink[v] = currentIndex;
-            currentIndex++;
-            stack.push(v);
-            onStack[v] = true;
-
-            const neighbors = this.adjList.get(v) || [];
-            for (const w of neighbors) {
-                if (index[w] === -1) {
-                    // Successor w has not yet been visited; recurse on it
-                    strongConnect(w);
-                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
-                } else if (onStack[w]) {
-                    // Successor w is in stack and hence in the current SCC
-                    lowlink[v] = Math.min(lowlink[v], index[w]);
-                }
-            }
-
-            // If v is a root node, pop the stack and generate an SCC
-            if (lowlink[v] === index[v]) {
-                const scc: number[] = [];
-                let w: number;
-                do {
-                    w = stack.pop()!;
-                    onStack[w] = false;
-                    scc.push(w);
-                } while (w !== v);
-                result.push(scc);
-            }
-        };
-
-        for (let v = 0; v < this.vertices; v++) {
-            if (index[v] === -1) {
-                strongConnect(v);
-            }
-        }
-
-        return result;
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i]] - 1] = arr[i];
+        count[arr[i]]--;
     }
+
+    return output;
 }
 
 // Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1);
-graph.addEdge(1, 2);
-graph.addEdge(2, 0);
-graph.addEdge(1, 3);
-graph.addEdge(3, 4);
-
-const sccs = graph.tarjan();
-console.log(sccs); // Output: [[2, 1, 0], [4], [3]]
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
