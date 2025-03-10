@@ -1,31 +1,21 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+function insertionSort(arr: number[]): number[] {
+    // Loop through the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The element to be positioned
+        let j = i - 1; // The index of the last sorted element
 
-    // Loop through all elements in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
         }
-
-        // If no two elements were swapped in the inner loop, then the array is sorted
-        if (!swapped) {
-            break;
-        }
+        arr[j + 1] = key; // Place the key in its correct position
     }
-
-    return arr;
+    return arr; // Return the sorted array
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const array = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
