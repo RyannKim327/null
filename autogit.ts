@@ -1,20 +1,19 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-    const dp: number[] = new Array(nums.length).fill(1);
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-    }
+// Start the task
+task.start();
 
-    return Math.max(...dp);
-}
-
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const lengthOfLIS = longestIncreasingSubsequence(nums);
-console.log(lengthOfLIS); // Output: 4
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
