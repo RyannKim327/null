@@ -1,22 +1,20 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce<number[]>((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
+
+    const dp: number[] = new Array(nums.length).fill(1);
+
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
-    return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray: number[] = [];
-array.forEach(value => {
-    if (!uniqueArray.includes(value)) {
-        uniqueArray.push(value);
-    }
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+
+    return Math.max(...dp);
+}
+
+// Example usage:
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+const lengthOfLIS = longestIncreasingSubsequence(nums);
+console.log(lengthOfLIS); // Output: 4
