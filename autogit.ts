@@ -1,50 +1,57 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(value: number) {
+    constructor(value: string) {
         this.value = value;
-        this.next = null;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null for invalid input
-    }
+function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
 
-    // Move the first pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node; // Goal found
         }
-        firstPointer = firstPointer.next;
+
+        // If the current depth is less than the limit, explore children
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
-    }
-
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+    return null; // Goal not found within the depth limit
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
 
-const n = 2;
-const nthNode = findNthFromEnd(head, n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const goalNode = depthLimitedSearch(root, "E", 2);
+if (goalNode) {
+    console.log(`Goal found: ${goalNode.value}`);
 } else {
-    console.log(`The list is shorter than ${n} nodes.`);
+    console.log("Goal not found within the depth limit.");
 }
