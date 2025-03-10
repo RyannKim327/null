@@ -1,89 +1,38 @@
-type Node = {
-    value: string;
-    neighbors: Node[];
-};
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
-    if (start === goal) return [start];
-
-    const startQueue: Node[] = [start];
-    const goalQueue: Node[] = [goal];
-    const startVisited = new Set<Node>();
-    const goalVisited = new Set<Node>();
-    const startParentMap = new Map<Node, Node>();
-    const goalParentMap = new Map<Node, Node>();
-
-    startVisited.add(start);
-    goalVisited.add(goal);
-
-    while (startQueue.length > 0 && goalQueue.length > 0) {
-        // Expand from the start
-        const startNode = startQueue.shift()!;
-        for (const neighbor of startNode.neighbors) {
-            if (!startVisited.has(neighbor)) {
-                startVisited.add(neighbor);
-                startParentMap.set(neighbor, startNode);
-                startQueue.push(neighbor);
-
-                // Check if the neighbor is in the goal visited set
-                if (goalVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
-            }
-        }
-
-        // Expand from the goal
-        const goalNode = goalQueue.shift()!;
-        for (const neighbor of goalNode.neighbors) {
-            if (!goalVisited.has(neighbor)) {
-                goalVisited.add(neighbor);
-                goalParentMap.set(neighbor, goalNode);
-                goalQueue.push(neighbor);
-
-                // Check if the neighbor is in the start visited set
-                if (startVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return null; // No path found
 }
 
-function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
-    const path: Node[] = [];
-    
-    // Reconstruct path from start to meeting node
-    let currentNode: Node | undefined = meetingNode;
-    while (currentNode) {
-        path.unshift(currentNode);
-        currentNode = startParentMap.get(currentNode);
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
     }
 
-    // Reconstruct path from meeting node to goal
-    currentNode = goalParentMap.get(meetingNode);
-    while (currentNode) {
-        path.push(currentNode);
-        currentNode = goalParentMap.get(currentNode);
-    }
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-    return path;
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Example usage
-const nodeA: Node = { value: 'A', neighbors: [] };
-const nodeB: Node = { value: 'B', neighbors: [] };
-const nodeC: Node = { value: 'C', neighbors: [] };
-const nodeD: Node = { value: 'D', neighbors: [] };
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-nodeA.neighbors.push(nodeB, nodeC);
-nodeB.neighbors.push(nodeD);
-nodeC.neighbors.push(nodeD);
-
-const path = biDirectionalSearch(nodeA, nodeD);
-if (path) {
-    console.log('Path found:', path.map(node => node.value));
-} else {
-    console.log('No path found');
-}
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
