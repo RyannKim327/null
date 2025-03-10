@@ -1,49 +1,64 @@
-function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
-    const m = pattern.length;
-    const n = text.length;
-    const result: number[] = [];
-    const hPattern = 0; // Hash value for pattern
-    const hText = 0; // Hash value for text
-    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-    // Calculate the hash value of the pattern and the first window of text
-    for (let i = 0; i < m; i++) {
-        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
-        hText = (d * hText + text.charCodeAt(i)) % q;
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
     }
-
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check the hash values of the current window of text and pattern
-        if (hPattern === hText) {
-            // If the hash values match, check for characters one by one
-            let j;
-            for (j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    break;
-                }
-            }
-            if (j === m) {
-                result.push(i); // Pattern found at index i
-            }
-        }
-
-        // Calculate hash value for the next window of text
-        if (i < n - m) {
-            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
-
-            // We might get negative value of hText, converting it to positive
-            if (hText < 0) {
-                hText += q;
-            }
-        }
-    }
-
-    return result; // Return the list of starting indices where pattern is found
 }
+class Trie {
+    private root: TrieNode;
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = rabinKarp(text, pattern);
-console.log("Pattern found at indices:", result);
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        currentNode.isEndOfWord = true; // Mark the end of the word
+    }
+
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if there is any word in the Trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null;
+    }
+
+    // Helper function to find the node corresponding to a given word/prefix
+    private findNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return null; // Not found
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        return currentNode; // Return the node corresponding to the last character
+    }
+}
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+trie.insert("hi");
+
+console.log(trie.search("hello")); // true
+console.log(trie.search("hell")); // false
+console.log(trie.startsWith("he")); // true
+console.log(trie.startsWith("wo")); // true
+console.log(trie.startsWith("hi")); // true
+console.log(trie.startsWith("hii")); // false
