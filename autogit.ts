@@ -1,56 +1,53 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+type Node = {
+    state: string; // The current state
+    cost: number;  // The cost to reach this state
+    path: string[]; // The path taken to reach this state
+};
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
-
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            table.set(pattern[i], i);
+function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
+    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
+    
+    while (currentLevel.length > 0) {
+        // Generate successors for all nodes in the current level
+        let nextLevel: Node[] = [];
+        for (const node of currentLevel) {
+            const successors = generateSuccessors(node.state);
+            nextLevel.push(...successors);
         }
 
-        return table;
-    }
-
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found at index i
-                return i; // Return the index of the first match
-            }
+        // Check if we have reached the goal state
+        const goalNodes = nextLevel.filter(node => node.state === goalState);
+        if (goalNodes.length > 0) {
+            // Return the path of the first goal node found
+            return goalNodes[0].path;
         }
 
-        return -1; // No match found
+        // Sort the next level by cost and keep only the best `beamWidth` nodes
+        nextLevel.sort((a, b) => a.cost - b.cost);
+        currentLevel = nextLevel.slice(0, beamWidth);
     }
+
+    // If no solution is found
+    return null;
 }
 
-// Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
+// Example usage
+const generateSuccessors = (state: string): Node[] => {
+    // This function should generate successor nodes based on the current state
+    // For demonstration, let's assume we can move to states "A", "B", and "C" from any state
+    const successors: Node[] = [];
+    const possibleStates = ['A', 'B', 'C'];
+    for (const s of possibleStates) {
+        if (s !== state) { // Avoid going back to the same state
+            successors.push({ state: s, cost: Math.random(), path: [state, s] }); // Random cost for demonstration
+        }
+    }
+    return successors;
+};
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+const initialState = 'Start';
+const goalState = 'A'; // Example goal state
+const beamWidth = 2; // Example beam width
+
+const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
+console.log(result);
