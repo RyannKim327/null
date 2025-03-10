@@ -1,49 +1,130 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
+class BTreeNode {
+    keys: number[];
+    children: BTreeNode[];
+    isLeaf: boolean;
+    t: number; // Minimum degree
 
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+    constructor(t: number, isLeaf: boolean) {
+        this.t = t;
+        this.isLeaf = isLeaf;
+        this.keys = [];
+        this.children = [];
     }
 
-    let left = 0;
-    let right = nums1.length;
-
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
-
-        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const minRight1 = partition1 === nums1.length ? Infinity : nums1[partition1];
-
-        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const minRight2 = partition2 === nums2.length ? Infinity : nums2[partition2];
-
-        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
-            // We have found the correct partitions
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
-            } else {
-                return Math.max(maxLeft1, maxLeft2);
+    // Function to traverse all keys in the node
+    traverse() {
+        let i: number;
+        for (i = 0; i < this.keys.length; i++) {
+            // If this is not a leaf, traverse the child before the key
+            if (!this.isLeaf) {
+                this.children[i].traverse();
             }
-        } else if (maxLeft1 > minRight2) {
-            // Move towards the left in nums1
-            right = partition1 - 1;
-        } else {
-            // Move towards the right in nums1
-            left = partition1 + 1;
+            console.log(this.keys[i]);
+        }
+        // Traverse the last child
+        if (!this.isLeaf) {
+            this.children[i].traverse();
         }
     }
 
-    throw new Error("Input arrays are not sorted.");
+    // Function to insert a new key in this node
+    insertNonFull(key: number) {
+        let i = this.keys.length - 1;
+
+        if (this.isLeaf) {
+            // Locate the position to insert the new key
+            while (i >= 0 && key < this.keys[i]) {
+                i--;
+            }
+            this.keys.splice(i + 1, 0, key); // Insert the key
+        } else {
+            // Locate the child which is going to have the new key
+            while (i >= 0 && key < this.keys[i]) {
+                i--;
+            }
+            i++;
+
+            // Check if the found child is full
+            if (this.children[i].keys.length === 2 * this.t - 1) {
+                this.splitChild(i);
+                // After split, the middle key of child goes up and we need to
+                // check which of the two children to insert the new key
+                if (key > this.keys[i]) {
+                    i++;
+                }
+            }
+            this.children[i].insertNonFull(key);
+        }
+    }
+
+    // Function to split the child of this node
+    splitChild(i: number) {
+        const t = this.t;
+        const y = this.children[i];
+        const z = new BTreeNode(t, y.isLeaf);
+
+        // Move the last t-1 keys of y to z
+        for (let j = 0; j < t - 1; j++) {
+            z.keys.push(y.keys[j + t]);
+        }
+
+        // If y is not a leaf, move the last t children of y to z
+        if (!y.isLeaf) {
+            for (let j = 0; j < t; j++) {
+                z.children.push(y.children[j + t]);
+            }
+        }
+
+        // Reduce the number of keys in y
+        y.keys.length = t - 1;
+
+        // Insert the new child into this node
+        this.children.splice(i + 1, 0, z);
+        this.keys.splice(i, 0, y.keys.pop()!); // Move the middle key up
+    }
 }
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+class BTree {
+    root: BTreeNode;
+    t: number; // Minimum degree
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+    constructor(t: number) {
+        this.root = new BTreeNode(t, true);
+        this.t = t;
+    }
+
+    // Function to traverse the B-tree
+    traverse() {
+        this.root.traverse();
+    }
+
+    // Function to insert a new key
+    insert(key: number) {
+        const root = this.root;
+
+        // If root is full, then tree grows in height
+        if (root.keys.length === 2 * this.t - 1) {
+            const newRoot = new BTreeNode(this.t, false);
+            newRoot.children.push(root);
+            newRoot.splitChild(0);
+            newRoot.insertNonFull(key);
+            this.root = newRoot;
+        } else {
+            root.insertNonFull(key);
+        }
+    }
+}
+
+// Example usage
+const bTree = new BTree(3); // A B-tree with minimum degree 3
+bTree.insert(10);
+bTree.insert(20);
+bTree.insert(5);
+bTree.insert(6);
+bTree.insert(12);
+bTree.insert(30);
+bTree.insert(7);
+bTree.insert(17);
+
+console.log("Traversal of the B-tree:");
+bTree.traverse();
