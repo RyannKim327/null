@@ -1,9 +1,22 @@
-function decimalToBinary(decimal: number): string {
-    return decimal.toString(2);
+function insertionSort(arr: number[]): number[] {
+    // Loop through the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The element to be positioned
+        let j = i - 1; // The index of the last sorted element
+
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        // Place the key in its correct position
+        arr[j + 1] = key;
+    }
+    return arr;
 }
 
 // Example usage:
-const decimalNumber = 42;
-const binaryString = decimalToBinary(decimalNumber);
-console.log(`The binary representation of ${decimalNumber} is ${binaryString}`);
-The binary representation of 42 is 101010
+const array = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
