@@ -1,20 +1,62 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+type Graph = { [key: string]: string[] };
 
-    const dp: number[] = new Array(nums.length).fill(1);
+function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return;
+    }
 
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
+    // Mark the current node as visited
+    visited.add(start);
+    console.log(start); // Process the node (e.g., print it)
+
+    // Recur for all the vertices adjacent to this vertex
+    for (const neighbor of graph[start]) {
+        dfsRecursive(graph, neighbor, visited);
+    }
+}
+
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function dfsIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (!visited.has(node)) {
+            visited.add(node);
+            console.log(node); // Process the node (e.g., print it)
+
+            // Push all unvisited neighbors onto the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
             }
         }
     }
-
-    return Math.max(...dp);
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const lengthOfLIS = longestIncreasingSubsequence(nums);
-console.log(lengthOfLIS); // Output: 4
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+dfsIterative(graph, 'A');
