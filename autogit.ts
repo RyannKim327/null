@@ -1,65 +1,53 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
-}
-class Trie {
-    private root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
         }
-        currentNode.isEndOfWord = true; // Mark the end of the word
     }
-
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find the node corresponding to a given word/prefix
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null; // Not found
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        return currentNode; // Return the node corresponding to the last character
-    }
+    return lps;
 }
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-trie.insert("hi");
 
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("he")); // true
-console.log(trie.startsWith("wo")); // true
-console.log(trie.startsWith("hi")); // true
-console.log(trie.startsWith("h"));  // true
-console.log(trie.startsWith("x"));  // false
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to result
+            j = lps[j - 1]; // Use LPS to continue searching
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters in the pattern
+            } else {
+                i++;
+            }
+        }
+    }
+    return result; // Return all starting indices of matches
+}
+
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", result);
