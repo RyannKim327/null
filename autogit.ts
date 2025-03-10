@@ -1,58 +1,120 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+class Node<T> {
+    value: T;
+    forward: Node<T>[];
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
+    constructor(value: T, level: number) {
+        this.value = value;
+        this.forward = new Array(level + 1).fill(null);
+    }
+}
+
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number; // Probability for random level generation
+    private level: number; // Current highest level
+
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node<T>(null, maxLevel);
     }
 
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
+    private randomLevel(): number {
+        let lvl = 0;
+        while (Math.random() < this.p && lvl < this.maxLevel) {
+            lvl++;
+        }
+        return lvl;
+    }
 
-        for (let i = 0; i < patternLength; i++) {
-            // Store the last occurrence of each character in the pattern
-            table.set(pattern[i], i);
+    insert(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the position to insert the new value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
         }
 
-        return table;
-    }
+        current = current.forward[0];
 
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    // If there's a mismatch, use the bad character rule
-                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - lastOccurrence);
-                    break;
+        // If the value is not already present, insert it
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
                 }
+                this.level = newLevel;
             }
 
-            if (skip === 0) {
-                // Match found
-                return i; // Return the starting index of the match
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
+    }
+
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
             }
         }
 
-        return -1; // No match found
+        current = current.forward[0];
+        return current !== null && current.value === value;
+    }
+
+    delete(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the node to delete
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If found, remove it
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            // Remove levels if necessary
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+        }
     }
 }
 
-// Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const result = bm.search(text);
+// Example usage
+const skipList = new SkipList<number>();
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
+skipList.insert(17);
 
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+console.log(skipList.search(6)); // true
+console.log(skipList.search(15)); // false
+
+skipList.delete(6);
+console.log(skipList.search(6)); // false
