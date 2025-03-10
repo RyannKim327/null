@@ -1,28 +1,56 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+class Graph {
+    private adjacencyList: Map<number, number[]>;
+
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
 
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
         }
-    }
 
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+        return result;
+    }
 }
 
 // Example usage:
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(3, 5);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
