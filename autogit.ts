@@ -1,69 +1,62 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Node = {
+    state: any; // The current state of the node
+    cost: number; // The cost associated with the node
+    parent?: Node; // The parent node
+};
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function beamSearch(initialState: any, goalTest: (state: any) => boolean, generateSuccessors: (state: any) => Node[], beamWidth: number): Node | null {
+    // Initialize the beam with the initial state
+    let beam: Node[] = [{ state: initialState, cost: 0 }];
+
+    while (beam.length > 0) {
+        // Expand all nodes in the current beam
+        const newBeam: Node[] = [];
+
+        for (const node of beam) {
+            // Check if the current node is the goal
+            if (goalTest(node.state)) {
+                return node; // Return the goal node
+            }
+
+            // Generate successors for the current node
+            const successors = generateSuccessors(node.state);
+            newBeam.push(...successors);
+        }
+
+        // Sort the new beam by cost (or any other heuristic) and keep only the best candidates
+        newBeam.sort((a, b) => a.cost - b.cost);
+        beam = newBeam.slice(0, beamWidth); // Keep only the top `beamWidth` nodes
     }
+
+    return null; // Return null if no solution is found
 }
 
-class LinkedList {
-    head: ListNode | null;
+// Example usage:
 
-    constructor() {
-        this.head = null;
-    }
+// Define a goal test function
+const goalTest = (state: any) => {
+    // Define your goal condition here
+    return state === 'goal';
+};
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
+// Define a function to generate successors
+const generateSuccessors = (state: any): Node[] => {
+    // Generate successor nodes based on the current state
+    // This is just an example; replace it with your own logic
+    return [
+        { state: 'state1', cost: 1 },
+        { state: 'state2', cost: 2 },
+        { state: 'goal', cost: 3 }, // This is a goal state
+    ];
+};
 
-    // Method to print the list
-    printList() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
+// Run the beam search
+const initialState = 'start';
+const beamWidth = 2;
+const result = beamSearch(initialState, goalTest, generateSuccessors, beamWidth);
+
+if (result) {
+    console.log('Goal found:', result);
+} else {
+    console.log('No solution found.');
 }
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
-
-    while (current) {
-        next = current.next; // Store the next node
-        current.next = prev; // Reverse the current node's pointer
-        prev = current;      // Move prev and current one step forward
-        current = next;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original List:");
-list.printList();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed List:");
-list.printList();
