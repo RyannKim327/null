@@ -1,22 +1,58 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+class Node {
+    value: string;
+    children: Node[];
 
-    // If lengths are different, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    // Sort the characters of each string
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
-
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    addChild(child: Node) {
+        this.children.push(child);
+    }
 }
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-console.log(areAnagrams("Dormitory", "Dirty room")); // true
+function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    if (limit < 0) {
+        return null; // Limit reached, return null
+    }
+
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Target found
+        }
+
+        // If we haven't reached the limit, add children to the queue
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // Target not found within the limit
+}
+
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const targetNode = breadthLimitedSearch(root, "D", 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
