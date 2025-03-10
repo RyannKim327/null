@@ -1,12 +1,42 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+type Graph = { [key: string]: string[] };
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+function breadthLimitedSearch(graph: Graph, startNode: string, limit: number): string[] {
+    const queue: { node: string; depth: number }[] = [{ node: startNode, depth: 0 }];
+    const visited: Set<string> = new Set();
+    const result: string[] = [];
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!;
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+        // Check if the node has been visited
+        if (!visited.has(node)) {
+            visited.add(node);
+            result.push(node);
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+            // If the current depth is less than the limit, enqueue the neighbors
+            if (depth < limit) {
+                const neighbors = graph[node] || [];
+                for (const neighbor of neighbors) {
+                    queue.push({ node: neighbor, depth: depth + 1 });
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+const startNode = 'A';
+const limit = 2;
+const result = breadthLimitedSearch(graph, startNode, limit);
+console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
