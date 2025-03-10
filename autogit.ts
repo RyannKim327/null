@@ -1,57 +1,29 @@
-class Node {
-    value: string;
-    children: Node[];
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: string) {
+    constructor(value: number) {
         this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
+        this.left = null;
+        this.right = null;
     }
 }
-
-function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the goal
-        if (node.value === goal) {
-            return node; // Goal found
-        }
-
-        // If the current depth is less than the limit, explore children
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
-        }
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    return null; // Goal not found within the depth limit
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
-
-const goalNode = depthLimitedSearch(root, "E", 2);
-if (goalNode) {
-    console.log(`Goal found: ${goalNode.value}`);
-} else {
-    console.log("Goal not found within the depth limit.");
-}
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
