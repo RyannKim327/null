@@ -1,59 +1,49 @@
-type Edge = {
-    source: number;
-    destination: number;
-    weight: number;
+type Node = {
+    state: string; // The current state (e.g., a string in NLP tasks)
+    score: number; // The score of the current state
+    path: string[]; // The path taken to reach this state
 };
 
-class Graph {
-    private edges: Edge[];
-    private numVertices: number;
+function beamSearch(
+    initialState: string,
+    expand: (state: string) => Node[], // Function to expand a node
+    beamWidth: number,
+    maxSteps: number
+): Node[] {
+    let beams: Node[] = [{ state: initialState, score: 0, path: [initialState] }];
 
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
-    }
+    for (let step = 0; step < maxSteps; step++) {
+        let candidates: Node[] = [];
 
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push({ source, destination, weight });
-    }
-
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const edge of this.edges) {
-                const { source, destination, weight } = edge;
-                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                    distances[destination] = distances[source] + weight;
-                }
-            }
+        // Expand each node in the current beam
+        for (const beam of beams) {
+            const expansions = expand(beam.state);
+            candidates.push(...expansions);
         }
 
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            const { source, destination, weight } = edge;
-            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                return "Graph contains a negative-weight cycle";
-            }
-        }
-
-        return distances;
+        // Sort candidates by score and keep the top `beamWidth` candidates
+        candidates.sort((a, b) => b.score - a.score);
+        beams = candidates.slice(0, beamWidth);
     }
+
+    return beams; // Return the best candidates after maxSteps
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 1, 1);
-graph.addEdge(3, 2, 5);
-graph.addEdge(4, 3, -3);
+// Example expand function for a simple case
+function exampleExpand(state: string): Node[] {
+    // This is a placeholder for your actual expansion logic
+    // Here we just create dummy nodes for demonstration
+    return [
+        { state: state + 'A', score: Math.random(), path: [state + 'A'] },
+        { state: state + 'B', score: Math.random(), path: [state + 'B'] },
+        { state: state + 'C', score: Math.random(), path: [state + 'C'] },
+    ];
+}
 
-const distances = graph.bellmanFord(0);
-console.log(distances);
+// Example usage
+const initialState = 'Start';
+const beamWidth = 2;
+const maxSteps = 3;
+
+const result = beamSearch(initialState, exampleExpand, beamWidth, maxSteps);
+console.log(result);
