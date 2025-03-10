@@ -1,59 +1,21 @@
-type Graph = { [key: string]: string[] };
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    // Mark the current node as visited
-    visited.add(start);
-    console.log(start); // Process the node (e.g., print it)
-
-    // Recur for all the vertices adjacent to this vertex
-    for (const neighbor of graph[start]) {
-        if (!visited.has(neighbor)) {
-            depthFirstSearch(graph, neighbor, visited);
-        }
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
+
+    // Sort the characters of each string and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop();
-        if (node && !visited.has(node)) {
-            visited.add(node);
-            console.log(node); // Process the node (e.g., print it)
-
-            // Push all unvisited neighbors onto the stack
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    stack.push(neighbor);
-                }
-            }
-        }
-    }
-}
-
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-depthFirstSearchIterative(graph, 'A');
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
