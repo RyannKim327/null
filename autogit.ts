@@ -1,8 +1,10 @@
 class Graph {
+    private vertices: number;
     private adjList: Map<number, number[]>;
 
-    constructor() {
-        this.adjList = new Map();
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = new Map<number, number[]>();
     }
 
     addEdge(v: number, w: number) {
@@ -12,106 +14,63 @@ class Graph {
         this.adjList.get(v)!.push(w);
     }
 
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
+    tarjan(): number[][] {
+        const index: number[] = new Array(this.vertices).fill(-1);
+        const lowlink: number[] = new Array(this.vertices).fill(-1);
+        const onStack: boolean[] = new Array(this.vertices).fill(false);
         const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
 
-        const dfs = (v: number) => {
-            visited.add(v);
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
+
             const neighbors = this.adjList.get(v) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
+            for (const w of neighbors) {
+                if (index[w] === -1) {
+                    // Successor w has not yet been visited; recurse on it
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    // Successor w is in stack and hence in the current SCC
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
                 }
             }
-            stack.push(v);
+
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
         };
 
-        for (const vertex of this.adjList.keys()) {
-            if (!visited.has(vertex)) {
-                dfs(vertex);
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
             }
         }
 
-        return stack.reverse(); // Return in reverse order
+        return result;
     }
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+const g = new Graph(5);
+g.addEdge(0, 2);
+g.addEdge(2, 1);
+g.addEdge(1, 0);
+g.addEdge(0, 3);
+g.addEdge(3, 4);
 
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
-class Graph {
-    private adjList: Map<number, number[]>;
-    private inDegree: Map<number, number>;
-
-    constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-
-        // Update in-degree of the destination node
-        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
-        // Ensure the source node is in the inDegree map
-        if (!this.inDegree.has(v)) {
-            this.inDegree.set(v, 0);
-        }
-    }
-
-    topologicalSort(): number[] {
-        const zeroInDegreeQueue: number[] = [];
-        const sortedOrder: number[] = [];
-
-        // Initialize the queue with nodes having zero in-degree
-        for (const [node, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                zeroInDegreeQueue.push(node);
-            }
-        }
-
-        while (zeroInDegreeQueue.length > 0) {
-            const current = zeroInDegreeQueue.shift()!;
-            sortedOrder.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    zeroInDegreeQueue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there was a cycle
-        if (sortedOrder.length !== this.inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-
-        return sortedOrder;
-    }
-}
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
+const sccs = g.tarjan();
+console.log(sccs); // Output: [[0, 1, 2], [3], [4]]
