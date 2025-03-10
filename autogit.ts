@@ -1,36 +1,104 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Graph {
+    private adjacencyList: Map<string, string[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor() {
+        this.adjacencyList = new Map();
+    }
+
+    addEdge(vertex1: string, vertex2: string) {
+        if (!this.adjacencyList.has(vertex1)) {
+            this.adjacencyList.set(vertex1, []);
+        }
+        if (!this.adjacencyList.has(vertex2)) {
+            this.adjacencyList.set(vertex2, []);
+        }
+        this.adjacencyList.get(vertex1)!.push(vertex2);
+        this.adjacencyList.get(vertex2)!.push(vertex1); // For undirected graph
+    }
+
+    getNeighbors(vertex: string): string[] {
+        return this.adjacencyList.get(vertex) || [];
+    }
+
+    getVertices(): string[] {
+        return Array.from(this.adjacencyList.keys());
     }
 }
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
 
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: Map<string, string | null> = new Map();
+    const parentFromGoal: Map<string, string | null> = new Map();
+
+    parentFromStart.set(start, null);
+    parentFromGoal.set(goal, null);
+
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Search from the start
+        const currentFromStart = queueFromStart.shift()!;
+        if (visitedFromGoal.has(currentFromStart)) {
+            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
+        }
+        visitedFromStart.add(currentFromStart);
+
+        for (const neighbor of graph.getNeighbors(currentFromStart)) {
+            if (!visitedFromStart.has(neighbor)) {
+                queueFromStart.push(neighbor);
+                visitedFromStart.add(neighbor);
+                parentFromStart.set(neighbor, currentFromStart);
+            }
+        }
+
+        // Search from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        if (visitedFromStart.has(currentFromGoal)) {
+            return constructPath(currentFromGoal, parentFromStart, parentFromGoal);
+        }
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph.getNeighbors(currentFromGoal)) {
+            if (!visitedFromGoal.has(neighbor)) {
+                queueFromGoal.push(neighbor);
+                visitedFromGoal.add(neighbor);
+                parentFromGoal.set(neighbor, currentFromGoal);
+            }
+        }
     }
 
-    // If the node is a leaf node, return 1
-    if (root.left === null && root.right === null) {
-        return 1;
-    }
-
-    // Recursively count leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+    return null; // No path found
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+function constructPath(meetingPoint: string, parentFromStart: Map<string, string | null>, parentFromGoal: Map<string, string | null>): string[] {
+    const path: string[] = [];
+    let current: string | null = meetingPoint;
 
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+    // Construct path from start to meeting point
+    while (current !== null) {
+        path.push(current);
+        current = parentFromStart.get(current)!;
+    }
+    path.reverse();
+
+    // Construct path from meeting point to goal
+    current = parentFromGoal.get(meetingPoint)!;
+    while (current !== null) {
+        path.push(current);
+        current = parentFromGoal.get(current)!;
+    }
+
+    return path;
+}
+const graph = new Graph();
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("C", "D");
+graph.addEdge("D", "E");
+graph.addEdge("E", "F");
+
+const path = biDirectionalSearch(graph, "A", "F");
+console.log(path); // Output: ['A', 'B', 'D', 'E', 'F'] or similar
