@@ -1,41 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-// Simulated API call
-const fetchData = async (): Promise<string> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve("Data fetched from the server!");
-        }, 2000); // Simulate a 2-second network request
-    });
-};
+    const dp: number[] = new Array(nums.length).fill(1);
 
-const App: React.FC = () => {
-    const [data, setData] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-
-    const handleFetchData = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const result = await fetchData();
-            setData(result);
-        } catch (err) {
-            setError("Failed to fetch data");
-        } finally {
-            setLoading(false);
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
-    };
+    }
 
-    return (
-        <View style={{ padding: 20 }}>
-            <Button title="Fetch Data" onPress={handleFetchData} />
-            {loading && <ActivityIndicator size="large" color="#0000ff" />}
-            {data && <Text>{data}</Text>}
-            {error && <Text style={{ color: 'red' }}>{error}</Text>}
-        </View>
-    );
-};
+    return Math.max(...dp);
+}
 
-export default App;
+// Example usage:
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+const lengthOfLIS = longestIncreasingSubsequence(nums);
+console.log(lengthOfLIS); // Output: 4
