@@ -1,119 +1,89 @@
-class Graph {
-    private adjList: Map<number, number[]>;
+type Node = {
+    value: string;
+    neighbors: Node[];
+};
 
-    constructor() {
-        this.adjList = new Map();
-    }
+function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
+    if (start === goal) return [start];
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
+    const startQueue: Node[] = [start];
+    const goalQueue: Node[] = [goal];
+    const startVisited = new Set<Node>();
+    const goalVisited = new Set<Node>();
+    const startParentMap = new Map<Node, Node>();
+    const goalParentMap = new Map<Node, Node>();
 
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
+    startVisited.add(start);
+    goalVisited.add(goal);
 
-        const dfs = (node: number) => {
-            visited.add(node);
-            const neighbors = this.adjList.get(node) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(node);
-        };
+    while (startQueue.length > 0 && goalQueue.length > 0) {
+        // Expand from the start
+        const startNode = startQueue.shift()!;
+        for (const neighbor of startNode.neighbors) {
+            if (!startVisited.has(neighbor)) {
+                startVisited.add(neighbor);
+                startParentMap.set(neighbor, startNode);
+                startQueue.push(neighbor);
 
-        for (const node of this.adjList.keys()) {
-            if (!visited.has(node)) {
-                dfs(node);
-            }
-        }
-
-        return stack.reverse(); // Reverse the stack to get the topological order
-    }
-}
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const order = graph.topologicalSort();
-console.log(order); // Output: A valid topological order
-class GraphKahn {
-    private adjList: Map<number, number[]>;
-
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const inDegree: Map<number, number> = new Map();
-        const queue: number[] = [];
-        const result: number[] = [];
-
-        // Initialize in-degree of each node
-        for (const [node, neighbors] of this.adjList.entries()) {
-            if (!inDegree.has(node)) {
-                inDegree.set(node, 0);
-            }
-            for (const neighbor of neighbors) {
-                inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
-            }
-        }
-
-        // Collect nodes with in-degree of 0
-        for (const [node, degree] of inDegree.entries()) {
-            if (degree === 0) {
-                queue.push(node);
-            }
-        }
-
-        while (queue.length > 0) {
-            const current = queue.shift()!;
-            result.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
-                if (inDegree.get(neighbor) === 0) {
-                    queue.push(neighbor);
+                // Check if the neighbor is in the goal visited set
+                if (goalVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
                 }
             }
         }
 
-        // Check if there was a cycle
-        if (result.length !== inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
+        // Expand from the goal
+        const goalNode = goalQueue.shift()!;
+        for (const neighbor of goalNode.neighbors) {
+            if (!goalVisited.has(neighbor)) {
+                goalVisited.add(neighbor);
+                goalParentMap.set(neighbor, goalNode);
+                goalQueue.push(neighbor);
 
-        return result;
+                // Check if the neighbor is in the start visited set
+                if (startVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
+            }
+        }
     }
+
+    return null; // No path found
 }
 
-// Example usage:
-const graphKahn = new GraphKahn();
-graphKahn.addEdge(5, 2);
-graphKahn.addEdge(5, 0);
-graphKahn.addEdge(4, 0);
-graphKahn.addEdge(4, 1);
-graphKahn.addEdge(2, 3);
-graphKahn.addEdge(3, 1);
+function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
+    const path: Node[] = [];
+    
+    // Reconstruct path from start to meeting node
+    let currentNode: Node | undefined = meetingNode;
+    while (currentNode) {
+        path.unshift(currentNode);
+        currentNode = startParentMap.get(currentNode);
+    }
 
-const orderKahn = graphKahn.topologicalSort();
-console.log(orderKahn); // Output: A valid topological order
+    // Reconstruct path from meeting node to goal
+    currentNode = goalParentMap.get(meetingNode);
+    while (currentNode) {
+        path.push(currentNode);
+        currentNode = goalParentMap.get(currentNode);
+    }
+
+    return path;
+}
+
+// Example usage
+const nodeA: Node = { value: 'A', neighbors: [] };
+const nodeB: Node = { value: 'B', neighbors: [] };
+const nodeC: Node = { value: 'C', neighbors: [] };
+const nodeD: Node = { value: 'D', neighbors: [] };
+
+nodeA.neighbors.push(nodeB, nodeC);
+nodeB.neighbors.push(nodeD);
+nodeC.neighbors.push(nodeD);
+
+const path = biDirectionalSearch(nodeA, nodeD);
+if (path) {
+    console.log('Path found:', path.map(node => node.value));
+} else {
+    console.log('No path found');
+}
