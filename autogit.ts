@@ -1,21 +1,17 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+function firstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
 
-    // If lengths are different, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+    for (const char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // Return the first repeated character
+        }
+        seenCharacters.add(char); // Add the character to the set
     }
 
-    // Sort the characters of each string and compare
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+    return null; // Return null if no repeated character is found
 }
 
 // Example usage:
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+const input = "abca";
+const result = firstRepeatedCharacter(input);
+console.log(result); // Output: "a"
