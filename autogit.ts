@@ -1,14 +1,9 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Reverse the normalized string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Compare the normalized string with the reversed string
-    return normalizedStr === reversedStr;
+function decimalToBinary(decimal: number): string {
+    return decimal.toString(2);
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+const decimalNumber = 42;
+const binaryString = decimalToBinary(decimalNumber);
+console.log(`The binary representation of ${decimalNumber} is ${binaryString}`);
+The binary representation of 42 is 101010
