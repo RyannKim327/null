@@ -1,42 +1,50 @@
-type Graph = { [key: string]: string[] };
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function breadthLimitedSearch(graph: Graph, startNode: string, limit: number): string[] {
-    const queue: { node: string; depth: number }[] = [{ node: startNode, depth: 0 }];
-    const visited: Set<string> = new Set();
-    const result: string[] = [];
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!;
-
-        // Check if the node has been visited
-        if (!visited.has(node)) {
-            visited.add(node);
-            result.push(node);
-
-            // If the current depth is less than the limit, enqueue the neighbors
-            if (depth < limit) {
-                const neighbors = graph[node] || [];
-                for (const neighbor of neighbors) {
-                    queue.push({ node: neighbor, depth: depth + 1 });
-                }
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return result;
 }
 
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (!head || n <= 0) {
+        return null; // Return null for invalid input
+    }
 
-const startNode = 'A';
-const limit = 2;
-const result = breadthLimitedSearch(graph, startNode, limit);
-console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+    let firstPointer: ListNode | null = head;
+    let secondPointer: ListNode | null = head;
+
+    // Move the first pointer n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            return null; // n is greater than the length of the list
+        }
+        firstPointer = firstPointer.next;
+    }
+
+    // Move both pointers until the first pointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    // The second pointer is now at the nth node from the end
+    return secondPointer;
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const nthNode = findNthFromEnd(head, n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
+}
