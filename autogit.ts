@@ -1,28 +1,22 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with fewer than 2 elements are already sorted
-    if (arr.length < 2) {
-        return arr;
-    }
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    // Start with the first string as the initial prefix
+    let prefix = strs[0];
 
-    // Partition the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+    // Compare the prefix with each string in the array
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by one character from the end
+            prefix = prefix.substring(0, prefix.length - 1);
+            // If the prefix is empty, return it
+            if (prefix === "") return "";
         }
     }
 
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    return prefix;
 }
 
 // Example usage:
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
