@@ -1,22 +1,25 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-    
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    return n * factorialRecursive(n - 1);
 }
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
+// Example usage:
+console.log(factorialRecursive(5)); // Output: 120
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
-    
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-    
-    return Math.max(leftDepth, rightDepth) + 1;
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
 }
+
+// Example usage:
+console.log(factorialIterative(5)); // Output: 120
