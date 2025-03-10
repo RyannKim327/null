@@ -1,38 +1,45 @@
-class TreeNode {
+class ListNode {
     value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+    next: ListNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
+        }
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    return false; // No cycle
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
 
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
