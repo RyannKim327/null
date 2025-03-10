@@ -1,14 +1,12 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Reverse the normalized string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Compare the normalized string with the reversed string
-    return normalizedStr === reversedStr;
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
+
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
