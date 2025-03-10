@@ -1,53 +1,28 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
-    }
-}
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
-
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
 
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
         }
     }
 
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                currentNode = newNode;
-                break;
-            } else {
-                currentNode = currentNode.children.get(char)!;
-            }
-        }
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
     }
 
-    // Additional methods can be added here (e.g., search, display, etc.)
+    return largestFactor;
 }
-const text = "banana";
-const suffixTree = new SuffixTree(text);
 
-// You can add methods to search for substrings, display the tree, etc.
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
