@@ -1,34 +1,22 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Find the index of the element
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove the element at that index
-}
-
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
-const idToRemove = 2;
-
-const indexToRemove = array.findIndex(item => item.id === idToRemove);
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1);
-}
-
-console.log(array); // Output: [{ id: 1 }, { id: 3 }]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
-    return acc;
-}, [] as number[]);
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
+}
+
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("Dormitory", "Dirty room")); // true
