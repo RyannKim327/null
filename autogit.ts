@@ -1,7 +1,12 @@
-const str: string = "abc";
-const num: number = parseInt(str, 10);
-if (isNaN(num)) {
-    console.log("The string is not a valid number.");
-} else {
-    console.log(num);
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
+    }
+    return count;
 }
+
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`);
