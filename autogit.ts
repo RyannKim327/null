@@ -1,52 +1,119 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    if (n < 2) return arr; // Base case: if the array is empty or has one element, it's already sorted.
+class Graph {
+    private adjList: Map<number, number[]>;
 
-    // Create a temporary array to hold the sorted elements
-    const temp = new Array(n);
-
-    // Start with a size of 1 and double it each iteration
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + size * 2, n);
-            merge(arr, temp, leftStart, mid, rightEnd);
-        }
-        // Copy the sorted elements back into the original array
-        for (let i = 0; i < n; i++) {
-            arr[i] = temp[i];
-        }
+    constructor() {
+        this.adjList = new Map();
     }
 
-    return arr;
-}
-
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number) {
-    let left = leftStart; // Starting index for left subarray
-    let right = mid;      // Starting index for right subarray
-    let index = leftStart; // Starting index to be merged
-
-    // Merge the two subarrays into temp[]
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
-        } else {
-            temp[index++] = arr[right++];
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
         }
+        this.adjList.get(v)!.push(w);
     }
 
-    // Copy the remaining elements of left subarray, if any
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
 
-    // Copy the remaining elements of right subarray, if any
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
+        const dfs = (node: number) => {
+            visited.add(node);
+            const neighbors = this.adjList.get(node) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(node);
+        };
+
+        for (const node of this.adjList.keys()) {
+            if (!visited.has(node)) {
+                dfs(node);
+            }
+        }
+
+        return stack.reverse(); // Reverse the stack to get the topological order
     }
 }
 
 // Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const order = graph.topologicalSort();
+console.log(order); // Output: A valid topological order
+class GraphKahn {
+    private adjList: Map<number, number[]>;
+
+    constructor() {
+        this.adjList = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+    }
+
+    topologicalSort(): number[] {
+        const inDegree: Map<number, number> = new Map();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        // Initialize in-degree of each node
+        for (const [node, neighbors] of this.adjList.entries()) {
+            if (!inDegree.has(node)) {
+                inDegree.set(node, 0);
+            }
+            for (const neighbor of neighbors) {
+                inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
+            }
+        }
+
+        // Collect nodes with in-degree of 0
+        for (const [node, degree] of inDegree.entries()) {
+            if (degree === 0) {
+                queue.push(node);
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            result.push(current);
+
+            const neighbors = this.adjList.get(current) || [];
+            for (const neighbor of neighbors) {
+                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+                if (inDegree.get(neighbor) === 0) {
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there was a cycle
+        if (result.length !== inDegree.size) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+
+        return result;
+    }
+}
+
+// Example usage:
+const graphKahn = new GraphKahn();
+graphKahn.addEdge(5, 2);
+graphKahn.addEdge(5, 0);
+graphKahn.addEdge(4, 0);
+graphKahn.addEdge(4, 1);
+graphKahn.addEdge(2, 3);
+graphKahn.addEdge(3, 1);
+
+const orderKahn = graphKahn.topologicalSort();
+console.log(orderKahn); // Output: A valid topological order
