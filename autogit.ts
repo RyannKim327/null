@@ -1,62 +1,109 @@
-type Node = {
-    state: any; // The current state of the node
-    cost: number; // The cost associated with the node
-    parent?: Node; // The parent node
-};
+class Node {
+    public x: number;
+    public y: number;
+    public g: number; // Cost from start to this node
+    public h: number; // Heuristic cost from this node to the goal
+    public f: number; // Total cost (g + h)
+    public parent: Node | null;
 
-function beamSearch(initialState: any, goalTest: (state: any) => boolean, generateSuccessors: (state: any) => Node[], beamWidth: number): Node | null {
-    // Initialize the beam with the initial state
-    let beam: Node[] = [{ state: initialState, cost: 0 }];
+    constructor(x: number, y: number, g: number = 0, h: number = 0, parent: Node | null = null) {
+        this.x = x;
+        this.y = y;
+        this.g = g;
+        this.h = h;
+        this.f = g + h;
+        this.parent = parent;
+    }
+}
+class PriorityQueue {
+    private elements: Node[] = [];
 
-    while (beam.length > 0) {
-        // Expand all nodes in the current beam
-        const newBeam: Node[] = [];
-
-        for (const node of beam) {
-            // Check if the current node is the goal
-            if (goalTest(node.state)) {
-                return node; // Return the goal node
-            }
-
-            // Generate successors for the current node
-            const successors = generateSuccessors(node.state);
-            newBeam.push(...successors);
-        }
-
-        // Sort the new beam by cost (or any other heuristic) and keep only the best candidates
-        newBeam.sort((a, b) => a.cost - b.cost);
-        beam = newBeam.slice(0, beamWidth); // Keep only the top `beamWidth` nodes
+    public isEmpty(): boolean {
+        return this.elements.length === 0;
     }
 
-    return null; // Return null if no solution is found
+    public enqueue(node: Node): void {
+        this.elements.push(node);
+        this.elements.sort((a, b) => a.f - b.f); // Sort by f value
+    }
+
+    public dequeue(): Node | undefined {
+        return this.elements.shift(); // Remove the node with the lowest f value
+    }
+}
+function heuristic(a: Node, b: Node): number {
+    // Using Manhattan distance as the heuristic
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-// Example usage:
+function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
+    const openSet = new PriorityQueue();
+    const closedSet: Set<string> = new Set();
 
-// Define a goal test function
-const goalTest = (state: any) => {
-    // Define your goal condition here
-    return state === 'goal';
-};
+    openSet.enqueue(start);
 
-// Define a function to generate successors
-const generateSuccessors = (state: any): Node[] => {
-    // Generate successor nodes based on the current state
-    // This is just an example; replace it with your own logic
-    return [
-        { state: 'state1', cost: 1 },
-        { state: 'state2', cost: 2 },
-        { state: 'goal', cost: 3 }, // This is a goal state
-    ];
-};
+    while (!openSet.isEmpty()) {
+        const current = openSet.dequeue();
 
-// Run the beam search
-const initialState = 'start';
-const beamWidth = 2;
-const result = beamSearch(initialState, goalTest, generateSuccessors, beamWidth);
+        if (!current) {
+            break;
+        }
 
-if (result) {
-    console.log('Goal found:', result);
-} else {
-    console.log('No solution found.');
+        // Check if we reached the goal
+        if (current.x === goal.x && current.y === goal.y) {
+            const path: Node[] = [];
+            let temp: Node | null = current;
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
+            }
+            return path.reverse(); // Return the path from start to goal
+        }
+
+        closedSet.add(`${current.x},${current.y}`);
+
+        // Explore neighbors (4 directions: up, down, left, right)
+        const neighbors = [
+            new Node(current.x, current.y - 1), // Up
+            new Node(current.x, current.y + 1), // Down
+            new Node(current.x - 1, current.y), // Left
+            new Node(current.x + 1, current.y)  // Right
+        ];
+
+        for (const neighbor of neighbors) {
+            // Check if the neighbor is within bounds and not an obstacle
+            if (neighbor.x < 0 || neighbor.x >= grid.length || neighbor.y < 0 || neighbor.y >= grid[0].length || grid[neighbor.x][neighbor.y] === 1) {
+                continue; // Skip if out of bounds or an obstacle
+            }
+
+            if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
+                continue; // Skip if already evaluated
+            }
+
+            const gScore = current.g + 1; // Assume cost to move to neighbor is 1
+            let gScoreIsBest = false;
+
+            if (!openSet.elements.some(n => n.x === neighbor.x && n.y === neighbor.y)) {
+                gScoreIsBest = true; // New node
+                neighbor.h = heuristic(neighbor, goal);
+                openSet.enqueue(neighbor);
+            } else if (gScore < neighbor.g) {
+                gScoreIsBest = true; // Found a better path
+            }
+
+            if (gScoreIsBest) {
+                neighbor.parent = current;
+                neighbor.g = gScore;
+                neighbor.f = neighbor.g + neighbor.h;
+            }
+        }
+    }
+
+    return null; // No path found
 }
+const grid = [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+
