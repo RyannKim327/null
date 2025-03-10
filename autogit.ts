@@ -1,12 +1,27 @@
-function validateEmail(email: string): boolean {
-    // Regular expression for validating an email address
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+const numbers: number[] = [1, 5, 3, 9, 2];
+const max = Math.max(...numbers);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+let max = numbers[0]; // Assume the first element is the max initially
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
+    }
 }
 
-// Example usage
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
 
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
+const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+
+let max = numbers[0];
+numbers.forEach(num => {
+    if (num > max) {
+        max = num;
+    }
+});
+
+console.log(max); // Output: 9
