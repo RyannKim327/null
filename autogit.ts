@@ -1,30 +1,27 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
 
-const index = array.indexOf(elementToRemove);
-if (index !== -1) {
-    array.splice(index, 1);
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
+    }
+
+    return arr;
 }
-console.log(array); // Output: [1, 2, 4, 5]
-interface Item {
-    id: number;
-    name: string;
-}
 
-const array: Item[] = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' },
-];
-
-const idToRemove = 2;
-const index = array.findIndex(item => item.id === idToRemove);
-if (index !== -1) {
-    array.splice(index, 1);
-}
-console.log(array); // Output: [{ id: 1, name: 'Item 1' }, { id: 3, name: 'Item 3' }]
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
