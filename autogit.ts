@@ -1,45 +1,110 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node {
+    public x: number;
+    public y: number;
+    public g: number; // Cost from start to this node
+    public h: number; // Heuristic cost from this node to the goal
+    public f: number; // Total cost (g + h)
+    public parent: Node | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor(x: number, y: number, g: number = 0, h: number = 0, parent: Node | null = null) {
+        this.x = x;
+        this.y = y;
+        this.g = g;
+        this.h = h;
+        this.f = g + h;
+        this.parent = parent;
     }
 }
+class PriorityQueue {
+    private elements: Node[] = [];
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+    public isEmpty(): boolean {
+        return this.elements.length === 0;
+    }
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+    public enqueue(node: Node): void {
+        this.elements.push(node);
+        this.elements.sort((a, b) => a.f - b.f); // Sort by f value
+    }
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
+    public dequeue(): Node | undefined {
+        return this.elements.shift(); // Remove the node with the lowest f value
+    }
+}
+function heuristic(a: Node, b: Node): number {
+    // Using Manhattan distance as the heuristic
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
 
-        if (slow === fast) {
-            return true; // Cycle detected
+function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
+    const openSet = new PriorityQueue();
+    const closedSet: Set<string> = new Set();
+
+    openSet.enqueue(start);
+
+    while (!openSet.isEmpty()) {
+        const current = openSet.dequeue();
+
+        if (!current) {
+            break;
+        }
+
+        // Check if we reached the goal
+        if (current.x === goal.x && current.y === goal.y) {
+            const path: Node[] = [];
+            let temp: Node | null = current;
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
+            }
+            return path.reverse(); // Return the path from start to goal
+        }
+
+        closedSet.add(`${current.x},${current.y}`);
+
+        // Explore neighbors (4 directions: up, down, left, right)
+        const neighbors = [
+            new Node(current.x, current.y - 1), // Up
+            new Node(current.x, current.y + 1), // Down
+            new Node(current.x - 1, current.y), // Left
+            new Node(current.x + 1, current.y)  // Right
+        ];
+
+        for (const neighbor of neighbors) {
+            // Check if neighbor is within bounds and not an obstacle
+            if (neighbor.x < 0 || neighbor.x >= grid.length || neighbor.y < 0 || neighbor.y >= grid[0].length || grid[neighbor.x][neighbor.y] === 1) {
+                continue; // Skip if out of bounds or an obstacle
+            }
+
+            if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
+                continue; // Skip if already evaluated
+            }
+
+            const gScore = current.g + 1; // Cost from start to neighbor
+
+            // If neighbor is not in openSet, add it
+            if (!openSet.elements.some(n => n.x === neighbor.x && n.y === neighbor.y)) {
+                neighbor.g = gScore;
+                neighbor.h = heuristic(neighbor, goal);
+                neighbor.f = neighbor.g + neighbor.h;
+                neighbor.parent = current;
+                openSet.enqueue(neighbor);
+            } else {
+                // Check if this path to neighbor is better
+                if (gScore < neighbor.g) {
+                    neighbor.g = gScore;
+                    neighbor.h = heuristic(neighbor, goal);
+                    neighbor.f = neighbor.g + neighbor.h;
+                    neighbor.parent = current;
+                }
+            }
         }
     }
 
-    return false; // No cycle
+    return null; // No path found
 }
-
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+const grid = [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1
