@@ -1,57 +1,81 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
         this.next = null;
     }
 }
-
-class LinkedList {
-    head: ListNode | null;
+class LinkedList<T> {
+    head: Node<T> | null;
+    size: number;
 
     constructor() {
         this.head = null;
+        this.size = 0;
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
+    // Add a new node at the end of the list
+    append(value: T): void {
+        const newNode = new Node(value);
         if (!this.head) {
             this.head = newNode;
-            return;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
         }
+        this.size++;
+    }
+
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
+
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.size--;
+            return true;
+        }
+
         let current = this.head;
         while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                this.size--;
+                return true;
+            }
             current = current.next;
         }
-        current.next = newNode;
+        return false;
     }
 
-    // Method to find the middle element
-    findMiddle(): ListNode | null {
-        let slowPointer: ListNode | null = this.head;
-        let fastPointer: ListNode | null = this.head;
-
-        while (fastPointer && fastPointer.next) {
-            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
-            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+    // Display the list
+    display(): void {
+        let current = this.head;
+        const elements: T[] = [];
+        while (current) {
+            elements.push(current.value);
+            current = current.next;
         }
+        console.log(elements.join(' -> '));
+    }
 
-        return slowPointer; // Slow pointer will be at the middle
+    // Get the size of the list
+    getSize(): number {
+        return this.size;
     }
 }
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.append(30);
+list.display(); // Output: 10 -> 20 -> 30
 
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
+list.remove(20);
+list.display(); // Output: 10 -> 30
 
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
-}
+console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
