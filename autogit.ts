@@ -1,42 +1,29 @@
-function createBadCharacterTable(pattern: string): number[] {
-    const table: number[] = new Array(256).fill(-1); // ASCII size
-    const patternLength = pattern.length;
+function countingSort(arr: number[], max: number): number[] {
+    // Create a count array to store the count of each unique value
+    const count: number[] = new Array(max + 1).fill(0);
+    const output: number[] = new Array(arr.length);
 
-    for (let i = 0; i < patternLength; i++) {
-        table[pattern.charCodeAt(i)] = i; // Store the last occurrence of each character
+    // Count each element in the input array
+    for (let i = 0; i < arr.length; i++) {
+        count[arr[i]]++;
     }
 
-    return table;
-}
-
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
-
-    let skip: number = 0;
-
-    for (let i = 0; i <= textLength - patternLength; i += skip) {
-        skip = 0; // Reset skip for this position
-        for (let j = patternLength - 1; j >= 0; j--) {
-            if (pattern[j] !== text[i + j]) {
-                const badCharIndex = text.charCodeAt(i + j);
-                skip = Math.max(1, j - badCharTable[badCharIndex]); // Calculate skip
-                break; // Break the inner loop on mismatch
-            }
-            if (j === 0) {
-                occurrences.push(i); // Match found
-                skip = 1; // Move to the next character in the text
-            }
-        }
+    // Update the count array to store the cumulative count
+    for (let i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
     }
 
-    return occurrences;
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i]] - 1] = arr[i];
+        count[arr[i]]--;
+    }
+
+    return output;
 }
 
 // Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = boyerMooreHorspool(text, pattern);
-console.log("Pattern found at indices:", result);
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
