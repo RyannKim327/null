@@ -1,62 +1,138 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const table: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+class MinHeap {
+    private heap: number[];
 
-    // Initialize the table with the length of the pattern
-    for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - 1 - i;
+    constructor() {
+        this.heap = [];
     }
 
-    // Fill in the default value for characters not in the pattern
-    for (let charCode = 0; charCode < 256; charCode++) {
-        const char = String.fromCharCode(charCode);
-        if (!(char in table)) {
-            table[char] = patternLength;
+    private getParentIndex(index: number): number {
+        return Math.floor((index - 1) / 2);
+    }
+
+    private getLeftChildIndex(index: number): number {
+        return 2 * index + 1;
+    }
+
+    private getRightChildIndex(index: number): number {
+        return 2 * index + 2;
+    }
+
+    private hasParent(index: number): boolean {
+        return this.getParentIndex(index) >= 0;
+    }
+
+    private hasLeftChild(index: number): boolean {
+        return this.getLeftChildIndex(index) < this.heap.length;
+    }
+
+    private hasRightChild(index: number): boolean {
+        return this.getRightChildIndex(index) < this.heap.length;
+    }
+
+    private parent(index: number): number {
+        return this.heap[this.getParentIndex(index)];
+    }
+
+    private leftChild(index: number): number {
+        return this.heap[this.getLeftChildIndex(index)];
+    }
+
+    private rightChild(index: number): number {
+        return this.heap[this.getRightChildIndex(index)];
+    }
+
+    private swap(indexOne: number, indexTwo: number): void {
+        const temp = this.heap[indexOne];
+        this.heap[indexOne] = this.heap[indexTwo];
+        this.heap[indexTwo] = temp;
+    }
+
+    public insert(value: number): void {
+        this.heap.push(value);
+        this.heapifyUp();
+    }
+
+    private heapifyUp(): void {
+        let index = this.heap.length - 1;
+        while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
+            this.swap(this.getParentIndex(index), index);
+            index = this.getParentIndex(index);
         }
     }
 
-    return table;
-}
-
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
+    public remove(): number | null {
+        if (this.heap.length === 0) {
+            return null;
+        }
+        const item = this.heap[0];
+        this.heap[0] = this.heap[this.heap.length - 1];
+        this.heap.pop();
+        this.heapifyDown();
+        return item;
     }
 
-    const badCharTable = createBadCharacterTable(pattern);
-    let i = 0; // Index for text
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Index for pattern
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            return i; // Return the starting index of the match
-        } else {
-            // Shift the pattern based on the bad character rule
-            const shift = badCharTable[text[i + j]];
-            i += shift; // Move the text index forward
+    private heapifyDown(): void {
+        let index = 0;
+        while (this.hasLeftChild(index)) {
+            let smallerChildIndex = this.getLeftChildIndex(index);
+            if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
+                smallerChildIndex = this.getRightChildIndex(index);
+            }
+            if (this.heap[index] < this.heap[smallerChildIndex]) {
+                break;
+            } else {
+                this.swap(index, smallerChildIndex);
+            }
+            index = smallerChildIndex;
         }
     }
 
-    return -1; // Pattern not found
-}
+    public peek(): number | null {
+        return this.heap.length > 0 ? this.heap[0] : null;
+    }
 
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
+    public isEmpty(): boolean {
+        return this.heap.length === 0;
+    }
 
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
+    public size(): number {
+        return this.heap.length;
+    }
 }
+class PriorityQueue {
+    private heap: MinHeap;
+
+    constructor() {
+        this.heap = new MinHeap();
+    }
+
+    public enqueue(value: number): void {
+        this.heap.insert(value);
+    }
+
+    public dequeue(): number | null {
+        return this.heap.remove();
+    }
+
+    public peek(): number | null {
+        return this.heap.peek();
+    }
+
+    public isEmpty(): boolean {
+        return this.heap.isEmpty();
+    }
+
+    public size(): number {
+        return this.heap.size();
+    }
+}
+const pq = new PriorityQueue();
+pq.enqueue(5);
+pq.enqueue(3);
+pq.enqueue(8);
+pq.enqueue(1);
+
+console.log(pq.peek()); // Output: 1
+console.log(pq.dequeue()); // Output: 1
+console.log(pq.peek()); // Output: 3
+console.log(pq.size()); // Output: 3
