@@ -1,47 +1,57 @@
-function createBadCharTable(pattern: string): { [key: string]: number } {
-    const badCharTable: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern[i]] = patternLength - 1 - i;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return badCharTable;
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
+class LinkedList {
+    head: ListNode | null;
 
-    let i = 0; // Index for text
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Index for pattern
-
-        // Compare pattern with text from the end
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            occurrences.push(i);
-            // Shift the pattern by the length of the pattern or the bad character shift
-            i += (i + patternLength < textLength) ? patternLength - (badCharTable[text[i + patternLength]] || patternLength) : 1;
-        } else {
-            // Shift the pattern based on the bad character table
-            const badCharShift = badCharTable[text[i + j]] || patternLength;
-            i += Math.max(1, badCharShift - (patternLength - 1 - j));
-        }
+    constructor() {
+        this.head = null;
     }
 
-    return occurrences;
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the middle element
+    findMiddle(): ListNode | null {
+        let slowPointer: ListNode | null = this.head;
+        let fastPointer: ListNode | null = this.head;
+
+        while (fastPointer && fastPointer.next) {
+            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
+            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+        }
+
+        return slowPointer; // Slow pointer will be at the middle
+    }
 }
 
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Output: [2, 7, 12]
+// Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+const middleNode = list.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
