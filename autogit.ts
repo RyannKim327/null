@@ -1,48 +1,35 @@
-type Node = {
-    state: string; // The current state
-    cost: number;  // The cost to reach this state
-    path: string[]; // The path taken to reach this state
-};
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
-    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
-    
-    while (currentLevel.length > 0) {
-        // Generate successors for all nodes in the current level
-        let successors: Node[] = [];
-        for (const node of currentLevel) {
-            const newSuccessors = generateSuccessors(node.state);
-            successors.push(...newSuccessors);
-        }
-
-        // Check for goal state in successors
-        for (const successor of successors) {
-            if (successor.state === goalState) {
-                return successor.path; // Return the path to the goal state
-            }
-        }
-
-        // Sort successors by cost (or any other heuristic) and select the top `beamWidth` nodes
-        successors.sort((a, b) => a.cost - b.cost);
-        currentLevel = successors.slice(0, beamWidth);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return null; // Return null if the goal state is not found
 }
 
-// Example usage
-const generateSuccessors = (state: string): Node[] => {
-    // This function should generate successor nodes based on the current state
-    // For demonstration, let's assume each state can lead to two new states
-    return [
-        { state: state + 'A', cost: Math.random(), path: [] }, // Random cost for demonstration
-        { state: state + 'B', cost: Math.random(), path: [] }
-    ];
-};
+function findMiddle(head: ListNode | null): ListNode | null {
+    if (!head) return null; // If the list is empty
 
-const initialState = 'Start';
-const goalState = 'StartAB'; // Example goal state
-const beamWidth = 2;
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
-console.log(result);
+    while (fast && fast.next) {
+        slow = slow.next; // Move slow by one step
+        fast = fast.next.next; // Move fast by two steps
+    }
+
+    return slow; // Slow is now at the middle
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const middleNode = findMiddle(head);
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
