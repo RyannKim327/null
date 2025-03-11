@@ -1,29 +1,53 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Create a count array to store the count of each unique value
-    const count: number[] = new Array(max + 1).fill(0);
-    const output: number[] = new Array(arr.length);
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    // Count each element in the input array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
+    return lps;
+}
 
-    // Update the count array to store the cumulative count
-    for (let i = 1; i <= max; i++) {
-        count[i] += count[i - 1];
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index
+            j = lps[j - 1]; // Use LPS to continue searching
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters in the pattern
+            } else {
+                i++;
+            }
+        }
     }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return output;
+    return result; // Return all starting indices of matches
 }
 
 // Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", result);
