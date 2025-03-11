@@ -1,121 +1,56 @@
-class Graph {
-    private adjList: Map<number, number[]>;
-
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
+function getMax(arr: number[]): number {
+    let max = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
         }
-        this.adjList.get(v)!.push(w);
+    }
+    return max;
+}
+
+function countingSort(arr: number[], exp: number): number[] {
+    const output: number[] = new Array(arr.length); // Output array
+    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
+
+    // Store count of occurrences in count[]
+    for (let i = 0; i < arr.length; i++) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        count[index]++;
     }
 
-    topologicalSortUtil(v: number, visited: Set<number>, stack: number[]) {
-        visited.add(v);
-
-        const neighbors = this.adjList.get(v) || [];
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                this.topologicalSortUtil(neighbor, visited, stack);
-            }
-        }
-
-        stack.push(v);
+    // Change count[i] so that it contains the actual position of this digit in output[]
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
     }
 
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        for (const vertex of this.adjList.keys()) {
-            if (!visited.has(vertex)) {
-                this.topologicalSortUtil(vertex, visited, stack);
-            }
-        }
-
-        return stack.reverse(); // Return in reverse order
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        output[count[index] - 1] = arr[i];
+        count[index]--;
     }
+
+    // Copy the output array to arr[], so that arr[] now contains sorted numbers
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = output[i];
+    }
+
+    return arr;
+}
+
+function radixSort(arr: number[]): number[] {
+    const max = getMax(arr);
+
+    // Do counting sort for every digit
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        countingSort(arr, exp);
+    }
+
+    return arr;
 }
 
 // Example usage
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
-class GraphKahn {
-    private adjList: Map<number, number[]>;
-
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const inDegree: Map<number, number> = new Map();
-        const queue: number[] = [];
-        const result: number[] = [];
-
-        // Initialize in-degree of each vertex
-        for (const [vertex, neighbors] of this.adjList.entries()) {
-            if (!inDegree.has(vertex)) {
-                inDegree.set(vertex, 0);
-            }
-            for (const neighbor of neighbors) {
-                inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
-            }
-        }
-
-        // Collect all vertices with in-degree 0
-        for (const [vertex, degree] of inDegree.entries()) {
-            if (degree === 0) {
-                queue.push(vertex);
-            }
-        }
-
-        while (queue.length > 0) {
-            const current = queue.shift()!;
-            result.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
-                if (inDegree.get(neighbor) === 0) {
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there was a cycle
-        if (result.length !== inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-
-        return result;
-    }
-}
-
-// Example usage
-const graphKahn = new GraphKahn();
-graphKahn.addEdge(5, 2);
-graphKahn.addEdge(5, 0);
-graphKahn.addEdge(4, 0);
-graphKahn.addEdge(4, 1);
-graphKahn.addEdge(2, 3);
-graphKahn.addEdge(3, 1);
-
-const sortedOrderKahn = graphKahn.topologicalSort();
-console.log(sortedOrderKahn); // Output: A valid topological order
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log("Unsorted array:", arr);
+const sortedArr = radixSort(arr);
+console.log("Sorted array:", sortedArr);
