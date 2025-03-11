@@ -1,56 +1,49 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    head: ListNode | null;
 
     constructor() {
-        this.adjacencyList = new Map();
+        this.head = null;
     }
 
-    addVertex(vertex: number): void {
-        this.adjacencyList.set(vertex, []);
-    }
-
-    addEdge(vertex1: number, vertex2: number): void {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
-
-    bfs(startVertex: number): number[] {
-        const visited: Set<number> = new Set();
-        const queue: number[] = [];
-        const result: number[] = [];
-
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift()!;
-            result.push(currentVertex);
-
-            const neighbors = this.adjacencyList.get(currentVertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
 
-        return result;
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
     }
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
-
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(2, 5);
-
-const bfsResult = graph.bfs(1);
-console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
