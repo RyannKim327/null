@@ -1,50 +1,121 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Graph {
+    private adjList: Map<number, number[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null for invalid input
+    constructor() {
+        this.adjList = new Map();
     }
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
         }
-        firstPointer = firstPointer.next;
+        this.adjList.get(v)!.push(w);
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+    topologicalSortUtil(v: number, visited: Set<number>, stack: number[]) {
+        visited.add(v);
+
+        const neighbors = this.adjList.get(v) || [];
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                this.topologicalSortUtil(neighbor, visited, stack);
+            }
+        }
+
+        stack.push(v);
     }
 
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
+
+        for (const vertex of this.adjList.keys()) {
+            if (!visited.has(vertex)) {
+                this.topologicalSortUtil(vertex, visited, stack);
+            }
+        }
+
+        return stack.reverse(); // Return in reverse order
+    }
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// Example usage
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
 
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
+class GraphKahn {
+    private adjList: Map<number, number[]>;
+
+    constructor() {
+        this.adjList = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+    }
+
+    topologicalSort(): number[] {
+        const inDegree: Map<number, number> = new Map();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        // Initialize in-degree of each vertex
+        for (const [vertex, neighbors] of this.adjList.entries()) {
+            if (!inDegree.has(vertex)) {
+                inDegree.set(vertex, 0);
+            }
+            for (const neighbor of neighbors) {
+                inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
+            }
+        }
+
+        // Collect all vertices with in-degree 0
+        for (const [vertex, degree] of inDegree.entries()) {
+            if (degree === 0) {
+                queue.push(vertex);
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            result.push(current);
+
+            const neighbors = this.adjList.get(current) || [];
+            for (const neighbor of neighbors) {
+                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+                if (inDegree.get(neighbor) === 0) {
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there was a cycle
+        if (result.length !== inDegree.size) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+
+        return result;
+    }
 }
+
+// Example usage
+const graphKahn = new GraphKahn();
+graphKahn.addEdge(5, 2);
+graphKahn.addEdge(5, 0);
+graphKahn.addEdge(4, 0);
+graphKahn.addEdge(4, 1);
+graphKahn.addEdge(2, 3);
+graphKahn.addEdge(3, 1);
+
+const sortedOrderKahn = graphKahn.topologicalSort();
+console.log(sortedOrderKahn); // Output: A valid topological order
