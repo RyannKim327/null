@@ -1,12 +1,31 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+// Define an interface for the data we expect to receive
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+// Function to fetch posts
+async function fetchPosts(): Promise<Post[]> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+        // Check if the response is ok (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
+        return posts;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        return [];
+    }
+}
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+// Call the function and log the results
+fetchPosts().then(posts => {
+    console.log('Fetched posts:', posts);
+});
