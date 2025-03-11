@@ -1,35 +1,16 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
+
+    for (let i = 1; i < nums.length; i++) {
+        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
+        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar if needed
     }
-    return count;
+
+    return maxSoFar; // Return the maximum sum found
 }
 
 // Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(`The length of the string is: ${length}`);
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        count++;
-    }
-    return count;
-}
-function getStringLength(str: string): number {
-    let count = 0;
-    let index = 0;
-    
-    while (true) {
-        try {
-            str[index]; // Accessing the character at the current index
-            count++;
-            index++;
-        } catch (e) {
-            break; // Break the loop when an error occurs (index out of bounds)
-        }
-    }
-    
-    return count;
-}
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
