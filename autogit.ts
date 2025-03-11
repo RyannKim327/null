@@ -1,28 +1,58 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If the node has already been visited, return
     }
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    console.log(start); // Process the current node
+    visited.add(start); // Mark the node as visited
 
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
+    for (const neighbor of graph[start]) {
+        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
     }
-
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearch(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearchIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!; // Get the last node from the stack
+
+        if (!visited.has(node)) {
+            console.log(node); // Process the current node
+            visited.add(node); // Mark the node as visited
+
+            // Add neighbors to the stack
+            for (const neighbor of graph[node]) {
+                stack.push(neighbor);
+            }
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearchIterative(graph, 'A');
