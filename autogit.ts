@@ -1,58 +1,69 @@
-type Graph = { [key: string]: string[] };
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If the node has already been visited, return
-    }
-
-    console.log(start); // Process the current node
-    visited.add(start); // Mark the node as visited
-
-    for (const neighbor of graph[start]) {
-        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+class LinkedList {
+    head: ListNode | null;
 
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
+    constructor() {
+        this.head = null;
+    }
 
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!; // Get the last node from the stack
-
-        if (!visited.has(node)) {
-            console.log(node); // Process the current node
-            visited.add(node); // Mark the node as visited
-
-            // Add neighbors to the stack
-            for (const neighbor of graph[node]) {
-                stack.push(neighbor);
-            }
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to print the list
+    printList() {
+        let current = this.head;
+        const values: number[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
     }
 }
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+    let next: ListNode | null = null;
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+    while (current) {
+        next = current.next; // Store the next node
+        current.next = prev; // Reverse the current node's pointer
+        prev = current;      // Move prev and current one step forward
+        current = next;
+    }
+    return prev; // New head of the reversed list
+}
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
-depthFirstSearchIterative(graph, 'A');
+console.log("Original List:");
+list.printList();
+
+list.head = reverseLinkedList(list.head);
+
+console.log("Reversed List:");
+list.printList();
