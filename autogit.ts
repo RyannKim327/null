@@ -1,53 +1,54 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    if (n <= 1) return arr;
+function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const result: number[] = [];
+    let p = 0; // hash value for pattern
+    let t = 0; // hash value for text
+    let h = 1;
 
-    // Create a temporary array to hold merged results
-    const temp = new Array(n);
-    
-    // Start with a size of 1 and double it each iteration
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + size * 2, n);
-            merge(arr, temp, leftStart, mid, rightEnd);
+    // The value of h would be "pow(d, m-1)%q"
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * d) % q;
+    }
+
+    // Calculate the hash value of pattern and first window of text
+    for (let i = 0; i < m; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % q;
+        t = (d * t + text.charCodeAt(i)) % q;
+    }
+
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of the current window of text and pattern
+        if (p === t) {
+            // If the hash values match, check for characters one by one
+            let j;
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
+            }
+            if (j === m) {
+                result.push(i); // Pattern found at index i
+            }
+        }
+
+        // Calculate hash value for next window of text: Remove leading digit, add trailing digit
+        if (i < n - m) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get negative value of t, converting it to positive
+            if (t < 0) {
+                t = t + q;
+            }
         }
     }
 
-    return arr;
-}
-
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
-    let left = leftStart; // Starting index for left subarray
-    let right = mid;      // Starting index for right subarray
-    let index = leftStart; // Starting index to be merged
-
-    // Merge the two subarrays into temp
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
-        } else {
-            temp[index++] = arr[right++];
-        }
-    }
-
-    // Copy remaining elements of left subarray, if any
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
-
-    // Copy remaining elements of right subarray, if any
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
-
-    // Copy the merged subarray back into the original array
-    for (let i = leftStart; i < rightEnd; i++) {
-        arr[i] = temp[i];
-    }
+    return result;
 }
 
 // Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", result);
