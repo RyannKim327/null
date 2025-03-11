@@ -1,49 +1,122 @@
-function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
-    const m = pattern.length;
-    const n = text.length;
-    const result: number[] = [];
-    const hPattern = 0; // Hash value for pattern
-    const hText = 0; // Hash value for text
-    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
+class Node<T> {
+    value: T;
+    forward: Node<T>[];
 
-    // Calculate the hash value of the pattern and the first window of text
-    for (let i = 0; i < m; i++) {
-        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
-        hText = (d * hText + text.charCodeAt(i)) % q;
+    constructor(value: T, level: number) {
+        this.value = value;
+        this.forward = new Array(level + 1).fill(null);
+    }
+}
+
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number; // Probability for random level generation
+    private level: number; // Current highest level
+
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node<T>(null, maxLevel);
     }
 
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check the hash values of the current window of text and pattern
-        if (hPattern === hText) {
-            // If the hash values match, check for characters one by one
-            let j;
-            for (j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    break;
+    private randomLevel(): number {
+        let lvl = 0;
+        while (Math.random() < this.p && lvl < this.maxLevel) {
+            lvl++;
+        }
+        return lvl;
+    }
+
+    insert(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the position to insert the new value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the value is not already present, insert it
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
                 }
+                this.level = newLevel;
             }
-            if (j === m) {
-                result.push(i); // Pattern found at index i
-            }
-        }
 
-        // Calculate hash value for the next window of text
-        if (i < n - m) {
-            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
-
-            // We might get negative value of hText, converting it to positive
-            if (hText < 0) {
-                hText += q;
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
             }
         }
     }
 
-    return result; // Return the list of starting indices where pattern is found
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+
+        return current !== null && current.value === value;
+    }
+
+    delete(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the node to delete
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If found, remove it
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            // Remove levels if necessary
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+        }
+    }
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = rabinKarp(text, pattern);
-console.log("Pattern found at indices:", indices);
+const skipList = new SkipList<number>();
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
+skipList.insert(17);
+
+console.log(skipList.search(6)); // true
+console.log(skipList.search(15)); // false
+
+skipList.delete(6);
+console.log(skipList.search(6)); // false
