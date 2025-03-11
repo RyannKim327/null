@@ -1,31 +1,49 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Loop through all elements in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
+class LinkedList {
+    head: ListNode | null;
 
-        // If no two elements were swapped in the inner loop, then the array is sorted
-        if (!swapped) {
-            break;
-        }
+    constructor() {
+        this.head = null;
     }
 
-    return arr;
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
