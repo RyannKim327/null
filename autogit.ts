@@ -1,21 +1,29 @@
-function insertionSort(arr: number[]): number[] {
-    // Loop through the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i]; // The element to be positioned
-        let j = i - 1; // The index of the last sorted element
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        arr[j + 1] = key; // Place the key in its correct position
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
-    return arr; // Return the sorted array
+
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        // While i divides n, update n and largestFactor
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
 // Example usage:
-const array = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
