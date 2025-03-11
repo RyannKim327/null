@@ -1,22 +1,20 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    // Start with the first string as the prefix
-    let prefix = strs[0];
+    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
 
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If the prefix is empty, return it
-            if (prefix === "") return "";
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
     }
 
-    return prefix;
+    return Math.max(...dp); // The length of the longest increasing subsequence
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+const length = longestIncreasingSubsequence(nums);
+console.log(length); // Output: 4
