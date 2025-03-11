@@ -1,54 +1,29 @@
-class Edge {
-    constructor(public from: number, public to: number, public weight: number) {}
-}
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-class Graph {
-    private edges: Edge[] = [];
-    private vertexCount: number;
-
-    constructor(vertexCount: number) {
-        this.vertexCount = vertexCount;
-    }
-
-    addEdge(from: number, to: number, weight: number) {
-        this.edges.push(new Edge(from, to, weight));
-    }
-
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.vertexCount).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.vertexCount - 1; i++) {
-            for (const edge of this.edges) {
-                if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
-                    distances[edge.to] = distances[edge.from] + edge.weight;
-                }
-            }
-        }
-
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
-                return "Graph contains a negative-weight cycle";
-            }
-        }
-
-        return distances;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
 
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+}
 // Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-const distances = graph.bellmanFord(0);
-console.log(distances);
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
