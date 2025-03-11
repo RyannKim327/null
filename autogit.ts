@@ -1,57 +1,36 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
         }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
     }
 
-    // Method to find the middle element
-    findMiddle(): ListNode | null {
-        let slowPointer: ListNode | null = this.head;
-        let fastPointer: ListNode | null = this.head;
-
-        while (fastPointer && fastPointer.next) {
-            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
-            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
         }
+    }
 
-        return slowPointer; // slowPointer will be at the middle
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
     }
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
-}
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
