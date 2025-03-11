@@ -1,116 +1,61 @@
-class Graph {
-    private adjList: Map<number, number[]>;
-
-    constructor() {
-        this.adjList = new Map();
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        const dfs = (node: number) => {
-            visited.add(node);
-            const neighbors = this.adjList.get(node) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(node);
-        };
-
-        for (const node of this.adjList.keys()) {
-            if (!visited.has(node)) {
-                dfs(node);
-            }
-        }
-
-        return stack.reverse(); // Return in reverse order
-    }
+    
+    // Sort the array
+    const sortedArray = arr.slice().sort((a, b) => a - b);
+    
+    // Return the k-th smallest element (1-based index)
+    return sortedArray[k - 1];
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(array, k)); // Output: 7
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    // Move pivot to end
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
 
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
-class Graph {
-    private adjList: Map<number, number[]>;
-    private inDegree: Map<number, number>;
-
-    constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-
-        // Update in-degree of the destination node
-        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
-        if (!this.inDegree.has(v)) {
-            this.inDegree.set(v, 0);
+    for (let i = left; i < right; i++) {
+        if (arr[i] < pivotValue) {
+            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+            storeIndex++;
         }
     }
+    // Move pivot to its final place
+    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
+    return storeIndex;
+}
 
-    topologicalSort(): number[] {
-        const zeroInDegreeQueue: number[] = [];
-        const sortedOrder: number[] = [];
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left];
+    }
 
-        // Initialize the queue with nodes having zero in-degree
-        for (const [node, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                zeroInDegreeQueue.push(node);
-            }
-        }
+    const pivotIndex = Math.floor((left + right) / 2);
+    const newPivotIndex = partition(arr, left, right, pivotIndex);
 
-        while (zeroInDegreeQueue.length > 0) {
-            const current = zeroInDegreeQueue.shift()!;
-            sortedOrder.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    zeroInDegreeQueue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there was a cycle
-        if (sortedOrder.length !== this.inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-
-        return sortedOrder;
+    if (k === newPivotIndex) {
+        return arr[k];
+    } else if (k < newPivotIndex) {
+        return quickSelect(arr, left, newPivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, newPivotIndex + 1, right, k);
     }
 }
 
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    return quickSelect(arr, 0, arr.length - 1, k - 1);
+}
 
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
+// Example usage:
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(array, k)); // Output: 7
