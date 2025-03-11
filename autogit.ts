@@ -1,69 +1,62 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function createBadCharacterTable(pattern: string): { [key: string]: number } {
+    const table: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Initialize the table with the length of the pattern
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
     }
+
+    // Fill in the default value for characters not in the pattern
+    for (let charCode = 0; charCode < 256; charCode++) {
+        const char = String.fromCharCode(charCode);
+        if (!(char in table)) {
+            table[char] = patternLength;
+        }
+    }
+
+    return table;
 }
 
-class LinkedList {
-    head: ListNode | null;
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
 
-    constructor() {
-        this.head = null;
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+    const badCharTable = createBadCharacterTable(pattern);
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
         }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
+
+        // If the pattern is found
+        if (j < 0) {
+            return i; // Return the starting index of the match
+        } else {
+            // Shift the pattern based on the bad character rule
+            const shift = badCharTable[text[i + j]];
+            i += shift; // Move the text index forward
         }
-        current.next = newNode;
     }
 
-    // Method to print the list
-    printList() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
+    return -1; // Pattern not found
 }
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
 
-    while (current) {
-        next = current.next; // Store the next node
-        current.next = prev; // Reverse the current node's pointer
-        prev = current;      // Move prev and current one step forward
-        current = next;
-    }
-    return prev; // New head of the reversed list
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
 }
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original List:");
-list.printList();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed List:");
-list.printList();
