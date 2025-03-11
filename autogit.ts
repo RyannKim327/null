@@ -1,56 +1,70 @@
-function getMax(arr: number[]): number {
-    let max = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            max = arr[i];
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
+
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
+}
+class Queue<T> {
+    private head: Node<T> | null = null; // Points to the front of the queue
+    private tail: Node<T> | null = null; // Points to the end of the queue
+    private length: number = 0; // To keep track of the number of elements
+
+    // Enqueue: Add an element to the end of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the old tail to the new node
         }
+        this.tail = newNode; // Update the tail to the new node
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, head is also the new node
+        }
+        this.length++;
     }
-    return max;
+
+    // Dequeue: Remove and return the element from the front of the queue
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Queue is empty
+        }
+        const dequeuedValue = this.head.value; // Get the value to return
+        this.head = this.head.next; // Move the head to the next node
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, reset the tail
+        }
+        this.length--;
+        return dequeuedValue;
+    }
+
+    // Peek: Get the value at the front of the queue without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null;
+    }
+
+    // Size: Get the number of elements in the queue
+    size(): number {
+        return this.length;
+    }
+
+    // IsEmpty: Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
+    }
 }
+const queue = new Queue<number>();
 
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-    // Store count of occurrences in count[]
-    for (let i = 0; i < arr.length; i++) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        count[index]++;
-    }
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek());    // Output: 2
+console.log(queue.size());     // Output: 2
+console.log(queue.isEmpty());  // Output: false
 
-    // Change count[i] so that it contains the actual position of this digit in output[]
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    // Copy the output array to arr[], so that arr[] now contains sorted numbers
-    for (let i = 0; i < arr.length; i++) {
-        arr[i] = output[i];
-    }
-
-    return arr;
-}
-
-function radixSort(arr: number[]): number[] {
-    const max = getMax(arr);
-
-    // Do counting sort for every digit
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        countingSort(arr, exp);
-    }
-
-    return arr;
-}
-
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log("Unsorted array:", arr);
-const sortedArr = radixSort(arr);
-console.log("Sorted array:", sortedArr);
+queue.dequeue();
+queue.dequeue();
+console.log(queue.isEmpty());  // Output: true
