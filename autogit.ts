@@ -1,50 +1,45 @@
-type Graph = {
-    [key: string]: { neighbor: string; weight: number }[];
-};
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function dijkstra(graph: Graph, start: string): { [key: string]: number } {
-    const distances: { [key: string]: number } = {};
-    const priorityQueue: [string, number][] = [];
-    const visited: Set<string> = new Set();
-
-    // Initialize distances
-    for (const node in graph) {
-        distances[node] = Infinity;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-    distances[start] = 0;
-    priorityQueue.push([start, 0]);
-
-    while (priorityQueue.length > 0) {
-        // Sort the queue by distance and get the node with the smallest distance
-        priorityQueue.sort((a, b) => a[1] - b[1]);
-        const [currentNode, currentDistance] = priorityQueue.shift()!;
-
-        if (visited.has(currentNode)) {
-            continue;
-        }
-        visited.add(currentNode);
-
-        // Explore neighbors
-        for (const { neighbor, weight } of graph[currentNode]) {
-            const newDistance = currentDistance + weight;
-
-            if (newDistance < distances[neighbor]) {
-                distances[neighbor] = newDistance;
-                priorityQueue.push([neighbor, newDistance]);
-            }
-        }
-    }
-
-    return distances;
 }
 
-// Example usage
-const graph: Graph = {
-    A: [{ neighbor: 'B', weight: 1 }, { neighbor: 'C', weight: 4 }],
-    B: [{ neighbor: 'A', weight: 1 }, { neighbor: 'C', weight: 2 }, { neighbor: 'D', weight: 5 }],
-    C: [{ neighbor: 'A', weight: 4 }, { neighbor: 'B', weight: 2 }, { neighbor: 'D', weight: 1 }],
-    D: [{ neighbor: 'B', weight: 5 }, { neighbor: 'C', weight: 1 }],
-};
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-const shortestPaths = dijkstra(graph, 'A');
-console.log(shortestPaths);
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
+        }
+    }
+
+    return false; // No cycle
+}
+
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
