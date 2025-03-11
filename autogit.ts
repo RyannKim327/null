@@ -1,95 +1,47 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+function createBadCharTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    constructor(size: number = 42) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - 1 - i;
     }
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
-        }
-        return hash % this.size;
-    }
+    return badCharTable;
+}
 
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
 
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket[i][1] = value; // Update the value
-                return;
-            }
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare pattern with text from the end
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
         }
 
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
-    }
-
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return bucket[i][1]; // Return the value
-            }
+        // If the pattern is found
+        if (j < 0) {
+            occurrences.push(i);
+            // Shift the pattern by the length of the pattern or the bad character shift
+            i += (i + patternLength < textLength) ? patternLength - (badCharTable[text[i + patternLength]] || patternLength) : 1;
+        } else {
+            // Shift the pattern based on the bad character table
+            const badCharShift = badCharTable[text[i + j]] || patternLength;
+            i += Math.max(1, badCharShift - (patternLength - 1 - j));
         }
-
-        return undefined; // Key not found
     }
 
-    public remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
-            }
-        }
-
-        return false; // Key not found
-    }
-
-    public keys(): K[] {
-        const keys: K[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    keys.push(entry[0]);
-                }
-            }
-        }
-        return keys;
-    }
-
-    public values(): V[] {
-        const values: V[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    values.push(entry[1]);
-                }
-            }
-        }
-        return values;
-    }
+    return occurrences;
 }
 
 // Example usage
-const hashTable = new HashTable<string, number>();
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.get("banana")); // Output: 2
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: undefined
-console.log(hashTable.keys()); // Output: ['banana']
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: [2, 7, 12]
