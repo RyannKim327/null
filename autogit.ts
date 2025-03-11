@@ -1,16 +1,28 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar to the first element
-    let maxEndingHere = nums[0]; // Initialize maxEndingHere to the first element
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    for (let i = 1; i < nums.length; i++) {
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
-        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar if needed
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
 
-    return maxSoFar; // Return the maximum sum found
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
