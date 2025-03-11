@@ -1,15 +1,12 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
-        }
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
     }
-    return true; // All elements are in ascending order
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [1, 3, 2, 4, 5];
-
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+const number = 5;
+console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
