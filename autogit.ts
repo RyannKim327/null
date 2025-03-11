@@ -1,22 +1,60 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+// Define a Graph class
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap arr[i] and arr[i + 1]
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-                swapped = true;
+    constructor() {
+        this.adjacencyList = new Map();
+    }
+
+    // Add a vertex to the graph
+    addVertex(vertex: number): void {
+        if (!this.adjacencyList.has(vertex)) {
+            this.adjacencyList.set(vertex, []);
+        }
+    }
+
+    // Add an edge to the graph
+    addEdge(vertex1: number, vertex2: number): void {
+        this.addVertex(vertex1);
+        this.addVertex(vertex2);
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    // Perform BFS
+    bfs(startVertex: number): number[] {
+        const visited = new Set<number>();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const vertex = queue.shift()!;
+            result.push(vertex);
+
+            const neighbors = this.adjacencyList.get(vertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
             }
         }
-    } while (swapped);
 
-    return arr;
+        return result;
+    }
 }
 
 // Example usage
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+const graph = new Graph();
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.addEdge(3, 6);
+graph.addEdge(3, 7);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5, 6, 7]
