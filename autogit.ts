@@ -1,71 +1,125 @@
 class Node<T> {
     value: T;
-    next: Node<T> | null;
+    forward: Node<T>[];
 
-    constructor(value: T) {
+    constructor(value: T, level: number) {
         this.value = value;
-        this.next = null;
+        this.forward = new Array(level + 1).fill(null);
     }
 }
-class Queue<T> {
-    private front: Node<T> | null = null;
-    private back: Node<T> | null = null;
-    private length: number = 0;
 
-    // Enqueue: Add an element to the back of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (this.back) {
-            this.back.next = newNode; // Link the old back to the new node
-        }
-        this.back = newNode; // Update the back to the new node
-        if (!this.front) {
-            this.front = newNode; // If the queue was empty, set front to the new node
-        }
-        this.length++;
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number; // Probability for random level generation
+    private level: number;
+
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.level = 0;
+        this.head = new Node<T>(null, this.maxLevel);
     }
 
-    // Dequeue: Remove and return the element from the front of the queue
-    dequeue(): T | null {
-        if (!this.front) {
-            return null; // Queue is empty
+    private randomLevel(): number {
+        let level = 0;
+        while (Math.random() < this.p && level < this.maxLevel) {
+            level++;
         }
-        const value = this.front.value; // Get the value from the front node
-        this.front = this.front.next; // Move front to the next node
-        if (!this.front) {
-            this.back = null; // If the queue is now empty, set back to null
+        return level;
+    }
+
+    insert(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        // Find the position to insert the new value
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
         }
-        this.length--;
-        return value;
+
+        current = current.forward[0];
+
+        // If the value is not already present, insert it
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
+                }
+                this.level = newLevel;
+            }
+
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
     }
 
-    // Peek: Get the value at the front of the queue without removing it
-    peek(): T | null {
-        return this.front ? this.front.value : null;
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+
+        return current !== null && current.value === value;
     }
 
-    // Size: Get the number of elements in the queue
-    size(): number {
-        return this.length;
-    }
+    delete(value: T): boolean {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
 
-    // IsEmpty: Check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
+        // Find the node to delete
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        // If the value is found, delete it
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            // Remove levels if necessary
+            while (this.level > 0 && this.head.forward[this.level] === null) {
+                this.level--;
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }
-const queue = new Queue<number>();
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
+// Example usage
+const skipList = new SkipList<number>();
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
+skipList.insert(17);
 
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.peek());     // Output: 2
-console.log(queue.size());     // Output: 2
-console.log(queue.isEmpty());  // Output: false
+console.log(skipList.search(6)); // true
+console.log(skipList.search(15)); // false
 
-queue.dequeue();
-queue.dequeue();
-
-console.log(queue.isEmpty());  // Output: true
+skipList.delete(6);
+console.log(skipList.search(6)); // false
