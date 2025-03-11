@@ -1,49 +1,35 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
     }
-
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to the end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
+    return count;
 }
 
-// To maintain the heap property
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
-
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`);
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        count++;
     }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
+    return count;
 }
-
-// Example usage
-const array = [3, 5, 1, 10, 2, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 10]
+function getStringLength(str: string): number {
+    let count = 0;
+    let index = 0;
+    
+    while (true) {
+        try {
+            str[index]; // Accessing the character at the current index
+            count++;
+            index++;
+        } catch (e) {
+            break; // Break the loop when an error occurs (index out of bounds)
+        }
+    }
+    
+    return count;
+}
