@@ -1,54 +1,21 @@
-function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
-    const m = pattern.length;
-    const n = text.length;
-    const result: number[] = [];
-    let p = 0; // hash value for pattern
-    let t = 0; // hash value for text
-    let h = 1;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    // The value of h would be "pow(d, m-1)%q"
-    for (let i = 0; i < m - 1; i++) {
-        h = (h * d) % q;
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    // Calculate the hash value of pattern and first window of text
-    for (let i = 0; i < m; i++) {
-        p = (d * p + pattern.charCodeAt(i)) % q;
-        t = (d * t + text.charCodeAt(i)) % q;
-    }
+    // Sort the characters of each string and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check the hash values of the current window of text and pattern
-        if (p === t) {
-            // If the hash values match, check for characters one by one
-            let j;
-            for (j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    break;
-                }
-            }
-            if (j === m) {
-                result.push(i); // Pattern found at index i
-            }
-        }
-
-        // Calculate hash value for next window of text: Remove leading digit, add trailing digit
-        if (i < n - m) {
-            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
-
-            // We might get negative value of t, converting it to positive
-            if (t < 0) {
-                t = t + q;
-            }
-        }
-    }
-
-    return result;
+    return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = rabinKarp(text, pattern);
-console.log("Pattern found at indices:", result);
+// Example usage:
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
