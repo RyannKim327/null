@@ -1,56 +1,34 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
+const newArray = array.filter(item => item !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3); // Find the index of the element
 
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            table.set(pattern[i], i);
-        }
-
-        return table;
-    }
-
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found at index i
-                return i; // Return the index of the first match
-            }
-        }
-
-        return -1; // No match found
-    }
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove the element at that index
 }
 
-// Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const idToRemove = 2;
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
+const indexToRemove = array.findIndex(item => item.id === idToRemove);
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1);
 }
+
+console.log(array); // Output: [{ id: 1 }, { id: 3 }]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArray = array.reduce((acc, item) => {
+    if (item !== elementToRemove) {
+        acc.push(item);
+    }
+    return acc;
+}, []);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
