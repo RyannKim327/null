@@ -1,36 +1,116 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Graph {
+    private adjList: Map<number, number[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+    constructor() {
+        this.adjList = new Map();
     }
 
-    // If the node is a leaf node, return 1
-    if (root.left === null && root.right === null) {
-        return 1;
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
     }
 
-    // Recursively count the leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
+
+        const dfs = (node: number) => {
+            visited.add(node);
+            const neighbors = this.adjList.get(node) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(node);
+        };
+
+        for (const node of this.adjList.keys()) {
+            if (!visited.has(node)) {
+                dfs(node);
+            }
+        }
+
+        return stack.reverse(); // Return in reverse order
+    }
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
 
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
+class Graph {
+    private adjList: Map<number, number[]>;
+    private inDegree: Map<number, number>;
+
+    constructor() {
+        this.adjList = new Map();
+        this.inDegree = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+
+        // Update in-degree of the destination node
+        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
+        if (!this.inDegree.has(v)) {
+            this.inDegree.set(v, 0);
+        }
+    }
+
+    topologicalSort(): number[] {
+        const zeroInDegreeQueue: number[] = [];
+        const sortedOrder: number[] = [];
+
+        // Initialize the queue with nodes having zero in-degree
+        for (const [node, degree] of this.inDegree.entries()) {
+            if (degree === 0) {
+                zeroInDegreeQueue.push(node);
+            }
+        }
+
+        while (zeroInDegreeQueue.length > 0) {
+            const current = zeroInDegreeQueue.shift()!;
+            sortedOrder.push(current);
+
+            const neighbors = this.adjList.get(current) || [];
+            for (const neighbor of neighbors) {
+                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
+                if (this.inDegree.get(neighbor) === 0) {
+                    zeroInDegreeQueue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there was a cycle
+        if (sortedOrder.length !== this.inDegree.size) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+
+        return sortedOrder;
+    }
+}
+
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
