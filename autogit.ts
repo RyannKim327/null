@@ -1,34 +1,22 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Find the index of the element
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
+        }
+    } while (swapped);
 
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove the element at that index
+    return arr;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
-const idToRemove = 2;
-
-const indexToRemove = array.findIndex(item => item.id === idToRemove);
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1);
-}
-
-console.log(array); // Output: [{ id: 1 }, { id: 3 }]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
-    }
-    return acc;
-}, []);
-
-console.log(newArray); // Output: [1, 2, 4, 5]
+// Example usage
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
