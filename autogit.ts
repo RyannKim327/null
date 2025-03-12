@@ -1,81 +1,58 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(value: T) {
+    constructor(value: string) {
         this.value = value;
-        this.next = null;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
     }
 }
-class LinkedList<T> {
-    head: Node<T> | null;
-    size: number;
 
-    constructor() {
-        this.head = null;
-        this.size = 0;
-    }
+function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-    // Add a new node at the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node;
+        }
+
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
             }
-            current.next = newNode;
         }
-        this.size++;
     }
 
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.size--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                this.size--;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const elements: T[] = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
-    }
-
-    // Get the size of the list
-    getSize(): number {
-        return this.size;
-    }
+    // If the goal was not found within the depth limit
+    return null;
 }
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.append(30);
-list.display(); // Output: 10 -> 20 -> 30
 
-list.remove(20);
-list.display(); // Output: 10 -> 30
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
 
-console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const goalNode = depthLimitedSearch(root, "E", 2);
+if (goalNode) {
+    console.log(`Found goal: ${goalNode.value}`);
+} else {
+    console.log("Goal not found within the depth limit.");
+}
