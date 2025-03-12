@@ -1,28 +1,43 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left]; // If the list contains only one element
     }
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    const pivotIndex = partition(arr, left, right);
 
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
+    // The pivot is in its final sorted position
+    if (k === pivotIndex) {
+        return arr[k];
+    } else if (k < pivotIndex) {
+        return quickSelect(arr, left, pivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, pivotIndex + 1, right, k);
     }
-
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-// Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+function partition(arr: number[], left: number, right: number): number {
+    const pivot = arr[right]; // Choose the rightmost element as pivot
+    let i = left;
+
+    for (let j = left; j < right; j++) {
+        if (arr[j] < pivot) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+            i++;
+        }
+    }
+    [arr[i], arr[right]] = [arr[right], arr[i]]; // Swap pivot to its final place
+    return i; // Return the index of the pivot
+}
+
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for zero-based index
+}
+
+// Example usage:
+const arr = [3, 2, 1, 5, 6, 4];
+const k = 2;
+const kthSmallest = findKthSmallest(arr, k);
+console.log(`The ${k}th smallest element is ${kthSmallest}`);
