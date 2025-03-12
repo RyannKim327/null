@@ -1,31 +1,64 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+class Graph {
+    private adjacencyList: Map<string, { node: string, weight: number }[]>;
 
-// Function to fetch posts
-async function fetchPosts(): Promise<Post[]> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    addEdge(start: string, end: string, weight: number) {
+        if (!this.adjacencyList.has(start)) {
+            this.adjacencyList.set(start, []);
+        }
+        this.adjacencyList.get(start)!.push({ node: end, weight });
+        
+        // If the graph is undirected, add the reverse edge as well
+        if (!this.adjacencyList.has(end)) {
+            this.adjacencyList.set(end, []);
+        }
+        this.adjacencyList.get(end)!.push({ node: start, weight });
+    }
+
+    dijkstra(start: string): Map<string, number> {
+        const distances = new Map<string, number>();
+        const priorityQueue: { node: string, distance: number }[] = [];
+        const visited = new Set<string>();
+
+        // Initialize distances
+        for (const node of this.adjacencyList.keys()) {
+            distances.set(node, Infinity);
+        }
+        distances.set(start, 0);
+        priorityQueue.push({ node: start, distance: 0 });
+
+        while (priorityQueue.length > 0) {
+            // Sort the queue by distance
+            priorityQueue.sort((a, b) => a.distance - b.distance);
+            const { node } = priorityQueue.shift()!;
+
+            if (visited.has(node)) continue;
+            visited.add(node);
+
+            const neighbors = this.adjacencyList.get(node) || [];
+            for (const { node: neighbor, weight } of neighbors) {
+                const newDistance = distances.get(node)! + weight;
+                if (newDistance < distances.get(neighbor)!) {
+                    distances.set(neighbor, newDistance);
+                    priorityQueue.push({ node: neighbor, distance: newDistance });
+                }
+            }
         }
 
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-        return posts;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        return [];
+        return distances;
     }
 }
 
-// Call the function and log the results
-fetchPosts().then(posts => {
-    console.log('Fetched posts:', posts);
-});
+// Example usage:
+const graph = new Graph();
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 2);
+graph.addEdge("B", "D", 5);
+graph.addEdge("C", "D", 1);
+
+const distances = graph.dijkstra("A");
+console.log(distances); // Output the shortest distances from node A
