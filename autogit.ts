@@ -10,38 +10,42 @@ function mergeSort(arr: number[]): number[] {
     const right = arr.slice(mid);
 
     // Recursively sort both halves
-    return merge(mergeSort(left), mergeSort(right));
+    const sortedLeft = mergeSort(left);
+    const sortedRight = mergeSort(right);
+
+    // Merge the sorted halves
+    return merge(sortedLeft, sortedRight);
 }
 
 function merge(left: number[], right: number[]): number[] {
-    const sortedArray: number[] = [];
+    const result: number[] = [];
     let leftIndex = 0;
     let rightIndex = 0;
 
     // Merge the two arrays while there are elements in both
     while (leftIndex < left.length && rightIndex < right.length) {
         if (left[leftIndex] < right[rightIndex]) {
-            sortedArray.push(left[leftIndex]);
+            result.push(left[leftIndex]);
             leftIndex++;
         } else {
-            sortedArray.push(right[rightIndex]);
+            result.push(right[rightIndex]);
             rightIndex++;
         }
     }
 
     // If there are remaining elements in the left array, add them
     while (leftIndex < left.length) {
-        sortedArray.push(left[leftIndex]);
+        result.push(left[leftIndex]);
         leftIndex++;
     }
 
     // If there are remaining elements in the right array, add them
     while (rightIndex < right.length) {
-        sortedArray.push(right[rightIndex]);
+        result.push(right[rightIndex]);
         rightIndex++;
     }
 
-    return sortedArray;
+    return result;
 }
 
 // Example usage
