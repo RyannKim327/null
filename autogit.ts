@@ -1,30 +1,36 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-const newArray = array.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
+    }
 
-const index = array.indexOf(elementToRemove);
-if (index !== -1) {
-    array.splice(index, 1);
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
+    }
 }
-console.log(array); // Output: [1, 2, 4, 5]
-interface Item {
-    id: number;
-    name: string;
-}
 
-const array: Item[] = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' },
-];
-
-const idToRemove = 2;
-const index = array.findIndex(item => item.id === idToRemove);
-if (index !== -1) {
-    array.splice(index, 1);
-}
-console.log(array); // Output: [{ id: 1, name: 'Item 1' }, { id: 3, name: 'Item 3' }]
+// Example usage:
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
