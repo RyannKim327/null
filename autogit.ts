@@ -1,57 +1,28 @@
-function getDigit(num: number, place: number): number {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-function digitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-function mostDigits(nums: number[]): number {
-    let maxDigits = 0;
-    for (let num of nums) {
-        maxDigits = Math.max(maxDigits, digitCount(num));
-    }
-    return maxDigits;
-}
-
-function countingSortForRadix(nums: number[], place: number): number[] {
-    const output: number[] = new Array(nums.length);
-    const count: number[] = new Array(10).fill(0);
-
-    // Count occurrences of each digit
-    for (let num of nums) {
-        const digit = getDigit(num, place);
-        count[digit]++;
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
 
-    // Update count array to contain actual positions
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
     }
 
-    // Build the output array
-    for (let i = nums.length - 1; i >= 0; i--) {
-        const num = nums[i];
-        const digit = getDigit(num, place);
-        output[count[digit] - 1] = num;
-        count[digit]--;
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
     }
 
-    return output;
+    return largestFactor;
 }
 
-function radixSort(nums: number[]): number[] {
-    const maxDigits = mostDigits(nums);
-
-    for (let i = 0; i < maxDigits; i++) {
-        nums = countingSortForRadix(nums, i);
-    }
-
-    return nums;
-}
-
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
