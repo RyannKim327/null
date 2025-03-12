@@ -1,50 +1,50 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null if the list is empty or n is invalid
-    }
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
         }
-        firstPointer = firstPointer.next;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sortedArray.push(left[leftIndex]);
+        leftIndex++;
     }
 
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sortedArray.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return sortedArray;
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
-}
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
