@@ -1,35 +1,50 @@
-function longestCommonSubstring(s1: string, s2: string): string {
-    const m = s1.length;
-    const n = s2.length;
-    let maxLength = 0;
-    let endingIndex = 0;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endingIndex = i; // Update ending index of the substring
-                }
-            }
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    // Extract the longest common substring
-    if (maxLength === 0) {
-        return ""; // No common substring found
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sortedArray.push(left[leftIndex]);
+        leftIndex++;
     }
 
-    return s1.substring(endingIndex - maxLength, endingIndex);
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sortedArray.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return sortedArray;
 }
 
-// Example usage:
-const str1 = "abcdef";
-const str2 = "zcdemf";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "cd"
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
