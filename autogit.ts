@@ -1,22 +1,11 @@
-function firstNonRepeatingCharacter(s: string): string | null {
-    const charCount: { [key: string]: number } = {};
-
-    // Count the occurrences of each character
-    for (const char of s) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
-
-    // Find the first non-repeating character
-    for (const char of s) {
-        if (charCount[char] === 1) {
-            return char; // Return the first non-repeating character
-        }
-    }
-
-    return null; // Return null if there is no non-repeating character
+function removeSpaces(input: string): string {
+    return input.replace(/\s+/g, '');
 }
 
 // Example usage:
-const input = "swiss";
-const result = firstNonRepeatingCharacter(input);
-console.log(result); // Output: "w"
+const originalString = "Hello, how are you?";
+const stringWithoutSpaces = removeSpaces(originalString);
+console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
+function removeSpaces(input: string): string {
+    return input.replace(/ /g, '');
+}
