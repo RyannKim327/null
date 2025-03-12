@@ -1,55 +1,19 @@
-// Define a type for the graph nodes
-type Node = {
-    value: string;
-    children: Node[];
-};
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-// Depth-Limited Search function
-function depthLimitedSearch(node: Node, depth: number, target: string): boolean {
-    // Check if the current node is the target
-    if (node.value === target) {
-        return true;
-    }
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-    // If the depth limit is reached, return false
-    if (depth === 0) {
-        return false;
-    }
+// Start the task
+task.start();
 
-    // Recursively search in the children nodes
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, depth - 1, target)) {
-            return true;
-        }
-    }
-
-    // If the target is not found in this path, return false
-    return false;
-}
-
-// Example usage
-const rootNode: Node = {
-    value: 'A',
-    children: [
-        {
-            value: 'B',
-            children: [
-                { value: 'D', children: [] },
-                { value: 'E', children: [] }
-            ]
-        },
-        {
-            value: 'C',
-            children: [
-                { value: 'F', children: [] },
-                { value: 'G', children: [] }
-            ]
-        }
-    ]
-};
-
-const targetValue = 'E';
-const depthLimit = 2;
-
-const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
-console.log(`Target ${targetValue} found: ${found}`);
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
