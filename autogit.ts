@@ -1,62 +1,27 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+import * as readline from 'readline';
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to ask a question and handle the response
+function askQuestion(query: string): Promise<string> {
+    return new Promise((resolve) => {
+        rl.question(query, (answer) => {
+            resolve(answer);
+        });
+    });
 }
-class Trie {
-    private root: TrieNode;
 
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        currentNode.isEndOfWord = true; // Mark the end of the word
-    }
-
-    // Search for a word in the trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if there is any word in the trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find the node corresponding to a given word/prefix
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null; // Not found
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        return currentNode; // Return the node corresponding to the last character
-    }
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    console.log(`Hello, ${name}! Welcome to TypeScript.`);
+    
+    rl.close(); // Close the readline interface
 }
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
 
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("hell")); // true
-console.log(trie.startsWith("wor")); // true
-console.log(trie.search("world")); // true
+// Run the main function
+main();
