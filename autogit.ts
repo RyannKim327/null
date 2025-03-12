@@ -1,18 +1,30 @@
-function isPrime(num: number): boolean {
-    if (num <= 1) return false; // 0 and 1 are not prime numbers
-    if (num <= 3) return true; // 2 and 3 are prime numbers
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-    // Check for even numbers and multiples of 3
-    if (num % 2 === 0 || num % 3 === 0) return false;
+const newArray = array.filter(item => item !== elementToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-    // Check for factors from 5 to the square root of num
-    for (let i = 5; i * i <= num; i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) return false;
-    }
-
-    return true;
+const index = array.indexOf(elementToRemove);
+if (index !== -1) {
+    array.splice(index, 1);
+}
+console.log(array); // Output: [1, 2, 4, 5]
+interface Item {
+    id: number;
+    name: string;
 }
 
-// Example usage:
-const numberToCheck = 29;
-console.log(`${numberToCheck} is prime: ${isPrime(numberToCheck)}`);
+const array: Item[] = [
+    { id: 1, name: 'Item 1' },
+    { id: 2, name: 'Item 2' },
+    { id: 3, name: 'Item 3' }
+];
+
+const idToRemove = 2;
+const index = array.findIndex(item => item.id === idToRemove);
+if (index !== -1) {
+    array.splice(index, 1);
+}
+console.log(array); // Output: [{ id: 1, name: 'Item 1' }, { id: 3, name: 'Item 3' }]
