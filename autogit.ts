@@ -1,34 +1,35 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const table: string[] = [];
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    // Create the table of rotations
-    for (let i = 0; i < n; i++) {
-        const rotation = input.slice(i) + input.slice(0, i);
-        table.push(rotation);
-    }
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    // Sort the table
-    table.sort();
-
-    // Build the BWT result and find the original index
-    let bwtResult = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        bwtResult += table[i][n - 1]; // Take the last character of each sorted rotation
-        if (table[i] === input) {
-            originalIndex = i; // Store the index of the original string
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update ending index of the substring
+                }
+            }
         }
     }
 
-    return { transformed: bwtResult, index: originalIndex };
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
+    }
+
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
 
-// Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
-Transformed: annb$aa
-Original Index: 5
+// Example usage:
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
