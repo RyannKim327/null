@@ -1,53 +1,45 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    if (n < 2) return arr; // Base case: if the array has less than 2 elements, it's already sorted.
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Create a temporary array to hold the sorted elements
-    const temp = new Array(n);
-
-    // Start with a size of 1 and double it each iteration
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + size * 2, n);
-            merge(arr, temp, leftStart, mid, rightEnd);
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return arr;
 }
 
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
-    let left = leftStart; // Starting index for left subarray
-    let right = mid;      // Starting index for right subarray
-    let index = leftStart; // Starting index to be merged
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    // Merge the two subarrays into temp[]
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
-        } else {
-            temp[index++] = arr[right++];
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
         }
     }
 
-    // Copy the remaining elements of the left subarray, if any
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
-
-    // Copy the remaining elements of the right subarray, if any
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
-
-    // Copy the sorted subarray back into the original array
-    for (let i = leftStart; i < rightEnd; i++) {
-        arr[i] = temp[i];
-    }
+    return false; // No cycle
 }
 
 // Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
