@@ -1,76 +1,20 @@
-class Graph {
-    private vertices: number;
-    private adjList: number[][];
-    private index: number;
-    private stack: number[];
-    private indices: number[];
-    private lowLink: number[];
-    private onStack: boolean[];
-    private sccs: number[][];
+function findSecondLargest(arr: number[]): number | null {
+    // Remove duplicates by converting the array to a Set and back to an array
+    const uniqueArr = Array.from(new Set(arr));
 
-    constructor(vertices: number) {
-        this.vertices = vertices;
-        this.adjList = Array.from({ length: vertices }, () => []);
-        this.index = 0;
-        this.stack = [];
-        this.indices = Array(vertices).fill(-1);
-        this.lowLink = Array(vertices).fill(0);
-        this.onStack = Array(vertices).fill(false);
-        this.sccs = [];
+    // If there are less than 2 unique elements, return null
+    if (uniqueArr.length < 2) {
+        return null;
     }
 
-    addEdge(v: number, w: number) {
-        this.adjList[v].push(w);
-    }
+    // Sort the array in descending order
+    uniqueArr.sort((a, b) => b - a);
 
-    private strongConnect(v: number) {
-        this.indices[v] = this.index;
-        this.lowLink[v] = this.index;
-        this.index++;
-        this.stack.push(v);
-        this.onStack[v] = true;
-
-        for (const w of this.adjList[v]) {
-            if (this.indices[w] === -1) {
-                // Successor w has not yet been visited; recurse on it
-                this.strongConnect(w);
-                this.lowLink[v] = Math.min(this.lowLink[v], this.lowLink[w]);
-            } else if (this.onStack[w]) {
-                // Successor w is in stack and hence in the current SCC
-                this.lowLink[v] = Math.min(this.lowLink[v], this.indices[w]);
-            }
-        }
-
-        // If v is a root node, pop the stack and generate an SCC
-        if (this.lowLink[v] === this.indices[v]) {
-            const scc: number[] = [];
-            let w: number;
-            do {
-                w = this.stack.pop()!;
-                this.onStack[w] = false;
-                scc.push(w);
-            } while (w !== v);
-            this.sccs.push(scc);
-        }
-    }
-
-    findSCCs() {
-        for (let v = 0; v < this.vertices; v++) {
-            if (this.indices[v] === -1) {
-                this.strongConnect(v);
-            }
-        }
-        return this.sccs;
-    }
+    // Return the second largest element
+    return uniqueArr[1];
 }
 
 // Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 2);
-graph.addEdge(2, 1);
-graph.addEdge(1, 0);
-graph.addEdge(0, 3);
-graph.addEdge(3, 4);
-
-const sccs = graph.findSCCs();
-console.log(sccs); // Output: [[0, 1, 2], [3], [4]]
+const numbers = [3, 5, 1, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
