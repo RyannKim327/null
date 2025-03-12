@@ -1,7 +1,10 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function reverseWords(input: string): string {
+    return input.split(' ') // Step 1: Split the string into an array of words
+                .reverse()   // Step 2: Reverse the array
+                .join(' ');  // Step 3: Join the reversed array back into a string
 }
 
 // Example usage:
-const randomNum = getRandomNumberInRange(1, 10);
-console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
