@@ -1,64 +1,97 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
-    }
-}
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
-
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
+    constructor(size: number = 53) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
     }
 
-    private buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
         }
+        return hash % this.size;
     }
 
-    private insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
+    set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
 
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(i, null);
-                currentNode.children.set(char, newNode);
-                currentNode = newNode;
-            } else {
-                currentNode = currentNode.children.get(char)!;
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            const [existingKey] = bucket[i];
+            if (existingKey === key) {
+                // Update the value if the key exists
+                bucket[i][1] = value;
+                return;
             }
         }
+
+        // If the key does not exist, add the new key-value pair
+        bucket.push([key, value]);
     }
 
-    public search(pattern: string): boolean {
-        let currentNode = this.root;
-        for (const char of pattern) {
-            if (!currentNode.children.has(char)) {
-                return false;
+    get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            const [existingKey, value] = bucket[i];
+            if (existingKey === key) {
+                return value;
             }
-            currentNode = currentNode.children.get(char)!;
         }
-        return true;
+
+        return undefined; // Key not found
+    }
+
+    remove(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            const [existingKey] = bucket[i];
+            if (existingKey === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
+
+    keys(): K[] {
+        const keys: K[] = [];
+        for (const bucket of this.table) {
+            for (const [key] of bucket) {
+                keys.push(key);
+            }
+        }
+        return keys;
+    }
+
+    values(): V[] {
+        const values: V[] = [];
+        for (const bucket of this.table) {
+            for (const [, value] of bucket) {
+                values.push(value);
+            }
+        }
+        return values;
     }
 }
-const text = "banana";
-const suffixTree = new SuffixTree(text);
 
-// Searching for patterns
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // true
-console.log(suffixTree.search("bat")); // false
+// Example usage
+const hashTable = new HashTable<string, number>();
+hashTable.set("one", 1);
+hashTable.set("two", 2);
+hashTable.set("three", 3);
+
+console.log(hashTable.get("two")); // Output: 2
+hashTable.remove("two");
+console.log(hashTable.get("two")); // Output: undefined
+console.log(hashTable.keys()); // Output: ['one', 'three']
+console.log(hashTable.values()); // Output: [1, 3]
