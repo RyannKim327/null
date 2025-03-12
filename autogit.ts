@@ -1,42 +1,27 @@
-function createBadCharacterTable(pattern: string): number[] {
-    const table: number[] = new Array(256).fill(-1); // ASCII character set
-    const patternLength = pattern.length;
+const numbers: number[] = [1, 5, 3, 9, 2];
+const max = Math.max(...numbers);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
 
-    for (let i = 0; i < patternLength; i++) {
-        table[pattern.charCodeAt(i)] = i; // Store the last occurrence of each character
+let max = numbers[0]; // Assume the first element is the max initially
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
     }
-
-    return table;
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
 
-    let skip: number = 0;
+const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
 
-    for (let i = 0; i <= textLength - patternLength; i += skip) {
-        skip = 0;
-
-        for (let j = patternLength - 1; j >= 0; j--) {
-            if (pattern[j] !== text[i + j]) {
-                const badCharIndex = text.charCodeAt(i + j);
-                skip = Math.max(1, j - badCharTable[badCharIndex]);
-                break;
-            }
-            if (j === 0) {
-                occurrences.push(i); // Match found
-            }
-        }
+let max = numbers[0];
+numbers.forEach(num => {
+    if (num > max) {
+        max = num;
     }
+});
 
-    return occurrences;
-}
-
-// Example usage:
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log("Pattern found at indices:", result);
+console.log(max); // Output: 9
