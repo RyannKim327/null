@@ -1,19 +1,55 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+// Define a type for the graph nodes
+type Node = {
+    value: string;
+    children: Node[];
+};
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+// Depth-Limited Search function
+function depthLimitedSearch(node: Node, depth: number, target: string): boolean {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
+    }
 
-    // Filter the array to count occurrences of the word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+    // If the depth limit is reached, return false
+    if (depth === 0) {
+        return false;
+    }
 
-    return count;
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depth - 1, target)) {
+            return true;
+        }
+    }
+
+    // If the target is not found in this path, return false
+    return false;
 }
 
 // Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                { value: 'D', children: [] },
+                { value: 'E', children: [] }
+            ]
+        },
+        {
+            value: 'C',
+            children: [
+                { value: 'F', children: [] },
+                { value: 'G', children: [] }
+            ]
+        }
+    ]
+};
+
+const targetValue = 'E';
+const depthLimit = 2;
+
+const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
