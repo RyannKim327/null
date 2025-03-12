@@ -1,54 +1,45 @@
-function createBadCharTable(pattern: string): { [key: string]: number } {
-    const badCharTable: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Initialize the bad character table
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern[i]] = patternLength - 1 - i;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return badCharTable;
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
 
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
-    }
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-    const badCharTable = createBadCharTable(pattern);
-    let i = 0; // Index for text
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
 
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Index for pattern
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            return i; // Return the starting index of the match
-        } else {
-            // Shift the pattern based on the bad character table
-            const badCharShift = badCharTable[text[i + j]] || patternLength;
-            i += badCharShift;
+        if (slow === fast) {
+            return true; // Cycle detected
         }
     }
 
-    return -1; // Pattern not found
+    return false; // No cycle
 }
 
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
 
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Creating a non-cyclic linked list for testing
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
