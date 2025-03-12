@@ -1,49 +1,18 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function isPrime(num: number): boolean {
+    if (num <= 1) return false; // 0 and 1 are not prime numbers
+    if (num <= 3) return true; // 2 and 3 are prime numbers
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    // Check for even numbers and multiples of 3
+    if (num % 2 === 0 || num % 3 === 0) return false;
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
+    // Check for factors from 5 to the square root of num
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+    return true;
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
+const numberToCheck = 29;
+console.log(`${numberToCheck} is prime: ${isPrime(numberToCheck)}`);
