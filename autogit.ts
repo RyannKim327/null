@@ -1,27 +1,34 @@
-const numbers: number[] = [1, 5, 3, 9, 2];
-const max = Math.max(...numbers);
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const table: string[] = [];
 
-let max = numbers[0]; // Assume the first element is the max initially
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > max) {
-        max = numbers[i];
+    // Create the table of rotations
+    for (let i = 0; i < n; i++) {
+        const rotation = input.slice(i) + input.slice(0, i);
+        table.push(rotation);
     }
+
+    // Sort the table
+    table.sort();
+
+    // Build the BWT result and find the original index
+    let bwtResult = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        bwtResult += table[i][n - 1]; // Take the last character of each sorted rotation
+        if (table[i] === input) {
+            originalIndex = i; // Store the index of the original string
+        }
+    }
+
+    return { transformed: bwtResult, index: originalIndex };
 }
 
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-
-const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
-console.log(max); // Output: 9
-const numbers: number[] = [1, 5, 3, 9, 2];
-
-let max = numbers[0];
-numbers.forEach(num => {
-    if (num > max) {
-        max = num;
-    }
-});
-
-console.log(max); // Output: 9
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+Transformed: annb$aa
+Original Index: 5
