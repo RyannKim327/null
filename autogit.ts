@@ -1,45 +1,27 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+const numbers: number[] = [1, 2, 3, 4, 5];
+const max = Math.max(...numbers);
+console.log(max); // Output: 5
+const numbers: number[] = [1, 2, 3, 4, 5];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+let max = numbers[0]; // Assume the first element is the max initially
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > max) {
+        max = numbers[i];
     }
 }
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+console.log(max); // Output: 5
+const numbers: number[] = [1, 2, 3, 4, 5];
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
+console.log(max); // Output: 5
+const numbers: number[] = [1, 2, 3, 4, 5];
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // Cycle detected
-        }
+let max = numbers[0];
+numbers.forEach(num => {
+    if (num > max) {
+        max = num;
     }
+});
 
-    return false; // No cycle
-}
-
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
-
-// Creating a non-cyclic linked list for testing
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+console.log(max); // Output: 5
