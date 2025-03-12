@@ -1,50 +1,57 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array has 1 or 0 elements, it is already sorted
-    if (arr.length <= 1) {
-        return arr;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Split the array into two halves
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    // Recursively sort both halves
-    return merge(mergeSort(left), mergeSort(right));
 }
 
-function merge(left: number[], right: number[]): number[] {
-    const sortedArray: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+class LinkedList {
+    head: ListNode | null;
 
-    // Merge the two arrays while there are elements in both
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            sortedArray.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            sortedArray.push(right[rightIndex]);
-            rightIndex++;
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
     }
 
-    // If there are remaining elements in the left array, add them
-    while (leftIndex < left.length) {
-        sortedArray.push(left[leftIndex]);
-        leftIndex++;
-    }
+    // Method to find the middle element
+    findMiddle(): ListNode | null {
+        let slowPointer: ListNode | null = this.head;
+        let fastPointer: ListNode | null = this.head;
 
-    // If there are remaining elements in the right array, add them
-    while (rightIndex < right.length) {
-        sortedArray.push(right[rightIndex]);
-        rightIndex++;
-    }
+        while (fastPointer && fastPointer.next) {
+            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
+            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+        }
 
-    return sortedArray;
+        return slowPointer; // Slow pointer will be at the middle
+    }
 }
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+const middleNode = list.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
