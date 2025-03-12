@@ -1,38 +1,21 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function insertionSort(arr: number[]): number[] {
+    // Loop through the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The element to be positioned
+        let j = i - 1; // The index of the last sorted element
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key; // Place the key in its correct position
     }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
-    }
-
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    return arr; // Return the sorted array
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+const array = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
