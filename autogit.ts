@@ -1,68 +1,42 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function createBadCharacterTable(pattern: string): number[] {
+    const table: number[] = new Array(256).fill(-1); // ASCII character set
+    const patternLength = pattern.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    for (let i = 0; i < patternLength; i++) {
+        table[pattern.charCodeAt(i)] = i; // Store the last occurrence of each character
     }
+
+    return table;
 }
 
-class LinkedList {
-    head: ListNode | null;
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
 
-    constructor() {
-        this.head = null;
+    let skip: number = 0;
+
+    for (let i = 0; i <= textLength - patternLength; i += skip) {
+        skip = 0;
+
+        for (let j = patternLength - 1; j >= 0; j--) {
+            if (pattern[j] !== text[i + j]) {
+                const badCharIndex = text.charCodeAt(i + j);
+                skip = Math.max(1, j - badCharTable[badCharIndex]);
+                break;
+            }
+            if (j === 0) {
+                occurrences.push(i); // Match found
+            }
+        }
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print the list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
+    return occurrences;
 }
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
 
-    while (current) {
-        const nextTemp = current.next; // Store the next node
-        current.next = prev;            // Reverse the current node's pointer
-        prev = current;                 // Move prev and current one step forward
-        current = nextTemp;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original Linked List:");
-list.print();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed Linked List:");
-list.print();
+// Example usage:
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log("Pattern found at indices:", result);
