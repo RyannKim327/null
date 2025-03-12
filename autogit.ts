@@ -1,19 +1,21 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
+    }
 
-    // Filter the array to count occurrences of the word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+    // Sort the characters of each string and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-    return count;
+    return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("Dormitory", "Dirty room")); // true
