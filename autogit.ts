@@ -1,7 +1,7 @@
-class Node {
+class TreeNode {
     value: number;
-    left: Node | null;
-    right: Node | null;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
     constructor(value: number) {
         this.value = value;
@@ -9,24 +9,24 @@ class Node {
         this.right = null;
     }
 }
-class BinarySearchTree {
-    root: Node | null;
+class BinaryTree {
+    root: TreeNode | null;
 
     constructor() {
         this.root = null;
     }
 
-    // Insert a new value into the BST
+    // Insert a new value into the binary tree
     insert(value: number): void {
-        const newNode = new Node(value);
+        const newNode = new TreeNode(value);
         if (this.root === null) {
             this.root = newNode;
-            return;
+        } else {
+            this.insertNode(this.root, newNode);
         }
-        this.insertNode(this.root, newNode);
     }
 
-    private insertNode(node: Node, newNode: Node): void {
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
         if (newNode.value < node.value) {
             if (node.left === null) {
                 node.left = newNode;
@@ -42,51 +42,67 @@ class BinarySearchTree {
         }
     }
 
-    // Search for a value in the BST
+    // In-order traversal
+    inOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            this.inOrderTraversal(node.left);
+            console.log(node.value);
+            this.inOrderTraversal(node.right);
+        }
+    }
+
+    // Pre-order traversal
+    preOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            console.log(node.value);
+            this.preOrderTraversal(node.left);
+            this.preOrderTraversal(node.right);
+        }
+    }
+
+    // Post-order traversal
+    postOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            this.postOrderTraversal(node.left);
+            this.postOrderTraversal(node.right);
+            console.log(node.value);
+        }
+    }
+
+    // Search for a value in the binary tree
     search(value: number): boolean {
         return this.searchNode(this.root, value);
     }
 
-    private searchNode(node: Node | null, value: number): boolean {
+    private searchNode(node: TreeNode | null, value: number): boolean {
         if (node === null) {
             return false;
         }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is equal to node.value
+        if (value === node.value) {
+            return true;
         }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
+        return value < node.value
+            ? this.searchNode(node.left, value)
+            : this.searchNode(node.right, value);
     }
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
+const tree = new BinaryTree();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+tree.insert(12);
+tree.insert(18);
 
-// Search for a value
-console.log(bst.search(7));  // true
-console.log(bst.search(20)); // false
+console.log("In-order Traversal:");
+tree.inOrderTraversal(tree.root); // Output: 3, 5, 7, 10, 12, 15, 18
 
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+console.log("Pre-order Traversal:");
+tree.preOrderTraversal(tree.root); // Output: 10, 5, 3, 7, 15, 12, 18
+
+console.log("Post-order Traversal:");
+tree.postOrderTraversal(tree.root); // Output: 3, 7, 5, 12, 18, 15, 10
+
+console.log("Search for 7:", tree.search(7)); // Output: true
+console.log("Search for 20:", tree.search(20)); // Output: false
