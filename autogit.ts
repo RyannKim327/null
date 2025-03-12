@@ -1,43 +1,160 @@
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left]; // If the list contains only one element
-    }
+enum Color {
+    RED,
+    BLACK
+}
 
-    const pivotIndex = partition(arr, left, right);
+class Node {
+    public color: Color;
+    public left: Node | null;
+    public right: Node | null;
+    public parent: Node | null;
+    public value: number;
 
-    // The pivot is in its final sorted position
-    if (k === pivotIndex) {
-        return arr[k];
-    } else if (k < pivotIndex) {
-        return quickSelect(arr, left, pivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, pivotIndex + 1, right, k);
+    constructor(value: number) {
+        this.value = value;
+        this.color = Color.RED; // New nodes are red by default
+        this.left = null;
+        this.right = null;
+        this.parent = null;
     }
 }
 
-function partition(arr: number[], left: number, right: number): number {
-    const pivot = arr[right]; // Choose the rightmost element as pivot
-    let i = left;
+class RedBlackTree {
+    private root: Node | null;
 
-    for (let j = left; j < right; j++) {
-        if (arr[j] < pivot) {
-            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
-            i++;
+    constructor() {
+        this.root = null;
+    }
+
+    private rotateLeft(x: Node) {
+        const y = x.right!;
+        x.right = y.left;
+
+        if (y.left !== null) {
+            y.left.parent = x;
+        }
+
+        y.parent = x.parent;
+
+        if (x.parent === null) {
+            this.root = y; // y becomes the new root
+        } else if (x === x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+
+        y.left = x;
+        x.parent = y;
+    }
+
+    private rotateRight(y: Node) {
+        const x = y.left!;
+        y.left = x.right;
+
+        if (x.right !== null) {
+            x.right.parent = y;
+        }
+
+        x.parent = y.parent;
+
+        if (y.parent === null) {
+            this.root = x; // x becomes the new root
+        } else if (y === y.parent.right) {
+            y.parent.right = x;
+        } else {
+            y.parent.left = x;
+        }
+
+        x.right = y;
+        y.parent = x;
+    }
+
+    private fixViolation(z: Node) {
+        while (z.parent && z.parent.color === Color.RED) {
+            if (z.parent === z.parent.parent?.left) {
+                const y = z.parent.parent?.right; // Uncle node
+
+                if (y && y.color === Color.RED) {
+                    // Case 1: Uncle is red
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.right) {
+                        // Case 2: z is right child
+                        z = z.parent;
+                        this.rotateLeft(z);
+                    }
+                    // Case 3: z is left child
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateRight(z.parent.parent!);
+                }
+            } else {
+                const y = z.parent.parent?.left; // Uncle node
+
+                if (y && y.color === Color.RED) {
+                    // Case 1: Uncle is red
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    z = z.parent.parent!;
+                } else {
+                    if (z === z.parent.left) {
+                        // Case 2: z is left child
+                        z = z.parent;
+                        this.rotateRight(z);
+                    }
+                    // Case 3: z is right child
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent!.color = Color.RED;
+                    this.rotateLeft(z.parent.parent!);
+                }
+            }
+        }
+        this.root!.color = Color.BLACK; // Ensure the root is always black
+    }
+
+    public insert(value: number) {
+        const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
+            this.root.color = Color.BLACK; // Root is always black
+        } else {
+            this.insertNode(this.root, newNode);
+            this.fixViolation(newNode);
         }
     }
-    [arr[i], arr[right]] = [arr[right], arr[i]]; // Swap pivot to its final place
-    return i; // Return the index of the pivot
-}
 
-function findKthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+    private insertNode(root: Node, newNode: Node) {
+        if (newNode.value < root.value) {
+            if (root.left === null) {
+                root.left = newNode;
+                newNode.parent = root;
+            } else {
+                this.insertNode(root.left, newNode);
+            }
+        } else {
+            if (root.right === null) {
+                root.right = newNode;
+                newNode.parent = root;
+            } else {
+                this.insertNode(root.right, newNode);
+            }
+        }
     }
-    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for zero-based index
+
+    public inorderTraversal(node: Node | null = this.root): number[] {
+        const result: number[] = [];
+        if (node !== null) {
+            result.push(...this.inorderTraversal(node.left));
+            result.push(node.value);
+            result.push(...this.inorderTraversal(node.right));
+        }
+        return result;
+    }
 }
 
-// Example usage:
-const arr = [3, 2, 1, 5, 6, 4];
-const k = 2;
-const kthSmallest = findKthSmallest(arr, k);
-console.log(`The ${k}th smallest element is ${kthSmallest}`);
+// Example
