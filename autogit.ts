@@ -1,92 +1,28 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-class BinarySearchTree {
-    root: Node | null;
-
-    constructor() {
-        this.root = null;
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with fewer than 2 elements are already sorted
+    if (arr.length < 2) {
+        return arr;
     }
 
-    // Insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-        this.insertNode(this.root, newNode);
-    }
+    // Choose a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
 
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
+    // Partition the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
         } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
+            right.push(arr[i]);
         }
     }
 
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is equal to node.value
-        }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
+    // Recursively sort the left and right arrays, and concatenate with the pivot
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
 
-// Search for a value
-console.log(bst.search(7));  // true
-console.log(bst.search(20)); // false
-
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+// Example usage:
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
