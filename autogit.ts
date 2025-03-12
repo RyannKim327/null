@@ -1,110 +1,35 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-class BinaryTree {
-    root: TreeNode | null;
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    constructor() {
-        this.root = null;
-    }
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return the index
+        }
 
-    // Insert a value into the binary tree
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
+        // If target is greater, ignore the left half
+        if (arr[mid] < target) {
+            left = mid + 1;
         } else {
-            this.insertNode(this.root, newNode);
+            // If target is smaller, ignore the right half
+            right = mid - 1;
         }
     }
 
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Search for a value in the binary tree
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: TreeNode | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value === node.value) {
-            return true;
-        }
-        return value < node.value
-            ? this.searchNode(node.left, value)
-            : this.searchNode(node.right, value);
-    }
-
-    // In-order traversal
-    inOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            this.inOrderTraversal(node.left);
-            console.log(node.value);
-            this.inOrderTraversal(node.right);
-        }
-    }
-
-    // Pre-order traversal
-    preOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            console.log(node.value);
-            this.preOrderTraversal(node.left);
-            this.preOrderTraversal(node.right);
-        }
-    }
-
-    // Post-order traversal
-    postOrderTraversal(node: TreeNode | null): void {
-        if (node !== null) {
-            this.postOrderTraversal(node.left);
-            this.postOrderTraversal(node.right);
-            console.log(node.value);
-        }
-    }
+    // Target was not found in the array
+    return -1;
 }
-const tree = new BinaryTree();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
-tree.insert(12);
-tree.insert(18);
 
-// Search for a value
-console.log(tree.search(7)); // true
-console.log(tree.search(20)); // false
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 5;
+const result = binarySearch(sortedArray, target);
 
-// Traversals
-console.log("In-order traversal:");
-tree.inOrderTraversal(tree.root); // 3, 5, 7, 10, 12, 15, 18
-
-console.log("Pre-order traversal:");
-tree.preOrderTraversal(tree.root); // 10, 5, 3, 7, 15, 12, 18
-
-console.log("Post-order traversal:");
-tree.postOrderTraversal(tree.root); // 3, 7, 5, 12, 18, 15, 10
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found in the array.');
+}
