@@ -1,10 +1,22 @@
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenated: string = string1 + string2;
+function firstNonRepeatingCharacter(s: string): string | null {
+    const charCount: { [key: string]: number } = {};
 
-console.log(concatenated); // Output: Hello, world!
-let string1: string = "Hello, ";
-let string2: string = "world!";
-let concatenated: string = `${string1}${string2}`;
+    // Count the occurrences of each character
+    for (const char of s) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
 
-console.log(concatenated); // Output: Hello, world!
+    // Find the first non-repeating character
+    for (const char of s) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
+
+    return null; // Return null if there is no non-repeating character
+}
+
+// Example usage:
+const input = "swiss";
+const result = firstNonRepeatingCharacter(input);
+console.log(result); // Output: "w"
