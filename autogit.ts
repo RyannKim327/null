@@ -1,36 +1,10 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = string1 + string2;
 
-    // Phase 1: Find a candidate for the majority element
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
-    }
+console.log(concatenated); // Output: Hello, world!
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = `${string1}${string2}`;
 
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Check if the candidate is indeed the majority element
-    if (count > nums.length / 2) {
-        return candidate;
-    } else {
-        return null; // No majority element found
-    }
-}
-
-// Example usage:
-const nums = [3, 2, 3];
-const result = majorityElement(nums);
-console.log(result); // Output: 3
+console.log(concatenated); // Output: Hello, world!
