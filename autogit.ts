@@ -1,76 +1,61 @@
-class Graph {
-    private vertices: number;
-    private adjList: Map<number, number[]>;
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    
+    // Sort the array
+    const sortedArray = arr.slice().sort((a, b) => a - b);
+    
+    // Return the k-th smallest element (1-based index)
+    return sortedArray[k - 1];
+}
 
-    constructor(vertices: number) {
-        this.vertices = vertices;
-        this.adjList = new Map<number, number[]>();
+// Example usage
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(array, k)); // Output: 7
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    // Move pivot to end
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
+
+    for (let i = left; i < right; i++) {
+        if (arr[i] < pivotValue) {
+            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+            storeIndex++;
+        }
+    }
+    // Move pivot to its final place
+    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
+    return storeIndex;
+}
+
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left];
     }
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
+    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
+    const newPivotIndex = partition(arr, left, right, pivotIndex);
 
-    tarjan(): number[][] {
-        const index: number[] = new Array(this.vertices).fill(-1);
-        const lowlink: number[] = new Array(this.vertices).fill(-1);
-        const onStack: boolean[] = new Array(this.vertices).fill(false);
-        const stack: number[] = [];
-        const result: number[][] = [];
-        let currentIndex = 0;
-
-        const strongConnect = (v: number) => {
-            index[v] = currentIndex;
-            lowlink[v] = currentIndex;
-            currentIndex++;
-            stack.push(v);
-            onStack[v] = true;
-
-            const neighbors = this.adjList.get(v) || [];
-            for (const w of neighbors) {
-                if (index[w] === -1) {
-                    // Successor w has not yet been visited; recurse on it
-                    strongConnect(w);
-                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
-                } else if (onStack[w]) {
-                    // Successor w is in stack and hence in the current SCC
-                    lowlink[v] = Math.min(lowlink[v], index[w]);
-                }
-            }
-
-            // If v is a root node, pop the stack and generate an SCC
-            if (lowlink[v] === index[v]) {
-                const scc: number[] = [];
-                let w: number;
-                do {
-                    w = stack.pop()!;
-                    onStack[w] = false;
-                    scc.push(w);
-                } while (w !== v);
-                result.push(scc);
-            }
-        };
-
-        for (let v = 0; v < this.vertices; v++) {
-            if (index[v] === -1) {
-                strongConnect(v);
-            }
-        }
-
-        return result;
+    if (k === newPivotIndex) {
+        return arr[k];
+    } else if (k < newPivotIndex) {
+        return quickSelect(arr, left, newPivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, newPivotIndex + 1, right, k);
     }
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1);
-graph.addEdge(1, 2);
-graph.addEdge(2, 0);
-graph.addEdge(1, 3);
-graph.addEdge(3, 4);
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+    return quickSelect(arr, 0, arr.length - 1, k - 1);
+}
 
-const sccs = graph.tarjan();
-console.log(sccs); // Output: [[0, 1, 2], [3], [4]]
+// Example usage
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(array, k)); // Output: 7
