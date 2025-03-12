@@ -1,58 +1,89 @@
-class Node {
+type Node = {
     value: string;
-    children: Node[];
+    neighbors: Node[];
+};
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
+function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
+    if (start === goal) return [start];
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
+    const startQueue: Node[] = [start];
+    const goalQueue: Node[] = [goal];
+    const startVisited = new Set<Node>();
+    const goalVisited = new Set<Node>();
+    const startParentMap = new Map<Node, Node>();
+    const goalParentMap = new Map<Node, Node>();
 
-function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+    startVisited.add(start);
+    goalVisited.add(goal);
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
+    while (startQueue.length > 0 && goalQueue.length > 0) {
+        // Search from the start
+        const startNode = startQueue.shift()!;
+        for (const neighbor of startNode.neighbors) {
+            if (!startVisited.has(neighbor)) {
+                startVisited.add(neighbor);
+                startParentMap.set(neighbor, startNode);
+                startQueue.push(neighbor);
 
-        // Check if the current node is the goal
-        if (node.value === goal) {
-            return node;
+                // Check if the neighbor is in the goal visited set
+                if (goalVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
+            }
         }
 
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
+        // Search from the goal
+        const goalNode = goalQueue.shift()!;
+        for (const neighbor of goalNode.neighbors) {
+            if (!goalVisited.has(neighbor)) {
+                goalVisited.add(neighbor);
+                goalParentMap.set(neighbor, goalNode);
+                goalQueue.push(neighbor);
+
+                // Check if the neighbor is in the start visited set
+                if (startVisited.has(neighbor)) {
+                    return reconstructPath(neighbor, startParentMap, goalParentMap);
+                }
             }
         }
     }
 
-    // If the goal was not found within the depth limit
-    return null;
+    return null; // No path found
+}
+
+function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
+    const path: Node[] = [];
+    
+    // Reconstruct path from start to meeting node
+    let currentNode: Node | undefined = meetingNode;
+    while (currentNode) {
+        path.unshift(currentNode);
+        currentNode = startParentMap.get(currentNode);
+    }
+
+    // Reconstruct path from meeting node to goal
+    currentNode = goalParentMap.get(meetingNode);
+    while (currentNode) {
+        path.push(currentNode);
+        currentNode = goalParentMap.get(currentNode);
+    }
+
+    return path;
 }
 
 // Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
+const nodeA: Node = { value: 'A', neighbors: [] };
+const nodeB: Node = { value: 'B', neighbors: [] };
+const nodeC: Node = { value: 'C', neighbors: [] };
+const nodeD: Node = { value: 'D', neighbors: [] };
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
+nodeA.neighbors.push(nodeB, nodeC);
+nodeB.neighbors.push(nodeD);
+nodeC.neighbors.push(nodeD);
 
-const goalNode = depthLimitedSearch(root, "E", 2);
-if (goalNode) {
-    console.log(`Found goal: ${goalNode.value}`);
+const path = biDirectionalSearch(nodeA, nodeD);
+if (path) {
+    console.log('Path found:', path.map(node => node.value));
 } else {
-    console.log("Goal not found within the depth limit.");
+    console.log('No path found');
 }
