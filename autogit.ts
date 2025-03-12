@@ -1,58 +1,58 @@
-type Graph = { [key: string]: string[] };
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If the node has already been visited, return
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    console.log(start); // Process the node (e.g., print it)
-    visited.add(start); // Mark the node as visited
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
 
-    for (const neighbor of graph[start]) {
-        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
+        for (let i = 0; i < patternLength; i++) {
+            // Store the last occurrence of each character in the pattern
+            table.set(pattern[i], i);
+        }
+
+        return table;
     }
-}
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
 
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
 
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    // If there's a mismatch, use the bad character rule
+                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - lastOccurrence);
+                    break;
+                }
+            }
 
-    while (stack.length > 0) {
-        const node = stack.pop()!; // Get the last node from the stack
-
-        if (!visited.has(node)) {
-            console.log(node); // Process the node (e.g., print it)
-            visited.add(node); // Mark the node as visited
-
-            // Add neighbors to the stack
-            for (const neighbor of graph[node]) {
-                stack.push(neighbor);
+            // If we found a match
+            if (skip === 0) {
+                return i; // Return the starting index of the match
             }
         }
+
+        return -1; // No match found
     }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+// Example usage
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const result = bm.search(text);
 
-depthFirstSearchIterative(graph, 'A');
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
