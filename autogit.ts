@@ -1,48 +1,40 @@
-type Node = {
-    state: string; // The current state
-    cost: number;  // The cost to reach this state
-    path: string[]; // The path taken to reach this state
-};
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
-    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
-    
-    while (currentLevel.length > 0) {
-        // Generate successors for all nodes in the current level
-        let successors: Node[] = [];
-        for (const node of currentLevel) {
-            const newSuccessors = generateSuccessors(node.state);
-            successors.push(...newSuccessors);
-        }
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-        // Check for goal state in successors
-        for (const successor of successors) {
-            if (successor.state === goalState) {
-                return successor.path; // Return the path to the goal state
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max from left or top
             }
         }
-
-        // Sort successors by cost (or any other heuristic) and select the top `beamWidth` nodes
-        successors.sort((a, b) => a.cost - b.cost);
-        currentLevel = successors.slice(0, beamWidth);
     }
 
-    return null; // Return null if the goal state is not found
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Append character to LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
+        } else {
+            j--; // Move left
+        }
+    }
+
+    return lcs; // Return the longest common subsequence
 }
 
 // Example usage
-const generateSuccessors = (state: string): Node[] => {
-    // This function should generate successor nodes based on the current state
-    // For demonstration, let's assume each state can lead to two new states
-    return [
-        { state: state + 'A', cost: Math.random(), path: [] }, // Random cost for demonstration
-        { state: state + 'B', cost: Math.random(), path: [] }
-    ];
-};
-
-const initialState = 'Start';
-const goalState = 'StartAB'; // Example goal state
-const beamWidth = 2;
-
-const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
-console.log(result);
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
