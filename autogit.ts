@@ -1,51 +1,57 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    return lps;
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index to result
-            j = lps[j - 1]; // Use LPS to continue searching
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip unnecessary comparisons
-            } else {
-                i++;
-            }
-        }
-    }
-    return result; // Return all starting indices of matches
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
 
-console.log("Pattern found at indices:", result);
+function mostDigits(nums: number[]): number {
+    let maxDigits = 0;
+    for (let num of nums) {
+        maxDigits = Math.max(maxDigits, digitCount(num));
+    }
+    return maxDigits;
+}
+
+function countingSortForRadix(nums: number[], place: number): number[] {
+    const output: number[] = new Array(nums.length);
+    const count: number[] = new Array(10).fill(0);
+
+    // Count occurrences of each digit
+    for (let num of nums) {
+        const digit = getDigit(num, place);
+        count[digit]++;
+    }
+
+    // Update count array to contain actual positions
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = nums.length - 1; i >= 0; i--) {
+        const num = nums[i];
+        const digit = getDigit(num, place);
+        output[count[digit] - 1] = num;
+        count[digit]--;
+    }
+
+    return output;
+}
+
+function radixSort(nums: number[]): number[] {
+    const maxDigits = mostDigits(nums);
+
+    for (let i = 0; i < maxDigits; i++) {
+        nums = countingSortForRadix(nums, i);
+    }
+
+    return nums;
+}
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
