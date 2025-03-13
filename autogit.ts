@@ -1,22 +1,53 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+type Edge = [number, number, number]; // [source, destination, weight]
 
-    // If lengths are different, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+class Graph {
+    private edges: Edge[];
+    private numVertices: number;
+
+    constructor(numVertices: number) {
+        this.numVertices = numVertices;
+        this.edges = [];
     }
 
-    // Sort the characters of both strings
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+    addEdge(source: number, destination: number, weight: number) {
+        this.edges.push([source, destination, weight]);
+    }
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    bellmanFord(source: number): number[] | string {
+        // Step 1: Initialize distances from source to all vertices as infinite
+        const distances: number[] = new Array(this.numVertices).fill(Infinity);
+        distances[source] = 0;
+
+        // Step 2: Relax all edges |V| - 1 times
+        for (let i = 0; i < this.numVertices - 1; i++) {
+            for (const [u, v, weight] of this.edges) {
+                if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
+                    distances[v] = distances[u] + weight;
+                }
+            }
+        }
+
+        // Step 3: Check for negative-weight cycles
+        for (const [u, v, weight] of this.edges) {
+            if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
+                return "Graph contains a negative-weight cycle";
+            }
+        }
+
+        return distances;
+    }
 }
 
 // Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-console.log(areAnagrams("anagram", "nagaram")); // true
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
+
+const distances = graph.bellmanFord(0);
+console.log(distances);
