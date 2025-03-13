@@ -1,9 +1,10 @@
-function calculateTriangleArea(base: number, height: number): number {
-    return 0.5 * base * height;
+function reverseWords(input: string): string {
+    return input.split(' ') // Step 1: Split the string into an array of words
+                .reverse()   // Step 2: Reverse the array
+                .join(' ');  // Step 3: Join the reversed array back into a string
 }
 
 // Example usage:
-const base = 5;
-const height = 10;
-const area = calculateTriangleArea(base, height);
-console.log(`The area of the triangle is: ${area}`);
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
