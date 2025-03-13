@@ -1,29 +1,60 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+// Define a Node class to represent each node in the tree
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(value: number) {
+    constructor(value: string) {
         this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+        this.children = [];
     }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+    addChild(child: Node) {
+        this.children.push(child);
+    }
 }
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+// Breadth-Limited Search function
+function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    if (limit < 0) return null; // If the limit is negative, return null
+
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Return the found node
+        }
+
+        // If we haven't reached the depth limit, add children to the queue
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // Return null if the target is not found within the limit
+}
+
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const targetNode = breadthLimitedSearch(root, "E", 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
