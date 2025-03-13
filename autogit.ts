@@ -1,58 +1,56 @@
-class Node {
-    value: string;
-    children: Node[];
-
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
 
-function depthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
+function mostDigits(nums: number[]): number {
+    let maxDigits = 0;
+    for (let num of nums) {
+        maxDigits = Math.max(maxDigits, digitCount(num));
+    }
+    return maxDigits;
+}
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node;
-        }
+function countingSortForRadix(nums: number[], place: number): number[] {
+    const output: number[] = new Array(nums.length);
+    const count: number[] = new Array(10).fill(0);
 
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
-        }
+    // Count occurrences of each digit
+    for (let num of nums) {
+        const digit = getDigit(num, place);
+        count[digit]++;
     }
 
-    // Return null if the target is not found within the depth limit
-    return null;
+    // Update count array to contain actual positions
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = nums.length - 1; i >= 0; i--) {
+        const digit = getDigit(nums[i], place);
+        output[count[digit] - 1] = nums[i];
+        count[digit]--;
+    }
+
+    return output;
 }
 
-// Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
+function radixSort(nums: number[]): number[] {
+    const maxDigits = mostDigits(nums);
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
+    for (let i = 0; i < maxDigits; i++) {
+        nums = countingSortForRadix(nums, i);
+    }
 
-const targetNode = depthLimitedSearch(root, "E", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
+    return nums;
 }
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
