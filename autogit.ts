@@ -1,46 +1,26 @@
-function findFirstNonRepeatingChar(str: string): string | null {
-    // Create a Map to store character frequencies
-    const charFrequency = new Map<string, number>();
+function countingSort(arr: number[], max: number): number[] {
+    // Create a count array to store the count of each unique number
+    const count: number[] = new Array(max + 1).fill(0);
     
-    // First pass: Count the frequency of each character
-    for (const char of str) {
-        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
+    // Store the count of each number in the input array
+    for (const num of arr) {
+        count[num]++;
     }
-    
-    // Second pass: Find the first character with frequency 1
-    for (const char of str) {
-        if (charFrequency.get(char) === 1) {
-            return char;
+
+    // Build the output array
+    const output: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            output.push(i);
+            count[i]--;
         }
     }
-    
-    // If no non-repeating character is found
-    return null;
+
+    return output;
 }
 
-// Example usage
-console.log(findFirstNonRepeatingChar("leetcode")); // Returns "l"
-console.log(findFirstNonRepeatingChar("loveleetcode")); // Returns "v"
-console.log(findFirstNonRepeatingChar("aabb")); // Returns null
-function findFirstNonRepeatingChar(str: string): string | null {
-    const charCount: { [key: string]: number } = {};
-    
-    // Count frequencies
-    for (const char of str) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
-    
-    // Find first non-repeating
-    for (const char of str) {
-        if (charCount[char] === 1) {
-            return char;
-        }
-    }
-    
-    return null;
-}
-function findFirstNonRepeatingChar(str: string): string | null {
-    return [...str].find(char => 
-        str.split(char).length === 2
-    ) || null;
-}
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
