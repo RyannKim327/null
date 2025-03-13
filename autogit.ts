@@ -1,24 +1,15 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
+        }
+    }
+    return true; // All elements are in ascending order
 }
 
 // Example usage:
 const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+const array2 = [1, 3, 2, 4, 5];
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
-}
-
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
