@@ -1,104 +1,140 @@
-// Definition for singly-linked list node
-class ListNode {
-    val: number;
-    next: ListNode | null;
-    
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null = null;
+  right: TreeNode<T> | null = null;
+
+  constructor(value: T) {
+    this.value = value;
+  }
 }
 
-// Approach 1: Using Array Conversion (Simple but O(n) extra space)
-function isPalindromeWithArray(head: ListNode | null): boolean {
-    // Convert linked list to array
-    const values: number[] = [];
-    let current = head;
-    
-    while (current !== null) {
-        values.push(current.val);
-        current = current.next;
-    }
-    
-    // Check if array is palindrome
-    let left = 0;
-    let right = values.length - 1;
-    
-    while (left < right) {
-        if (values[left] !== values[right]) {
-            return false;
-        }
-        left++;
-        right--;
-    }
-    
-    return true;
-}
+class BinarySearchTree<T> {
+  private root: TreeNode<T> | null = null;
 
-// Approach 2: Reverse and Compare (O(1) extra space)
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) return true;
-    
-    // Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-    
-    while (fast.next && fast.next.next) {
-        slow = slow!.next;
-        fast = fast.next.next;
-    }
-    
-    // Reverse the second half of the list
-    let secondHalf = reverseList(slow!.next);
-    let firstHalf = head;
-    
-    // Compare both halves
-    while (secondHalf) {
-        if (firstHalf!.val !== secondHalf.val) {
-            return false;
-        }
-        firstHalf = firstHalf!.next;
-        secondHalf = secondHalf.next;
-    }
-    
-    return true;
-}
+  // Insert a value into the BST
+  insert(value: T): void {
+    this.root = this._insertRecursive(this.root, value);
+  }
 
-// Helper function to reverse a linked list
-function reverseList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    
-    while (current) {
-        const nextTemp = current.next;
-        current.next = prev;
-        prev = current;
-        current = nextTemp;
+  private _insertRecursive(node: TreeNode<T> | null, value: T): TreeNode<T> {
+    // If the tree is empty, create a new node
+    if (node === null) {
+      return new TreeNode(value);
     }
-    
-    return prev;
+
+    // Compare and recursively insert in left or right subtree
+    if (value < node.value) {
+      node.left = this._insertRecursive(node.left, value);
+    } else if (value > node.value) {
+      node.right = this._insertRecursive(node.right, value);
+    }
+
+    return node;
+  }
+
+  // Search for a value in the BST
+  search(value: T): boolean {
+    return this._searchRecursive(this.root, value);
+  }
+
+  private _searchRecursive(node: TreeNode<T> | null, value: T): boolean {
+    // If tree is empty or value is found
+    if (node === null) {
+      return false;
+    }
+
+    if (value === node.value) {
+      return true;
+    }
+
+    // Recursively search left or right subtree
+    if (value < node.value) {
+      return this._searchRecursive(node.left, value);
+    } else {
+      return this._searchRecursive(node.right, value);
+    }
+  }
+
+  // Delete a value from the BST
+  delete(value: T): void {
+    this.root = this._deleteRecursive(this.root, value);
+  }
+
+  private _deleteRecursive(node: TreeNode<T> | null, value: T): TreeNode<T> | null {
+    // If tree is empty
+    if (node === null) {
+      return null;
+    }
+
+    // Find the node to delete
+    if (value < node.value) {
+      node.left = this._deleteRecursive(node.left, value);
+    } else if (value > node.value) {
+      node.right = this._deleteRecursive(node.right, value);
+    } else {
+      // Node with only one child or no child
+      if (node.left === null) {
+        return node.right;
+      } else if (node.right === null) {
+        return node.left;
+      }
+
+      // Node with two children: Get the inorder successor
+      node.value = this._findMinValue(node.right);
+      
+      // Delete the inorder successor
+      node.right = this._deleteRecursive(node.right, node.value);
+    }
+
+    return node;
+  }
+
+  // Find the minimum value in a subtree
+  private _findMinValue(node: TreeNode<T>): T {
+    let current = node;
+    while (current.left !== null) {
+      current = current.left;
+    }
+    return current.value;
+  }
+
+  // Inorder traversal (sorted order)
+  inorderTraversal(): T[] {
+    const result: T[] = [];
+    this._inorderRecursive(this.root, result);
+    return result;
+  }
+
+  private _inorderRecursive(node: TreeNode<T> | null, result: T[]): void {
+    if (node !== null) {
+      this._inorderRecursive(node.left, result);
+      result.push(node.value);
+      this._inorderRecursive(node.right, result);
+    }
+  }
 }
 
 // Example usage
-function createLinkedList(values: number[]): ListNode | null {
-    if (values.length === 0) return null;
-    
-    const head = new ListNode(values[0]);
-    let current = head;
-    
-    for (let i = 1; i < values.length; i++) {
-        current.next = new ListNode(values[i]);
-        current = current.next;
-    }
-    
-    return head;
+function main() {
+  const bst = new BinarySearchTree<number>();
+  
+  // Inserting values
+  bst.insert(5);
+  bst.insert(3);
+  bst.insert(7);
+  bst.insert(1);
+  bst.insert(4);
+
+  // Search
+  console.log(bst.search(3)); // true
+  console.log(bst.search(6)); // false
+
+  // Inorder traversal (will print sorted values)
+  console.log(bst.inorderTraversal()); // [1, 3, 4, 5, 7]
+
+  // Delete
+  bst.delete(3);
+  console.log(bst.inorderTraversal()); // [1, 4, 5, 7]
 }
 
-// Test cases
-const palindromeList1 = createLinkedList([1,2,2,1]);
-const palindromeList2 = createLinkedList([1,2,3,2,1]);
-const nonPalindromeList = createLinkedList([1,2,3,4]);
-
-console.log(isPalindrome(palindromeList1));  // true
-console.log(isPalindrome(palindromeList2));  // true
-console.log(isPalindrome(nonPalindromeList));  // false
+main();
