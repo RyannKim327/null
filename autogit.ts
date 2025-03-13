@@ -1,44 +1,22 @@
-enum Color {
-  RED,
-  BLACK,
+const arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+const newArr = arr.filter(item => item !== elementToRemove);
+console.log(newArr); // Output: [1, 2, 4, 5]
+const arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+const index = arr.indexOf(elementToRemove);
+
+if (index !== -1) {
+  arr.splice(index, 1);
 }
 
-class Node<T> {
-  value: T;
-  color: Color;
-  parent: Node<T> | null;
-  left: Node<T> | null;
-  right: Node<T> | null;
+console.log(arr); // Output: [1, 2, 4, 5]
+const arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+const index = arr.indexOf(elementToRemove);
 
-  constructor(value: T) {
-    this.value = value;
-    this.color = Color.RED;
-    this.parent = null;
-    this.left = null;
-    this.right = null;
-  }
-}
-
-class RedBlackTree<T> {
-  private root: Node<T> | null;
-
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value: T): void {
-    const newNode = new Node(value);
-    this.insertNode(newNode);
-    this.fixTreeAfterInsert(newNode);
-  }
-
-  private insertNode(node: Node<T>): void {
-    // Implementation for inserting a node in the tree
-  }
-
-  private fixTreeAfterInsert(node: Node<T>): void {
-    // Implementation for fixing the tree properties after insertion
-  }
-
-  // Other methods like search, delete, etc.
+if (index !== -1) {
+  const newArr = [...arr.slice(0, index), ...arr.slice(index + 1)];
+  console.log(newArr); // Output: [1, 2, 4, 5]
 }
