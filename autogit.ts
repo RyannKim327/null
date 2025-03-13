@@ -1,67 +1,50 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function insertionSort(arr: number[]): number[] {
+    // Loop through the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        // Store the current element to be inserted
+        let currentElement = arr[i];
+        
+        // Start comparing with the element before the current element
+        let j = i - 1;
+        
+        // Move elements that are greater than currentElement 
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > currentElement) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        
+        // Insert the current element in its correct position
+        arr[j + 1] = currentElement;
     }
+    
+    return arr;
 }
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
+// Example usage
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+console.log("Unsorted array:", unsortedArray);
+
+const sortedArray = insertionSort(unsortedArray);
+console.log("Sorted array:", sortedArray);
+function genericInsertionSort<T>(arr: T[], comparator: (a: T, b: T) => number = (a, b) => 
+    a > b ? 1 : a < b ? -1 : 0): T[] {
+    for (let i = 1; i < arr.length; i++) {
+        let currentElement = arr[i];
+        let j = i - 1;
+        
+        while (j >= 0 && comparator(arr[j], currentElement) > 0) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        
+        arr[j + 1] = currentElement;
     }
-    return length;
+    
+    return arr;
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
-
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the starting points
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next;
-        }
-    }
-
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
-}
-
-// Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
-
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
+// Usage with custom comparator
+const stringArray = ['banana', 'apple', 'cherry'];
+const sortedStrings = genericInsertionSort(stringArray, (a, b) => a.localeCompare(b));
+console.log(sortedStrings);
