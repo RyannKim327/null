@@ -1,148 +1,117 @@
-class TreeNode {
-    key: number;
-    height: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(key: number) {
-        this.key = key;
-        this.height = 1; // New node is initially added at leaf
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class AVLTree {
-    root: TreeNode | null;
+class Graph {
+    private adjList: Map<number, number[]>;
 
     constructor() {
-        this.root = null;
+        this.adjList = new Map();
     }
 
-    // Get the height of the node
-    getHeight(node: TreeNode | null): number {
-        return node ? node.height : 0;
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
     }
 
-    // Get the balance factor of the node
-    getBalance(node: TreeNode | null): number {
-        if (!node) return 0;
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
 
-    // Right rotate the subtree rooted with y
-    rightRotate(y: TreeNode): TreeNode {
-        const x = y.left!;
-        const T2 = x.right;
+        const dfs = (v: number) => {
+            visited.add(v);
+            const neighbors = this.adjList.get(v) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(v);
+        };
 
-        // Perform rotation
-        x.right = y;
-        y.left = T2;
-
-        // Update heights
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-
-        // Return the new root
-        return x;
-    }
-
-    // Left rotate the subtree rooted with x
-    leftRotate(x: TreeNode): TreeNode {
-        const y = x.right!;
-        const T2 = y.left;
-
-        // Perform rotation
-        y.left = x;
-        x.right = T2;
-
-        // Update heights
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-
-        // Return the new root
-        return y;
-    }
-
-    // Insert a node with the given key
-    insert(node: TreeNode | null, key: number): TreeNode {
-        // Perform the normal BST insert
-        if (node === null) {
-            return new TreeNode(key);
+        for (const vertex of this.adjList.keys()) {
+            if (!visited.has(vertex)) {
+                dfs(vertex);
+            }
         }
 
-        if (key < node.key) {
-            node.left = this.insert(node.left, key);
-        } else if (key > node.key) {
-            node.right = this.insert(node.right, key);
-        } else {
-            // Duplicate keys are not allowed in the AVL tree
-            return node;
-        }
-
-        // Update the height of this ancestor node
-        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
-
-        // Get the balance factor of this ancestor node to check whether
-        // this node became unbalanced
-        const balance = this.getBalance(node);
-
-        // If this node becomes unbalanced, then there are 4 cases
-
-        // Left Left Case
-        if (balance > 1 && key < node.left!.key) {
-            return this.rightRotate(node);
-        }
-
-        // Right Right Case
-        if (balance < -1 && key > node.right!.key) {
-            return this.leftRotate(node);
-        }
-
-        // Left Right Case
-        if (balance > 1 && key > node.left!.key) {
-            node.left = this.leftRotate(node.left!);
-            return this.rightRotate(node);
-        }
-
-        // Right Left Case
-        if (balance < -1 && key < node.right!.key) {
-            node.right = this.rightRotate(node.right!);
-            return this.leftRotate(node);
-        }
-
-        // Return the (unchanged) node pointer
-        return node;
-    }
-
-    // Public method to insert a key
-    public insertKey(key: number): void {
-        this.root = this.insert(this.root, key);
-    }
-
-    // Inorder traversal of the tree
-    inorder(node: TreeNode | null): void {
-        if (node !== null) {
-            this.inorder(node.left);
-            console.log(node.key);
-            this.inorder(node.right);
-        }
-    }
-
-    // Public method to perform inorder traversal
-    public inorderTraversal(): void {
-        this.inorder(this.root);
+        return stack.reverse(); // Return in reverse order
     }
 }
 
-// Example usage
-const avlTree = new AVLTree();
-avlTree.insertKey(10);
-avlTree.insertKey(20);
-avlTree.insertKey(30);
-avlTree.insertKey(40);
-avlTree.insertKey(50);
-avlTree.insertKey(25);
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
 
-console.log("Inorder traversal of the constructed AVL tree is:");
-avlTree.inorderTraversal();
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
+class Graph {
+    private adjList: Map<number, number[]>;
+    private inDegree: Map<number, number>;
+
+    constructor() {
+        this.adjList = new Map();
+        this.inDegree = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+
+        // Update in-degree of the destination node
+        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
+        // Ensure the source node is in the in-degree map
+        if (!this.inDegree.has(v)) {
+            this.inDegree.set(v, 0);
+        }
+    }
+
+    topologicalSort(): number[] {
+        const zeroInDegreeQueue: number[] = [];
+        const sortedOrder: number[] = [];
+
+        // Initialize the queue with nodes having zero in-degree
+        for (const [node, degree] of this.inDegree.entries()) {
+            if (degree === 0) {
+                zeroInDegreeQueue.push(node);
+            }
+        }
+
+        while (zeroInDegreeQueue.length > 0) {
+            const current = zeroInDegreeQueue.shift()!;
+            sortedOrder.push(current);
+
+            const neighbors = this.adjList.get(current) || [];
+            for (const neighbor of neighbors) {
+                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
+                if (this.inDegree.get(neighbor) === 0) {
+                    zeroInDegreeQueue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there was a cycle
+        if (sortedOrder.length !== this.inDegree.size) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+
+        return sortedOrder;
+    }
+}
+
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
