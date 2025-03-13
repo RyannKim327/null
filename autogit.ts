@@ -1,29 +1,15 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
-    }
-    return count;
+let array = [1, 2, 3, 4, 5];
+// Remove the first occurrence of a specific value
+array = array.filter(item => item !== 3);
+let array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3);
+if (indexToRemove > -1) {
+    array.splice(indexToRemove, 1);
 }
-
-console.log(getStringLength("Hello")); // Output: 5
-function getStringLengthRecursive(str: string): number {
-    if (str === '') return 0;
-    return 1 + getStringLengthRecursive(str.slice(1));
-}
-
-console.log(getStringLengthRecursive("Hello")); // Output: 5
-function getStringLengthReduce(str: string): number {
-    return str.split('').reduce((count) => count + 1, 0);
-}
-
-console.log(getStringLengthReduce("Hello")); // Output: 5
-function getStringLengthWhile(str: string): number {
-    let count = 0;
-    while (str[count] !== undefined) {
-        count++;
-    }
-    return count;
-}
-
-console.log(getStringLengthWhile("Hello")); // Output: 5
+let array = [1, 2, 3, 3, 4, 5];
+array = array.filter(item => item !== 3);
+let array = [1, 2, 3, 4, 5];
+array = [...array.slice(0, indexToRemove), ...array.slice(indexToRemove + 1)];
+let array = [1, 2, 3, 4, 5];
+const elementsToRemove = [2, 4];
+array = array.filter(item => !elementsToRemove.includes(item));
