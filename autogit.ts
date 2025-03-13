@@ -1,55 +1,15 @@
-// Define a type for the graph nodes
-type Node = {
-    value: string;
-    children: Node[];
-};
+// Example array
+let arr: number[] = [1, 2, 3, 4, 5];
 
-// Depth-Limited Search function
-function depthLimitedSearch(node: Node, depth: number, target: string): boolean {
-    // Check if the current node is the target
-    if (node.value === target) {
-        return true;
-    }
+// Reverse the array
+arr.reverse();
 
-    // If the depth limit is reached, return false
-    if (depth === 0) {
-        return false;
-    }
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+// Example array
+let originalArr: number[] = [1, 2, 3, 4, 5];
 
-    // Recursively search in the children nodes
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, depth - 1, target)) {
-            return true;
-        }
-    }
+// Create a new reversed array
+let reversedArr: number[] = originalArr.slice().reverse();
 
-    // If the target is not found in this path, return false
-    return false;
-}
-
-// Example usage
-const rootNode: Node = {
-    value: 'A',
-    children: [
-        {
-            value: 'B',
-            children: [
-                { value: 'D', children: [] },
-                { value: 'E', children: [] }
-            ]
-        },
-        {
-            value: 'C',
-            children: [
-                { value: 'F', children: [] },
-                { value: 'G', children: [] }
-            ]
-        }
-    ]
-};
-
-const targetValue = 'E';
-const depthLimit = 2;
-
-const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
-console.log(`Target ${targetValue} found: ${found}`);
+console.log(originalArr); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
