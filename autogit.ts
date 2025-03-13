@@ -1,22 +1,28 @@
-const arr = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-const newArr = arr.filter(item => item !== elementToRemove);
-console.log(newArr); // Output: [1, 2, 4, 5]
-const arr = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const index = arr.indexOf(elementToRemove);
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
 
-if (index !== -1) {
-  arr.splice(index, 1);
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-console.log(arr); // Output: [1, 2, 4, 5]
-const arr = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const index = arr.indexOf(elementToRemove);
-
-if (index !== -1) {
-  const newArr = [...arr.slice(0, index), ...arr.slice(index + 1)];
-  console.log(newArr); // Output: [1, 2, 4, 5]
-}
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
