@@ -1,56 +1,67 @@
-function getDigit(num: number, place: number): number {
-    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-function digitCount(num: number): number {
-    if (num === 0) return 1;
-    return Math.floor(Math.log10(Math.abs(num))) + 1;
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
 }
 
-function mostDigits(nums: number[]): number {
-    let maxDigits = 0;
-    for (let num of nums) {
-        maxDigits = Math.max(maxDigits, digitCount(num));
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the starting points
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
+        }
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
+        }
     }
-    return maxDigits;
+
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
 }
 
-function countingSortForRadix(nums: number[], place: number): number[] {
-    const output: number[] = new Array(nums.length);
-    const count: number[] = new Array(10).fill(0);
+// Example usage:
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
 
-    // Count occurrences of each digit
-    for (let num of nums) {
-        const digit = getDigit(num, place);
-        count[digit]++;
-    }
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
 
-    // Update count array to contain actual positions
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
 
-    // Build the output array
-    for (let i = nums.length - 1; i >= 0; i--) {
-        const digit = getDigit(nums[i], place);
-        output[count[digit] - 1] = nums[i];
-        count[digit]--;
-    }
-
-    return output;
-}
-
-function radixSort(nums: number[]): number[] {
-    const maxDigits = mostDigits(nums);
-
-    for (let i = 0; i < maxDigits; i++) {
-        nums = countingSortForRadix(nums, i);
-    }
-
-    return nums;
-}
-
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArr = radixSort(arr);
-console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : "No intersection");
