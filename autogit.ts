@@ -1,15 +1,38 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // Cycle detected
         }
     }
-    return true; // All elements are in ascending order
+
+    return false; // No cycle
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [1, 3, 2, 4, 5];
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+head.next = second;
+second.next = third;
+// Uncomment the next line to create a cycle
+// third.next = head;
 
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+console.log(hasCycle(head)); // Output: false (or true if a cycle is created)
