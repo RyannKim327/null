@@ -1,80 +1,75 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+class BoyerMooreHorspool {
+  /**
+   * Searches for a pattern within a text string
+   * @param text The text to search in
+   * @param pattern The pattern to search for
+   * @returns An array of starting indices where the pattern is found
+   */
+  static search(text: string, pattern: string): number[] {
+    // Handle edge cases
+    if (pattern.length === 0) return [];
+    if (pattern.length > text.length) return [];
+
+    // Create the bad character skip table
+    const skipTable = this.createSkipTable(pattern);
     
-    // Traverse through all array elements
-    for (let i = 0; i < n - 1; i++) {
-        // Find the minimum element in unsorted array
-        let minIndex = i;
-        
-        // Find the index of the minimum element
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        
-        // Swap the found minimum element with the first element
-        if (minIndex !== i) {
-            // Swap using destructuring
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-        }
+    // Result array to store all match indices
+    const matches: number[] = [];
+    
+    // Search through the text
+    let i = 0;
+    while (i <= text.length - pattern.length) {
+      let j = pattern.length - 1;
+      
+      // Compare characters from right to left
+      while (j >= 0 && text[i + j] === pattern[j]) {
+        j--;
+      }
+      
+      // If full pattern match is found
+      if (j < 0) {
+        matches.push(i);
+        // Move past this match
+        i++;
+      } else {
+        // Use skip table to determine how far to shift
+        const skipAmount = skipTable.get(text[i + pattern.length - 1]) 
+          ?? pattern.length;
+        i += skipAmount;
+      }
     }
     
-    return arr;
+    return matches;
+  }
+
+  /**
+   * Creates a skip table for the pattern
+   * @param pattern The pattern to create a skip table for
+   * @returns A Map with skip distances for characters
+   */
+  private static createSkipTable(pattern: string): Map<string, number> {
+    const skipTable = new Map<string, number>();
+    
+    // Default skip distance is the pattern length
+    for (let i = 0; i < pattern.length - 1; i++) {
+      skipTable.set(pattern[i], pattern.length - 1 - i);
+    }
+    
+    return skipTable;
+  }
 }
 
 // Example usage
-const unsortedArray = [64, 25, 12, 22, 11];
-console.log("Unsorted array:", unsortedArray);
-const sortedArray = selectionSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
-function selectionSortAlternative(arr: number[]): number[] {
-    const n = arr.length;
-    
-    for (let i = 0; i < n - 1; i++) {
-        let minIndex = i;
-        
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-        
-        // Traditional swap method
-        if (minIndex !== i) {
-            const temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
-    }
-    
-    return arr;
-}
-function genericSelectionSort<T>(arr: T[], comparator: (a: T, b: T) => number = (a, b) => 
-    a > b ? 1 : a < b ? -1 : 0): T[] {
-    const n = arr.length;
-    
-    for (let i = 0; i < n - 1; i++) {
-        let minIndex = i;
-        
-        for (let j = i + 1; j < n; j++) {
-            if (comparator(arr[j], arr[minIndex]) < 0) {
-                minIndex = j;
-            }
-        }
-        
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-        }
-    }
-    
-    return arr;
+function testBoyerMooreHorspool() {
+  const text = "ABAAABCD";
+  const pattern = "ABC";
+  
+  const matches = BoyerMooreHorspool.search(text, pattern);
+  console.log("Matches found at indices:", matches);
 }
 
-// Usage with custom comparator
-const users = [
-    { name: "John", age: 30 },
-    { name: "Alice", age: 25 }
-];
-
-const sortedUsers = genericSelectionSort(users, (a, b) => a.age - b.age);
+testBoyerMooreHorspool();
+// More examples
+console.log(BoyerMooreHorspool.search("hello world", "o")); // [4, 7]
+console.log(BoyerMooreHorspool.search("mississippi", "iss")); // [1, 4]
+console.log(BoyerMooreHorspool.search("banana", "ana")); // [1, 3]
