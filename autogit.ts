@@ -1,12 +1,65 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
+    }
+}
+class Trie {
+    private root: TrieNode;
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+    constructor() {
+        this.root = new TrieNode();
+    }
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let currentNode = this.root;
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        currentNode.isEndOfWord = true; // Mark the end of the word
+    }
+
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if any word in the Trie starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null;
+    }
+
+    // Helper function to find a node corresponding to a given word/prefix
+    private findNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return null; // Not found
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        return currentNode; // Return the node corresponding to the last character
+    }
+}
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+trie.insert("hi");
+
+console.log(trie.search("hello")); // true
+console.log(trie.search("hell"));  // false
+console.log(trie.startsWith("he")); // true
+console.log(trie.startsWith("wo")); // true
+console.log(trie.startsWith("hi")); // true
+console.log(trie.startsWith("h"));  // true
+console.log(trie.startsWith("x"));  // false
