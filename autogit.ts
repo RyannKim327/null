@@ -1,36 +1,41 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function countingSort(arr: number[], exp: number): number[] {
+    const output: number[] = new Array(arr.length); // Output array
+    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Store count of occurrences of each digit
+    for (let i = 0; i < arr.length; i++) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        count[index]++;
     }
+
+    // Change count[i] so that it contains the actual position of this digit in output[]
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        output[count[index] - 1] = arr[i];
+        count[index]--;
+    }
+
+    return output;
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+function radixSort(arr: number[]): number[] {
+    // Find the maximum number to know the number of digits
+    const max = Math.max(...arr);
+
+    // Apply counting sort to sort elements based on place value
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        arr = countingSort(arr, exp);
     }
 
-    // If the node is a leaf node, return 1
-    if (root.left === null && root.right === null) {
-        return 1;
-    }
-
-    // Recursively count leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+    return arr;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
