@@ -1,92 +1,46 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function findFirstNonRepeatingChar(str: string): string | null {
+    // Create a Map to store character frequencies
+    const charFrequency = new Map<string, number>();
+    
+    // First pass: Count the frequency of each character
+    for (const char of str) {
+        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
     }
+    
+    // Second pass: Find the first character with frequency 1
+    for (const char of str) {
+        if (charFrequency.get(char) === 1) {
+            return char;
+        }
+    }
+    
+    // If no non-repeating character is found
+    return null;
 }
-class BinarySearchTree {
-    root: Node | null;
 
-    constructor() {
-        this.root = null;
+// Example usage
+console.log(findFirstNonRepeatingChar("leetcode")); // Returns "l"
+console.log(findFirstNonRepeatingChar("loveleetcode")); // Returns "v"
+console.log(findFirstNonRepeatingChar("aabb")); // Returns null
+function findFirstNonRepeatingChar(str: string): string | null {
+    const charCount: { [key: string]: number } = {};
+    
+    // Count frequencies
+    for (const char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
     }
-
-    // Insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
+    
+    // Find first non-repeating
+    for (const char of str) {
+        if (charCount[char] === 1) {
+            return char;
         }
     }
-
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is found
-        }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
+    
+    return null;
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
-
-// Search for a value
-console.log(bst.search(7));  // true
-console.log(bst.search(20)); // false
-
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+function findFirstNonRepeatingChar(str: string): string | null {
+    return [...str].find(char => 
+        str.split(char).length === 2
+    ) || null;
+}
