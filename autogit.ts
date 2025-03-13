@@ -1,38 +1,53 @@
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+}
 
-    // Store count of occurrences of each digit
-    for (let i = 0; i < arr.length; i++) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        count[index]++;
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
+
+function mostDigits(nums: number[]): number {
+    let maxDigits = 0;
+    for (let num of nums) {
+        maxDigits = Math.max(maxDigits, digitCount(num));
+    }
+    return maxDigits;
+}
+
+function countingSortForRadix(nums: number[], place: number): number[] {
+    const output: number[] = new Array(nums.length);
+    const count: number[] = new Array(10).fill(0);
+
+    // Count occurrences of each digit
+    for (let num of nums) {
+        const digit = getDigit(num, place);
+        count[digit]++;
     }
 
-    // Change count[i] so that it contains the actual position of this digit in output[]
+    // Update count array to contain actual positions
     for (let i = 1; i < count.length; i++) {
         count[i] += count[i - 1];
     }
 
     // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
+    for (let i = nums.length - 1; i >= 0; i--) {
+        const digit = getDigit(nums[i], place);
+        output[count[digit] - 1] = nums[i];
+        count[digit]--;
     }
 
     return output;
 }
 
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = Math.max(...arr);
+function radixSort(nums: number[]): number[] {
+    const maxDigits = mostDigits(nums);
 
-    // Apply counting sort to sort elements based on place value
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        arr = countingSort(arr, exp);
+    for (let place = 0; place < maxDigits; place++) {
+        nums = countingSortForRadix(nums, place);
     }
 
-    return arr;
+    return nums;
 }
 
 // Example usage
