@@ -1,31 +1,65 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-    // Create a 2D matrix to store substring match lengths
-    const matrix: number[][] = Array(str1.length + 1)
-        .fill(null)
-        .map(() => Array(str2.length + 1).fill(0));
-    
-    let maxLength = 0;
-    let endIndex = 0;
+function mergeSort<T>(arr: T[]): T[] {
+    // Base case: if array has 1 or fewer elements, it's already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    // Populate the matrix
-    for (let i = 1; i <= str1.length; i++) {
-        for (let j = 1; j <= str2.length; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                matrix[i][j] = matrix[i - 1][j - 1] + 1;
-                
-                // Track the maximum length and ending position
-                if (matrix[i][j] > maxLength) {
-                    maxLength = matrix[i][j];
-                    endIndex = i - 1;
-                }
-            }
+    // Find the middle point to divide the array
+    const middle = Math.floor(arr.length / 2);
+
+    // Split the array into left and right halves
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge<T>(left: T[], right: T[]): T[] {
+    let result: T[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Compare elements from left and right arrays and merge them in sorted order
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    // Extract the longest common substring
-    return str1.substring(endIndex - maxLength + 1, endIndex + 1);
+    // Add remaining elements from left array, if any
+    while (leftIndex < left.length) {
+        result.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    // Add remaining elements from right array, if any
+    while (rightIndex < right.length) {
+        result.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return result;
 }
 
 // Example usage
-console.log(longestCommonSubstring("ABABC", "BABCA")); // Output: "BABC"
-console.log(longestCommonSubstring("hello", "world")); // Output: ""
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray);
+interface Person {
+    name: string;
+    age: number;
+}
+
+const people: Person[] = [
+    { name: 'Alice', age: 30 },
+    { name: 'Bob', age: 25 },
+    { name: 'Charlie', age: 35 }
+];
+
+// Custom comparator
+const sortedPeople = mergeSort(people, (a, b) => a.age - b.age);
