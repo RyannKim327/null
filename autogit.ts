@@ -1,53 +1,30 @@
-type Edge = [number, number, number]; // [source, destination, weight]
+// Define an interface for the data we expect to receive
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}
 
-class Graph {
-    private edges: Edge[];
-    private numVertices: number;
+// Function to fetch posts
+async function fetchPosts(): Promise<void> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
 
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
-    }
-
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push([source, destination, weight]);
-    }
-
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const [u, v, weight] of this.edges) {
-                if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-                    distances[v] = distances[u] + weight;
-                }
-            }
+        // Check if the response is ok (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // Step 3: Check for negative-weight cycles
-        for (const [u, v, weight] of this.edges) {
-            if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-                return "Graph contains a negative-weight cycle";
-            }
-        }
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
 
-        return distances;
+        // Log the posts to the console
+        console.log(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
     }
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
-
-const distances = graph.bellmanFord(0);
-console.log(distances);
+// Call the function to fetch posts
+fetchPosts();
