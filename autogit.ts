@@ -1,34 +1,32 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const table: string[] = [];
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-    // Create the table of rotations
-    for (let i = 0; i < n; i++) {
-        const rotated = input.slice(i) + input.slice(0, i);
-        table.push(rotated);
-    }
+    // Start with the largest gap and reduce the gap until it becomes 0
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
 
-    // Sort the table
-    table.sort();
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
 
-    // Build the BWT result and find the original index
-    let bwtResult = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        bwtResult += table[i][n - 1]; // Take the last character of each sorted rotation
-        if (table[i] === input) {
-            originalIndex = i; // Store the index of the original string
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
 
-    return { transformed: bwtResult, index: originalIndex };
+    return arr;
 }
 
-// Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
-Transformed: annb$aa
-Original Index: 3
+// Example usage:
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
