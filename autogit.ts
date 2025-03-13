@@ -1,12 +1,43 @@
-function validateEmail(email: string): boolean {
-    // Regular expression for validating an email address
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Example usage
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let maxDiameter = 0;
 
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
+    function height(node: TreeNode | null): number {
+        if (node === null) {
+            return 0;
+        }
+
+        // Recursively find the height of the left and right subtrees
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
+
+        // Update the maximum diameter found
+        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+
+        // Return the height of the current node
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    height(root); // Start the recursion
+    return maxDiameter; // Return the maximum diameter found
+}
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
