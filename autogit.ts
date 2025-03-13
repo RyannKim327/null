@@ -1,38 +1,25 @@
-function binarySearch(arr: number[], target: number, left: number, right: number): number {
-    // Base case: if the left index exceeds the right index, the target is not found
-    if (left > right) {
-        return -1; // Target not found
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
-
-    // Calculate the middle index
-    const mid = Math.floor((left + right) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
+    if (n === 0 || n === 1) {
+        return 1;
     }
-
-    // If the target is less than the middle element, search the left half
-    if (target < arr[mid]) {
-        return binarySearch(arr, target, left, mid - 1);
-    }
-
-    // If the target is greater than the middle element, search the right half
-    return binarySearch(arr, target, mid + 1, right);
+    return n * factorialRecursive(n - 1);
 }
 
-// Helper function to initiate the binary search
-function search(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+// Example usage:
+console.log(factorialRecursive(5)); // Output: 120
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
+    }
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
 }
 
-// Example usage
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
-const result = search(sortedArray, target);
-
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found');
-}
+// Example usage:
+console.log(factorialIterative(5)); // Output: 120
