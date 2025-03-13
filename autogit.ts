@@ -1,77 +1,104 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Remove spaces and convert to lowercase for case-insensitive comparison
-    const cleanStr1 = str1.replace(/\s/g, '').toLowerCase();
-    const cleanStr2 = str2.replace(/\s/g, '').toLowerCase();
-
-    // Check if lengths are different
-    if (cleanStr1.length !== cleanStr2.length) return false;
-
-    // Create character frequency map
-    const charMap = new Map<string, number>();
-
-    // Count characters in first string
-    for (const char of cleanStr1) {
-        charMap.set(char, (charMap.get(char) || 0) + 1);
+// Definition for singly-linked list node
+class ListNode {
+    val: number;
+    next: ListNode | null;
+    
+    constructor(val: number = 0, next: ListNode | null = null) {
+        this.val = val;
+        this.next = next;
     }
+}
 
-    // Decrement characters from second string
-    for (const char of cleanStr2) {
-        if (!charMap.has(char)) return false;
-        
-        const count = charMap.get(char)!;
-        if (count === 1) {
-            charMap.delete(char);
-        } else {
-            charMap.set(char, count - 1);
+// Approach 1: Using Array Conversion (Simple but O(n) extra space)
+function isPalindromeWithArray(head: ListNode | null): boolean {
+    // Convert linked list to array
+    const values: number[] = [];
+    let current = head;
+    
+    while (current !== null) {
+        values.push(current.val);
+        current = current.next;
+    }
+    
+    // Check if array is palindrome
+    let left = 0;
+    let right = values.length - 1;
+    
+    while (left < right) {
+        if (values[left] !== values[right]) {
+            return false;
         }
+        left++;
+        right--;
     }
-
-    return charMap.size === 0;
-}
-
-// Usage
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world')); // false
-function areAnagramsSorted(str1: string, str2: string): boolean {
-    // Remove spaces and convert to lowercase
-    const cleanStr1 = str1.replace(/\s/g, '').toLowerCase();
-    const cleanStr2 = str2.replace(/\s/g, '').toLowerCase();
-
-    // Check if lengths are different
-    if (cleanStr1.length !== cleanStr2.length) return false;
-
-    // Sort characters and compare
-    return cleanStr1.split('').sort().join('') === 
-           cleanStr2.split('').sort().join('');
-}
-
-// Usage
-console.log(areAnagramsSorted('listen', 'silent')); // true
-function areAnagramsArray(str1: string, str2: string): boolean {
-    // Remove spaces and convert to lowercase
-    const cleanStr1 = str1.replace(/\s/g, '').toLowerCase();
-    const cleanStr2 = str2.replace(/\s/g, '').toLowerCase();
-
-    // Check if lengths are different
-    if (cleanStr1.length !== cleanStr2.length) return false;
-
-    // Create character count array (assuming ASCII)
-    const charCount = new Array(26).fill(0);
-
-    // Increment for first string
-    for (const char of cleanStr1) {
-        charCount[char.charCodeAt(0) - 97]++;
-    }
-
-    // Decrement for second string
-    for (const char of cleanStr2) {
-        const index = char.charCodeAt(0) - 97;
-        charCount[index]--;
-        if (charCount[index] < 0) return false;
-    }
-
+    
     return true;
 }
 
-// Usage
-console.log(areAnagramsArray('listen', 'silent')); // true
+// Approach 2: Reverse and Compare (O(1) extra space)
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) return true;
+    
+    // Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast.next && fast.next.next) {
+        slow = slow!.next;
+        fast = fast.next.next;
+    }
+    
+    // Reverse the second half of the list
+    let secondHalf = reverseList(slow!.next);
+    let firstHalf = head;
+    
+    // Compare both halves
+    while (secondHalf) {
+        if (firstHalf!.val !== secondHalf.val) {
+            return false;
+        }
+        firstHalf = firstHalf!.next;
+        secondHalf = secondHalf.next;
+    }
+    
+    return true;
+}
+
+// Helper function to reverse a linked list
+function reverseList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+    
+    while (current) {
+        const nextTemp = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextTemp;
+    }
+    
+    return prev;
+}
+
+// Example usage
+function createLinkedList(values: number[]): ListNode | null {
+    if (values.length === 0) return null;
+    
+    const head = new ListNode(values[0]);
+    let current = head;
+    
+    for (let i = 1; i < values.length; i++) {
+        current.next = new ListNode(values[i]);
+        current = current.next;
+    }
+    
+    return head;
+}
+
+// Test cases
+const palindromeList1 = createLinkedList([1,2,2,1]);
+const palindromeList2 = createLinkedList([1,2,3,2,1]);
+const nonPalindromeList = createLinkedList([1,2,3,4]);
+
+console.log(isPalindrome(palindromeList1));  // true
+console.log(isPalindrome(palindromeList2));  // true
+console.log(isPalindrome(nonPalindromeList));  // false
