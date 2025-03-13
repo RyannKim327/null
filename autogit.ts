@@ -1,21 +1,60 @@
-function isPalindrome(s: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
     
-    let left = 0;
-    let right = normalizedString.length - 1;
-
-    while (left < right) {
-        if (normalizedString[left] !== normalizedString[right]) {
-            return false; // Not a palindrome
+    // Outer loop for number of passes
+    for (let i = 0; i < n - 1; i++) {
+        // Flag to optimize the algorithm by detecting if any swaps occur
+        let swapped = false;
+        
+        // Inner loop for comparing and swapping adjacent elements
+        for (let j = 0; j < n - i - 1; j++) {
+            // If the element is greater than the next element, swap them
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements
+                let temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+                
+                // Set swapped to true
+                swapped = false;
+            }
         }
-        left++;
-        right--;
+        
+        // If no swapping occurred, array is already sorted
+        if (!swapped) {
+            break;
+        }
     }
-
-    return true; // Is a palindrome
+    
+    return arr;
 }
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+// Example usage
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+console.log("Unsorted array:", unsortedArray);
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted array:", sortedArray);
+function bubbleSort<T>(arr: T[], comparator: (a: T, b: T) => number = (a, b) => 
+    a > b ? 1 : a < b ? -1 : 0): T[] {
+    const n = arr.length;
+    
+    for (let i = 0; i < n - 1; i++) {
+        let swapped = false;
+        
+        for (let j = 0; j < n - i - 1; j++) {
+            if (comparator(arr[j], arr[j + 1]) > 0) {
+                // Swap
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
+        }
+        
+        if (!swapped) break;
+    }
+    
+    return arr;
+}
+
+// Example usages
+console.log(bubbleSort([3, 1, 4, 1, 5, 9])); // Numeric sort
+console.log(bubbleSort(['banana', 'apple', 'cherry'])); // String sort
