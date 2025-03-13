@@ -1,113 +1,77 @@
-class Node {
-    public x: number;
-    public y: number;
-    public g: number; // Cost from start to this node
-    public h: number; // Heuristic cost from this node to the goal
-    public f: number; // Total cost (g + h)
-    public parent: Node | null;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Remove spaces and convert to lowercase for case-insensitive comparison
+    const cleanStr1 = str1.replace(/\s/g, '').toLowerCase();
+    const cleanStr2 = str2.replace(/\s/g, '').toLowerCase();
 
-    constructor(x: number, y: number, g: number = 0, h: number = 0, parent: Node | null = null) {
-        this.x = x;
-        this.y = y;
-        this.g = g;
-        this.h = h;
-        this.f = g + h;
-        this.parent = parent;
-    }
-}
-class PriorityQueue {
-    private elements: Node[];
+    // Check if lengths are different
+    if (cleanStr1.length !== cleanStr2.length) return false;
 
-    constructor() {
-        this.elements = [];
+    // Create character frequency map
+    const charMap = new Map<string, number>();
+
+    // Count characters in first string
+    for (const char of cleanStr1) {
+        charMap.set(char, (charMap.get(char) || 0) + 1);
     }
 
-    isEmpty(): boolean {
-        return this.elements.length === 0;
-    }
-
-    enqueue(node: Node): void {
-        this.elements.push(node);
-        this.elements.sort((a, b) => a.f - b.f); // Sort by f value
-    }
-
-    dequeue(): Node | undefined {
-        return this.elements.shift(); // Remove the node with the lowest f value
-    }
-}
-function heuristic(a: Node, b: Node): number {
-    // Using Manhattan distance as the heuristic
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-}
-
-function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
-    const openSet = new PriorityQueue();
-    const closedSet: Set<string> = new Set();
-
-    openSet.enqueue(start);
-
-    while (!openSet.isEmpty()) {
-        const current = openSet.dequeue();
-
-        if (!current) {
-            break;
-        }
-
-        // Check if we reached the goal
-        if (current.x === goal.x && current.y === goal.y) {
-            const path: Node[] = [];
-            let temp: Node | null = current;
-            while (temp) {
-                path.push(temp);
-                temp = temp.parent;
-            }
-            return path.reverse(); // Return the path from start to goal
-        }
-
-        closedSet.add(`${current.x},${current.y}`);
-
-        // Get neighbors (4-directional movement)
-        const neighbors = [
-            new Node(current.x + 1, current.y),
-            new Node(current.x - 1, current.y),
-            new Node(current.x, current.y + 1),
-            new Node(current.x, current.y - 1),
-        ];
-
-        for (const neighbor of neighbors) {
-            // Check if neighbor is within bounds and not an obstacle
-            if (neighbor.x < 0 || neighbor.x >= grid.length || neighbor.y < 0 || neighbor.y >= grid[0].length || grid[neighbor.x][neighbor.y] === 1) {
-                continue; // Skip if out of bounds or an obstacle
-            }
-
-            if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
-                continue; // Skip if already evaluated
-            }
-
-            const gScore = current.g + 1; // Assume cost to move to neighbor is 1
-            let gScoreIsBest = false;
-
-            if (!openSet.elements.some(n => n.x === neighbor.x && n.y === neighbor.y)) {
-                gScoreIsBest = true; // New node
-                neighbor.h = heuristic(neighbor, goal);
-                openSet.enqueue(neighbor);
-            } else if (gScore < neighbor.g) {
-                gScoreIsBest = true; // Found a better path
-            }
-
-            if (gScoreIsBest) {
-                neighbor.parent = current;
-                neighbor.g = gScore;
-                neighbor.f = neighbor.g + neighbor.h;
-            }
+    // Decrement characters from second string
+    for (const char of cleanStr2) {
+        if (!charMap.has(char)) return false;
+        
+        const count = charMap.get(char)!;
+        if (count === 1) {
+            charMap.delete(char);
+        } else {
+            charMap.set(char, count - 1);
         }
     }
 
-    return null; // No path found
+    return charMap.size === 0;
 }
-const grid = [
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0
+
+// Usage
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'world')); // false
+function areAnagramsSorted(str1: string, str2: string): boolean {
+    // Remove spaces and convert to lowercase
+    const cleanStr1 = str1.replace(/\s/g, '').toLowerCase();
+    const cleanStr2 = str2.replace(/\s/g, '').toLowerCase();
+
+    // Check if lengths are different
+    if (cleanStr1.length !== cleanStr2.length) return false;
+
+    // Sort characters and compare
+    return cleanStr1.split('').sort().join('') === 
+           cleanStr2.split('').sort().join('');
+}
+
+// Usage
+console.log(areAnagramsSorted('listen', 'silent')); // true
+function areAnagramsArray(str1: string, str2: string): boolean {
+    // Remove spaces and convert to lowercase
+    const cleanStr1 = str1.replace(/\s/g, '').toLowerCase();
+    const cleanStr2 = str2.replace(/\s/g, '').toLowerCase();
+
+    // Check if lengths are different
+    if (cleanStr1.length !== cleanStr2.length) return false;
+
+    // Create character count array (assuming ASCII)
+    const charCount = new Array(26).fill(0);
+
+    // Increment for first string
+    for (const char of cleanStr1) {
+        charCount[char.charCodeAt(0) - 97]++;
+    }
+
+    // Decrement for second string
+    for (const char of cleanStr2) {
+        const index = char.charCodeAt(0) - 97;
+        charCount[index]--;
+        if (charCount[index] < 0) return false;
+    }
+
+    return true;
+}
+
+// Usage
+console.log(areAnagramsArray('listen', 'silent')); // true
