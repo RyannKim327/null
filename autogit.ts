@@ -1,93 +1,57 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
+    constructor() {
+        this.adjacencyList = new Map();
+    }
+
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
+
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        return result;
     }
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
+// Example usage:
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
 
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
-    }
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.addEdge(3, 5);
 
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
-        }
-    }
-
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                return;
-            }
-
-            currentNode = currentNode.children.get(char)!;
-            // If the current node has an end, we need to split it
-            if (currentNode.end !== null) {
-                const edgeLength = currentNode.end - currentNode.start + 1;
-                if (i - start < edgeLength) {
-                    return; // The suffix is already in the tree
-                }
-                // Split the edge
-                const newNode = new SuffixTreeNode(currentNode.start, currentNode.start + edgeLength - 1);
-                currentNode.start += edgeLength;
-                currentNode.children.set(this.text[currentNode.start], currentNode);
-                currentNode.children.set(char, newNode);
-                return;
-            }
-        }
-    }
-
-    // Function to search for a substring in the suffix tree
-    search(substring: string): boolean {
-        let currentNode = this.root;
-        let index = 0;
-
-        while (index < substring.length) {
-            const char = substring[index];
-
-            if (!currentNode.children.has(char)) {
-                return false; // Not found
-            }
-
-            currentNode = currentNode.children.get(char)!;
-            const edgeLength = currentNode.end !== null ? currentNode.end - currentNode.start + 1 : 0;
-
-            for (let i = 0; i < edgeLength; i++) {
-                if (index >= substring.length || this.text[currentNode.start + i] !== substring[index]) {
-                    return false; // Not found
-                }
-                index++;
-            }
-        }
-
-        return true; // Found
-    }
-}
-
-// Example usage
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // false
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
