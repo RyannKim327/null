@@ -1,117 +1,108 @@
-class Graph {
-    private adjList: Map<number, number[]>;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        const dfs = (v: number) => {
-            visited.add(v);
-            const neighbors = this.adjList.get(v) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(v);
-        };
-
-        for (const vertex of this.adjList.keys()) {
-            if (!visited.has(vertex)) {
-                dfs(vertex);
-            }
-        }
-
-        return stack.reverse(); // Return in reverse order
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
-class Graph {
-    private adjList: Map<number, number[]>;
-    private inDegree: Map<number, number>;
+class BinaryTree {
+    root: TreeNode | null;
 
     constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
+        this.root = null;
     }
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-
-        // Update in-degree of the destination node
-        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
-        // Ensure the source node is in the in-degree map
-        if (!this.inDegree.has(v)) {
-            this.inDegree.set(v, 0);
+    // Insert a new value into the binary tree
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
     }
 
-    topologicalSort(): number[] {
-        const zeroInDegreeQueue: number[] = [];
-        const sortedOrder: number[] = [];
-
-        // Initialize the queue with nodes having zero in-degree
-        for (const [node, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                zeroInDegreeQueue.push(node);
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
+    }
 
-        while (zeroInDegreeQueue.length > 0) {
-            const current = zeroInDegreeQueue.shift()!;
-            sortedOrder.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    zeroInDegreeQueue.push(neighbor);
-                }
-            }
+    // In-order traversal
+    inOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            this.inOrderTraversal(node.left);
+            console.log(node.value);
+            this.inOrderTraversal(node.right);
         }
+    }
 
-        // Check if there was a cycle
-        if (sortedOrder.length !== this.inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
+    // Pre-order traversal
+    preOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            console.log(node.value);
+            this.preOrderTraversal(node.left);
+            this.preOrderTraversal(node.right);
         }
+    }
 
-        return sortedOrder;
+    // Post-order traversal
+    postOrderTraversal(node: TreeNode | null): void {
+        if (node !== null) {
+            this.postOrderTraversal(node.left);
+            this.postOrderTraversal(node.right);
+            console.log(node.value);
+        }
+    }
+
+    // Search for a value in the binary tree
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value === node.value) {
+            return true;
+        }
+        return value < node.value
+            ? this.searchNode(node.left, value)
+            : this.searchNode(node.right, value);
     }
 }
+const tree = new BinaryTree();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+tree.insert(12);
+tree.insert(18);
 
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+console.log("In-order Traversal:");
+tree.inOrderTraversal(tree.root); // Output: 3, 5, 7, 10, 12, 15, 18
 
-const sortedOrder = graph.topologicalSort();
-console.log(sortedOrder); // Output: A valid topological order
+console.log("Pre-order Traversal:");
+tree.preOrderTraversal(tree.root); // Output: 10, 5, 3, 7, 15, 12, 18
+
+console.log("Post-order Traversal:");
+tree.postOrderTraversal(tree.root); // Output: 3, 7, 5, 12, 18, 15, 10
+
+console.log("Search for 7:", tree.search(7)); // Output: true
+console.log("Search for 20:", tree.search(20)); // Output: false
