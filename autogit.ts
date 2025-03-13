@@ -1,12 +1,64 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    // Recursive case: n! = n * (n - 1)!
-    return n * factorial(n - 1);
-}
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-// Example usage:
-const number = 5;
-console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
+    }
+}
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
+
+    constructor(text: string) {
+        this.root = new SuffixTreeNode(-1, null);
+        this.text = text;
+        this.buildSuffixTree();
+    }
+
+    private buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
+        }
+    }
+
+    private insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(i, null);
+                currentNode.children.set(char, newNode);
+                currentNode = newNode;
+            } else {
+                currentNode = currentNode.children.get(char)!;
+            }
+        }
+    }
+
+    public search(pattern: string): boolean {
+        let currentNode = this.root;
+        for (const char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return false;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return true;
+    }
+}
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+
+// Searching for patterns
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("bat")); // false
