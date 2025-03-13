@@ -1,30 +1,55 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+// Define a type for the graph nodes
+type Node = {
+    value: string;
+    children: Node[];
+};
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+// Depth-Limited Search function
+function depthLimitedSearch(node: Node, depth: number, target: string): boolean {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
     }
+
+    // If the depth limit is reached, return false
+    if (depth === 0) {
+        return false;
+    }
+
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depth - 1, target)) {
+            return true;
+        }
+    }
+
+    // If the target is not found in this path, return false
+    return false;
 }
 
-// Call the function to fetch posts
-fetchPosts();
+// Example usage
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                { value: 'D', children: [] },
+                { value: 'E', children: [] }
+            ]
+        },
+        {
+            value: 'C',
+            children: [
+                { value: 'F', children: [] },
+                { value: 'G', children: [] }
+            ]
+        }
+    ]
+};
+
+const targetValue = 'E';
+const depthLimit = 2;
+
+const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
