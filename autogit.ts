@@ -1,22 +1,57 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Start with the first string as the initial prefix
-    let prefix = strs[0];
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If there's no common prefix, return an empty string
-            if (prefix === "") return "";
-        }
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
     }
 
-    return prefix;
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the middle element
+    findMiddle(): ListNode | null {
+        let slowPointer: ListNode | null = this.head;
+        let fastPointer: ListNode | null = this.head;
+
+        while (fastPointer && fastPointer.next) {
+            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
+            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+        }
+
+        return slowPointer; // Slow pointer will be at the middle
+    }
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+const middleNode = list.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
