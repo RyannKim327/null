@@ -1,121 +1,70 @@
-interface GraphNode {
-  id: string;
-  edges: { [targetId: string]: number };
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-class Dijkstra {
-  // Graph represented as a map of nodes
-  private graph: Map<string, GraphNode>;
+class LinkedList {
+    head: ListNode | null;
 
-  constructor(graph: Map<string, GraphNode>) {
-    this.graph = graph;
-  }
-
-  // Find shortest path between start and end nodes
-  findShortestPath(startNodeId: string, endNodeId: string): {
-    path: string[],
-    distance: number
-  } {
-    // Distances to each node
-    const distances = new Map<string, number>();
-    // Previous nodes in optimal path
-    const previousNodes = new Map<string, string | null>();
-    // Unvisited nodes
-    const unvisitedNodes = new Set(this.graph.keys());
-
-    // Initialize distances
-    for (const nodeId of this.graph.keys()) {
-      distances.set(nodeId, nodeId === startNodeId ? 0 : Infinity);
-      previousNodes.set(nodeId, null);
+    constructor() {
+        this.head = null;
     }
 
-    while (unvisitedNodes.size > 0) {
-      // Find unvisited node with smallest distance
-      const currentNodeId = this.findNodeWithMinDistance(distances, unvisitedNodes);
-      
-      if (!currentNodeId || currentNodeId === endNodeId) break;
-
-      unvisitedNodes.delete(currentNodeId);
-      const currentNode = this.graph.get(currentNodeId)!;
-
-      // Check all neighboring nodes
-      for (const [neighborId, edgeWeight] of Object.entries(currentNode.edges)) {
-        if (!unvisitedNodes.has(neighborId)) continue;
-
-        const tentativeDistance = 
-          (distances.get(currentNodeId) ?? Infinity) + edgeWeight;
-
-        if (tentativeDistance < (distances.get(neighborId) ?? Infinity)) {
-          distances.set(neighborId, tentativeDistance);
-          previousNodes.set(neighborId, currentNodeId);
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-      }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
     }
 
-    // Reconstruct path
-    return {
-      path: this.reconstructPath(previousNodes, startNodeId, endNodeId),
-      distance: distances.get(endNodeId) ?? Infinity
-    };
-  }
+    // Method to find the nth node from the end
+    findNthFromEnd(n: number): ListNode | null {
+        let firstPointer: ListNode | null = this.head;
+        let secondPointer: ListNode | null = this.head;
 
-  // Helper to find node with minimum distance
-  private findNodeWithMinDistance(
-    distances: Map<string, number>, 
-    unvisitedNodes: Set<string>
-  ): string | null {
-    let minDistance = Infinity;
-    let minNodeId: string | null = null;
+        // Move firstPointer n nodes ahead
+        for (let i = 0; i < n; i++) {
+            if (firstPointer === null) {
+                return null; // n is greater than the length of the list
+            }
+            firstPointer = firstPointer.next;
+        }
 
-    for (const nodeId of unvisitedNodes) {
-      const distance = distances.get(nodeId) ?? Infinity;
-      if (distance < minDistance) {
-        minDistance = distance;
-        minNodeId = nodeId;
-      }
+        // Move both pointers until firstPointer reaches the end
+        while (firstPointer !== null) {
+            firstPointer = firstPointer.next;
+            secondPointer = secondPointer.next;
+        }
+
+        // secondPointer is now at the nth node from the end
+        return secondPointer;
     }
-
-    return minNodeId;
-  }
-
-  // Reconstruct the path from start to end
-  private reconstructPath(
-    previousNodes: Map<string, string | null>, 
-    startNodeId: string, 
-    endNodeId: string
-  ): string[] {
-    const path: string[] = [];
-    let currentNodeId: string | null = endNodeId;
-
-    while (currentNodeId) {
-      path.unshift(currentNodeId);
-      currentNodeId = previousNodes.get(currentNodeId) ?? null;
-      
-      if (currentNodeId === startNodeId) {
-        path.unshift(startNodeId);
-        break;
-      }
-    }
-
-    return path;
-  }
 }
 
-// Example usage
-function main() {
-  // Create a sample graph
-  const graph = new Map<string, GraphNode>([
-    ['A', { id: 'A', edges: { 'B': 4, 'C': 2 } }],
-    ['B', { id: 'B', edges: { 'D': 3 } }],
-    ['C', { id: 'C', edges: { 'B': 1, 'D': 5 } }],
-    ['D', { id: 'D', edges: {} })
-  ]);
+// Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
-  const dijkstra = new Dijkstra(graph);
-  const result = dijkstra.findShortestPath('A', 'D');
-  
-  console.log('Shortest Path:', result.path);
-  console.log('Total Distance:', result.distance);
+const n = 2;
+const nthNode = list.findNthFromEnd(n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
 }
-
-main();
