@@ -1,146 +1,56 @@
-class TreeNode {
-    key: number;
-    height: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(key: number) {
-        this.key = key;
-        this.height = 1; // New node is initially added at leaf
-        this.left = null;
-        this.right = null;
-    }
+function getDigit(num: number, place: number): number {
+    return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
 
-class AVLTree {
-    root: TreeNode | null;
+function digitCount(num: number): number {
+    if (num === 0) return 1;
+    return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
 
-    constructor() {
-        this.root = null;
+function mostDigits(nums: number[]): number {
+    let maxDigits = 0;
+    for (let num of nums) {
+        maxDigits = Math.max(maxDigits, digitCount(num));
+    }
+    return maxDigits;
+}
+
+function countingSortForRadix(nums: number[], place: number): number[] {
+    const output: number[] = new Array(nums.length);
+    const count: number[] = new Array(10).fill(0);
+
+    // Count occurrences of each digit
+    for (let num of nums) {
+        const digit = getDigit(num, place);
+        count[digit]++;
     }
 
-    // Get the height of the node
-    getHeight(node: TreeNode | null): number {
-        return node ? node.height : 0;
+    // Update count array to contain actual positions
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
     }
 
-    // Get the balance factor of the node
-    getBalance(node: TreeNode | null): number {
-        if (!node) return 0;
-        return this.getHeight(node.left) - this.getHeight(node.right);
+    // Build the output array
+    for (let i = nums.length - 1; i >= 0; i--) {
+        const digit = getDigit(nums[i], place);
+        output[count[digit] - 1] = nums[i];
+        count[digit]--;
     }
 
-    // Right rotate the subtree rooted with y
-    rightRotate(y: TreeNode): TreeNode {
-        const x = y.left!;
-        const T2 = x.right;
+    return output;
+}
 
-        // Perform rotation
-        x.right = y;
-        y.left = T2;
+function radixSort(nums: number[]): number[] {
+    const maxDigits = mostDigits(nums);
 
-        // Update heights
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-
-        // Return the new root
-        return x;
+    for (let i = 0; i < maxDigits; i++) {
+        nums = countingSortForRadix(nums, i);
     }
 
-    // Left rotate the subtree rooted with x
-    leftRotate(x: TreeNode): TreeNode {
-        const y = x.right!;
-        const T2 = y.left;
-
-        // Perform rotation
-        y.left = x;
-        x.right = T2;
-
-        // Update heights
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-
-        // Return the new root
-        return y;
-    }
-
-    // Insert a node with the given key
-    insert(key: number): void {
-        this.root = this.insertNode(this.root, key);
-    }
-
-    // Recursive function to insert a key in the subtree rooted with node
-    private insertNode(node: TreeNode | null, key: number): TreeNode {
-        // Perform the normal BST insert
-        if (!node) return new TreeNode(key);
-
-        if (key < node.key) {
-            node.left = this.insertNode(node.left, key);
-        } else if (key > node.key) {
-            node.right = this.insertNode(node.right, key);
-        } else {
-            // Duplicate keys are not allowed in the AVL tree
-            return node;
-        }
-
-        // Update the height of this ancestor node
-        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
-
-        // Get the balance factor of this ancestor node to check whether
-        // this node became unbalanced
-        const balance = this.getBalance(node);
-
-        // If this node becomes unbalanced, then there are 4 cases
-
-        // Left Left Case
-        if (balance > 1 && key < node.left!.key) {
-            return this.rightRotate(node);
-        }
-
-        // Right Right Case
-        if (balance < -1 && key > node.right!.key) {
-            return this.leftRotate(node);
-        }
-
-        // Left Right Case
-        if (balance > 1 && key > node.left!.key) {
-            node.left = this.leftRotate(node.left!);
-            return this.rightRotate(node);
-        }
-
-        // Right Left Case
-        if (balance < -1 && key < node.right!.key) {
-            node.right = this.rightRotate(node.right!);
-            return this.leftRotate(node);
-        }
-
-        // Return the (unchanged) node pointer
-        return node;
-    }
-
-    // Inorder traversal of the tree
-    inorderTraversal(node: TreeNode | null): void {
-        if (node) {
-            this.inorderTraversal(node.left);
-            console.log(node.key);
-            this.inorderTraversal(node.right);
-        }
-    }
-
-    // Public method to perform inorder traversal
-    public inorder(): void {
-        this.inorderTraversal(this.root);
-    }
+    return nums;
 }
 
 // Example usage
-const avl = new AVLTree();
-avl.insert(10);
-avl.insert(20);
-avl.insert(30);
-avl.insert(40);
-avl.insert(50);
-avl.insert(25);
-
-console.log("Inorder traversal of the AVL tree is:");
-avl.inorder();
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
