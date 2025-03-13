@@ -1,124 +1,109 @@
-function naiveStringMatch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    
-    for (let i = 0; i <= text.length - pattern.length; i++) {
-        let j;
-        for (j = 0; j < pattern.length; j++) {
-            if (text[i + j] !== pattern[j]) {
-                break;
-            }
-        }
-        
-        if (j === pattern.length) {
-            result.push(i);
-        }
+class Node {
+    public x: number;
+    public y: number;
+    public g: number; // Cost from start to this node
+    public h: number; // Heuristic cost to goal
+    public f: number; // Total cost (g + h)
+    public parent: Node | null;
+
+    constructor(x: number, y: number, g: number = 0, h: number = 0, parent: Node | null = null) {
+        this.x = x;
+        this.y = y;
+        this.g = g;
+        this.h = h;
+        this.f = g + h;
+        this.parent = parent;
     }
-    
-    return result;
 }
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let len = 0;
-    let i = 1;
+class PriorityQueue {
+    private elements: Node[] = [];
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    public isEmpty(): boolean {
+        return this.elements.length === 0;
     }
 
-    return lps;
+    public enqueue(node: Node): void {
+        this.elements.push(node);
+        this.elements.sort((a, b) => a.f - b.f); // Sort by f value
+    }
+
+    public dequeue(): Node | undefined {
+        return this.elements.shift(); // Remove the node with the lowest f value
+    }
+}
+function heuristic(a: Node, b: Node): number {
+    // Using Manhattan distance as the heuristic
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-function kmpStringMatch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const lps = computeLPSArray(pattern);
+function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
+    const openSet = new PriorityQueue();
+    const closedSet: Set<string> = new Set();
 
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+    openSet.enqueue(start);
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+    while (!openSet.isEmpty()) {
+        const current = openSet.dequeue();
+
+        if (!current) {
+            break;
         }
 
-        if (j === pattern.length) {
-            result.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
+        // Check if we reached the goal
+        if (current.x === goal.x && current.y === goal.y) {
+            const path: Node[] = [];
+            let temp: Node | null = current;
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
             }
+            return path.reverse(); // Return the path from start to goal
         }
-    }
 
-    return result;
-}
-function rabinKarpStringMatch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const prime = 101;
-    const d = 256; // number of characters in the input alphabet
-    
-    let patternHash = 0;
-    let textHash = 0;
-    let h = 1;
+        closedSet.add(`${current.x},${current.y}`);
 
-    // Calculate h = d^(m-1)
-    for (let i = 0; i < pattern.length - 1; i++) {
-        h = (h * d) % prime;
-    }
+        // Explore neighbors (4 directions: up, down, left, right)
+        const directions = [
+            { x: 0, y: -1 }, // Up
+            { x: 0, y: 1 },  // Down
+            { x: -1, y: 0 }, // Left
+            { x: 1, y: 0 }   // Right
+        ];
 
-    // Calculate initial hashes
-    for (let i = 0; i < pattern.length; i++) {
-        patternHash = (d * patternHash + pattern.charCodeAt(i)) % prime;
-        textHash = (d * textHash + text.charCodeAt(i)) % prime;
-    }
+        for (const dir of directions) {
+            const neighborX = current.x + dir.x;
+            const neighborY = current.y + dir.y;
 
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= text.length - pattern.length; i++) {
-        // Check if hashes match
-        if (patternHash === textHash) {
-            // Check character by character
-            let j;
-            for (j = 0; j < pattern.length; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    break;
+            // Check if the neighbor is within bounds and walkable
+            if (neighborX >= 0 && neighborY >= 0 && neighborX < grid.length && neighborY < grid[0].length && grid[neighborX][neighborY] === 0) {
+                const neighbor = new Node(neighborX, neighborY);
+                if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
+                    continue; // Ignore the neighbor which is already evaluated
+                }
+
+                const tentativeG = current.g + 1; // Assume cost between nodes is 1
+
+                if (!openSet.elements.some(n => n.x === neighbor.x && n.y === neighbor.y && tentativeG >= n.g)) {
+                    neighbor.g = tentativeG;
+                    neighbor.h = heuristic(neighbor, goal);
+                    neighbor.f = neighbor.g + neighbor.h;
+                    neighbor.parent = current;
+
+                    openSet.enqueue(neighbor);
                 }
             }
-
-            if (j === pattern.length) {
-                result.push(i);
-            }
-        }
-
-        // Calculate hash for next window of text
-        if (i < text.length - pattern.length) {
-            textHash = (d * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + pattern.length)) % prime;
-
-            // Convert negative hash to positive
-            if (textHash < 0) {
-                textHash += prime;
-            }
         }
     }
 
-    return result;
+    return null; // Return null if there is no path
 }
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
+const grid = [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0]
+];
 
-console.log("Naive Match:", naiveStringMatch(text, pattern));
-console.log("KMP Match:", kmpStringMatch(text, pattern));
-console.log("Rabin-Karp Match:", rabinKarpStringMatch(text, pattern));
+const start = new Node(0, 0);
+const
