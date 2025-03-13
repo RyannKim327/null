@@ -1,67 +1,116 @@
-// Define the tree node structure
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class RabinKarp {
+    // Prime number used for hash calculation
+    private readonly PRIME: number = 101;
 
-    constructor(val: number = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
-}
+    /**
+     * Rabin-Karp string search algorithm
+     * @param text The text to search in
+     * @param pattern The pattern to search for
+     * @returns Array of starting indices where pattern is found
+     */
+    search(text: string, pattern: string): number[] {
+        const results: number[] = [];
+        
+        // If pattern is longer than text, return empty array
+        if (pattern.length > text.length) {
+            return results;
+        }
 
-// Recursive solution
-function maxDepth(root: TreeNode | null): number {
-    // Base case: if the tree is empty, depth is 0
-    if (root === null) {
-        return 0;
-    }
+        // Calculate pattern hash and first window hash
+        const patternLength = pattern.length;
+        const patternHash = this.calculateHash(pattern, patternLength);
+        let currentHash = this.calculateHash(text.slice(0, patternLength), patternLength);
 
-    // Recursively find the depth of left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+        // Precompute the highest power value for rolling hash
+        let highestPow = 1;
+        for (let i = 0; i < patternLength - 1; i++) {
+            highestPow *= this.PRIME;
+        }
 
-    // Return the maximum depth + 1 (to count the current node)
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Alternative solution using BFS (Breadth-First Search)
-function maxDepthBFS(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
-    }
-
-    const queue: TreeNode[] = [root];
-    let depth = 0;
-
-    while (queue.length > 0) {
-        const levelSize = queue.length;
-
-        for (let i = 0; i < levelSize; i++) {
-            const node = queue.shift()!;
-
-            if (node.left) {
-                queue.push(node.left);
+        // Sliding window search
+        for (let i = 0; i <= text.length - patternLength; i++) {
+            // Check if hash matches and then do character-by-character comparison
+            if (patternHash === currentHash) {
+                if (this.checkEqual(text.slice(i, i + patternLength), pattern)) {
+                    results.push(i);
+                }
             }
 
-            if (node.right) {
-                queue.push(node.right);
+            // Compute next window's hash (rolling hash)
+            if (i < text.length - patternLength) {
+                currentHash = this.recalculateHash(
+                    text, 
+                    currentHash, 
+                    text[i], 
+                    text[i + patternLength], 
+                    patternLength, 
+                    highestPow
+                );
             }
         }
 
-        depth++;
+        return results;
     }
 
-    return depth;
+    /**
+     * Calculate initial hash for a string
+     * @param str String to hash
+     * @param length Length of string to hash
+     * @returns Calculated hash value
+     */
+    private calculateHash(str: string, length: number): number {
+        let hash = 0;
+        for (let i = 0; i < length; i++) {
+            hash += str.charCodeAt(i) * Math.pow(this.PRIME, i);
+        }
+        return hash;
+    }
+
+    /**
+     * Recalculate hash for rolling window
+     * @param text Full text
+     * @param oldHash Previous window's hash
+     * @param oldChar Character leaving the window
+     * @param newChar Character entering the window
+     * @param patternLength Length of pattern
+     * @param highestPow Highest power value
+     * @returns Recalculated hash
+     */
+    private recalculateHash(
+        text: string, 
+        oldHash: number, 
+        oldChar: string, 
+        newChar: string, 
+        patternLength: number, 
+        highestPow: number
+    ): number {
+        let newHash = oldHash - oldChar.charCodeAt(0);
+        newHash /= this.PRIME;
+        newHash += newChar.charCodeAt(0) * Math.pow(this.PRIME, patternLength - 1);
+        return newHash;
+    }
+
+    /**
+     * Verify if two strings are exactly equal
+     * @param str1 First string
+     * @param str2 Second string
+     * @returns Boolean indicating equality
+     */
+    private checkEqual(str1: string, str2: string): boolean {
+        return str1 === str2;
+    }
 }
 
-// Example usage
-const tree = new TreeNode(3);
-tree.left = new TreeNode(9);
-tree.right = new TreeNode(20);
-tree.right.left = new TreeNode(15);
-tree.right.right = new TreeNode(7);
+// Usage example
+function main() {
+    const rabinKarp = new RabinKarp();
+    
+    const text = "ABABDABACDABABCABAB";
+    const pattern = "ABABCABAB";
+    
+    const results = rabinKarp.search(text, pattern);
+    
+    console.log("Pattern found at indices:", results);
+}
 
-console.log(maxDepth(tree)); // Output: 3
-console.log(maxDepthBFS(tree)); // Output: 3
+main();
