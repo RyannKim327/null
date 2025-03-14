@@ -1,29 +1,70 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Create a count array to store the count of each unique object
-    const count: number[] = new Array(max + 1).fill(0);
-    const output: number[] = new Array(arr.length);
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    // Store the count of each number in the count array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Change count[i] so that it contains the actual position of this number in the output array
-    for (let i = 1; i <= max; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return output;
 }
+class Queue<T> {
+    private front: Node<T> | null = null;
+    private back: Node<T> | null = null;
+    private length: number = 0;
 
-// Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+    // Enqueue: Add an element to the back of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.back) {
+            this.back.next = newNode; // Link the old back to the new node
+        }
+        this.back = newNode; // Update the back to the new node
+        if (!this.front) {
+            this.front = newNode; // If the queue was empty, set front to the new node
+        }
+        this.length++;
+    }
+
+    // Dequeue: Remove and return the element from the front of the queue
+    dequeue(): T | null {
+        if (!this.front) {
+            return null; // Queue is empty
+        }
+        const value = this.front.value; // Get the value from the front node
+        this.front = this.front.next; // Move front to the next node
+        if (!this.front) {
+            this.back = null; // If the queue is now empty, set back to null
+        }
+        this.length--;
+        return value;
+    }
+
+    // Peek: Get the value at the front of the queue without removing it
+    peek(): T | null {
+        return this.front ? this.front.value : null;
+    }
+
+    // Size: Get the number of elements in the queue
+    size(): number {
+        return this.length;
+    }
+
+    // IsEmpty: Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
+    }
+}
+const queue = new Queue<number>();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek());    // Output: 2
+console.log(queue.size());     // Output: 2
+console.log(queue.isEmpty());  // Output: false
+
+queue.dequeue();
+queue.dequeue();
+console.log(queue.isEmpty());  // Output: true
