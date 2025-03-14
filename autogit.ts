@@ -1,22 +1,32 @@
-function insertionSort(arr: number[]): number[] {
-    // Loop through the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i]; // The element to be positioned
-        let j = i - 1; // Start comparing with the previous element
+npm install axios
+import axios from 'axios';
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        // Place the key in its correct position
-        arr[j + 1] = key;
-    }
-    return arr; // Return the sorted array
+// Define an interface for the data we expect from the API
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
 
-// Example usage:
-const array = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+// Function to fetch users from the API
+const fetchUsers = async (): Promise<void> => {
+    try {
+        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+        const users = response.data;
+
+        // Log the users to the console
+        users.forEach(user => {
+            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+        });
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error message:', error.message);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+    }
+};
+
+// Call the function to fetch users
+fetchUsers();
