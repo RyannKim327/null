@@ -1,66 +1,28 @@
-function firstRepeatedChar(str: string): string | null {
-    const charSet = new Set<string>();
-    
-    for (const char of str) {
-        if (charSet.has(char)) {
-            return char;
-        }
-        charSet.add(char);
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
+
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
-    
-    return null;
+
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-// Example usage
-console.log(firstRepeatedChar("abcdefga")); // Returns 'a'
-console.log(firstRepeatedChar("abcdef")); // Returns null
-function firstRepeatedChar(str: string): string | null {
-    const charMap: { [key: string]: boolean } = {};
-    
-    for (const char of str) {
-        if (charMap[char]) {
-            return char;
-        }
-        charMap[char] = true;
-    }
-    
-    return null;
-}
-function firstRepeatedChar(str: string): string | null {
-    for (let i = 0; i < str.length; i++) {
-        if (str.indexOf(str[i]) !== i) {
-            return str[i];
-        }
-    }
-    
-    return null;
-}
-function findFirstRepeatedChar(str: string): { 
-    char: string | null, 
-    index: number 
-} {
-    const charMap = new Map<string, number>();
-    
-    for (let i = 0; i < str.length; i++) {
-        const char = str[i];
-        
-        if (charMap.has(char)) {
-            return { 
-                char, 
-                index: charMap.get(char)! 
-            };
-        }
-        
-        charMap.set(char, i);
-    }
-    
-    return { 
-        char: null, 
-        index: -1 
-    };
-}
-
-// Example usage
-const result = findFirstRepeatedChar("abcdefga");
-console.log(result); 
-// Outputs: { char: 'a', index: 0 }
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
