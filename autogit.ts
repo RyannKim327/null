@@ -1,41 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+// Define a Node interface to represent each node in the tree/graph
+interface Node {
+    value: any;
+    children: Node[];
+}
 
-// Simulated API call
-const fetchData = async (): Promise<string> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve("Data fetched from the server!");
-        }, 2000); // Simulate a 2-second network request
-    });
-};
+// Depth-Limited Search function
+function depthLimitedSearch(node: Node, depth: number, target: any): boolean {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
+    }
 
-const App: React.FC = () => {
-    const [data, setData] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    // If the depth limit is reached, return false
+    if (depth === 0) {
+        return false;
+    }
 
-    const handleFetchData = async () => {
-        setLoading(true);
-        setError(null);
-        try {
-            const result = await fetchData();
-            setData(result);
-        } catch (err) {
-            setError("Failed to fetch data");
-        } finally {
-            setLoading(false);
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depth - 1, target)) {
+            return true;
         }
-    };
+    }
 
-    return (
-        <View style={{ padding: 20 }}>
-            <Button title="Fetch Data" onPress={handleFetchData} />
-            {loading && <ActivityIndicator size="large" color="#0000ff" />}
-            {data && <Text>{data}</Text>}
-            {error && <Text style={{ color: 'red' }}>{error}</Text>}
-        </View>
-    );
+    // If the target is not found in this path, return false
+    return false;
+}
+
+// Example usage
+const rootNode: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
+        }
+    ]
 };
 
-export default App;
+const targetValue = 5;
+const depthLimit = 2;
+
+const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
