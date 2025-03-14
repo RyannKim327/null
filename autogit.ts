@@ -1,52 +1,51 @@
-// Define the LinkedList Node class
-class ListNode {
-    val: number;
-    next: ListNode | null;
-
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
+function isPalindrome(str: string): boolean {
+    return str === str.split('').reverse().join('');
 }
 
-// Function to find the middle of the linked list
-function findMiddleElement(head: ListNode | null): number | null {
-    // If the list is empty, return null
-    if (!head) return null;
-
-    // Initialize slow and fast pointers
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    // Move fast pointer two steps and slow pointer one step
-    while (fast.next && fast.next.next) {
-        slow = slow!.next;
-        fast = fast.next.next;
-    }
-
-    // If the list has even number of nodes, return the second middle node
-    // If the list has odd number of nodes, slow will be at the middle
-    return slow ? slow.val : null;
+console.log(isPalindrome('racecar')); // true
+console.log(isPalindrome('hello')); // false
+function isPalindrome(str: string): boolean {
+    // Convert to lowercase and remove non-alphanumeric characters
+    const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    return cleanedStr === cleanedStr.split('').reverse().join('');
 }
 
-// Example usage
-function createLinkedList(arr: number[]): ListNode | null {
-    if (arr.length === 0) return null;
+console.log(isPalindrome('A man, a plan, a canal: Panama')); // true
+function isPalindrome(str: string): boolean {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
     
-    const head = new ListNode(arr[0]);
-    let current = head;
+    let left = 0;
+    let right = cleanedStr.length - 1;
     
-    for (let i = 1; i < arr.length; i++) {
-        current.next = new ListNode(arr[i]);
-        current = current.next;
+    while (left < right) {
+        if (cleanedStr[left] !== cleanedStr[right]) {
+            return false;
+        }
+        left++;
+        right--;
     }
     
-    return head;
+    return true;
 }
 
-// Test cases
-const list1 = createLinkedList([1, 2, 3, 4, 5]); // Odd number of nodes
-console.log(findMiddleElement(list1)); // Output: 3
+console.log(isPalindrome('race a car')); // true
+function isPalindrome(str: string): boolean {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    function checkPalindrome(s: string): boolean {
+        // Base cases
+        if (s.length <= 1) return true;
+        
+        // Compare first and last characters
+        if (s[0] !== s[s.length - 1]) return false;
+        
+        // Recursively check inner substring
+        return checkPalindrome(s.slice(1, -1));
+    }
+    
+    return checkPalindrome(cleanedStr);
+}
 
-const list2 = createLinkedList([1, 2, 3, 4, 5, 6]); // Even number of nodes
-console.log(findMiddleElement(list2)); // Output: 3
+console.log(isPalindrome('A man, a plan, a canal: Panama')); // true
