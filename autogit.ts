@@ -1,19 +1,28 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleString());
-});
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
 
-// Start the task
-task.start();
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
 
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronExample.ts
-node cronExample.js
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
+}
+
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
