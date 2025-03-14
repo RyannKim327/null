@@ -1,89 +1,110 @@
-type Node = {
-    value: string;
-    neighbors: Node[];
-};
+class BinaryHeap<T> {
+    private heap: T[] = [];
+    private compare: (a: T, b: T) => number;
 
-function biDirectionalSearch(start: Node, goal: Node): Node[] | null {
-    if (start === goal) return [start];
+    constructor(compare: (a: T, b: T) => number) {
+        this.compare = compare;
+    }
 
-    const startQueue: Node[] = [start];
-    const goalQueue: Node[] = [goal];
-    const startVisited = new Set<Node>();
-    const goalVisited = new Set<Node>();
-    const startParentMap = new Map<Node, Node>();
-    const goalParentMap = new Map<Node, Node>();
+    public insert(item: T): void {
+        this.heap.push(item);
+        this.bubbleUp(this.heap.length - 1);
+    }
 
-    startVisited.add(start);
-    goalVisited.add(goal);
-
-    while (startQueue.length > 0 && goalQueue.length > 0) {
-        // Expand from the start
-        const startNode = startQueue.shift()!;
-        for (const neighbor of startNode.neighbors) {
-            if (!startVisited.has(neighbor)) {
-                startVisited.add(neighbor);
-                startParentMap.set(neighbor, startNode);
-                startQueue.push(neighbor);
-
-                // Check if the neighbor is in the goal visited set
-                if (goalVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
-            }
+    public remove(): T | undefined {
+        if (this.heap.length === 0) return undefined;
+        const root = this.heap[0];
+        const last = this.heap.pop();
+        if (this.heap.length > 0 && last !== undefined) {
+            this.heap[0] = last;
+            this.bubbleDown(0);
         }
+        return root;
+    }
 
-        // Expand from the goal
-        const goalNode = goalQueue.shift()!;
-        for (const neighbor of goalNode.neighbors) {
-            if (!goalVisited.has(neighbor)) {
-                goalVisited.add(neighbor);
-                goalParentMap.set(neighbor, goalNode);
-                goalQueue.push(neighbor);
+    public peek(): T | undefined {
+        return this.heap[0];
+    }
 
-                // Check if the neighbor is in the start visited set
-                if (startVisited.has(neighbor)) {
-                    return reconstructPath(neighbor, startParentMap, goalParentMap);
-                }
+    public size(): number {
+        return this.heap.length;
+    }
+
+    private bubbleUp(index: number): void {
+        let currentIndex = index;
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (this.compare(this.heap[currentIndex], this.heap[parentIndex]) < 0) {
+                [this.heap[currentIndex], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[currentIndex]];
+                currentIndex = parentIndex;
+            } else {
+                break;
             }
         }
     }
 
-    return null; // No path found
-}
+    private bubbleDown(index: number): void {
+        const length = this.heap.length;
+        let currentIndex = index;
 
-function reconstructPath(meetingNode: Node, startParentMap: Map<Node, Node>, goalParentMap: Map<Node, Node>): Node[] {
-    const path: Node[] = [];
-    
-    // Reconstruct path from start to meeting node
-    let currentNode: Node | undefined = meetingNode;
-    while (currentNode) {
-        path.unshift(currentNode);
-        currentNode = startParentMap.get(currentNode);
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let smallestIndex = currentIndex;
+
+            if (leftChildIndex < length && this.compare(this.heap[leftChildIndex], this.heap[smallestIndex]) < 0) {
+                smallestIndex = leftChildIndex;
+            }
+
+            if (rightChildIndex < length && this.compare(this.heap[rightChildIndex], this.heap[smallestIndex]) < 0) {
+                smallestIndex = rightChildIndex;
+            }
+
+            if (smallestIndex === currentIndex) break;
+
+            [this.heap[currentIndex], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[currentIndex]];
+            currentIndex = smallestIndex;
+        }
+    }
+}
+class PriorityQueue<T> {
+    private heap: BinaryHeap<T>;
+
+    constructor(compare: (a: T, b: T) => number) {
+        this.heap = new BinaryHeap(compare);
     }
 
-    // Reconstruct path from meeting node to goal
-    currentNode = goalParentMap.get(meetingNode);
-    while (currentNode) {
-        path.push(currentNode);
-        currentNode = goalParentMap.get(currentNode);
+    public enqueue(item: T): void {
+        this.heap.insert(item);
     }
 
-    return path;
+    public dequeue(): T | undefined {
+        return this.heap.remove();
+    }
+
+    public peek(): T | undefined {
+        return this.heap.peek();
+    }
+
+    public size(): number {
+        return this.heap.size();
+    }
+}
+// Define a type for the items in the priority queue
+interface Task {
+    priority: number;
+    name: string;
 }
 
-// Example usage
-const nodeA: Node = { value: 'A', neighbors: [] };
-const nodeB: Node = { value: 'B', neighbors: [] };
-const nodeC: Node = { value: 'C', neighbors: [] };
-const nodeD: Node = { value: 'D', neighbors: [] };
+// Create a priority queue with a custom comparator
+const pq = new PriorityQueue<Task>((a, b) => a.priority - b.priority);
 
-nodeA.neighbors.push(nodeB, nodeC);
-nodeB.neighbors.push(nodeD);
-nodeC.neighbors.push(nodeD);
+// Enqueue some tasks
+pq.enqueue({ priority: 3, name: "Task 1" });
+pq.enqueue({ priority: 1, name: "Task 2" });
+pq.enqueue({ priority: 2, name: "Task 3" });
 
-const path = biDirectionalSearch(nodeA, nodeD);
-if (path) {
-    console.log('Path found:', path.map(node => node.value));
-} else {
-    console.log('No path found');
-}
+// Dequeue tasks based on priority
+console.log(pq.dequeue()); // { priority: 1, name: "Task 2" }
+console.log(pq.dequeue()); // { priority: 2, name: "Task 3" }
+console.log(pq.dequeue()); // { priority: 3, name: "Task 1" }
