@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-// Simulated async function to fetch data
+// Simulated API call
 const fetchData = async (): Promise<string> => {
     return new Promise((resolve) => {
         setTimeout(() => {
-            resolve("Data fetched successfully!");
+            resolve("Data fetched from the server!");
         }, 2000); // Simulate a 2-second network request
     });
 };
@@ -28,17 +28,12 @@ const App: React.FC = () => {
         }
     };
 
-    useEffect(() => {
-        // Optionally fetch data on component mount
-        handleFetchData();
-    }, []);
-
     return (
         <View style={{ padding: 20 }}>
             <Button title="Fetch Data" onPress={handleFetchData} />
             {loading && <ActivityIndicator size="large" color="#0000ff" />}
-            {error && <Text style={{ color: 'red' }}>{error}</Text>}
             {data && <Text>{data}</Text>}
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
         </View>
     );
 };
