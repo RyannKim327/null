@@ -1,70 +1,72 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+class BoyerMooreHorspool {
+    /**
+     * Performs Boyer-Moore-Horspool string search
+     * @param text The text to search in
+     * @param pattern The pattern to search for
+     * @returns Array of starting indices where pattern is found
+     */
+    static search(text: string, pattern: string): number[] {
+        // Handle edge cases
+        if (pattern.length === 0 || text.length === 0) {
+            return [];
         }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
 
-    // Method to find the nth node from the end
-    findNthFromEnd(n: number): ListNode | null {
-        let firstPointer: ListNode | null = this.head;
-        let secondPointer: ListNode | null = this.head;
+        // Create bad character shift table
+        const badCharShift = this.createBadCharShiftTable(pattern);
 
-        // Move firstPointer n nodes ahead
-        for (let i = 0; i < n; i++) {
-            if (firstPointer === null) {
-                return null; // n is greater than the length of the list
+        const results: number[] = [];
+        let i = pattern.length - 1;
+
+        while (i < text.length) {
+            let k = 0;
+            // Compare characters from right to left
+            while (k < pattern.length && 
+                   pattern[pattern.length - 1 - k] === text[i - k]) {
+                k++;
             }
-            firstPointer = firstPointer.next;
+
+            // If full pattern match is found
+            if (k === pattern.length) {
+                results.push(i - pattern.length + 1);
+            }
+
+            // Determine shift amount
+            const currentChar = text[i];
+            const shift = badCharShift.get(currentChar) ?? pattern.length;
+            i += shift;
         }
 
-        // Move both pointers until firstPointer reaches the end
-        while (firstPointer !== null) {
-            firstPointer = firstPointer.next;
-            secondPointer = secondPointer.next;
+        return results;
+    }
+
+    /**
+     * Creates a bad character shift table for the pattern
+     * @param pattern The pattern to create shift table for
+     * @returns Map of character shifts
+     */
+    private static createBadCharShiftTable(pattern: string): Map<string, number> {
+        const badCharShift = new Map<string, number>();
+
+        // Default shift is pattern length
+        for (let i = 0; i < pattern.length - 1; i++) {
+            badCharShift.set(pattern[i], pattern.length - 1 - i);
         }
 
-        // secondPointer is now at the nth node from the end
-        return secondPointer;
+        return badCharShift;
     }
 }
 
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const n = 2;
-const nthNode = list.findNthFromEnd(n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
+// Example usage
+function main() {
+    const text = "ABAAABCD";
+    const pattern = "ABC";
+    
+    const results = BoyerMooreHorspool.search(text, pattern);
+    console.log("Pattern found at indices:", results);
 }
+
+main();
+// Different search scenarios
+console.log(BoyerMooreHorspool.search("hello world", "o")); // [4, 7]
+console.log(BoyerMooreHorspool.search("aaaaa", "aa")); // [0, 1, 2, 3]
+console.log(BoyerMooreHorspool.search("abcdef", "xyz")); // []
