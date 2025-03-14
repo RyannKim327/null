@@ -1,11 +1,8 @@
-function removeSpaces(input: string): string {
-    return input.replace(/\s+/g, '');
+function removeVowels(input: string): string {
+    return input.replace(/[aeiouAEIOU]/g, '');
 }
 
 // Example usage:
-const originalString = "Hello, how are you?";
-const stringWithoutSpaces = removeSpaces(originalString);
-console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
-function removeSpaces(input: string): string {
-    return input.replace(/ /g, '');
-}
+const originalString = "Hello, World!";
+const stringWithoutVowels = removeVowels(originalString);
+console.log(stringWithoutVowels); // Hll, Wrld!
