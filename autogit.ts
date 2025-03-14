@@ -1,27 +1,25 @@
-import * as readline from 'readline';
-
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-// Function to ask a question and handle the response
-function askQuestion(query: string): Promise<string> {
-    return new Promise((resolve) => {
-        rl.question(query, (answer) => {
-            resolve(answer);
-        });
-    });
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
+    }
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    return n * factorialRecursive(n - 1);
 }
 
-// Main function to run the program
-async function main() {
-    const name = await askQuestion("What is your name? ");
-    console.log(`Hello, ${name}! Welcome to TypeScript.`);
-    
-    rl.close(); // Close the readline interface
+// Example usage:
+console.log(factorialRecursive(5)); // Output: 120
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
+    }
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
 }
 
-// Run the main function
-main();
+// Example usage:
+console.log(factorialIterative(5)); // Output: 120
