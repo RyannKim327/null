@@ -1,28 +1,54 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
-
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    // Recursively sort both halves
+    const sortedLeft = mergeSort(left);
+    const sortedRight = mergeSort(right);
+
+    // Merge the sorted halves
+    return merge(sortedLeft, sortedRight);
+}
+
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        result.push(left[leftIndex]);
+        leftIndex++;
     }
 
-    return largestFactor;
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        result.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return result;
 }
 
-// Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
