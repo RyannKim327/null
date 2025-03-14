@@ -1,51 +1,30 @@
-function isPalindrome(str: string): boolean {
-    return str === str.split('').reverse().join('');
+function getRandomNumber(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-console.log(isPalindrome('racecar')); // true
-console.log(isPalindrome('hello')); // false
-function isPalindrome(str: string): boolean {
-    // Convert to lowercase and remove non-alphanumeric characters
-    const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-    return cleanedStr === cleanedStr.split('').reverse().join('');
+// Example usage
+const randomNum = getRandomNumber(1, 10); // Generates a random integer between 1 and 10
+function getRandomFloat(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
 }
 
-console.log(isPalindrome('A man, a plan, a canal: Panama')); // true
-function isPalindrome(str: string): boolean {
-    // Remove non-alphanumeric characters and convert to lowercase
-    const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
-    
-    let left = 0;
-    let right = cleanedStr.length - 1;
-    
-    while (left < right) {
-        if (cleanedStr[left] !== cleanedStr[right]) {
-            return false;
-        }
-        left++;
-        right--;
-    }
-    
-    return true;
+// Example usage
+const randomFloat = getRandomFloat(0, 5); // Generates a random float between 0 and 5
+function generateRandomInRange(min: number, max: number): number {
+    const range = max - min;
+    return Math.round(Math.random() * range) + min;
 }
 
-console.log(isPalindrome('race a car')); // true
-function isPalindrome(str: string): boolean {
-    // Remove non-alphanumeric characters and convert to lowercase
-    const cleanedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+// Example usage
+const randomNum = generateRandomInRange(5, 15);
+function cryptoRandomInRange(min: number, max: number): number {
+    const range = max - min;
+    const randomBuffer = new Uint32Array(1);
+    crypto.getRandomValues(randomBuffer);
     
-    function checkPalindrome(s: string): boolean {
-        // Base cases
-        if (s.length <= 1) return true;
-        
-        // Compare first and last characters
-        if (s[0] !== s[s.length - 1]) return false;
-        
-        // Recursively check inner substring
-        return checkPalindrome(s.slice(1, -1));
-    }
-    
-    return checkPalindrome(cleanedStr);
+    const randomNumber = randomBuffer[0] / (0xffffffff + 1);
+    return Math.floor(randomNumber * (range + 1)) + min;
 }
 
-console.log(isPalindrome('A man, a plan, a canal: Panama')); // true
+// Example usage
+const secureRandomNum = cryptoRandomInRange(1, 100);
