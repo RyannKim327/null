@@ -1,34 +1,27 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+import * as readline from 'readline';
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target
-        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos; // Target found, return the index
-        }
-
-        // If target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } else { // If target is smaller, ignore the right half
-            high = pos - 1;
-        }
-    }
-
-    return -1; // Target not found
+// Function to ask a question and handle the response
+function askQuestion(query: string): Promise<string> {
+    return new Promise((resolve) => {
+        rl.question(query, (answer) => {
+            resolve(answer);
+        });
+    });
 }
 
-// Example usage:
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const targetValue = 70;
-const index = interpolationSearch(sortedArray, targetValue);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found in the array.');
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    console.log(`Hello, ${name}! Welcome to TypeScript.`);
+    
+    rl.close(); // Close the readline interface
 }
+
+// Run the main function
+main();
