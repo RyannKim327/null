@@ -1,15 +1,12 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The list of numbers is empty.");
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
     }
-
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
-
-    return mean;
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
 }
 
 // Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+const number = 5;
+console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
