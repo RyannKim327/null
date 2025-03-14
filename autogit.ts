@@ -1,37 +1,19 @@
-class Node {
-    value: number;
-    children: Node[];
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-    constructor(value: number) {
-        this.value = value;
-        this.children = [];
-    }
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-function depthLimitedSearch(node: Node, depth: number, target: number): Node | null {
-    if (depth === 0) {
-        if (node.value === target) {
-            return node;
-        } else {
-            return null;
-        }
-    }
+// Start the task
+task.start();
 
-    for (const child of node.children) {
-        const result = depthLimitedSearch(child, depth - 1, target);
-        if (result !== null) {
-            return result;
-        }
-    }
-
-    return null;
-}
-
-// Example usage
-const rootNode = new Node(1);
-const childNode1 = new Node(2);
-const childNode2 = new Node(3);
-rootNode.children.push(childNode1, childNode2);
-
-const result = depthLimitedSearch(rootNode, 2, 3);
-console.log(result);
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
