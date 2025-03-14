@@ -1,61 +1,34 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    // Initialize Fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
 
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
-    }
-
-    // Marks the eliminated range from the front
-    let offset = -1;
-
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check if fibM2 is a valid location
-        const i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i; // Update the offset
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found, return the index
         }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else {
-            return i;
+
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else { // If target is smaller, ignore the right half
+            high = pos - 1;
         }
     }
 
-    // Comparing the last element with x
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
-    }
-
-    // Element not found
-    return -1;
+    return -1; // Target not found
 }
 
-// Example usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
+// Example usage:
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const index = interpolationSearch(sortedArray, targetValue);
 
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
 } else {
     console.log('Element not found in the array.');
 }
