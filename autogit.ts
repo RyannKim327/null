@@ -1,22 +1,36 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce<number[]>((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found at index pos
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            high = pos - 1;
+        }
     }
-    return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray: number[] = [];
-array.forEach(value => {
-    if (!uniqueArray.includes(value)) {
-        uniqueArray.push(value);
-    }
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+
+    // Target not found
+    return -1;
+}
+
+// Example usage:
+const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const target = 70;
+const index = interpolationSearch(arr, target);
+
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found in the array.');
+}
