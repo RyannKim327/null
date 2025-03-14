@@ -1,38 +1,41 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function countingSort(arr: number[], exp: number): number[] {
+    const output: number[] = new Array(arr.length); // Output array
+    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+    // Store count of occurrences of each digit
+    for (let i = 0; i < arr.length; i++) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        count[index]++;
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    // Change count[i] so that it contains the actual position of this digit in output[]
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
+    }
 
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        output[count[index] - 1] = arr[i];
+        count[index]--;
+    }
+
+    return output;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+function radixSort(arr: number[]): number[] {
+    // Find the maximum number to know the number of digits
+    const max = Math.max(...arr);
 
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+    // Apply counting sort to sort elements based on place value
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        arr = countingSort(arr, exp);
+    }
+
+    return arr;
+}
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
