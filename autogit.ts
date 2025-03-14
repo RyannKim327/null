@@ -1,16 +1,20 @@
-import cron from 'node-cron';
+function findSecondLargest(arr: number[]): number | null {
+    // Remove duplicates by converting the array to a Set and back to an array
+    const uniqueArr = Array.from(new Set(arr));
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-  console.log('Task is running every minute:', new Date().toLocaleString());
-});
+    // If there are less than 2 unique elements, return null
+    if (uniqueArr.length < 2) {
+        return null;
+    }
 
-// Start the task
-task.start();
+    // Sort the array in descending order
+    uniqueArr.sort((a, b) => b - a);
 
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-  task.stop();
-  console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx ts-node cronJob.ts
+    // Return the second largest element
+    return uniqueArr[1];
+}
+
+// Example usage:
+const numbers = [3, 5, 1, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
