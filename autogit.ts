@@ -1,60 +1,70 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
 }
-class Trie {
-    private root: TrieNode;
+class Queue<T> {
+    private head: Node<T> | null = null; // Front of the queue
+    private tail: Node<T> | null = null; // End of the queue
+    private length: number = 0; // Number of elements in the queue
 
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
+    // Enqueue: Add an element to the end of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the old tail to the new node
         }
-        currentNode.isEndOfWord = true; // Mark the end of the word
-    }
-
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find the node corresponding to a given word/prefix
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null; // Not found
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        this.tail = newNode; // Update the tail to the new node
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, head is also the new node
         }
-        return currentNode; // Return the node corresponding to the last character
+        this.length++;
+    }
+
+    // Dequeue: Remove and return the element from the front of the queue
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Queue is empty
+        }
+        const dequeuedValue = this.head.value; // Get the value to return
+        this.head = this.head.next; // Move the head to the next node
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, reset the tail
+        }
+        this.length--;
+        return dequeuedValue;
+    }
+
+    // Peek: Get the value at the front of the queue without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null;
+    }
+
+    // Size: Get the number of elements in the queue
+    size(): number {
+        return this.length;
+    }
+
+    // IsEmpty: Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
     }
 }
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app")); // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app")); // true
+const queue = new Queue<number>();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek());    // Output: 2
+console.log(queue.size());     // Output: 2
+console.log(queue.isEmpty());  // Output: false
+
+queue.dequeue();
+queue.dequeue();
+console.log(queue.isEmpty());  // Output: true
