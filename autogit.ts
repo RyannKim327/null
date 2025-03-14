@@ -1,28 +1,58 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
+
+        for (let i = 0; i < patternLength; i++) {
+            // Store the last occurrence of each character in the pattern
+            table.set(pattern[i], i);
         }
+
+        return table;
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
 
-    return largestFactor;
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    // If there's a mismatch, use the bad character rule
+                    const lastOccurrence = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - lastOccurrence);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found
+                return i; // Return the starting index of the match
+            }
+        }
+
+        return -1; // No match found
+    }
 }
 
 // Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const result = bm.search(text);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found.");
+}
