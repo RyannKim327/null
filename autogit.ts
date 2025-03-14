@@ -1,55 +1,51 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    if (n <= 1) return arr;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    // Create a temporary array to hold the sorted elements
-    const temp = new Array(n);
-
-    // Start with a size of 1 and double it each iteration
-    for (let size = 1; size < n; size *= 2) {
-        for (let leftStart = 0; leftStart < n; leftStart += 2 * size) {
-            // Find the starting point of the two subarrays to merge
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + 2 * size, n);
-
-            // Merge the two subarrays
-            merge(arr, temp, leftStart, mid, rightEnd);
-        }
-        // Copy the sorted elements back into the original array
-        for (let i = 0; i < n; i++) {
-            arr[i] = temp[i];
-        }
-    }
-
-    return arr;
-}
-
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number) {
-    let left = leftStart; // Starting index for left subarray
-    let right = mid;      // Starting index for right subarray
-    let index = leftStart; // Starting index to be merged
-
-    // Merge the two subarrays into temp
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
         } else {
-            temp[index++] = arr[right++];
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
-
-    // Copy the remaining elements of the left subarray, if any
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
-
-    // Copy the remaining elements of the right subarray, if any
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
+    return lps;
 }
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to result
+            j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+    return result;
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+
+console.log("Pattern found at indices:", result);
