@@ -1,81 +1,140 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+class BinaryHeap<T> {
+    private heap: T[] = [];
+    private compare: (a: T, b: T) => number;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    constructor(compare: (a: T, b: T) => number) {
+        this.compare = compare;
+    }
+
+    private getParentIndex(index: number): number {
+        return Math.floor((index - 1) / 2);
+    }
+
+    private getLeftChildIndex(index: number): number {
+        return index * 2 + 1;
+    }
+
+    private getRightChildIndex(index: number): number {
+        return index * 2 + 2;
+    }
+
+    private hasParent(index: number): boolean {
+        return this.getParentIndex(index) >= 0;
+    }
+
+    private hasLeftChild(index: number): boolean {
+        return this.getLeftChildIndex(index) < this.heap.length;
+    }
+
+    private hasRightChild(index: number): boolean {
+        return this.getRightChildIndex(index) < this.heap.length;
+    }
+
+    private parent(index: number): T {
+        return this.heap[this.getParentIndex(index)];
+    }
+
+    private leftChild(index: number): T {
+        return this.heap[this.getLeftChildIndex(index)];
+    }
+
+    private rightChild(index: number): T {
+        return this.heap[this.getRightChildIndex(index)];
+    }
+
+    private swap(index1: number, index2: number): void {
+        const temp = this.heap[index1];
+        this.heap[index1] = this.heap[index2];
+        this.heap[index2] = temp;
+    }
+
+    private heapifyUp(index: number): void {
+        while (this.hasParent(index) && this.compare(this.parent(index), this.heap[index]) > 0) {
+            this.swap(this.getParentIndex(index), index);
+            index = this.getParentIndex(index);
+        }
+    }
+
+    private heapifyDown(index: number): void {
+        let smallestIndex = index;
+
+        if (this.hasLeftChild(index) && this.compare(this.leftChild(index), this.heap[smallestIndex]) < 0) {
+            smallestIndex = this.getLeftChildIndex(index);
+        }
+
+        if (this.hasRightChild(index) && this.compare(this.rightChild(index), this.heap[smallestIndex]) < 0) {
+            smallestIndex = this.getRightChildIndex(index);
+        }
+
+        if (smallestIndex !== index) {
+            this.swap(index, smallestIndex);
+            this.heapifyDown(smallestIndex);
+        }
+    }
+
+    public insert(item: T): void {
+        this.heap.push(item);
+        this.heapifyUp(this.heap.length - 1);
+    }
+
+    public remove(): T | undefined {
+        if (this.heap.length === 0) {
+            return undefined;
+        }
+
+        const item = this.heap[0];
+        this.heap[0] = this.heap[this.heap.length - 1];
+        this.heap.pop();
+        this.heapifyDown(0);
+        return item;
+    }
+
+    public peek(): T | undefined {
+        return this.heap[0];
+    }
+
+    public isEmpty(): boolean {
+        return this.heap.length === 0;
+    }
+
+    public size(): number {
+        return this.heap.length;
     }
 }
-class LinkedList<T> {
-    head: Node<T> | null;
-    size: number;
+class PriorityQueue<T> {
+    private heap: BinaryHeap<T>;
 
-    constructor() {
-        this.head = null;
-        this.size = 0;
+    constructor(compare: (a: T, b: T) => number) {
+        this.heap = new BinaryHeap(compare);
     }
 
-    // Add a new node at the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-        this.size++;
+    public enqueue(item: T): void {
+        this.heap.insert(item);
     }
 
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.size--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                this.size--;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
+    public dequeue(): T | undefined {
+        return this.heap.remove();
     }
 
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const elements: T[] = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
+    public peek(): T | undefined {
+        return this.heap.peek();
     }
 
-    // Get the size of the list
-    getSize(): number {
-        return this.size;
+    public isEmpty(): boolean {
+        return this.heap.isEmpty();
+    }
+
+    public size(): number {
+        return this.heap.size();
     }
 }
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.append(30);
-list.display(); // Output: 10 -> 20 -> 30
+// Example usage
+const priorityQueue = new PriorityQueue<number>((a, b) => a - b);
 
-list.remove(20);
-list.display(); // Output: 10 -> 30
+priorityQueue.enqueue(5);
+priorityQueue.enqueue(1);
+priorityQueue.enqueue(3);
 
-console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
+console.log(priorityQueue.peek()); // Output: 1
+console.log(priorityQueue.dequeue()); // Output: 1
+console.log(priorityQueue.peek()); // Output: 3
