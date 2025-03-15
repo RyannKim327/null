@@ -1,36 +1,20 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+function isPrime(num: number): boolean {
+    if (num <= 1) return false; // 0 and 1 are not prime numbers
+    if (num <= 3) return true; // 2 and 3 are prime numbers
 
-    // Phase 1: Find a candidate for the majority element
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
+    // Check for even numbers and multiples of 3
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    // Check for factors from 5 to the square root of num
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
     }
 
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Check if the candidate is indeed the majority element
-    if (count > nums.length / 2) {
-        return candidate;
-    } else {
-        return null; // No majority element found
-    }
+    return true;
 }
 
 // Example usage:
-const nums = [3, 2, 3];
-const result = majorityElement(nums);
-console.log(result); // Output: 3
+console.log(isPrime(11)); // true
+console.log(isPrime(4));  // false
+console.log(isPrime(17)); // true
+console.log(isPrime(1));  // false
