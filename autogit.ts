@@ -1,38 +1,41 @@
-function binarySearch(arr: number[], target: number, left: number, right: number): number {
-    // Base case: if left index exceeds right index, target is not found
-    if (left > right) {
-        return -1; // Target not found
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
+
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max from left or top
+            }
+        }
     }
 
-    // Calculate the middle index
-    const mid = Math.floor((left + right) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
+    // Reconstruct the longest common subsequence from the dp array
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Add the matching character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
+        } else {
+            j--; // Move left
+        }
     }
 
-    // If the target is less than the middle element, search the left half
-    if (arr[mid] > target) {
-        return binarySearch(arr, target, left, mid - 1);
-    }
-
-    // If the target is greater than the middle element, search the right half
-    return binarySearch(arr, target, mid + 1, right);
-}
-
-// Helper function to initiate the binary search
-function search(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+    return lcs; // Return the longest common subsequence
 }
 
 // Example usage
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const result = search(sortedArray, target);
-
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found');
-}
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+const result = longestCommonSubsequence(str1, str2);
+console.log(result); // Output: "GTAB"
