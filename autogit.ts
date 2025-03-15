@@ -1,20 +1,38 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Remove duplicates by converting the array to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // If there are less than 2 unique elements, return null
-    if (uniqueArr.length < 2) {
-        return null;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: the depth of an empty tree is 0
     }
 
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-    // Return the second largest element
-    return uniqueArr[1];
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
 // Example usage:
-const numbers = [3, 5, 1, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
+      1
+     / \
+    2   3
+   / \
+  4   5
