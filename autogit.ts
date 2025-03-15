@@ -1,29 +1,12 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
-    }
-    return count;
+function validateEmail(email: string): boolean {
+    // Regular expression for validating an email address
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
