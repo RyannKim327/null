@@ -1,25 +1,27 @@
-const str: string = "Hello, world!";
-const substring: string = "world";
+import * as readline from 'readline';
 
-if (str.includes(substring)) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
-}
-const str: string = "Hello, world!";
-const substring: string = "world";
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-if (str.indexOf(substring) !== -1) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
+// Function to ask a question and handle the response
+function askQuestion(query: string): Promise<string> {
+    return new Promise((resolve) => {
+        rl.question(query, (answer) => {
+            resolve(answer);
+        });
+    });
 }
-const str: string = "Hello, world!";
-const substring: string = "world";
-const regex = new RegExp(substring);
 
-if (regex.test(str)) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    console.log(`Hello, ${name}! Welcome to TypeScript.`);
+    
+    rl.close(); // Close the readline interface
 }
+
+// Run the main function
+main();
