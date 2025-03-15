@@ -1,64 +1,70 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
-class Trie {
-    private root: TrieNode;
+
+class LinkedList {
+    head: ListNode | null;
 
     constructor() {
-        this.root = new TrieNode();
+        this.head = null;
     }
 
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-        currentNode.isEndOfWord = true; // Mark the end of the word
-    }
-
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if any word in the Trie starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find the node corresponding to a word or prefix
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null; // Not found
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
         }
-        return currentNode; // Return the node corresponding to the last character
+        current.next = newNode;
+    }
+
+    // Method to find the nth node from the end
+    findNthFromEnd(n: number): ListNode | null {
+        let firstPointer: ListNode | null = this.head;
+        let secondPointer: ListNode | null = this.head;
+
+        // Move firstPointer n nodes ahead
+        for (let i = 0; i < n; i++) {
+            if (firstPointer === null) {
+                return null; // n is greater than the length of the list
+            }
+            firstPointer = firstPointer.next;
+        }
+
+        // Move both pointers until firstPointer reaches the end
+        while (firstPointer !== null) {
+            firstPointer = firstPointer.next;
+            secondPointer = secondPointer.next;
+        }
+
+        // secondPointer is now at the nth node from the end
+        return secondPointer;
     }
 }
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-trie.insert("hi");
 
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("he")); // true
-console.log(trie.startsWith("wo")); // true
-console.log(trie.startsWith("hi")); // true
-console.log(trie.startsWith("hii")); // false
+// Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+const n = 2;
+const nthNode = list.findNthFromEnd(n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
+}
