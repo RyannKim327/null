@@ -1,30 +1,67 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Start with the largest gap and reduce the gap until it is 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the start of both lists
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
         }
-        gap = Math.floor(gap / 2); // Reduce the gap
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
+        }
     }
 
-    return arr;
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
 }
 
 // Example usage:
-const array = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(array);
-console.log(sortedArray); // Output: [2, 3, 12, 34, 54]
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
+
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
+
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
+
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : "No intersection");
