@@ -1,16 +1,12 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
-
-    for (let i = 1; i < nums.length; i++) {
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
-        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar if needed
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
     }
-
-    return maxSoFar; // Return the maximum sum found
+    return count;
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
