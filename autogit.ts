@@ -1,60 +1,57 @@
-// Define a Node class to represent each node in the tree
-class Node {
-    value: string;
-    children: Node[];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(value: string) {
+    constructor(value: number) {
         this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
+        this.next = null;
     }
 }
 
-// Breadth-Limited Search function
-function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    if (limit < 0) return null; // If the limit is negative, return null
+class LinkedList {
+    head: ListNode | null;
 
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Return the found node
-        }
-
-        // If we haven't reached the depth limit, add children to the queue
-        if (depth < limit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
-        }
+    constructor() {
+        this.head = null;
     }
 
-    return null; // Return null if the target is not found within the limit
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the middle element
+    findMiddle(): ListNode | null {
+        let slowPointer: ListNode | null = this.head;
+        let fastPointer: ListNode | null = this.head;
+
+        while (fastPointer && fastPointer.next) {
+            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
+            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+        }
+
+        return slowPointer; // Slow pointer will be at the middle
+    }
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
+// Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
-
-const targetNode = breadthLimitedSearch(root, "E", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
+const middleNode = list.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
 }
