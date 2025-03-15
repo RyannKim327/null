@@ -1,38 +1,49 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const result: number[] = [];
+    const hPattern = 0; // Hash value for pattern
+    const hText = 0; // Hash value for text
+    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+    // Calculate the hash value of the pattern and the first window of text
+    for (let i = 0; i < m; i++) {
+        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
+        hText = (d * hText + text.charCodeAt(i)) % q;
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of the current window of text and pattern
+        if (hPattern === hText) {
+            // If the hash values match, check for characters one by one
+            let j;
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
+            }
+            if (j === m) {
+                result.push(i); // Pattern found at index i
+            }
+        }
 
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+        // Calculate hash value for the next window of text
+        if (i < n - m) {
+            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get negative value of hText, converting it to positive
+            if (hText < 0) {
+                hText += q;
+            }
+        }
+    }
+
+    return result; // Return the list of starting indices where pattern is found
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", indices);
