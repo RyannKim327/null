@@ -1,54 +1,28 @@
-function createBadCharTable(pattern: string): { [key: string]: number } {
-    const badCharTable: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    // Initialize the bad character table
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern[i]] = patternLength - 1 - i;
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
 
-    return badCharTable;
-}
-
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
-    }
-
-    const badCharTable = createBadCharTable(pattern);
-    let shift = 0;
-
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            return shift; // Return the starting index of the match
-        } else {
-            // Calculate the shift using the bad character table
-            const badCharShift = badCharTable[text[shift + j]] || patternLength;
-            shift += Math.max(1, j - badCharShift);
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
         }
     }
 
-    return -1; // Pattern not found
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const index = boyerMooreHorspool(text, pattern);
-
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
