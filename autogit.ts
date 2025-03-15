@@ -1,57 +1,29 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function countingSort(arr: number[], max: number): number[] {
+    // Create a count array to store the count of each unique value
+    const count: number[] = new Array(max + 1).fill(0);
+    const output: number[] = new Array(arr.length);
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Count each element in the input array
+    for (let i = 0; i < arr.length; i++) {
+        count[arr[i]]++;
     }
+
+    // Update the count array to store the cumulative count
+    for (let i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i]] - 1] = arr[i];
+        count[arr[i]]--;
+    }
+
+    return output;
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
-    }
-
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next; // Move slow by 1
-        fast = fast.next.next; // Move fast by 2
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
-
-    while (current) {
-        const nextTemp = current.next; // Store next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to current
-        current = nextTemp; // Move to next node
-    }
-
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
-
-    while (right) {
-        if (left!.value !== right.value) {
-            return false; // Not a palindrome
-        }
-        left = left!.next;
-        right = right.next;
-    }
-
-    return true; // It's a palindrome
-}
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(head)); // Output: true
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr);
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
