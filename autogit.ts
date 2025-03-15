@@ -1,59 +1,38 @@
-type Graph = { [key: string]: string[] };
-
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    // Mark the current node as visited
-    visited.add(start);
-    console.log(start); // Process the node (e.g., print it)
-
-    // Recur for all the vertices adjacent to this vertex
-    for (const neighbor of graph[start]) {
-        if (!visited.has(neighbor)) {
-            depthFirstSearch(graph, neighbor, visited);
-        }
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if left index exceeds right index, target is not found
+    if (left > right) {
+        return -1; // Target not found
     }
+
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
+
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
+    }
+
+    // If the target is less than the middle element, search the left half
+    if (arr[mid] > target) {
+        return binarySearch(arr, target, left, mid - 1);
+    }
+
+    // If the target is greater than the middle element, search the right half
+    return binarySearch(arr, target, mid + 1, right);
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop();
-        if (node && !visited.has(node)) {
-            visited.add(node);
-            console.log(node); // Process the node (e.g., print it)
-
-            // Push all unvisited neighbors onto the stack
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    stack.push(neighbor);
-                }
-            }
-        }
-    }
+// Helper function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = search(sortedArray, target);
 
-depthFirstSearchIterative(graph, 'A');
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found');
+}
