@@ -1,29 +1,19 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Create a count array to store the count of each unique value
-    const count: number[] = new Array(max + 1).fill(0);
-    const output: number[] = new Array(arr.length);
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    // Count each element in the input array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
+
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
 
-    // Update the count array to store the cumulative count
-    for (let i = 1; i <= max; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return output;
+    return Math.max(...dp); // The length of the longest increasing subsequence
 }
 
-// Example usage
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr);
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+// Example usage:
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
