@@ -1,25 +1,16 @@
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
+
+    for (let i = 1; i < nums.length; i++) {
+        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]); // Update maxEndingHere
+        maxSoFar = Math.max(maxSoFar, maxEndingHere); // Update maxSoFar if needed
     }
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * factorialRecursive(n - 1);
+
+    return maxSoFar; // Return the maximum sum found
 }
 
 // Example usage:
-console.log(factorialRecursive(5)); // Output: 120
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
-
-// Example usage:
-console.log(factorialIterative(5)); // Output: 120
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
