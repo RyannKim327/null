@@ -1,29 +1,19 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Create a count array to store the count of each unique value
-    const count: number[] = new Array(max + 1).fill(0);
-    const output: number[] = new Array(arr.length);
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and the word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-    // Count each element in the input array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
-    }
+    // Split the text into an array of words
+    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
 
-    // Update the count array to store the cumulative count
-    for (let i = 1; i <= max; i++) {
-        count[i] += count[i - 1];
-    }
+    // Filter the array to count occurrences of the word
+    const count = wordsArray.filter(w => w === normalizedWord).length;
 
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return output;
+    return count;
 }
 
-// Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+// Example usage
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const occurrences = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
