@@ -1,78 +1,35 @@
-class HashTable<K, V> {
-    private table: Array<[K, V][]>; // Array of buckets
-    private size: number; // Number of buckets
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    constructor(size: number = 53) {
-        this.size = size;
-        this.table = new Array(size);
-    }
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
 
-    // Hash function to compute the index for a given key
-    private hash(key: K): number {
-        let hash = 0;
-        const stringKey = String(key);
-        for (let i = 0; i < stringKey.length; i++) {
-            hash += stringKey.charCodeAt(i);
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return the index
         }
-        return hash % this.size;
-    }
 
-    // Method to set a key-value pair
-    set(key: K, value: V): void {
-        const index = this.hash(key);
-        if (!this.table[index]) {
-            this.table[index] = [];
-        }
-        // Check if the key already exists and update it
-        const existingPairIndex = this.table[index].findIndex(pair => pair[0] === key);
-        if (existingPairIndex !== -1) {
-            this.table[index][existingPairIndex][1] = value; // Update value
+        // If target is greater, ignore the left half
+        if (arr[mid] < target) {
+            left = mid + 1;
         } else {
-            this.table[index].push([key, value]); // Add new key-value pair
+            // If target is smaller, ignore the right half
+            right = mid - 1;
         }
     }
 
-    // Method to get a value by key
-    get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-        if (bucket) {
-            const pair = bucket.find(pair => pair[0] === key);
-            return pair ? pair[1] : undefined; // Return value or undefined
-        }
-        return undefined;
-    }
-
-    // Method to remove a key-value pair
-    remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-        if (bucket) {
-            const pairIndex = bucket.findIndex(pair => pair[0] === key);
-            if (pairIndex !== -1) {
-                bucket.splice(pairIndex, 1); // Remove the pair
-                return true;
-            }
-        }
-        return false; // Key not found
-    }
-
-    // Method to check if a key exists
-    has(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-        if (bucket) {
-            return bucket.some(pair => pair[0] === key);
-        }
-        return false;
-    }
+    // Target was not found in the array
+    return -1;
 }
 
-// Example usage
-const hashTable = new HashTable<string, number>();
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.has("banana")); // Output: true
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: undefined
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = binarySearch(sortedArray, target);
+
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found in the array.');
+}
