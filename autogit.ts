@@ -1,27 +1,60 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+// Define a Node class to represent each node in the tree
+class Node {
+    value: string;
+    children: Node[];
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted part
-        let minIndex = i;
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
+    }
 
-        // Find the index of the minimum element in the unsorted part
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
+    addChild(child: Node) {
+        this.children.push(child);
+    }
+}
+
+// Breadth-Limited Search function
+function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    if (limit < 0) return null; // If the limit is negative, return null
+
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Return the found node
         }
 
-        // Swap the found minimum element with the first element of the unsorted part
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        // If we haven't reached the depth limit, add children to the queue
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
         }
     }
 
-    return arr;
+    return null; // Return null if the target is not found within the limit
 }
 
-// Example usage:
-const array = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const targetNode = breadthLimitedSearch(root, "E", 2);
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
