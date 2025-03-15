@@ -1,92 +1,81 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
-class BinarySearchTree {
-    root: Node | null;
+class LinkedList<T> {
+    head: Node<T> | null;
+    size: number;
 
     constructor() {
-        this.root = null;
+        this.head = null;
+        this.size = 0;
     }
 
-    // Insert a new value into the BST
-    insert(value: number): void {
+    // Add a new node at the end of the list
+    append(value: T): void {
         const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-        this.insertNode(this.root, newNode);
-    }
-
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
+        if (!this.head) {
+            this.head = newNode;
         } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
             }
+            current.next = newNode;
         }
+        this.size++;
     }
 
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
+
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.size--;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                this.size--;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
     }
 
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
+    // Display the list
+    display(): void {
+        let current = this.head;
+        const elements: T[] = [];
+        while (current) {
+            elements.push(current.value);
+            current = current.next;
         }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is equal to node.value
-        }
+        console.log(elements.join(' -> '));
     }
 
-    // In-order traversal of the BST
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
+    // Get the size of the list
+    getSize(): number {
+        return this.size;
     }
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.append(30);
+list.display(); // Output: 10 -> 20 -> 30
 
-// Search for a value
-console.log(bst.search(7)); // true
-console.log(bst.search(20)); // false
+list.remove(20);
+list.display(); // Output: 10 -> 30
 
-// In-order traversal
-bst.inOrderTraversal(value => {
-    console.log(value); // Outputs: 3, 5, 7, 10, 12, 15, 18
-});
+console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
