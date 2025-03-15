@@ -1,70 +1,61 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
+
+    // Marks the eliminated range from the front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Check if fibM2 is a valid location
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i; // Update the offset
+        }
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
+        }
+    }
+
+    // Comparing the last element with x
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
-class LinkedList {
-    head: ListNode | null;
+// Example usage
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the nth node from the end
-    findNthFromEnd(n: number): ListNode | null {
-        let firstPointer: ListNode | null = this.head;
-        let secondPointer: ListNode | null = this.head;
-
-        // Move firstPointer n nodes ahead
-        for (let i = 0; i < n; i++) {
-            if (firstPointer === null) {
-                return null; // n is greater than the length of the list
-            }
-            firstPointer = firstPointer.next;
-        }
-
-        // Move both pointers until firstPointer reaches the end
-        while (firstPointer !== null) {
-            firstPointer = firstPointer.next;
-            secondPointer = secondPointer.next;
-        }
-
-        // secondPointer is now at the nth node from the end
-        return secondPointer;
-    }
-}
-
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const n = 2;
-const nthNode = list.findNthFromEnd(n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
 } else {
-    console.log(`The list is shorter than ${n} nodes.`);
+    console.log('Element not found');
 }
