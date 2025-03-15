@@ -1,56 +1,27 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
 
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            table.set(pattern[i], i);
-        }
-
-        return table;
-    }
-
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found at index i
-                return i; // Return the index of the first match
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
         }
 
-        return -1; // No match found
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
+
+    return arr;
 }
 
 // Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
-
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
