@@ -1,41 +1,28 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    // Create a 2D array to store lengths of longest common subsequence
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
 
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max from left or top
-            }
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
         }
     }
 
-    // Reconstruct the longest common subsequence from the dp array
-    let lcs = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // Add the matching character
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move up
-        } else {
-            j--; // Move left
-        }
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
     }
 
-    return lcs; // Return the longest common subsequence
+    return largestFactor;
 }
 
-// Example usage
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-const result = longestCommonSubsequence(str1, str2);
-console.log(result); // Output: "GTAB"
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
