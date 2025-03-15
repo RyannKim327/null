@@ -1,38 +1,55 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+// Define a type for the graph nodes
+type Node = {
+    value: string;
+    children: Node[];
+};
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+// Depth-limited search function
+function depthLimitedSearch(node: Node, depthLimit: number, target: string): boolean {
+    // If the current node is the target, return true
+    if (node.value === target) {
+        return true;
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    // If the depth limit is reached, return false
+    if (depthLimit === 0) {
+        return false;
+    }
 
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depthLimit - 1, target)) {
+            return true;
+        }
+    }
+
+    // If the target is not found in this path, return false
+    return false;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Example usage
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                { value: 'D', children: [] },
+                { value: 'E', children: [] }
+            ]
+        },
+        {
+            value: 'C',
+            children: [
+                { value: 'F', children: [] },
+                { value: 'G', children: [] }
+            ]
+        }
+    ]
+};
 
-console.log(maxDepth(root)); // Output: 3
-      1
-     / \
-    2   3
-   / \
-  4   5
+const targetValue = 'E';
+const depthLimit = 2;
+
+const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
