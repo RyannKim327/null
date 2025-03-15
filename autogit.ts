@@ -1,53 +1,52 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    if (n < 2) return arr; // Base case: an array of 0 or 1 element is already sorted
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
+    // Create a temporary array to hold merged results
+    const temp = new Array(n);
+
+    // Start with subarray size of 1 and double it each iteration
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
+            const mid = Math.min(leftStart + size, n);
+            const rightEnd = Math.min(leftStart + size * 2, n);
+            merge(arr, temp, leftStart, mid, rightEnd);
+        }
+        // Copy the sorted subarray back to the original array
+        for (let i = 0; i < n; i++) {
+            arr[i] = temp[i];
+        }
+    }
+
+    return arr;
+}
+
+function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number) {
+    let left = leftStart; // Starting index for left subarray
+    let right = mid;      // Starting index for right subarray
+    let index = leftStart; // Starting index to be merged
+
+    // Merge the two subarrays into temp[]
+    while (left < mid && right < rightEnd) {
+        if (arr[left] <= arr[right]) {
+            temp[index++] = arr[left++];
         } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            temp[index++] = arr[right++];
         }
     }
-    return lps;
-}
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index to result
-            j = lps[j - 1]; // Use LPS to continue searching
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters in pattern
-            } else {
-                i++;
-            }
-        }
+    // Copy remaining elements of left subarray, if any
+    while (left < mid) {
+        temp[index++] = arr[left++];
     }
-    return result; // Return all starting indices of matches
+
+    // Copy remaining elements of right subarray, if any
+    while (right < rightEnd) {
+        temp[index++] = arr[right++];
+    }
 }
 
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", result);
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
