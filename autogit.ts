@@ -1,58 +1,22 @@
-class Node {
-    value: string;
-    children: Node[];
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
+    // Start with the first string as the prefix
+    let prefix = strs[0];
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    if (limit < 0) {
-        return null; // Limit reached, return null
-    }
-
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
-        }
-
-        // If we haven't reached the limit, add children to the queue
-        if (depth < limit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
+    // Compare the prefix with each string in the array
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by one character from the end
+            prefix = prefix.substring(0, prefix.length - 1);
+            // If the prefix is empty, return it
+            if (prefix === "") return "";
         }
     }
 
-    return null; // Target not found within the limit
+    return prefix;
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const result = breadthLimitedSearch(root, "E", 2);
-if (result) {
-    console.log(`Found: ${result.value}`);
-} else {
-    console.log("Not found within the limit.");
-}
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
