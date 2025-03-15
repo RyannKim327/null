@@ -1,81 +1,54 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function createBadCharTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    // Initialize the bad character table
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - 1 - i;
     }
+
+    return badCharTable;
 }
-class LinkedList<T> {
-    head: Node<T> | null;
-    size: number;
 
-    constructor() {
-        this.head = null;
-        this.size = 0;
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
     }
 
-    // Add a new node at the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
+    const badCharTable = createBadCharTable(pattern);
+    let shift = 0;
+
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            return shift; // Return the starting index of the match
         } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            // Calculate the shift using the bad character table
+            const badCharShift = badCharTable[text[shift + j]] || patternLength;
+            shift += Math.max(1, j - badCharShift);
         }
-        this.size++;
     }
 
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.size--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                this.size--;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const elements: T[] = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
-    }
-
-    // Get the size of the list
-    getSize(): number {
-        return this.size;
-    }
+    return -1; // Pattern not found
 }
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.append(30);
-list.display(); // Output: 10 -> 20 -> 30
 
-list.remove(20);
-list.display(); // Output: 10 -> 30
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const index = boyerMooreHorspool(text, pattern);
 
-console.log(`Size of the list: ${list.getSize()}`); // Output: Size of the list: 2
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found");
+}
