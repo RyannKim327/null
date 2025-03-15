@@ -1,54 +1,25 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array has 1 or 0 elements, it is already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-    // Split the array into two halves
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    // Recursively sort both halves
-    const sortedLeft = mergeSort(left);
-    const sortedRight = mergeSort(right);
-
-    // Merge the sorted halves
-    return merge(sortedLeft, sortedRight);
+if (str.includes(substring)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
 }
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-function merge(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let i = 0; // Pointer for left array
-    let j = 0; // Pointer for right array
-
-    // Merge the two arrays while there are elements in both
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) {
-            result.push(left[i]);
-            i++;
-        } else {
-            result.push(right[j]);
-            j++;
-        }
-    }
-
-    // If there are remaining elements in the left array, add them
-    while (i < left.length) {
-        result.push(left[i]);
-        i++;
-    }
-
-    // If there are remaining elements in the right array, add them
-    while (j < right.length) {
-        result.push(right[j]);
-        j++;
-    }
-
-    return result;
+if (str.indexOf(substring) !== -1) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
 }
+const str: string = "Hello, world!";
+const substring: string = "world";
+const regex = new RegExp(substring);
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+if (regex.test(str)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
+}
