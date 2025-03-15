@@ -1,19 +1,19 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
+    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+    for (let i = 1; i < nums.length; i++) {
+        // Update maxEndingHere to include the current element
+        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
+        
+        // Update maxSoFar if maxEndingHere is greater
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    }
 
-    // Filter the array to count occurrences of the word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
-
-    return count;
+    return maxSoFar;
 }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
