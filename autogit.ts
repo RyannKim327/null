@@ -1,21 +1,21 @@
-function insertionSort(arr: number[]): number[] {
-    // Loop through the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i]; // The element to be positioned
-        let j = i - 1; // The index of the last sorted element
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedString = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    let left = 0;
+    let right = normalizedString.length - 1;
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
+    while (left < right) {
+        if (normalizedString[left] !== normalizedString[right]) {
+            return false; // Not a palindrome
         }
-        arr[j + 1] = key; // Place the key in its correct position
+        left++;
+        right--;
     }
-    return arr; // Return the sorted array
+
+    return true; // Is a palindrome
 }
 
 // Example usage:
-const array = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
