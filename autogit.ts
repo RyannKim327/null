@@ -1,57 +1,20 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function isPrime(num: number): boolean {
+    // Check if the number is less than 2
+    if (num < 2) return false;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Check for factors from 2 to the square root of num
+    for (let i = 2; i <= Math.sqrt(num); i++) {
+        if (num % i === 0) {
+            return false; // num is divisible by i, so it's not prime
+        }
     }
+    return true; // num is prime
 }
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the middle element
-    findMiddle(): ListNode | null {
-        let slowPointer: ListNode | null = this.head;
-        let fastPointer: ListNode | null = this.head;
-
-        while (fastPointer && fastPointer.next) {
-            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
-            fastPointer = fastPointer.next.next; // Move fast pointer by 2
-        }
-
-        return slowPointer; // Slow pointer will be at the middle
-    }
-}
-
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+// Example usage
+const numberToCheck = 29;
+if (isPrime(numberToCheck)) {
+    console.log(`${numberToCheck} is a prime number.`);
+} else {
+    console.log(`${numberToCheck} is not a prime number.`);
 }
