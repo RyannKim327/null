@@ -1,140 +1,29 @@
-class BinaryHeap<T> {
-    private heap: T[] = [];
-    private compare: (a: T, b: T) => number;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(compare: (a: T, b: T) => number) {
-        this.compare = compare;
-    }
-
-    private getParentIndex(index: number): number {
-        return Math.floor((index - 1) / 2);
-    }
-
-    private getLeftChildIndex(index: number): number {
-        return index * 2 + 1;
-    }
-
-    private getRightChildIndex(index: number): number {
-        return index * 2 + 2;
-    }
-
-    private hasParent(index: number): boolean {
-        return this.getParentIndex(index) >= 0;
-    }
-
-    private hasLeftChild(index: number): boolean {
-        return this.getLeftChildIndex(index) < this.heap.length;
-    }
-
-    private hasRightChild(index: number): boolean {
-        return this.getRightChildIndex(index) < this.heap.length;
-    }
-
-    private parent(index: number): T {
-        return this.heap[this.getParentIndex(index)];
-    }
-
-    private leftChild(index: number): T {
-        return this.heap[this.getLeftChildIndex(index)];
-    }
-
-    private rightChild(index: number): T {
-        return this.heap[this.getRightChildIndex(index)];
-    }
-
-    private swap(index1: number, index2: number): void {
-        const temp = this.heap[index1];
-        this.heap[index1] = this.heap[index2];
-        this.heap[index2] = temp;
-    }
-
-    private heapifyUp(index: number): void {
-        while (this.hasParent(index) && this.compare(this.parent(index), this.heap[index]) > 0) {
-            this.swap(this.getParentIndex(index), index);
-            index = this.getParentIndex(index);
-        }
-    }
-
-    private heapifyDown(index: number): void {
-        let smallestIndex = index;
-
-        if (this.hasLeftChild(index) && this.compare(this.leftChild(index), this.heap[smallestIndex]) < 0) {
-            smallestIndex = this.getLeftChildIndex(index);
-        }
-
-        if (this.hasRightChild(index) && this.compare(this.rightChild(index), this.heap[smallestIndex]) < 0) {
-            smallestIndex = this.getRightChildIndex(index);
-        }
-
-        if (smallestIndex !== index) {
-            this.swap(index, smallestIndex);
-            this.heapifyDown(smallestIndex);
-        }
-    }
-
-    public insert(item: T): void {
-        this.heap.push(item);
-        this.heapifyUp(this.heap.length - 1);
-    }
-
-    public remove(): T | undefined {
-        if (this.heap.length === 0) {
-            return undefined;
-        }
-
-        const item = this.heap[0];
-        this.heap[0] = this.heap[this.heap.length - 1];
-        this.heap.pop();
-        this.heapifyDown(0);
-        return item;
-    }
-
-    public peek(): T | undefined {
-        return this.heap[0];
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    public size(): number {
-        return this.heap.length;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
-class PriorityQueue<T> {
-    private heap: BinaryHeap<T>;
-
-    constructor(compare: (a: T, b: T) => number) {
-        this.heap = new BinaryHeap(compare);
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    public enqueue(item: T): void {
-        this.heap.insert(item);
-    }
-
-    public dequeue(): T | undefined {
-        return this.heap.remove();
-    }
-
-    public peek(): T | undefined {
-        return this.heap.peek();
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.isEmpty();
-    }
-
-    public size(): number {
-        return this.heap.size();
-    }
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
-// Example usage
-const priorityQueue = new PriorityQueue<number>((a, b) => a - b);
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-priorityQueue.enqueue(5);
-priorityQueue.enqueue(1);
-priorityQueue.enqueue(3);
-
-console.log(priorityQueue.peek()); // Output: 1
-console.log(priorityQueue.dequeue()); // Output: 1
-console.log(priorityQueue.peek()); // Output: 3
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
