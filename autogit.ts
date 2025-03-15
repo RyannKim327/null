@@ -1,56 +1,54 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
-
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const length = pattern.length;
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-        for (let i = 0; i < length; i++) {
-            table.set(pattern[i], i);
-        }
+    // Recursively sort both halves
+    const sortedLeft = mergeSort(left);
+    const sortedRight = mergeSort(right);
 
-        return table;
-    }
-
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found at index i
-                return i; // Return the index of the first match
-            }
-        }
-
-        return -1; // No match found
-    }
+    // Merge the sorted halves
+    return merge(sortedLeft, sortedRight);
 }
 
-// Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let i = 0; // Pointer for left array
+    let j = 0; // Pointer for right array
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
+    // Merge the two arrays while there are elements in both
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
+        } else {
+            result.push(right[j]);
+            j++;
+        }
+    }
+
+    // If there are remaining elements in the left array, add them
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
+    }
+
+    return result;
 }
+
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
