@@ -1,109 +1,56 @@
-class Node {
-    public x: number;
-    public y: number;
-    public g: number; // Cost from start to this node
-    public h: number; // Heuristic cost from this node to the goal
-    public f: number; // Total cost (g + h)
-    public parent: Node | null;
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    if (n <= 1) return arr;
 
-    constructor(x: number, y: number, g: number = 0, h: number = 0, parent: Node | null = null) {
-        this.x = x;
-        this.y = y;
-        this.g = g;
-        this.h = h;
-        this.f = g + h;
-        this.parent = parent;
-    }
-}
-class PriorityQueue {
-    private elements: Node[] = [];
+    // Create a temporary array to hold the sorted elements
+    const temp = new Array(n);
 
-    public isEmpty(): boolean {
-        return this.elements.length === 0;
-    }
+    // Start with a size of 1 and double it each iteration
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += 2 * size) {
+            // Find the starting index of the left and right subarrays
+            const left = leftStart;
+            const mid = Math.min(left + size, n);
+            const right = Math.min(left + 2 * size, n);
 
-    public enqueue(node: Node): void {
-        this.elements.push(node);
-        this.elements.sort((a, b) => a.f - b.f); // Sort by f value
-    }
-
-    public dequeue(): Node | undefined {
-        return this.elements.shift(); // Remove the node with the lowest f value
-    }
-}
-function heuristic(a: Node, b: Node): number {
-    // Using Manhattan distance as the heuristic
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-}
-
-function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
-    const openSet = new PriorityQueue();
-    const closedSet: Set<string> = new Set();
-
-    openSet.enqueue(start);
-
-    while (!openSet.isEmpty()) {
-        const current = openSet.dequeue();
-
-        if (!current) {
-            break;
+            // Merge the two subarrays
+            merge(arr, temp, left, mid, right);
         }
-
-        // Check if we reached the goal
-        if (current.x === goal.x && current.y === goal.y) {
-            const path: Node[] = [];
-            let temp: Node | null = current;
-            while (temp) {
-                path.push(temp);
-                temp = temp.parent;
-            }
-            return path.reverse(); // Return the path from start to goal
-        }
-
-        closedSet.add(`${current.x},${current.y}`);
-
-        // Explore neighbors (4 directions: up, down, left, right)
-        const neighbors = [
-            new Node(current.x, current.y - 1), // Up
-            new Node(current.x, current.y + 1), // Down
-            new Node(current.x - 1, current.y), // Left
-            new Node(current.x + 1, current.y)  // Right
-        ];
-
-        for (const neighbor of neighbors) {
-            // Check if neighbor is within bounds and walkable
-            if (neighbor.x < 0 || neighbor.x >= grid.length || neighbor.y < 0 || neighbor.y >= grid[0].length || grid[neighbor.x][neighbor.y] === 1) {
-                continue; // Skip walls or out of bounds
-            }
-
-            if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
-                continue; // Skip already evaluated nodes
-            }
-
-            const gScore = current.g + 1; // Assume cost to move to neighbor is 1
-            let isBestPath = false;
-
-            if (!openSet.elements.some(n => n.x === neighbor.x && n.y === neighbor.y)) {
-                isBestPath = true; // New node
-                neighbor.h = heuristic(neighbor, goal);
-                openSet.enqueue(neighbor);
-            } else if (gScore < neighbor.g) {
-                isBestPath = true; // Found a better path
-            }
-
-            if (isBestPath) {
-                neighbor.g = gScore;
-                neighbor.f = neighbor.g + neighbor.h;
-                neighbor.parent = current;
-            }
+        // Copy the sorted elements back into the original array
+        for (let i = 0; i < n; i++) {
+            arr[i] = temp[i];
         }
     }
 
-    return null; // No path found
+    return arr;
 }
-const grid = [
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 
+
+function merge(arr: number[], temp: number[], left: number, mid: number, right: number): void {
+    let i = left;   // Starting index for left subarray
+    let j = mid;    // Starting index for right subarray
+    let k = left;   // Starting index to be merged
+
+    // Merge the two subarrays into temp[]
+    while (i < mid && j < right) {
+        if (arr[i] <= arr[j]) {
+            temp[k++] = arr[i++];
+        } else {
+            temp[k++] = arr[j++];
+        }
+    }
+
+    // Copy the remaining elements of left subarray, if any
+    while (i < mid) {
+        temp[k++] = arr[i++];
+    }
+
+    // Copy the remaining elements of right subarray, if any
+    while (j < right) {
+        temp[k++] = arr[j++];
+    }
+}
+
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
