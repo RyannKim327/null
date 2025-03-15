@@ -1,10 +1,12 @@
-function reverseWords(input: string): string {
-    return input.split(' ') // Split the string into an array of words
-                .reverse()   // Reverse the array
-                .join(' ');  // Join the array back into a string
-}
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-// Example usage:
-const originalString = "Hello world this is TypeScript";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "TypeScript is this world Hello"
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
+
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+const numbers: number[] = [5, 3, 8, 1, 2];
+
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
