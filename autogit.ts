@@ -1,117 +1,29 @@
-class Graph {
-    private adjList: Map<number, number[]>;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-    }
-
-    topologicalSort(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        const dfs = (node: number) => {
-            visited.add(node);
-            const neighbors = this.adjList.get(node) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(node);
-        };
-
-        for (const node of this.adjList.keys()) {
-            if (!visited.has(node)) {
-                dfs(node);
-            }
-        }
-
-        return stack.reverse(); // Reverse the stack to get the topological order
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const order = graph.topologicalSort();
-console.log(order); // Output: A valid topological order
-class Graph {
-    private adjList: Map<number, number[]>;
-    private inDegree: Map<number, number>;
-
-    constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    addEdge(v: number, w: number) {
-        if (!this.adjList.has(v)) {
-            this.adjList.set(v, []);
-        }
-        this.adjList.get(v)!.push(w);
-
-        // Update in-degree of the destination node
-        this.inDegree.set(w, (this.inDegree.get(w) || 0) + 1);
-        // Ensure the source node is in the in-degree map
-        if (!this.inDegree.has(v)) {
-            this.inDegree.set(v, 0);
-        }
-    }
-
-    topologicalSort(): number[] {
-        const zeroInDegreeQueue: number[] = [];
-        const topologicalOrder: number[] = [];
-
-        // Initialize the queue with nodes having zero in-degree
-        for (const [node, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                zeroInDegreeQueue.push(node);
-            }
-        }
-
-        while (zeroInDegreeQueue.length > 0) {
-            const node = zeroInDegreeQueue.shift()!;
-            topologicalOrder.push(node);
-
-            const neighbors = this.adjList.get(node) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    zeroInDegreeQueue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there was a cycle
-        if (topologicalOrder.length !== this.inDegree.size) {
-            throw new Error("Graph has at least one cycle, topological sort not possible.");
-        }
-
-        return topologicalOrder;
-    }
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
-
 // Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-const order = graph.topologicalSort();
-console.log(order); // Output: A valid topological order
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
