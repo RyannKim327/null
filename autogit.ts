@@ -1,55 +1,31 @@
-// Define a Node interface
-interface Node {
-    value: any;
-    children: Node[];
-}
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
 
-// Breadth-Limited Search function
-function breadthLimitedSearch(root: Node, maxDepth: number): Node[] {
-    if (maxDepth < 0) {
-        throw new Error("Max depth must be non-negative");
-    }
+    // Start with the largest gap and reduce the gap until it becomes 0
+    while (gap > 0) {
+        // Perform a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            const temp = arr[i];
+            let j = i;
 
-    const result: Node[] = [];
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first element from the queue
-
-        // If the current depth is within the limit, add the node to the result
-        if (depth <= maxDepth) {
-            result.push(node);
-            // Add children to the queue with incremented depth
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
             }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
 
-    return result;
+    return arr;
 }
 
-// Example usage
-const tree: Node = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ]
-        },
-        {
-            value: 3,
-            children: [
-                { value: 6, children: [] },
-                { value: 7, children: [] }
-            ]
-        }
-    ]
-};
-
-const maxDepth = 1;
-const result = breadthLimitedSearch(tree, maxDepth);
-console.log(result.map(node => node.value)); // Output: [1, 2, 3]
+// Example usage:
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
