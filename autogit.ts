@@ -1,95 +1,138 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+class MinHeap {
+    private heap: number[];
 
-    constructor(size: number = 42) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
+    constructor() {
+        this.heap = [];
     }
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
+    private getParentIndex(index: number): number {
+        return Math.floor((index - 1) / 2);
+    }
+
+    private getLeftChildIndex(index: number): number {
+        return index * 2 + 1;
+    }
+
+    private getRightChildIndex(index: number): number {
+        return index * 2 + 2;
+    }
+
+    private hasParent(index: number): boolean {
+        return this.getParentIndex(index) >= 0;
+    }
+
+    private hasLeftChild(index: number): boolean {
+        return this.getLeftChildIndex(index) < this.heap.length;
+    }
+
+    private hasRightChild(index: number): boolean {
+        return this.getRightChildIndex(index) < this.heap.length;
+    }
+
+    private parent(index: number): number {
+        return this.heap[this.getParentIndex(index)];
+    }
+
+    private leftChild(index: number): number {
+        return this.heap[this.getLeftChildIndex(index)];
+    }
+
+    private rightChild(index: number): number {
+        return this.heap[this.getRightChildIndex(index)];
+    }
+
+    private swap(indexOne: number, indexTwo: number): void {
+        const temp = this.heap[indexOne];
+        this.heap[indexOne] = this.heap[indexTwo];
+        this.heap[indexTwo] = temp;
+    }
+
+    public insert(value: number): void {
+        this.heap.push(value);
+        this.heapifyUp();
+    }
+
+    private heapifyUp(): void {
+        let index = this.heap.length - 1;
+        while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
+            this.swap(this.getParentIndex(index), index);
+            index = this.getParentIndex(index);
         }
-        return hash % this.size;
     }
 
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
+    public remove(): number | null {
+        if (this.heap.length === 0) {
+            return null;
+        }
+        const item = this.heap[0];
+        this.heap[0] = this.heap[this.heap.length - 1];
+        this.heap.pop();
+        this.heapifyDown();
+        return item;
+    }
 
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket[i][1] = value; // Update the value
-                return;
+    private heapifyDown(): void {
+        let index = 0;
+        while (this.hasLeftChild(index)) {
+            let smallerChildIndex = this.getLeftChildIndex(index);
+            if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
+                smallerChildIndex = this.getRightChildIndex(index);
             }
+            if (this.heap[index] < this.heap[smallerChildIndex]) {
+                break;
+            } else {
+                this.swap(index, smallerChildIndex);
+            }
+            index = smallerChildIndex;
         }
-
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
     }
 
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return bucket[i][1]; // Return the value
-            }
-        }
-
-        return undefined; // Key not found
+    public peek(): number | null {
+        return this.heap.length > 0 ? this.heap[0] : null;
     }
 
-    public remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
-            }
-        }
-
-        return false; // Key not found
+    public isEmpty(): boolean {
+        return this.heap.length === 0;
     }
 
-    public keys(): K[] {
-        const keys: K[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    keys.push(entry[0]);
-                }
-            }
-        }
-        return keys;
-    }
-
-    public values(): V[] {
-        const values: V[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    values.push(entry[1]);
-                }
-            }
-        }
-        return values;
+    public size(): number {
+        return this.heap.length;
     }
 }
+class PriorityQueue {
+    private heap: MinHeap;
 
-// Example usage
-const hashTable = new HashTable<string, number>();
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.get("banana")); // Output: 2
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: undefined
-console.log(hashTable.keys()); // Output: ['banana']
+    constructor() {
+        this.heap = new MinHeap();
+    }
+
+    public enqueue(value: number): void {
+        this.heap.insert(value);
+    }
+
+    public dequeue(): number | null {
+        return this.heap.remove();
+    }
+
+    public peek(): number | null {
+        return this.heap.peek();
+    }
+
+    public isEmpty(): boolean {
+        return this.heap.isEmpty();
+    }
+
+    public size(): number {
+        return this.heap.size();
+    }
+}
+const pq = new PriorityQueue();
+pq.enqueue(5);
+pq.enqueue(3);
+pq.enqueue(8);
+pq.enqueue(1);
+
+console.log(pq.peek()); // Output: 1
+console.log(pq.dequeue()); // Output: 1
+console.log(pq.peek()); // Output: 3
+console.log(pq.size()); // Output: 3
