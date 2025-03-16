@@ -1,49 +1,61 @@
-function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
-    const m = pattern.length;
-    const n = text.length;
-    const result: number[] = [];
-    const hPattern = 0; // Hash value for pattern
-    const hText = 0; // Hash value for text
-    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
 
-    // Calculate the hash value of the pattern and the first window of text
-    for (let i = 0; i < m; i++) {
-        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
-        hText = (d * hText + text.charCodeAt(i)) % q;
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
 
-    // Slide the pattern over text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check the hash values of the current window of text and pattern
-        if (hPattern === hText) {
-            // If the hash values match, check for characters one by one
-            let j;
-            for (j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    break;
-                }
-            }
-            if (j === m) {
-                result.push(i); // Pattern found at index i
-            }
+    // Marks the eliminated range from the front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index to be compared
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
         }
-
-        // Calculate hash value for the next window of text
-        if (i < n - m) {
-            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
-
-            // We might get negative value of hText, converting it to positive
-            if (hText < 0) {
-                hText += q;
-            }
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
         }
     }
 
-    return result; // Return the list of starting indices where pattern is found
+    // Comparing the last element with x
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
 // Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const indices = rabinKarp(text, pattern);
-console.log("Pattern found at indices:", indices);
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
+
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log('Element not found in the array.');
+}
