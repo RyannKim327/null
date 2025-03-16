@@ -1,12 +1,19 @@
-function validateEmail(email: string): boolean {
-    // Regular expression for validating an email address
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
+
+    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
+
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+
+    return Math.max(...dp); // The length of the longest increasing subsequence
 }
 
-// Example usage
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
-
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
+// Example usage:
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
