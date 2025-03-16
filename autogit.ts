@@ -1,132 +1,55 @@
-class BTreeNode {
-    keys: number[];
-    children: BTreeNode[];
-    isLeaf: boolean;
-    t: number; // Minimum degree
-
-    constructor(t: number, isLeaf: boolean) {
-        this.t = t;
-        this.isLeaf = isLeaf;
-        this.keys = [];
-        this.children = [];
-    }
-
-    // Function to traverse all nodes in a subtree rooted with this node
-    traverse() {
-        let i: number;
-        for (i = 0; i < this.keys.length; i++) {
-            // If this is not a leaf, traverse the child before the key
-            if (!this.isLeaf) {
-                this.children[i].traverse();
-            }
-            console.log(this.keys[i]);
-        }
-        // Finally, traverse the last child
-        if (!this.isLeaf) {
-            this.children[i].traverse();
-        }
-    }
-
-    // Function to search a key in the subtree rooted with this node
-    search(key: number): BTreeNode | null {
-        let i = 0;
-        while (i < this.keys.length && key > this.keys[i]) {
-            i++;
-        }
-
-        // If the found key is equal to the key, return this node
-        if (i < this.keys.length && this.keys[i] === key) {
-            return this;
-        }
-
-        // If this node is a leaf node, then the key is not present
-        if (this.isLeaf) {
-            return null;
-        }
-
-        // Go to the appropriate child
-        return this.children[i].search(key);
-    }
-
-    // Function to insert a new key in this node
-    insertNonFull(key: number) {
-        let i = this.keys.length - 1;
-
-        // If this is a leaf node
-        if (this.isLeaf) {
-            // Find the location to insert the new key
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            // Insert the new key at found location
-            this.keys.splice(i + 1, 0, key);
-        } else {
-            // Find the child which is going to have the new key
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            // Check if the found child is full
-            if (this.children[i + 1].keys.length === 2 * this.t - 1) {
-                // If the child is full, then split it
-                this.splitChild(i + 1);
-                // After split, the middle key of child goes up and this
-                // node is split into two. So, we need to check which of the
-                // two children is going to have the new key
-                if (key > this.keys[i + 1]) {
-                    i++;
-                }
-            }
-            this.children[i + 1].insertNonFull(key);
-        }
-    }
-
-    // Function to split the child of this node
-    splitChild(i: number) {
-        const t = this.t;
-        const y = this.children[i];
-        const z = new BTreeNode(t, y.isLeaf);
-
-        // Give z the last t-1 keys of y
-        for (let j = 0; j < t - 1; j++) {
-            z.keys.push(y.keys[j + t]);
-        }
-
-        // If y is not a leaf, then give z the last t children of y
-        if (!y.isLeaf) {
-            for (let j = 0; j < t; j++) {
-                z.children.push(y.children[j + t]);
-            }
-        }
-
-        // Reduce the number of keys in y
-        y.keys.length = t - 1;
-
-        // Since this node is going to have a new child,
-        // create space for the new child
-        this.children.splice(i + 1, 0, z);
-
-        // A key of y will move to this node
-        this.keys.splice(i, 0, y.keys.pop()!);
-    }
+// Define a Node interface to represent each node in the tree/graph
+interface Node {
+    value: any;
+    children: Node[];
 }
 
-class BTree {
-    root: BTreeNode;
-    t: number; // Minimum degree
-
-    constructor(t: number) {
-        this.root = new BTreeNode(t, true);
-        this.t = t;
+// Depth-Limited Search function
+function depthLimitedSearch(node: Node, depth: number, target: any): boolean {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
     }
 
-    // Function to traverse the tree
-    traverse() {
-        this.root.traverse();
+    // If the depth limit is reached, return false
+    if (depth === 0) {
+        return false;
     }
 
-    // Function to search a key in the B-tree
-    search(key: number): BTreeNode | null {
-        return this.root.search(key);
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depth - 1, target)) {
+            return true;
+        }
     }
 
-    // Function to insert a new key in the
+    // If the target is not found in this path, return false
+    return false;
+}
+
+// Example usage
+const rootNode: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
+        }
+    ]
+};
+
+const targetValue = 5;
+const depthLimit = 2;
+
+const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
