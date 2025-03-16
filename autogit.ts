@@ -1,114 +1,49 @@
-class Node {
-    public x: number;
-    public y: number;
-    public g: number; // Cost from start to this node
-    public h: number; // Heuristic cost to goal
-    public f: number; // Total cost (g + h)
-    public parent: Node | null;
+function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const result: number[] = [];
+    const hPattern = 0; // Hash value for pattern
+    const hText = 0; // Hash value for text
+    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
 
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-        this.g = 0;
-        this.h = 0;
-        this.f = 0;
-        this.parent = null;
-    }
-}
-
-class Grid {
-    public nodes: Node[][];
-    public width: number;
-    public height: number;
-
-    constructor(width: number, height: number) {
-        this.width = width;
-        this.height = height;
-        this.nodes = Array.from({ length: height }, (_, y) => 
-            Array.from({ length: width }, (_, x) => new Node(x, y))
-        );
+    // Calculate the hash value of the pattern and the first window of text
+    for (let i = 0; i < m; i++) {
+        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
+        hText = (d * hText + text.charCodeAt(i)) % q;
     }
 
-    // Add methods to set obstacles, etc. if needed
-}
-function heuristic(a: Node, b: Node): number {
-    // Using Manhattan distance as heuristic
-    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-}
-
-function aStarSearch(grid: Grid, start: Node, goal: Node): Node[] | null {
-    const openSet: Node[] = [];
-    const closedSet: Set<Node> = new Set();
-
-    openSet.push(start);
-
-    while (openSet.length > 0) {
-        // Sort openSet by f value and get the node with the lowest f
-        openSet.sort((a, b) => a.f - b.f);
-        const current = openSet.shift()!;
-
-        // If we reached the goal, reconstruct the path
-        if (current.x === goal.x && current.y === goal.y) {
-            const path: Node[] = [];
-            let temp: Node | null = current;
-            while (temp) {
-                path.push(temp);
-                temp = temp.parent;
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of the current window of text and pattern
+        if (hPattern === hText) {
+            // If the hash values match, check for characters one by one
+            let j;
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
             }
-            return path.reverse(); // Return reversed path
-        }
-
-        closedSet.add(current);
-
-        // Get neighbors (4-directional movement)
-        const neighbors = getNeighbors(current, grid);
-        for (const neighbor of neighbors) {
-            if (closedSet.has(neighbor)) continue; // Ignore already evaluated nodes
-
-            const tentativeG = current.g + 1; // Assuming cost between nodes is 1
-
-            if (!openSet.includes(neighbor)) {
-                openSet.push(neighbor); // Discover a new node
-            } else if (tentativeG >= neighbor.g) {
-                continue; // Not a better path
+            if (j === m) {
+                result.push(i); // Pattern found at index i
             }
+        }
 
-            // This path is the best until now, record it
-            neighbor.parent = current;
-            neighbor.g = tentativeG;
-            neighbor.h = heuristic(neighbor, goal);
-            neighbor.f = neighbor.g + neighbor.h;
+        // Calculate hash value for the next window of text
+        if (i < n - m) {
+            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get negative value of hText, converting it to positive
+            if (hText < 0) {
+                hText += q;
+            }
         }
     }
 
-    return null; // No path found
+    return result; // Return the list of starting indices where pattern is found
 }
 
-function getNeighbors(node: Node, grid: Grid): Node[] {
-    const neighbors: Node[] = [];
-    const directions = [
-        { x: 0, y: 1 },  // Down
-        { x: 1, y: 0 },  // Right
-        { x: 0, y: -1 }, // Up
-        { x: -1, y: 0 }  // Left
-    ];
-
-    for (const dir of directions) {
-        const newX = node.x + dir.x;
-        const newY = node.y + dir.y;
-
-        if (newX >= 0 && newX < grid.width && newY >= 0 && newY < grid.height) {
-            neighbors.push(grid.nodes[newY][newX]);
-        }
-    }
-
-    return neighbors;
-}
-const grid = new Grid(10, 10); // Create a 10x10 grid
-const start = grid.nodes[0][0]; // Starting node
-const goal = grid.nodes[9][9]; // Goal node
-
-const path = aStarSearch(grid, start, goal);
-
-if (path) {
-    console.log("Path
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", indices);
