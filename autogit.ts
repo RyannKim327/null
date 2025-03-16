@@ -1,57 +1,36 @@
-class ListNode {
+class TreeNode {
     value: number;
-    next: ListNode | null;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
+    // If the node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
     }
 
-    // Method to find the middle element
-    findMiddle(): ListNode | null {
-        let slowPointer: ListNode | null = this.head;
-        let fastPointer: ListNode | null = this.head;
-
-        while (fastPointer && fastPointer.next) {
-            slowPointer = slowPointer?.next || null; // Move slow pointer by 1
-            fastPointer = fastPointer.next.next; // Move fast pointer by 2
-        }
-
-        return slowPointer; // Slow pointer will be at the middle
-    }
+    // Recursively count the leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
-}
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
