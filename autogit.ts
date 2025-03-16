@@ -1,7 +1,11 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function findMaxValue(arr: number[]): number | null {
+    if (arr.length === 0) {
+        return null; // Return null if the array is empty
+    }
+    return Math.max(...arr);
 }
 
 // Example usage:
-const randomNum = getRandomNumberInRange(1, 10);
-console.log(randomNum); // This will log a random number between 1 and 10 (inclusive)
+const numbers = [1, 5, 3, 9, 2];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Output: 9
