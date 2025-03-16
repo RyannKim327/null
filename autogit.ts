@@ -1,20 +1,13 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Remove duplicates by converting the array to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
+const originalArray: number[] = [1, 2, 3, 4, 5];
+console.log("Original Array:", originalArray);
 
-    // If there are less than 2 unique elements, return null
-    if (uniqueArr.length < 2) {
-        return null;
-    }
+// Reverse the array
+const reversedArray: number[] = originalArray.reverse();
+console.log("Reversed Array:", reversedArray);
+const originalArray: number[] = [1, 2, 3, 4, 5];
+console.log("Original Array:", originalArray);
 
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
-
-    // Return the second largest element
-    return uniqueArr[1];
-}
-
-// Example usage:
-const numbers = [3, 5, 1, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+// Create a copy and reverse it
+const reversedArray: number[] = originalArray.slice().reverse();
+console.log("Reversed Array:", reversedArray);
+console.log("Original Array after reverse:", originalArray); // Original array remains unchanged
