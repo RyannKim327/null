@@ -1,29 +1,76 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Graph {
+    private vertices: number;
+    private adjList: number[][];
+    private index: number;
+    private stack: number[];
+    private indices: number[];
+    private lowLink: number[];
+    private onStack: boolean[];
+    private sccs: number[][];
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = Array.from({ length: vertices }, () => []);
+        this.index = 0;
+        this.stack = [];
+        this.indices = Array(vertices).fill(-1);
+        this.lowLink = Array(vertices).fill(0);
+        this.onStack = Array(vertices).fill(false);
+        this.sccs = [];
+    }
+
+    addEdge(v: number, w: number) {
+        this.adjList[v].push(w);
+    }
+
+    private strongConnect(v: number) {
+        this.indices[v] = this.index;
+        this.lowLink[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
+
+        for (const w of this.adjList[v]) {
+            if (this.indices[w] === -1) {
+                // Successor w has not yet been visited; recurse on it
+                this.strongConnect(w);
+                this.lowLink[v] = Math.min(this.lowLink[v], this.lowLink[w]);
+            } else if (this.onStack[w]) {
+                // Successor w is in stack and hence in the current SCC
+                this.lowLink[v] = Math.min(this.lowLink[v], this.indices[w]);
+            }
+        }
+
+        // If v is a root node, pop the stack and generate an SCC
+        if (this.lowLink[v] === this.indices[v]) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                scc.push(w);
+            } while (w !== v);
+            this.sccs.push(scc);
+        }
+    }
+
+    findSCCs() {
+        for (let v = 0; v < this.vertices; v++) {
+            if (this.indices[v] === -1) {
+                this.strongConnect(v);
+            }
+        }
+        return this.sccs;
     }
 }
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const graph = new Graph(5);
+graph.addEdge(0, 2);
+graph.addEdge(2, 1);
+graph.addEdge(1, 0);
+graph.addEdge(0, 3);
+graph.addEdge(3, 4);
 
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+const sccs = graph.findSCCs();
+console.log(sccs); // Output: [[0, 1, 2], [3], [4]]
