@@ -1,57 +1,30 @@
-function getMax(arr: number[]): number {
-    let max = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            max = arr[i];
-        }
-    }
-    return max;
+// Define an interface for the data we expect from the API
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-function countingSort(arr: number[], exp: number): number[] {
-    const output: number[] = new Array(arr.length); // Output array
-    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
-
-    // Store count of occurrences in count[]
-    for (let i = 0; i < arr.length; i++) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        count[index]++;
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    
+    // Check if the response is ok (status code 200-299)
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
     }
 
-    // Change count[i] so that it contains the actual position of this digit in output[]
-    for (let i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const index = Math.floor(arr[i] / exp) % 10;
-        output[count[index] - 1] = arr[i];
-        count[index]--;
-    }
-
-    // Copy the output array to arr[], so that arr[] now contains sorted numbers
-    for (let i = 0; i < arr.length; i++) {
-        arr[i] = output[i];
-    }
-
-    return arr;
+    // Parse the JSON response
+    const data: Post[] = await response.json();
+    return data;
 }
 
-function radixSort(arr: number[]): number[] {
-    // Find the maximum number to know the number of digits
-    const max = getMax(arr);
-
-    // Do counting sort for every digit
-    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
-        countingSort(arr, exp);
-    }
-
-    return arr;
-}
-
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log("Unsorted array:", arr);
-const sortedArr = radixSort(arr);
-console.log("Sorted array:", sortedArr);
+// Call the fetchPosts function and log the results
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error fetching posts:', error);
+    });
