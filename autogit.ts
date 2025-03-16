@@ -1,58 +1,48 @@
-class Node {
-    value: string;
-    children: Node[];
+type Graph = { [key: string]: string[] };
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
+function breadthLimitedSearch(graph: Graph, startNode: string, goalNode: string, depthLimit: number): string | null {
+    // Queue for BFS
+    const queue: { node: string; depth: number }[] = [{ node: startNode, depth: 0 }];
+    const visited = new Set<string>();
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    if (limit < 0) {
-        return null; // Limit reached, return null
-    }
-
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-    
     while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first element in the queue
+        const { node, depth } = queue.shift()!;
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
+        // Check if we reached the goal node
+        if (node === goalNode) {
+            return node;
         }
 
-        // If we haven't reached the limit, add children to the queue
-        if (depth < limit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
+        // If we haven't reached the depth limit, continue searching
+        if (depth < depthLimit) {
+            visited.add(node);
+
+            // Explore neighbors
+            for (const neighbor of graph[node] || []) {
+                if (!visited.has(neighbor)) {
+                    queue.push({ node: neighbor, depth: depth + 1 });
+                }
             }
         }
     }
 
-    return null; // Target not found within the limit
+    // Return null if the goal node is not found within the depth limit
+    return null;
 }
 
-// Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
+const startNode = 'A';
+const goalNode = 'F';
+const depthLimit = 2;
 
-const result = breadthLimitedSearch(root, "D", 2);
-if (result) {
-    console.log(`Found: ${result.value}`);
-} else {
-    console.log("Not found within the limit.");
-}
+const result = breadthLimitedSearch(graph, startNode, goalNode, depthLimit);
+console.log(result); // Output: null (since F is beyond the depth limit)
