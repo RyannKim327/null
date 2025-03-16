@@ -1,80 +1,76 @@
-type Graph = { [key: string]: string[] };
+class Graph {
+    private vertices: number;
+    private adjList: Map<number, number[]>;
 
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
+    constructor(vertices: number) {
+        this.vertices = vertices;
+        this.adjList = new Map<number, number[]>();
+    }
 
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentFromStart = queueFromStart.shift()!;
-        if (visitedFromGoal.has(currentFromStart)) {
-            return constructPath(currentFromStart, parentFromStart, parentFromGoal);
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
         }
-        visitedFromStart.add(currentFromStart);
+        this.adjList.get(v)!.push(w);
+    }
 
-        for (const neighbor of graph[currentFromStart] || []) {
-            if (!visitedFromStart.has(neighbor)) {
-                queueFromStart.push(neighbor);
-                visitedFromStart.add(neighbor);
-                parentFromStart[neighbor] = currentFromStart;
+    tarjan(): number[][] {
+        const index: number[] = new Array(this.vertices).fill(-1);
+        const lowlink: number[] = new Array(this.vertices).fill(-1);
+        const onStack: boolean[] = new Array(this.vertices).fill(false);
+        const stack: number[] = [];
+        const result: number[][] = [];
+        let currentIndex = 0;
+
+        const strongConnect = (v: number) => {
+            index[v] = currentIndex;
+            lowlink[v] = currentIndex;
+            currentIndex++;
+            stack.push(v);
+            onStack[v] = true;
+
+            const neighbors = this.adjList.get(v) || [];
+            for (const w of neighbors) {
+                if (index[w] === -1) {
+                    // Successor w has not yet been visited; recurse on it
+                    strongConnect(w);
+                    lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+                } else if (onStack[w]) {
+                    // Successor w is in stack and hence in the current SCC
+                    lowlink[v] = Math.min(lowlink[v], index[w]);
+                }
+            }
+
+            // If v is a root node, pop the stack and generate an SCC
+            if (lowlink[v] === index[v]) {
+                const scc: number[] = [];
+                let w: number;
+                do {
+                    w = stack.pop()!;
+                    onStack[w] = false;
+                    scc.push(w);
+                } while (w !== v);
+                result.push(scc);
+            }
+        };
+
+        for (let v = 0; v < this.vertices; v++) {
+            if (index[v] === -1) {
+                strongConnect(v);
             }
         }
 
-        // Search from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        if (visitedFromStart.has(currentFromGoal)) {
-            return constructPath(currentFromGoal, parentFromGoal, parentFromStart);
-        }
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph[currentFromGoal] || []) {
-            if (!visitedFromGoal.has(neighbor)) {
-                queueFromGoal.push(neighbor);
-                visitedFromGoal.add(neighbor);
-                parentFromGoal[neighbor] = currentFromGoal;
-            }
-        }
+        return result;
     }
-
-    return null; // No path found
 }
 
-function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
-    const path: string[] = [];
-    let current: string | null = meetingPoint;
+// Example usage:
+const g = new Graph(5);
+g.addEdge(0, 2);
+g.addEdge(2, 1);
+g.addEdge(1, 0);
+g.addEdge(0, 3);
+g.addEdge(3, 4);
 
-    // Backtrack from the meeting point to the start
-    while (current !== null) {
-        path.push(current);
-        current = parentFromStart[current];
-    }
-    path.reverse();
-
-    // Backtrack from the meeting point to the goal
-    current = parentFromGoal[meetingPoint];
-    while (current !== null) {
-        path.push(current);
-        current = parentFromGoal[current];
-    }
-
-    return path;
-}
-
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E'],
-};
-
-const path = biDirectionalSearch(graph, 'A', 'F');
-console.log(path); // Output: ['A', 'C', 'F'] or ['A', 'B', 'E', 'F']
+const sccs = g.tarjan();
+console.log(sccs); // Output: Strongly connected components
