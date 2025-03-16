@@ -1,15 +1,9 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The list of numbers is empty.");
-    }
-
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
-
-    return mean;
+function calculateTriangleArea(base: number, height: number): number {
+    return 0.5 * base * height;
 }
 
 // Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+const base = 5;
+const height = 10;
+const area = calculateTriangleArea(base, height);
+console.log(`The area of the triangle is: ${area}`);
