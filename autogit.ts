@@ -1,15 +1,27 @@
-// Example array
-let arr: number[] = [1, 2, 3, 4, 5];
+import * as readline from 'readline';
 
-// Reverse the array
-arr.reverse();
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-console.log(arr); // Output: [5, 4, 3, 2, 1]
-// Example array
-let originalArr: number[] = [1, 2, 3, 4, 5];
+// Function to ask a question and handle the response
+function askQuestion(query: string): Promise<string> {
+    return new Promise((resolve) => {
+        rl.question(query, (answer) => {
+            resolve(answer);
+        });
+    });
+}
 
-// Create a new reversed array
-let reversedArr: number[] = originalArr.slice().reverse();
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    console.log(`Hello, ${name}! Welcome to TypeScript.`);
+    
+    rl.close(); // Close the readline interface
+}
 
-console.log(originalArr); // Output: [1, 2, 3, 4, 5]
-console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
+// Run the main function
+main();
