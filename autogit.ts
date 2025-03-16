@@ -1,13 +1,15 @@
-const originalArray: number[] = [1, 2, 3, 4, 5];
-console.log("Original Array:", originalArray);
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
+        }
+    }
+    return true; // All elements are in ascending order
+}
 
-// Reverse the array
-const reversedArray: number[] = originalArray.reverse();
-console.log("Reversed Array:", reversedArray);
-const originalArray: number[] = [1, 2, 3, 4, 5];
-console.log("Original Array:", originalArray);
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [1, 3, 2, 4, 5];
 
-// Create a copy and reverse it
-const reversedArray: number[] = originalArray.slice().reverse();
-console.log("Reversed Array:", reversedArray);
-console.log("Original Array after reverse:", originalArray); // Original array remains unchanged
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
