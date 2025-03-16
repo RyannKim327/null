@@ -1,72 +1,114 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+class Node {
+    public x: number;
+    public y: number;
+    public g: number; // Cost from start to this node
+    public h: number; // Heuristic cost to goal
+    public f: number; // Total cost (g + h)
+    public parent: Node | null;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+        this.g = 0;
+        this.h = 0;
+        this.f = 0;
+        this.parent = null;
     }
 }
-class Queue<T> {
-    private front: Node<T> | null;
-    private back: Node<T> | null;
-    private length: number;
 
-    constructor() {
-        this.front = null;
-        this.back = null;
-        this.length = 0;
+class Grid {
+    public nodes: Node[][];
+    public width: number;
+    public height: number;
+
+    constructor(width: number, height: number) {
+        this.width = width;
+        this.height = height;
+        this.nodes = Array.from({ length: height }, (_, y) => 
+            Array.from({ length: width }, (_, x) => new Node(x, y))
+        );
     }
 
-    // Add an item to the back of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (this.back) {
-            this.back.next = newNode; // Link the old back to the new node
-        }
-        this.back = newNode; // Update the back to the new node
-        if (!this.front) {
-            this.front = newNode; // If the queue was empty, set front to the new node
-        }
-        this.length++;
-    }
-
-    // Remove and return the item from the front of the queue
-    dequeue(): T | null {
-        if (!this.front) {
-            return null; // Queue is empty
-        }
-        const value = this.front.value; // Get the value from the front node
-        this.front = this.front.next; // Move front to the next node
-        if (!this.front) {
-            this.back = null; // If the queue is now empty, set back to null
-        }
-        this.length--;
-        return value;
-    }
-
-    // Peek at the front item without removing it
-    peek(): T | null {
-        return this.front ? this.front.value : null;
-    }
-
-    // Check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
-    }
-
-    // Get the size of the queue
-    size(): number {
-        return this.length;
-    }
+    // Add methods to set obstacles, etc. if needed
 }
-const queue = new Queue<number>();
+function heuristic(a: Node, b: Node): number {
+    // Using Manhattan distance as heuristic
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
 
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
+function aStarSearch(grid: Grid, start: Node, goal: Node): Node[] | null {
+    const openSet: Node[] = [];
+    const closedSet: Set<Node> = new Set();
 
-console.log(queue.peek()); // Output: 1
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.size()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
+    openSet.push(start);
+
+    while (openSet.length > 0) {
+        // Sort openSet by f value and get the node with the lowest f
+        openSet.sort((a, b) => a.f - b.f);
+        const current = openSet.shift()!;
+
+        // If we reached the goal, reconstruct the path
+        if (current.x === goal.x && current.y === goal.y) {
+            const path: Node[] = [];
+            let temp: Node | null = current;
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
+            }
+            return path.reverse(); // Return reversed path
+        }
+
+        closedSet.add(current);
+
+        // Get neighbors (4-directional movement)
+        const neighbors = getNeighbors(current, grid);
+        for (const neighbor of neighbors) {
+            if (closedSet.has(neighbor)) continue; // Ignore already evaluated nodes
+
+            const tentativeG = current.g + 1; // Assuming cost between nodes is 1
+
+            if (!openSet.includes(neighbor)) {
+                openSet.push(neighbor); // Discover a new node
+            } else if (tentativeG >= neighbor.g) {
+                continue; // Not a better path
+            }
+
+            // This path is the best until now, record it
+            neighbor.parent = current;
+            neighbor.g = tentativeG;
+            neighbor.h = heuristic(neighbor, goal);
+            neighbor.f = neighbor.g + neighbor.h;
+        }
+    }
+
+    return null; // No path found
+}
+
+function getNeighbors(node: Node, grid: Grid): Node[] {
+    const neighbors: Node[] = [];
+    const directions = [
+        { x: 0, y: 1 },  // Down
+        { x: 1, y: 0 },  // Right
+        { x: 0, y: -1 }, // Up
+        { x: -1, y: 0 }  // Left
+    ];
+
+    for (const dir of directions) {
+        const newX = node.x + dir.x;
+        const newY = node.y + dir.y;
+
+        if (newX >= 0 && newX < grid.width && newY >= 0 && newY < grid.height) {
+            neighbors.push(grid.nodes[newY][newX]);
+        }
+    }
+
+    return neighbors;
+}
+const grid = new Grid(10, 10); // Create a 10x10 grid
+const start = grid.nodes[0][0]; // Starting node
+const goal = grid.nodes[9][9]; // Goal node
+
+const path = aStarSearch(grid, start, goal);
+
+if (path) {
+    console.log("Path
