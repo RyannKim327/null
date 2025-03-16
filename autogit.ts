@@ -1,60 +1,49 @@
-// Define a Node class to represent each node in the tree
-class Node {
-    value: string;
-    children: Node[];
+function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const result: number[] = [];
+    const hPattern = 0; // Hash value for pattern
+    const hText = 0; // Hash value for text
+    const h = Math.pow(d, m - 1) % q; // d^(m-1) % q
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+    // Calculate the hash value of the pattern and the first window of text
+    for (let i = 0; i < m; i++) {
+        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
+        hText = (d * hText + text.charCodeAt(i)) % q;
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-// Breadth-Limited Search function
-function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
-    if (limit < 0) return null; // If the limit is negative, return null
-
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Return the found node
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of the current window of text and pattern
+        if (hPattern === hText) {
+            // If the hash values match, check for characters one by one
+            let j;
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
+            }
+            if (j === m) {
+                result.push(i); // Pattern found at index i
+            }
         }
 
-        // If we haven't reached the depth limit, add children to the queue
-        if (depth < limit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
+        // Calculate hash value for the next window of text
+        if (i < n - m) {
+            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get negative value of hText, converting it to positive
+            if (hText < 0) {
+                hText += q;
             }
         }
     }
 
-    return null; // Return null if the target is not found within the limit
+    return result; // Return the list of starting indices where pattern is found
 }
 
 // Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
-
-const targetNode = breadthLimitedSearch(root, "E", 2);
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
-}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", indices);
