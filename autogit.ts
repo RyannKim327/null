@@ -1,138 +1,61 @@
-class MinHeap {
-    private heap: number[];
+type Graph = {
+    [key: string]: { node: string; weight: number }[];
+};
 
-    constructor() {
-        this.heap = [];
+function dijkstra(graph: Graph, start: string): { distances: { [key: string]: number }, previous: { [key: string]: string | null } } {
+    const distances: { [key: string]: number } = {};
+    const previous: { [key: string]: string | null } = {};
+    const priorityQueue: { node: string; distance: number }[] = [];
+
+    // Initialize distances and priority queue
+    for (const node in graph) {
+        distances[node] = Infinity;
+        previous[node] = null;
     }
+    distances[start] = 0;
+    priorityQueue.push({ node: start, distance: 0 });
 
-    private getParentIndex(index: number): number {
-        return Math.floor((index - 1) / 2);
-    }
+    while (priorityQueue.length > 0) {
+        // Sort the queue by distance
+        priorityQueue.sort((a, b) => a.distance - b.distance);
+        const { node: currentNode } = priorityQueue.shift()!;
 
-    private getLeftChildIndex(index: number): number {
-        return index * 2 + 1;
-    }
+        // Explore neighbors
+        for (const neighbor of graph[currentNode]) {
+            const distance = distances[currentNode] + neighbor.weight;
 
-    private getRightChildIndex(index: number): number {
-        return index * 2 + 2;
-    }
-
-    private hasParent(index: number): boolean {
-        return this.getParentIndex(index) >= 0;
-    }
-
-    private hasLeftChild(index: number): boolean {
-        return this.getLeftChildIndex(index) < this.heap.length;
-    }
-
-    private hasRightChild(index: number): boolean {
-        return this.getRightChildIndex(index) < this.heap.length;
-    }
-
-    private parent(index: number): number {
-        return this.heap[this.getParentIndex(index)];
-    }
-
-    private leftChild(index: number): number {
-        return this.heap[this.getLeftChildIndex(index)];
-    }
-
-    private rightChild(index: number): number {
-        return this.heap[this.getRightChildIndex(index)];
-    }
-
-    private swap(indexOne: number, indexTwo: number): void {
-        const temp = this.heap[indexOne];
-        this.heap[indexOne] = this.heap[indexTwo];
-        this.heap[indexTwo] = temp;
-    }
-
-    public insert(value: number): void {
-        this.heap.push(value);
-        this.heapifyUp();
-    }
-
-    private heapifyUp(): void {
-        let index = this.heap.length - 1;
-        while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
-            this.swap(this.getParentIndex(index), index);
-            index = this.getParentIndex(index);
-        }
-    }
-
-    public remove(): number | null {
-        if (this.heap.length === 0) {
-            return null;
-        }
-        const item = this.heap[0];
-        this.heap[0] = this.heap[this.heap.length - 1];
-        this.heap.pop();
-        this.heapifyDown();
-        return item;
-    }
-
-    private heapifyDown(): void {
-        let index = 0;
-        while (this.hasLeftChild(index)) {
-            let smallerChildIndex = this.getLeftChildIndex(index);
-            if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
-                smallerChildIndex = this.getRightChildIndex(index);
+            // Only consider this new path if it's better
+            if (distance < distances[neighbor.node]) {
+                distances[neighbor.node] = distance;
+                previous[neighbor.node] = currentNode;
+                priorityQueue.push({ node: neighbor.node, distance });
             }
-            if (this.heap[index] < this.heap[smallerChildIndex]) {
-                break;
-            } else {
-                this.swap(index, smallerChildIndex);
-            }
-            index = smallerChildIndex;
         }
     }
 
-    public peek(): number | null {
-        return this.heap.length > 0 ? this.heap[0] : null;
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    public size(): number {
-        return this.heap.length;
-    }
+    return { distances, previous };
 }
-class PriorityQueue {
-    private heap: MinHeap;
 
-    constructor() {
-        this.heap = new MinHeap();
+function getShortestPath(previous: { [key: string]: string | null }, target: string): string[] {
+    const path: string[] = [];
+    let currentNode: string | null = target;
+
+    while (currentNode) {
+        path.unshift(currentNode);
+        currentNode = previous[currentNode];
     }
 
-    public enqueue(value: number): void {
-        this.heap.insert(value);
-    }
-
-    public dequeue(): number | null {
-        return this.heap.remove();
-    }
-
-    public peek(): number | null {
-        return this.heap.peek();
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.isEmpty();
-    }
-
-    public size(): number {
-        return this.heap.size();
-    }
+    return path;
 }
-const pq = new PriorityQueue();
-pq.enqueue(5);
-pq.enqueue(3);
-pq.enqueue(8);
-pq.enqueue(1);
 
-console.log(pq.peek()); // Output: 1
-console.log(pq.dequeue()); // Output: 1
-console.log(pq.peek()); // Output: 3
-console.log(pq.size()); // Output: 3
+// Example usage
+const graph: Graph = {
+    A: [{ node: 'B', weight: 1 }, { node: 'C', weight: 4 }],
+    B: [{ node: 'A', weight: 1 }, { node: 'C', weight: 2 }, { node: 'D', weight: 5 }],
+    C: [{ node: 'A', weight: 4 }, { node: 'B', weight: 2 }, { node: 'D', weight: 1 }],
+    D: [{ node: 'B', weight: 5 }, { node: 'C', weight: 1 }],
+};
+
+const { distances, previous } = dijkstra(graph, 'A');
+console.log('Distances:', distances);
+console.log('Shortest path from A to D:', getShortestPath(previous, 'D'));
