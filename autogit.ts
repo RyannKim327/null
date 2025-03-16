@@ -1,55 +1,28 @@
-// Define a Node interface to represent each node in the tree/graph
-interface Node {
-    value: any;
-    children: Node[];
-}
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-// Depth-Limited Search function
-function depthLimitedSearch(node: Node, depth: number, target: any): boolean {
-    // Check if the current node is the target
-    if (node.value === target) {
-        return true;
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
 
-    // If the depth limit is reached, return false
-    if (depth === 0) {
-        return false;
-    }
-
-    // Recursively search in the children nodes
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, depth - 1, target)) {
-            return true;
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
         }
     }
 
-    // If the target is not found in this path, return false
-    return false;
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-// Example usage
-const rootNode: Node = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ]
-        },
-        {
-            value: 3,
-            children: [
-                { value: 6, children: [] },
-                { value: 7, children: [] }
-            ]
-        }
-    ]
-};
-
-const targetValue = 5;
-const depthLimit = 2;
-
-const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
-console.log(`Target ${targetValue} found: ${found}`);
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
