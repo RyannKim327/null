@@ -1,19 +1,27 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    for (let i = 1; i < nums.length; i++) {
-        // Update maxEndingHere to be the maximum of the current number or the sum of maxEndingHere and the current number
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
-        
-        // Update maxSoFar if maxEndingHere is greater
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
+
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
 
-    return maxSoFar; // Return the maximum sum found
+    return arr;
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (the subarray [4, -1, 2, 1] has the maximum sum)
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
