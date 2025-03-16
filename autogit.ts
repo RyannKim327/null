@@ -1,17 +1,19 @@
-function countOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case for case-insensitive comparison
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-    // Split the text by spaces and filter the results
-    const wordsArray = normalizedText.split(/\s+/);
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-    return count;
-}
+// Start the task
+task.start();
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const word = "hello";
-const occurrences = countOccurrences(text, word);
-console.log(`The word "${word}" occurs ${occurrences} times.`);
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
