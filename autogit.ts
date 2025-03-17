@@ -1,67 +1,52 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function mergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    if (n < 2) return arr; // Base case: if the array is empty or has one element, it's already sorted.
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Create a temporary array to hold the sorted elements
+    const temp = new Array(n);
+
+    // Start with a size of 1 and double it each iteration
+    for (let size = 1; size < n; size *= 2) {
+        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
+            const mid = Math.min(leftStart + size, n);
+            const rightEnd = Math.min(leftStart + size * 2, n);
+            merge(arr, temp, leftStart, mid, rightEnd);
+        }
+        // Copy the sorted elements back into the original array
+        for (let i = 0; i < n; i++) {
+            arr[i] = temp[i];
+        }
     }
+
+    return arr;
 }
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
+function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number) {
+    let left = leftStart; // Starting index for left subarray
+    let right = mid;      // Starting index for right subarray
+    let index = leftStart; // Starting index to be merged
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
-
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the start of both lists
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next;
+    // Merge the two subarrays into temp[]
+    while (left < mid && right < rightEnd) {
+        if (arr[left] <= arr[right]) {
+            temp[index++] = arr[left++];
+        } else {
+            temp[index++] = arr[right++];
         }
     }
 
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
+    // Copy the remaining elements of left subarray, if any
+    while (left < mid) {
+        temp[index++] = arr[left++];
     }
 
-    return null; // No intersection
+    // Copy the remaining elements of right subarray, if any
+    while (right < rightEnd) {
+        temp[index++] = arr[right++];
+    }
 }
 
 // Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
-
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
