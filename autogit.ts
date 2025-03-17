@@ -1,49 +1,27 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
         }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
+
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         }
-        current.next = newNode;
     }
 
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+    return arr;
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
