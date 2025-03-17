@@ -1,85 +1,59 @@
-type Graph = {
-    [key: string]: string[];
-};
+// Define a TreeNode class
+class TreeNode {
+    value: number;
+    children: TreeNode[];
 
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
+    constructor(value: number) {
+        this.value = value;
+        this.children = [];
+    }
 
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
+    addChild(child: TreeNode) {
+        this.children.push(child);
+    }
+}
 
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentFromStart = queueFromStart.shift()!;
-        visitedFromStart.add(currentFromStart);
+// Breadth-Limited Search function
+function breadthLimitedSearch(root: TreeNode, target: number, depthLimit: number): boolean {
+    if (depthLimit < 0) {
+        return false; // Depth limit reached
+    }
 
-        for (const neighbor of graph[currentFromStart]) {
-            if (!visitedFromStart.has(neighbor)) {
-                parentFromStart[neighbor] = currentFromStart;
-                queueFromStart.push(neighbor);
-                if (visitedFromGoal.has(neighbor)) {
-                    return constructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-            }
+    const queue: { node: TreeNode; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
+
+        // Check if the current node's value matches the target
+        if (node.value === target) {
+            return true; // Target found
         }
 
-        // Search from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph[currentFromGoal]) {
-            if (!visitedFromGoal.has(neighbor)) {
-                parentFromGoal[neighbor] = currentFromGoal;
-                queueFromGoal.push(neighbor);
-                if (visitedFromStart.has(neighbor)) {
-                    return constructPath(neighbor, parentFromStart, parentFromGoal);
-                }
+        // If we haven't reached the depth limit, add children to the queue
+        if (depth < depthLimit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
             }
         }
     }
 
-    return null; // No path found
+    return false; // Target not found within the depth limit
 }
 
-function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
-    const path: string[] = [];
-    
-    // Construct path from start to meeting point
-    let current: string | null = meetingPoint;
-    while (current !== null) {
-        path.push(current);
-        current = parentFromStart[current];
-    }
-    path.reverse(); // Reverse to get the correct order
+// Example usage
+const root = new TreeNode(1);
+const child1 = new TreeNode(2);
+const child2 = new TreeNode(3);
+const child3 = new TreeNode(4);
+const child4 = new TreeNode(5);
 
-    // Construct path from meeting point to goal
-    current = parentFromGoal[meetingPoint];
-    while (current !== null) {
-        path.push(current);
-        current = parentFromGoal[current];
-    }
+root.addChild(child1);
+root.addChild(child2);
+child1.addChild(child3);
+child1.addChild(child4);
 
-    return path;
-}
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E'],
-};
+const target = 4;
+const depthLimit = 2;
 
-const start = 'A';
-const goal = 'F';
-const path = biDirectionalSearch(graph, start, goal);
-
-if (path) {
-    console.log(`Path found: ${path.join(' -> ')}`);
-} else {
-    console.log('No path found');
-}
+const found = breadthLimitedSearch(root, target, depthLimit);
+console.log(`Target ${target} found within depth limit: ${found}`);
