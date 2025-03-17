@@ -1,17 +1,66 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+class Graph {
+    private adjacencyList: Map<string, { node: string, weight: number }[]>;
 
-    // Sort the characters of both strings
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    addVertex(vertex: string) {
+        if (!this.adjacencyList.has(vertex)) {
+            this.adjacencyList.set(vertex, []);
+        }
+    }
+
+    addEdge(vertex1: string, vertex2: string, weight: number) {
+        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
+        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // For undirected graph
+    }
+
+    dijkstra(start: string): Map<string, number> {
+        const distances: Map<string, number> = new Map();
+        const priorityQueue: { node: string, distance: number }[] = [];
+        const visited: Set<string> = new Set();
+
+        // Initialize distances
+        this.adjacencyList.forEach((_, vertex) => {
+            distances.set(vertex, Infinity);
+        });
+        distances.set(start, 0);
+        priorityQueue.push({ node: start, distance: 0 });
+
+        while (priorityQueue.length > 0) {
+            // Sort the queue by distance
+            priorityQueue.sort((a, b) => a.distance - b.distance);
+            const { node: currentNode } = priorityQueue.shift()!;
+
+            if (visited.has(currentNode)) continue;
+            visited.add(currentNode);
+
+            const neighbors = this.adjacencyList.get(currentNode) || [];
+            for (const { node: neighbor, weight } of neighbors) {
+                const newDistance = distances.get(currentNode)! + weight;
+                if (newDistance < distances.get(neighbor)!) {
+                    distances.set(neighbor, newDistance);
+                    priorityQueue.push({ node: neighbor, distance: newDistance });
+                }
+            }
+        }
+
+        return distances;
+    }
 }
 
 // Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-console.log(areAnagrams("Dormitory", "Dirty room")); // true
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 2);
+graph.addEdge("B", "D", 5);
+graph.addEdge("C", "D", 1);
+
+const shortestPaths = graph.dijkstra("A");
+console.log(shortestPaths); // Output the shortest paths from A
