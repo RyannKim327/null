@@ -1,25 +1,19 @@
-const str: string = "Hello, world!";
-const substring: string = "world";
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-if (str.includes(substring)) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
-}
-const str: string = "Hello, world!";
-const substring: string = "world";
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-if (str.indexOf(substring) !== -1) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
-}
-const str: string = "Hello, world!";
-const substring: string = "world";
-const regex = new RegExp(substring);
+// Start the task
+task.start();
 
-if (regex.test(str)) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
-}
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
