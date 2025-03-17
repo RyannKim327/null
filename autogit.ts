@@ -1,35 +1,99 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+class Graph {
+    private adjacencyList: Map<string, string[]>;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-        // Check if the target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found, return the index
+    addEdge(vertex1: string, vertex2: string) {
+        if (!this.adjacencyList.has(vertex1)) {
+            this.adjacencyList.set(vertex1, []);
+        }
+        if (!this.adjacencyList.has(vertex2)) {
+            this.adjacencyList.set(vertex2, []);
+        }
+        this.adjacencyList.get(vertex1)!.push(vertex2);
+        this.adjacencyList.get(vertex2)!.push(vertex1); // For undirected graph
+    }
+
+    getNeighbors(vertex: string): string[] {
+        return this.adjacencyList.get(vertex) || [];
+    }
+}
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
+
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: Map<string, string | null> = new Map();
+    const parentFromGoal: Map<string, string | null> = new Map();
+
+    visitedFromStart.add(start);
+    visitedFromGoal.add(goal);
+    parentFromStart.set(start, null);
+    parentFromGoal.set(goal, null);
+
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Expand from the start
+        const currentFromStart = queueFromStart.shift()!;
+        for (const neighbor of graph.getNeighbors(currentFromStart)) {
+            if (!visitedFromStart.has(neighbor)) {
+                visitedFromStart.add(neighbor);
+                parentFromStart.set(neighbor, currentFromStart);
+                queueFromStart.push(neighbor);
+
+                if (visitedFromGoal.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
+            }
         }
 
-        // If target is greater, ignore the left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            // If target is smaller, ignore the right half
-            right = mid - 1;
+        // Expand from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        for (const neighbor of graph.getNeighbors(currentFromGoal)) {
+            if (!visitedFromGoal.has(neighbor)) {
+                visitedFromGoal.add(neighbor);
+                parentFromGoal.set(neighbor, currentFromGoal);
+                queueFromGoal.push(neighbor);
+
+                if (visitedFromStart.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
+            }
         }
     }
 
-    // Target was not found in the array
-    return -1;
+    return null; // No path found
 }
 
-// Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const result = binarySearch(sortedArray, target);
+function constructPath(meetingPoint: string, parentFromStart: Map<string, string | null>, parentFromGoal: Map<string, string | null>): string[] {
+    const pathFromStart: string[] = [];
+    let current: string | null = meetingPoint;
 
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found in the array.');
+    while (current !== null) {
+        pathFromStart.push(current);
+        current = parentFromStart.get(current)!;
+    }
+
+    const pathFromGoal: string[] = [];
+    current = parentFromGoal.get(meetingPoint)!;
+
+    while (current !== null) {
+        pathFromGoal.push(current);
+        current = parentFromGoal.get(current)!;
+    }
+
+    return pathFromStart.reverse().concat(pathFromGoal);
 }
+const graph = new Graph();
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+graph.addEdge("C", "D");
+graph.addEdge("D", "E");
+graph.addEdge("E", "F");
+
+const path = biDirectionalSearch(graph, "A", "F");
+console.log(path); // Output: [ 'A', 'B', 'D', 'E', 'F' ] or similar path
