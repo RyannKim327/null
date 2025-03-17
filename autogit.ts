@@ -1,15 +1,10 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The list of numbers is empty.");
-    }
+let string1: string = "Hello, ";
+let string2: string = "World!";
+let concatenated: string = string1 + string2;
 
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
+console.log(concatenated); // Output: Hello, World!
+let string1: string = "Hello, ";
+let string2: string = "World!";
+let concatenated: string = `${string1}${string2}`;
 
-    return mean;
-}
-
-// Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+console.log(concatenated); // Output: Hello, World!
