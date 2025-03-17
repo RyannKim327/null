@@ -1,45 +1,44 @@
-class Stack<T> {
-    private items: T[] = [];
+function createBadCharacterTable(pattern: string): number[] {
+    const table: number[] = new Array(256).fill(-1); // ASCII character set
+    const patternLength = pattern.length;
 
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
+    for (let i = 0; i < patternLength; i++) {
+        table[pattern.charCodeAt(i)] = i; // Store the last occurrence of each character
     }
 
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
+    return table;
 }
 
-// Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty()); // Output: false
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
+
+    let skip: number = 0;
+
+    for (let i = 0; i <= textLength - patternLength; i += skip) {
+        skip = 0;
+
+        for (let j = patternLength - 1; j >= 0; j--) {
+            if (pattern[j] !== text[i + j]) {
+                const badCharIndex = text.charCodeAt(i + j);
+                skip = Math.max(1, j - badCharTable[badCharIndex]); // Calculate the skip value
+                break;
+            }
+        }
+
+        if (skip === 0) {
+            occurrences.push(i); // Match found
+            skip = 1; // Move to the next character after the match
+        }
+    }
+
+    return occurrences;
+}
+
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log("Pattern found at indices:", result);
