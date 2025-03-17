@@ -1,44 +1,36 @@
-function createBadCharacterTable(pattern: string): number[] {
-    const table: number[] = new Array(256).fill(-1); // ASCII character set
-    const patternLength = pattern.length;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    for (let i = 0; i < patternLength; i++) {
-        table[pattern.charCodeAt(i)] = i; // Store the last occurrence of each character
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return table;
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
-
-    let skip: number = 0;
-
-    for (let i = 0; i <= textLength - patternLength; i += skip) {
-        skip = 0;
-
-        for (let j = patternLength - 1; j >= 0; j--) {
-            if (pattern[j] !== text[i + j]) {
-                const badCharIndex = text.charCodeAt(i + j);
-                skip = Math.max(1, j - badCharTable[badCharIndex]); // Calculate the skip value
-                break;
-            }
-        }
-
-        if (skip === 0) {
-            occurrences.push(i); // Match found
-            skip = 1; // Move to the next character after the match
-        }
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    return occurrences;
+    // If the node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+
+    // Recursively count the leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
-// Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log("Pattern found at indices:", result);
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
