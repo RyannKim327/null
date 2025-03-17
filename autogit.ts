@@ -1,57 +1,61 @@
-function kmpSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const table: string[] = [];
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+    // Create the table of rotations
+    for (let i = 0; i < n; i++) {
+        table.push(input.slice(i) + input.slice(0, i));
+    }
 
-        if (j === pattern.length) {
-            // Found a match, add the starting index to the result
-            result.push(i - j);
-            j = lps[j - 1]; // Continue to search for more matches
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            // Mismatch after j matches
-            if (j !== 0) {
-                j = lps[j - 1]; // Use the LPS array to skip characters
-            } else {
-                i++;
-            }
+    // Sort the table
+    table.sort();
+
+    // Build the BWT result and find the original index
+    let bwtResult = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        bwtResult += table[i][n - 1]; // Take the last character of each sorted rotation
+        if (table[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
 
-    return result;
+    return { transformed: bwtResult, index: originalIndex };
 }
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+function burrowsWheelerInverse(bwt: string, index: number): string {
+    const n = bwt.length;
+    const table: string[] = new Array(n);
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    // Create the table of characters
+    for (let i = 0; i < n; i++) {
+        table[i] = bwt[i];
     }
 
-    return lps;
+    // Sort the table and build the next array
+    const sortedTable = table.slice().sort();
+    const next: number[] = new Array(n);
+
+    for (let i = 0; i < n; i++) {
+        next[i] = sortedTable.indexOf(table[i], next[i - 1] || 0);
+    }
+
+    // Reconstruct the original string
+    let original = '';
+    for (let i = 0; i < n; i++) {
+        original += bwt[index];
+        index = next[index];
+    }
+
+    return original.split('').reverse().join(''); // Reverse to get the original string
 }
 
-// Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+
+const original = burrowsWheelerInverse(transformed, index);
+console.log("Original:", original);
