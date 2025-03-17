@@ -1,12 +1,36 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
 
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
+    // If the node is a leaf node, return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+    // Recursively count the leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
