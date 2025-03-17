@@ -1,70 +1,15 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+// Example array
+let array: number[] = [1, 2, 3, 4, 5];
 
-    constructor(size: number) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
-    }
+// Reverse the array
+array.reverse();
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
-        }
-        return hash % this.size;
-    }
+console.log(array); // Output: [5, 4, 3, 2, 1]
+// Example array
+let originalArray: number[] = [1, 2, 3, 4, 5];
 
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
+// Create a new reversed array
+let reversedArray: number[] = originalArray.slice().reverse();
 
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket[i][1] = value; // Update the value
-                return;
-            }
-        }
-
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
-    }
-
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return bucket[i][1]; // Return the value
-            }
-        }
-
-        return undefined; // Key not found
-    }
-
-    public remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
-            }
-        }
-
-        return false; // Key not found
-    }
-}
-
-// Example usage
-const hashTable = new HashTable<string, number>(10);
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-console.log(hashTable.get("banana")); // Output: 2
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: undefined
+console.log(originalArray); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArray);  // Output: [5, 4, 3, 2, 1]
