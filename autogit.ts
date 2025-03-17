@@ -1,57 +1,53 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
-
-    addVertex(vertex: number): void {
-        this.adjacencyList.set(vertex, []);
-    }
-
-    addEdge(vertex1: number, vertex2: number): void {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
-
-    bfs(startVertex: number): number[] {
-        const visited: Set<number> = new Set();
-        const queue: number[] = [];
-        const result: number[] = [];
-
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift()!;
-            result.push(currentVertex);
-
-            const neighbors = this.adjacencyList.get(currentVertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
-
-        return result;
     }
+    return lps;
+}
+
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to result
+            j = lps[j - 1]; // Use LPS to continue searching
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters in the pattern
+            } else {
+                i++;
+            }
+        }
+    }
+    return result; // Return all starting indices of matches
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
-
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(2, 5);
-graph.addEdge(3, 5);
-
-const bfsResult = graph.bfs(1);
-console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", result);
