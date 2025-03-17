@@ -1,47 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
+}
 
-// Simulated API call
-const fetchData = async (): Promise<string> => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve("Hello from Android!");
-        }, 2000); // Simulate a 2-second network request
-    });
-};
-
-const App: React.FC = () => {
-    const [data, setData] = useState<string | null>(null);
-    const [loading, setLoading] = useState<boolean>(false);
-
-    const handleFetchData = async () => {
-        setLoading(true);
-        try {
-            const result = await fetchData();
-            setData(result);
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        // Optionally fetch data on component mount
-        handleFetchData();
-    }, []);
-
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            {loading ? (
-                <ActivityIndicator size="large" color="#0000ff" />
-            ) : (
-                <Text>{data}</Text>
-            )}
-            <Button title="Fetch Data" onPress={handleFetchData} />
-        </View>
-    );
-};
-
-export default App;
-npx react-native init MyApp --template react-native-template-typescript
+// Example usage:
+const number = 5;
+console.log(`Factorial of ${number} is ${factorial(number)}`); // Output: Factorial of 5 is 120
