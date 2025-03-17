@@ -19,7 +19,6 @@ function computeLPSArray(pattern: string): number[] {
     }
     return lps;
 }
-
 function KMPSearch(text: string, pattern: string): number[] {
     const lps = computeLPSArray(pattern);
     const result: number[] = [];
@@ -37,7 +36,7 @@ function KMPSearch(text: string, pattern: string): number[] {
             j = lps[j - 1]; // Use LPS to continue searching
         } else if (i < text.length && pattern[j] !== text[i]) {
             if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters in pattern
+                j = lps[j - 1]; // Use LPS to skip characters
             } else {
                 i++;
             }
@@ -45,9 +44,8 @@ function KMPSearch(text: string, pattern: string): number[] {
     }
     return result; // Return all starting indices of matches
 }
-
-// Example usage:
 const text = "ABABDABACDABABCABAB";
 const pattern = "ABABCABAB";
 const result = KMPSearch(text, pattern);
+
 console.log("Pattern found at indices:", result);
