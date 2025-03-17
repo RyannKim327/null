@@ -1,20 +1,26 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+function countingSort(arr: number[], max: number): number[] {
+    // Step 1: Create a count array to store the count of each unique value
+    const count: number[] = new Array(max + 1).fill(0);
 
-    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
+    // Step 2: Store the count of each number in the input array
+    for (const num of arr) {
+        count[num]++;
+    }
 
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+    // Step 3: Build the output array
+    const output: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            output.push(i);
+            count[i]--;
         }
     }
 
-    return Math.max(...dp); // The length of the longest increasing subsequence
+    return output;
 }
 
 // Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const length = longestIncreasingSubsequence(nums);
-console.log(length); // Output: 4
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
