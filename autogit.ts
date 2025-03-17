@@ -1,53 +1,35 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return the index
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            right = mid - 1;
+        }
     }
-}
 
-class BinaryTree {
-    root: TreeNode | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    // Function to calculate the diameter of the binary tree
-    diameter(): number {
-        let diameter = 0;
-
-        const height = (node: TreeNode | null): number => {
-            if (node === null) {
-                return 0;
-            }
-
-            // Recursively find the height of left and right subtrees
-            const leftHeight = height(node.left);
-            const rightHeight = height(node.right);
-
-            // Update the diameter if the path through the current node is larger
-            diameter = Math.max(diameter, leftHeight + rightHeight);
-
-            // Return the height of the tree rooted at this node
-            return Math.max(leftHeight, rightHeight) + 1;
-        };
-
-        height(this.root);
-        return diameter;
-    }
+    // Target was not found in the array
+    return -1;
 }
 
 // Example usage:
-const tree = new BinaryTree();
-tree.root = new TreeNode(1);
-tree.root.left = new TreeNode(2);
-tree.root.right = new TreeNode(3);
-tree.root.left.left = new TreeNode(4);
-tree.root.left.right = new TreeNode(5);
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = binarySearch(sortedArray, target);
 
-console.log("Diameter of the binary tree:", tree.diameter()); // Output: 4
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found in the array.');
+}
