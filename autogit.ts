@@ -1,50 +1,34 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if the left index exceeds the right index, the target is not found
+    if (left > right) {
+        return -1; // Target not found
     }
+
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
+
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
+    }
+
+    // If the target is less than the middle element, search in the left half
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, left, mid - 1);
+    }
+
+    // If the target is greater than the middle element, search in the right half
+    return binarySearch(arr, target, mid + 1, right);
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null if the list is empty or n is invalid
-    }
-
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
-        }
-        firstPointer = firstPointer.next;
-    }
-
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
-    }
-
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
+// Helper function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 7;
+const result = search(sortedArray, target);
 
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
-}
+console.log(result); // Output: 6 (index of the target in the array)
