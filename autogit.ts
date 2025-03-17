@@ -1,26 +1,96 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Step 1: Create a count array to store the count of each unique value
-    const count: number[] = new Array(max + 1).fill(0);
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number | null;
+    suffixLink: SuffixTreeNode | null;
 
-    // Step 2: Store the count of each number in the input array
-    for (const num of arr) {
-        count[num]++;
+    constructor(start: number, end: number | null) {
+        this.children = new Map();
+        this.start = start;
+        this.end = end;
+        this.suffixLink = null;
+    }
+}
+
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
+
+    constructor(text: string) {
+        this.text = text;
+        this.root = new SuffixTreeNode(-1, null);
+        this.buildSuffixTree();
     }
 
-    // Step 3: Build the output array
-    const output: number[] = [];
-    for (let i = 0; i < count.length; i++) {
-        while (count[i] > 0) {
-            output.push(i);
-            count[i]--;
+    buildSuffixTree() {
+        const n = this.text.length;
+        for (let i = 0; i < n; i++) {
+            this.insertSuffix(i);
         }
     }
 
-    return output;
+    insertSuffix(start: number) {
+        let currentNode = this.root;
+        let currentChar = this.text[start];
+
+        for (let i = start; i < this.text.length; i++) {
+            const char = this.text[i];
+
+            if (!currentNode.children.has(char)) {
+                const newNode = new SuffixTreeNode(start, null);
+                currentNode.children.set(char, newNode);
+                return;
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            // If the current node has an end, we need to check the next character
+            if (currentNode.end !== null) {
+                // If we reach the end of the current node, we can continue
+                if (currentNode.end < this.text.length - 1) {
+                    // Move to the next character
+                    currentNode = currentNode.children.get(this.text[currentNode.end + 1])!;
+                }
+            }
+        }
+
+        // Mark the end of the suffix
+        currentNode.end = this.text.length - 1;
+    }
+
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+        let index = 0;
+
+        while (index < pattern.length) {
+            const char = pattern[index];
+
+            if (!currentNode.children.has(char)) {
+                return false; // Not found
+            }
+
+            currentNode = currentNode.children.get(char)!;
+            let edgeLength = currentNode.end !== null ? currentNode.end - currentNode.start + 1 : 0;
+
+            // Check if we can match the entire edge
+            if (edgeLength > 0) {
+                for (let i = 0; i < edgeLength; i++) {
+                    if (this.text[currentNode.start + i] !== pattern[index]) {
+                        return false; // Mismatch
+                    }
+                    index++;
+                    if (index >= pattern.length) {
+                        return true; // Found the pattern
+                    }
+                }
+            }
+        }
+
+        return true; // Found the pattern
+    }
 }
 
 // Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // false
