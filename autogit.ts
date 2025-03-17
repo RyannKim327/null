@@ -1,22 +1,57 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce<number[]>((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
+class Graph {
+    private adjacencyList: Map<number, number[]>;
+
+    constructor() {
+        this.adjacencyList = new Map();
     }
-    return acc;
-}, []);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray: number[] = [];
-array.forEach(value => {
-    if (!uniqueArray.includes(value)) {
-        uniqueArray.push(value);
+
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
     }
-});
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        return result;
+    }
+}
+
+// Example usage:
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.addEdge(3, 5);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
