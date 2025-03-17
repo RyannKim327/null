@@ -1,12 +1,24 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce<number[]>((acc, value) => {
+    if (!acc.includes(value)) {
+        acc.push(value);
+    }
+    return acc;
+}, []);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = [];
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+array.forEach(value => {
+    if (!uniqueArray.includes(value)) {
+        uniqueArray.push(value);
+    }
+});
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
-
-// Sort the array in descending order
-numbers.sort((a, b) => b - a);
-
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
