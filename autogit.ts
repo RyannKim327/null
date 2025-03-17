@@ -1,34 +1,15 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
-
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target
-        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos; // Target found at index pos
-        }
-
-        // If target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } else { // If target is smaller, ignore the right half
-            high = pos - 1;
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
         }
     }
-
-    return -1; // Target not found
+    return true; // All elements are in ascending order
 }
 
 // Example usage:
-const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
-const index = interpolationSearch(arr, target);
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [1, 3, 2, 4, 5];
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found');
-}
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
