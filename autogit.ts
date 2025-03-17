@@ -1,59 +1,57 @@
-type Edge = {
-    source: number;
-    destination: number;
-    weight: number;
-};
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-class Graph {
-    private edges: Edge[];
-    private numVertices: number;
-
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
-    }
-
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push({ source, destination, weight });
-    }
-
-    bellmanFord(startVertex: number): number[] | string {
-        // Step 1: Initialize distances from startVertex to all other vertices as INFINITE
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[startVertex] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const edge of this.edges) {
-                const { source, destination, weight } = edge;
-                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                    distances[destination] = distances[source] + weight;
-                }
-            }
-        }
-
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            const { source, destination, weight } = edge;
-            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                return "Graph contains a negative-weight cycle";
-            }
-        }
-
-        return distances;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
+    }
 
-const distances = graph.bellmanFord(0);
-console.log(distances);
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast && fast.next) {
+        slow = slow!.next; // Move slow by 1
+        fast = fast.next.next; // Move fast by 2
+    }
+
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to next node
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left!.next;
+        right = right.next;
+    }
+
+    return true; // It's a palindrome
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
