@@ -1,66 +1,85 @@
-class Graph {
-    private adjacencyList: Map<string, { node: string, weight: number }[]>;
+type Graph = {
+    [key: string]: string[];
+};
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
 
-    addVertex(vertex: string) {
-        if (!this.adjacencyList.has(vertex)) {
-            this.adjacencyList.set(vertex, []);
-        }
-    }
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: { [key: string]: string | null } = { [start]: null };
+    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
 
-    addEdge(vertex1: string, vertex2: string, weight: number) {
-        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
-        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // For undirected graph
-    }
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Search from the start
+        const currentFromStart = queueFromStart.shift()!;
+        visitedFromStart.add(currentFromStart);
 
-    dijkstra(start: string): Map<string, number> {
-        const distances: Map<string, number> = new Map();
-        const priorityQueue: { node: string, distance: number }[] = [];
-        const visited: Set<string> = new Set();
-
-        // Initialize distances
-        this.adjacencyList.forEach((_, vertex) => {
-            distances.set(vertex, Infinity);
-        });
-        distances.set(start, 0);
-        priorityQueue.push({ node: start, distance: 0 });
-
-        while (priorityQueue.length > 0) {
-            // Sort the queue by distance
-            priorityQueue.sort((a, b) => a.distance - b.distance);
-            const { node: currentNode } = priorityQueue.shift()!;
-
-            if (visited.has(currentNode)) continue;
-            visited.add(currentNode);
-
-            const neighbors = this.adjacencyList.get(currentNode) || [];
-            for (const { node: neighbor, weight } of neighbors) {
-                const newDistance = distances.get(currentNode)! + weight;
-                if (newDistance < distances.get(neighbor)!) {
-                    distances.set(neighbor, newDistance);
-                    priorityQueue.push({ node: neighbor, distance: newDistance });
+        for (const neighbor of graph[currentFromStart]) {
+            if (!visitedFromStart.has(neighbor)) {
+                parentFromStart[neighbor] = currentFromStart;
+                queueFromStart.push(neighbor);
+                if (visitedFromGoal.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
                 }
             }
         }
 
-        return distances;
+        // Search from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph[currentFromGoal]) {
+            if (!visitedFromGoal.has(neighbor)) {
+                parentFromGoal[neighbor] = currentFromGoal;
+                queueFromGoal.push(neighbor);
+                if (visitedFromStart.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
+            }
+        }
     }
+
+    return null; // No path found
 }
 
-// Example usage:
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addEdge("A", "B", 1);
-graph.addEdge("A", "C", 4);
-graph.addEdge("B", "C", 2);
-graph.addEdge("B", "D", 5);
-graph.addEdge("C", "D", 1);
+function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
+    const path: string[] = [];
+    
+    // Construct path from start to meeting point
+    let current: string | null = meetingPoint;
+    while (current !== null) {
+        path.push(current);
+        current = parentFromStart[current];
+    }
+    path.reverse(); // Reverse to get the correct order
 
-const shortestPaths = graph.dijkstra("A");
-console.log(shortestPaths); // Output the shortest paths from A
+    // Construct path from meeting point to goal
+    current = parentFromGoal[meetingPoint];
+    while (current !== null) {
+        path.push(current);
+        current = parentFromGoal[current];
+    }
+
+    return path;
+}
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
+
+const start = 'A';
+const goal = 'F';
+const path = biDirectionalSearch(graph, start, goal);
+
+if (path) {
+    console.log(`Path found: ${path.join(' -> ')}`);
+} else {
+    console.log('No path found');
+}
