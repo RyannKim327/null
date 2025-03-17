@@ -1,55 +1,49 @@
-class Node {
-    value: string;
-    children: Node[];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(value: string) {
+    constructor(value: number) {
         this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
+        this.next = null;
     }
 }
 
-function depthLimitedSearch(root: Node, target: string, limit: number): boolean {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+class LinkedList {
+    head: ListNode | null;
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return true;
-        }
-
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
-        }
+    constructor() {
+        this.head = null;
     }
 
-    // Target not found within the depth limit
-    return false;
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
 
 // Example usage:
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const target = "E";
-const limit = 2;
-
-const found = depthLimitedSearch(root, target, limit);
-console.log(`Target ${target} found: ${found}`);
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
