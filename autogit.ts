@@ -1,51 +1,53 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    return lps;
 }
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+class BinaryTree {
+    root: TreeNode | null;
 
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index to result
-            j = lps[j - 1]; // Use LPS to continue searching
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters
-            } else {
-                i++;
-            }
-        }
+    constructor() {
+        this.root = null;
     }
-    return result; // Return all starting indices of matches
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
 
-console.log("Pattern found at indices:", result);
+    // Function to calculate the diameter of the binary tree
+    diameter(): number {
+        let diameter = 0;
+
+        const height = (node: TreeNode | null): number => {
+            if (node === null) {
+                return 0;
+            }
+
+            // Recursively find the height of left and right subtrees
+            const leftHeight = height(node.left);
+            const rightHeight = height(node.right);
+
+            // Update the diameter if the path through the current node is larger
+            diameter = Math.max(diameter, leftHeight + rightHeight);
+
+            // Return the height of the tree rooted at this node
+            return Math.max(leftHeight, rightHeight) + 1;
+        };
+
+        height(this.root);
+        return diameter;
+    }
+}
+
+// Example usage:
+const tree = new BinaryTree();
+tree.root = new TreeNode(1);
+tree.root.left = new TreeNode(2);
+tree.root.right = new TreeNode(3);
+tree.root.left.left = new TreeNode(4);
+tree.root.left.right = new TreeNode(5);
+
+console.log("Diameter of the binary tree:", tree.diameter()); // Output: 4
