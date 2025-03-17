@@ -1,53 +1,36 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
         } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            count--;
         }
     }
-    return lps;
-}
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index to result
-            j = lps[j - 1]; // Use LPS to continue searching
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters in the pattern
-            } else {
-                i++;
-            }
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
         }
     }
-    return result; // Return all starting indices of matches
+
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
+    }
 }
 
 // Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", result);
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
