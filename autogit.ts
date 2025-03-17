@@ -1,49 +1,35 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
-    
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
-    }
+function longestCommonSubstring(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    let left = 0;
-    let right = nums1.length;
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
-
-        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const minRight1 = partition1 === nums1.length ? Infinity : nums1[partition1];
-
-        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const minRight2 = partition2 === nums2.length ? Infinity : nums2[partition2];
-
-        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
-            // We have partitioned the arrays correctly
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
-            } else {
-                return Math.max(maxLeft1, maxLeft2);
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update ending index of the substring
+                }
             }
-        } else if (maxLeft1 > minRight2) {
-            // We are too far on the right side for partition1. Go left.
-            right = partition1 - 1;
-        } else {
-            // We are too far on the left side for partition1. Go right.
-            left = partition1 + 1;
         }
     }
 
-    throw new Error("Input arrays are not sorted.");
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
+    }
+
+    return str1.substring(endingIndex - maxLength, endingIndex);
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
-
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
