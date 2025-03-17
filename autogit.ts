@@ -1,61 +1,70 @@
-type State = any; // Define your state type
-type Score = number; // Define your score type
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-interface Node {
-    state: State;
-    score: Score;
-}
-
-function beamSearch(initialState: State, beamWidth: number, maxIterations: number): State {
-    let currentNodes: Node[] = [{ state: initialState, score: evaluate(initialState) }];
-
-    for (let iteration = 0; iteration < maxIterations; iteration++) {
-        const nextNodes: Node[] = [];
-
-        // Generate all possible next states
-        for (const node of currentNodes) {
-            const nextStates = generateNextStates(node.state);
-            for (const nextState of nextStates) {
-                nextNodes.push({ state: nextState, score: evaluate(nextState) });
-            }
-        }
-
-        // Sort the next nodes by score and keep only the best ones
-        nextNodes.sort((a, b) => b.score - a.score); // Sort in descending order
-        currentNodes = nextNodes.slice(0, beamWidth); // Keep only the top `beamWidth` nodes
-
-        // Optionally, check for a goal state
-        for (const node of currentNodes) {
-            if (isGoalState(node.state)) {
-                return node.state; // Return the goal state if found
-            }
-        }
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
     }
 
-    // Return the best state found after max iterations
-    return currentNodes[0].state;
-}
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
+        }
+        return hash % this.size;
+    }
 
-// Example functions to be defined based on your specific problem
-function evaluate(state: State): Score {
-    // Implement your evaluation function here
-    return Math.random(); // Placeholder
-}
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
 
-function generateNextStates(state: State): State[] {
-    // Implement your state generation logic here
-    return [state]; // Placeholder
-}
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
+            }
+        }
 
-function isGoalState(state: State): boolean {
-    // Implement your goal checking logic here
-    return false; // Placeholder
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
+    }
+
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
+            }
+        }
+
+        return undefined; // Key not found
+    }
+
+    public remove(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
 }
 
 // Example usage
-const initialState = {}; // Define your initial state
-const beamWidth = 3;
-const maxIterations = 10;
-
-const bestState = beamSearch(initialState, beamWidth, maxIterations);
-console.log(bestState);
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: undefined
