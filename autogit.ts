@@ -1,20 +1,53 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+type Node = {
+    value: any;
+    children: Node[];
+};
 
-    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
+function depthLimitedSearch(node: Node, depthLimit: number, target: any): boolean {
+    // Base case: if the depth limit is reached, return false
+    if (depthLimit === 0) {
+        return node.value === target;
+    }
 
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
+    }
+
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depthLimit - 1, target)) {
+            return true;
         }
     }
 
-    return Math.max(...dp); // The length of the longest increasing subsequence
+    // If the target is not found in this path, return false
+    return false;
 }
 
 // Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const length = longestIncreasingSubsequence(nums);
-console.log(length); // Output: 4
+const tree: Node = {
+    value: 1,
+    children: [
+        {
+            value: 2,
+            children: [
+                { value: 4, children: [] },
+                { value: 5, children: [] }
+            ]
+        },
+        {
+            value: 3,
+            children: [
+                { value: 6, children: [] },
+                { value: 7, children: [] }
+            ]
+        }
+    ]
+};
+
+const targetValue = 5;
+const depthLimit = 2;
+
+const found = depthLimitedSearch(tree, depthLimit, targetValue);
+console.log(`Target ${targetValue} found: ${found}`);
