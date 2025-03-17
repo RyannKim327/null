@@ -1,49 +1,19 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('Task is running every minute:', new Date().toLocaleString());
+});
 
-class LinkedList {
-    head: ListNode | null;
+// Start the task
+task.start();
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
-}
-
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx tsc cronExample.ts
+node cronExample.js
