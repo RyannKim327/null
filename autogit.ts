@@ -1,58 +1,55 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+class Node {
+    value: string;
+    children: Node[];
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const length = pattern.length;
+    addChild(child: Node) {
+        this.children.push(child);
+    }
+}
 
-        for (let i = 0; i < length; i++) {
-            table.set(pattern[i], i);
+function depthLimitedSearch(root: Node, target: string, limit: number): boolean {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return true;
         }
 
-        return table;
-    }
-
-    public search(text: string): number {
-        const m = this.pattern.length;
-        const n = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= n - m; ) {
-            skip = 0;
-
-            for (let j = m - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found at index i
-                return i; // Return the index of the first match
-            } else {
-                i += skip;
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
             }
         }
-
-        return -1; // No match found
     }
+
+    // Target not found within the depth limit
+    return false;
 }
 
 // Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const target = "E";
+const limit = 2;
+
+const found = depthLimitedSearch(root, target, limit);
+console.log(`Target ${target} found: ${found}`);
