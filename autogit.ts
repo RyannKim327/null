@@ -1,65 +1,57 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
     constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
-}
-
-class Trie {
-    root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
+        this.adjacencyList = new Map();
     }
 
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
 
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
             }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
         }
-        currentNode.isEndOfWord = true;
-    }
 
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find the node corresponding to a given word/prefix
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null;
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        return currentNode;
+        return result;
     }
 }
 
 // Example usage:
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
 
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("hell")); // true
-console.log(trie.startsWith("wor")); // true
-console.log(trie.search("worlds")); // false
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(2, 5);
+graph.addEdge(3, 5);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
