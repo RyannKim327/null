@@ -1,86 +1,31 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
-    }
-}
-class LinkedList<T> {
-    head: Node<T> | null;
-    tail: Node<T> | null;
-    length: number;
+    // Loop through all elements in the array
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
 
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.length = 0;
-    }
-
-    // Add a new node to the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            if (this.tail) {
-                this.tail.next = newNode;
+        // Last i elements are already sorted
+        for (let j = 0; j < n - 1 - i; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
             }
-            this.tail = newNode;
-        }
-        this.length++;
-    }
-
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.length--;
-            return true;
         }
 
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                if (current.next === null) {
-                    this.tail = current; // Update tail if needed
-                }
-                this.length--;
-                return true;
-            }
-            current = current.next;
+        // If no two elements were swapped in the inner loop, then the array is sorted
+        if (!swapped) {
+            break;
         }
-        return false;
     }
 
-    // Display the list
-    display(): void {
-        let current = this.head;
-        const elements: T[] = [];
-        while (current) {
-            elements.push(current.value);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
-    }
-
-    // Get the size of the list
-    size(): number {
-        return this.length;
-    }
+    return arr;
 }
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-list.display(); // Output: 1 -> 2 -> 3
 
-list.remove(2);
-list.display(); // Output: 1 -> 3
-
-console.log(`Size of the list: ${list.size()}`); // Output: Size of the list: 2
+// Example usage:
+const array = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
