@@ -1,22 +1,20 @@
-function firstNonRepeatingCharacter(s: string): string | null {
-    const charCount: { [key: string]: number } = {};
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    // Count the occurrences of each character
-    for (const char of s) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
+    const dp: number[] = new Array(nums.length).fill(1);
 
-    // Find the first non-repeating character
-    for (const char of s) {
-        if (charCount[char] === 1) {
-            return char; // Return the first non-repeating character
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
     }
 
-    return null; // Return null if there is no non-repeating character
+    return Math.max(...dp);
 }
 
 // Example usage:
-const input = "swiss";
-const result = firstNonRepeatingCharacter(input);
-console.log(result); // Output: "w"
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+const lengthOfLIS = longestIncreasingSubsequence(nums);
+console.log(lengthOfLIS); // Output: 4
