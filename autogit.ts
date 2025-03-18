@@ -1,49 +1,55 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
-    
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+class Node {
+    value: string;
+    children: Node[];
+
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    let left = 0;
-    let right = nums1.length;
+    addChild(child: Node) {
+        this.children.push(child);
+    }
+}
 
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
+function depthLimitedSearch(root: Node, target: string, limit: number): boolean {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
 
-        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const minRight1 = partition1 === nums1.length ? Infinity : nums1[partition1];
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
 
-        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const minRight2 = partition2 === nums2.length ? Infinity : nums2[partition2];
+        // Check if the current node is the target
+        if (node.value === target) {
+            return true;
+        }
 
-        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
-            // We have found the correct partitions
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
-            } else {
-                return Math.max(maxLeft1, maxLeft2);
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
             }
-        } else if (maxLeft1 > minRight2) {
-            // Move towards the left in nums1
-            right = partition1 - 1;
-        } else {
-            // Move towards the right in nums1
-            left = partition1 + 1;
         }
     }
 
-    throw new Error("Input arrays are not sorted or valid.");
+    // Target not found within the depth limit
+    return false;
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+
+const target = "E";
+const limit = 2;
+
+const found = depthLimitedSearch(root, target, limit);
+console.log(`Target ${target} found: ${found}`);
