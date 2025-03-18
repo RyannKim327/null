@@ -1,25 +1,22 @@
-const str: string = "Hello, world!";
-const substring: string = "world";
+function firstNonRepeatingCharacter(s: string): string | null {
+    const charCount: { [key: string]: number } = {};
 
-if (str.includes(substring)) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
-}
-const str: string = "Hello, world!";
-const substring: string = "world";
+    // Count the occurrences of each character
+    for (const char of s) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
 
-if (str.indexOf(substring) !== -1) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
-}
-const str: string = "Hello, world!";
-const substring: string = "world";
-const regex = new RegExp(substring);
+    // Find the first non-repeating character
+    for (const char of s) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
 
-if (regex.test(str)) {
-    console.log("Substring found!");
-} else {
-    console.log("Substring not found.");
+    return null; // Return null if there is no non-repeating character
 }
+
+// Example usage:
+const input = "swiss";
+const result = firstNonRepeatingCharacter(input);
+console.log(result); // Output: "w"
