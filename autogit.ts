@@ -1,60 +1,46 @@
-type Graph = { [key: string]: string[] };
+function createBadCharTable(pattern: string): number[] {
+    const badCharTable: number[] = new Array(256).fill(-1);
+    const patternLength = pattern.length;
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If the node has already been visited, return
+    for (let i = 0; i < patternLength; i++) {
+        badCharTable[pattern.charCodeAt(i)] = i;
     }
 
-    console.log(start); // Process the node (e.g., print it)
-    visited.add(start); // Mark the node as visited
-
-    for (const neighbor of graph[start]) {
-        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
-    }
+    return badCharTable;
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
 
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
+    let shift = 0;
 
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
 
-    while (stack.length > 0) {
-        const node = stack.pop()!; // Get the last node from the stack
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
+        }
 
-        if (!visited.has(node)) {
-            console.log(node); // Process the node (e.g., print it)
-            visited.add(node); // Mark the node as visited
-
-            // Add all unvisited neighbors to the stack
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    stack.push(neighbor);
-                }
-            }
+        // If the pattern is found
+        if (j < 0) {
+            occurrences.push(shift);
+            // Shift the pattern to the right by the length of the pattern
+            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(shift + patternLength)] : 1;
+        } else {
+            // Shift the pattern based on the bad character rule
+            shift += Math.max(1, j - badCharTable[text.charCodeAt(shift + j)]);
         }
     }
+
+    return occurrences;
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-depthFirstSearchIterative(graph, 'A');
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at indices: ${result.join(', ')}`);
