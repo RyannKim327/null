@@ -1,92 +1,49 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
-
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
-    }
-}
-class LinkedList<T> {
-    head: Node<T> | null;
-    tail: Node<T> | null;
-    length: number;
-
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.length = 0;
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    const totalLength = nums1.length + nums2.length;
+    const half = Math.floor(totalLength / 2);
+    
+    // Ensure nums1 is the smaller array
+    if (nums1.length > nums2.length) {
+        [nums1, nums2] = [nums2, nums1];
     }
 
-    // Add a new node to the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            this.tail = newNode;
+    let left = 0;
+    let right = nums1.length;
+
+    while (left <= right) {
+        const partition1 = Math.floor((left + right) / 2);
+        const partition2 = half - partition1;
+
+        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
+        const minRight1 = partition1 === nums1.length ? Infinity : nums1[partition1];
+
+        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
+        const minRight2 = partition2 === nums2.length ? Infinity : nums2[partition2];
+
+        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
+            // We have found the correct partitions
+            if (totalLength % 2 === 0) {
+                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
+            } else {
+                return Math.max(maxLeft1, maxLeft2);
+            }
+        } else if (maxLeft1 > minRight2) {
+            // Move towards the left in nums1
+            right = partition1 - 1;
         } else {
-            if (this.tail) {
-                this.tail.next = newNode;
-            }
-            this.tail = newNode;
+            // Move towards the right in nums1
+            left = partition1 + 1;
         }
-        this.length++;
     }
 
-    // Remove a node by value
-    remove(value: T): boolean {
-        if (!this.head) return false;
-
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            this.length--;
-            return true;
-        }
-
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                if (current.next === null) {
-                    this.tail = current; // Update tail if needed
-                }
-                this.length--;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Print the list
-    print(): void {
-        let current = this.head;
-        const values: T[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
-
-    // Get the size of the list
-    size(): number {
-        return this.length;
-    }
-
-    // Check if the list is empty
-    isEmpty(): boolean {
-        return this.length === 0;
-    }
+    throw new Error("Input arrays are not sorted or valid.");
 }
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-list.print(); // Output: 1 -> 2 -> 3
 
-list.remove(2);
-list.print(); // Output: 1 -> 3
+// Example usage:
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
 
-console.log(list.size()); // Output: 2
-console.log(list.isEmpty()); // Output: false
+const nums3 = [1, 2];
+const nums4 = [3, 4];
+console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
