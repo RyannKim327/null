@@ -7,8 +7,9 @@ class TrieNode {
         this.isEndOfWord = false;
     }
 }
+
 class Trie {
-    private root: TrieNode;
+    root: TrieNode;
 
     constructor() {
         this.root = new TrieNode();
@@ -24,7 +25,7 @@ class Trie {
             }
             currentNode = currentNode.children.get(char)!; // Non-null assertion
         }
-        currentNode.isEndOfWord = true; // Mark the end of the word
+        currentNode.isEndOfWord = true;
     }
 
     // Search for a word in the Trie
@@ -44,22 +45,21 @@ class Trie {
 
         for (const char of word) {
             if (!currentNode.children.has(char)) {
-                return null; // Not found
+                return null;
             }
             currentNode = currentNode.children.get(char)!; // Non-null assertion
         }
-        return currentNode; // Return the node corresponding to the last character
+        return currentNode;
     }
 }
+
+// Example usage:
 const trie = new Trie();
 trie.insert("hello");
 trie.insert("world");
-trie.insert("hi");
 
 console.log(trie.search("hello")); // true
 console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("he")); // true
-console.log(trie.startsWith("wo")); // true
-console.log(trie.startsWith("hi")); // true
-console.log(trie.startsWith("h"));  // true
-console.log(trie.startsWith("x"));  // false
+console.log(trie.startsWith("hell")); // true
+console.log(trie.startsWith("wor")); // true
+console.log(trie.search("worlds")); // false
