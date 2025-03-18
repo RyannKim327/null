@@ -1,67 +1,50 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Node = {
+    state: string; // The current state
+    cost: number;  // The cost to reach this state
+    path: string[]; // The path taken to reach this state
+};
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
+    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
+    
+    while (currentLevel.length > 0) {
+        // Generate successors for all nodes in the current level
+        let successors: Node[] = [];
+        for (const node of currentLevel) {
+            const newSuccessors = generateSuccessors(node.state);
+            successors.push(...newSuccessors);
+        }
+
+        // Check for goal state in successors
+        for (const successor of successors) {
+            if (successor.state === goalState) {
+                return successor.path; // Return the path to the goal state
+            }
+        }
+
+        // Sort successors by cost (or any other heuristic) and select the top `beamWidth` nodes
+        successors.sort((a, b) => a.cost - b.cost);
+        currentLevel = successors.slice(0, beamWidth);
     }
+
+    return null; // Return null if the goal state is not found
 }
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
+// Example usage
+const generateSuccessors = (state: string): Node[] => {
+    // This function should generate successor nodes based on the current state
+    // For demonstration, let's assume we have a simple state transition
+    const successors: Node[] = [];
+    const nextStates = ['A', 'B', 'C']; // Example next states
+    for (const nextState of nextStates) {
+        successors.push({ state: nextState, cost: Math.random(), path: [state, nextState] });
     }
-    return length;
-}
+    return successors;
+};
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
+const initialState = 'Start';
+const goalState = 'Goal';
+const beamWidth = 2;
 
-    const lenA = getLength(headA);
-    const lenB = getLength(headB);
-
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the start of both lists
-    if (lenA > lenB) {
-        for (let i = 0; i < lenA - lenB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
-    } else {
-        for (let i = 0; i < lenB - lenA; i++) {
-            currentB = currentB!.next;
-        }
-    }
-
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
-}
-
-// Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
-
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
+const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
+console.log(result);
