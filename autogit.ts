@@ -1,28 +1,14 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
-
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
-    }
-
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
-        }
-    }
-
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+    
+    // Get the reversed string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Check if the normalized string is equal to its reverse
+    return normalizedStr === reversedStr;
 }
 
 // Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
