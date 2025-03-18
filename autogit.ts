@@ -1,14 +1,12 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Get the reversed string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Check if the normalized string is equal to its reverse
-    return normalizedStr === reversedStr;
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
+    }
+    return count;
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
