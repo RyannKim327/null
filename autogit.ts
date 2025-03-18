@@ -1,17 +1,27 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seenCharacters = new Set<string>();
+import * as readline from 'readline';
 
-    for (const char of str) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenCharacters.add(char); // Add the character to the set
-    }
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-    return null; // Return null if no repeated character is found
+// Function to ask a question and handle the response
+function askQuestion(query: string): Promise<string> {
+    return new Promise((resolve) => {
+        rl.question(query, (answer) => {
+            resolve(answer);
+        });
+    });
 }
 
-// Example usage:
-const input = "abca";
-const result = firstRepeatedCharacter(input);
-console.log(result); // Output: "a"
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    console.log(`Hello, ${name}! Welcome to TypeScript.`);
+    
+    rl.close(); // Close the readline interface
+}
+
+// Run the main function
+main();
