@@ -1,52 +1,68 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
-    
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    const len1 = nums1.length;
-    const len2 = nums2.length;
-
-    let left = 0;
-    let right = len1;
-
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
-
-        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const minRight1 = partition1 === len1 ? Infinity : nums1[partition1];
-
-        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const minRight2 = partition2 === len2 ? Infinity : nums2[partition2];
-
-        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
-            // We have found the correct partitions
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
-            } else {
-                return Math.max(maxLeft1, maxLeft2);
-            }
-        } else if (maxLeft1 > minRight2) {
-            // Move towards the left in nums1
-            right = partition1 - 1;
-        } else {
-            // Move towards the right in nums1
-            left = partition1 + 1;
-        }
-    }
-
-    throw new Error("Input arrays are not sorted or invalid.");
 }
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+class LinkedList {
+    head: ListNode | null;
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to print the list
+    printList() {
+        let current = this.head;
+        while (current) {
+            process.stdout.write(current.value + " -> ");
+            current = current.next;
+        }
+        console.log("null");
+    }
+}
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+    let next: ListNode | null = null;
+
+    while (current) {
+        next = current.next; // Store the next node
+        current.next = prev; // Reverse the current node's pointer
+        prev = current;      // Move prev and current one step forward
+        current = next;
+    }
+    return prev; // New head of the reversed list
+}
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+console.log("Original list:");
+list.printList();
+
+list.head = reverseLinkedList(list.head);
+
+console.log("Reversed list:");
+list.printList();
