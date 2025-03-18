@@ -1,8 +1,62 @@
-function removeSpaces(input: string): string {
-    return input.replace(/\s+/g, '');
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If already visited, return
+    }
+
+    console.log(start); // Process the node
+    visited.add(start); // Mark the node as visited
+
+    for (const neighbor of graph[start]) {
+        depthFirstSearch(graph, neighbor, visited); // Recur for each neighbor
+    }
 }
 
 // Example usage:
-const originalString = "Hello, how are you?";
-const stringWithoutSpaces = removeSpaces(originalString);
-console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearch(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearchIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (visited.has(node)) {
+            continue; // If already visited, skip
+        }
+
+        console.log(node); // Process the node
+        visited.add(node); // Mark the node as visited
+
+        // Push all unvisited neighbors onto the stack
+        for (const neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                stack.push(neighbor);
+            }
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearchIterative(graph, 'A');
