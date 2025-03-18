@@ -1,43 +1,19 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+    const dp: number[] = new Array(nums.length).fill(1); // Initialize dp array
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
-
-    function height(node: TreeNode | null): number {
-        if (node === null) {
-            return 0;
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
         }
-
-        // Recursively find the height of the left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-
-        // Update the diameter if the path through the current node is larger
-        diameter = Math.max(diameter, leftHeight + rightHeight);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
     }
 
-    height(root);
-    return diameter;
+    return Math.max(...dp); // The length of the longest increasing subsequence
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3 (the path is 4 -> 2 -> 1 -> 3)
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(nums)); // Output: 4
