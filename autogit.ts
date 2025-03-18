@@ -1,50 +1,27 @@
-type Node = {
-    state: string; // The current state
-    cost: number;  // The cost to reach this state
-    path: string[]; // The path taken to reach this state
-};
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-function beamSearch(initialState: string, goalState: string, generateSuccessors: (state: string) => Node[], beamWidth: number): string[] | null {
-    let currentLevel: Node[] = [{ state: initialState, cost: 0, path: [initialState] }];
-    
-    while (currentLevel.length > 0) {
-        // Generate successors for all nodes in the current level
-        let successors: Node[] = [];
-        for (const node of currentLevel) {
-            const newSuccessors = generateSuccessors(node.state);
-            successors.push(...newSuccessors);
-        }
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
 
-        // Check for goal state in successors
-        for (const successor of successors) {
-            if (successor.state === goalState) {
-                return successor.path; // Return the path to the goal state
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
         }
 
-        // Sort successors by cost (or any other heuristic) and select the top `beamWidth` nodes
-        successors.sort((a, b) => a.cost - b.cost);
-        currentLevel = successors.slice(0, beamWidth);
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
 
-    return null; // Return null if the goal state is not found
+    return arr;
 }
 
-// Example usage
-const generateSuccessors = (state: string): Node[] => {
-    // This function should generate successor nodes based on the current state
-    // For demonstration, let's assume we have a simple state transition
-    const successors: Node[] = [];
-    const nextStates = ['A', 'B', 'C']; // Example next states
-    for (const nextState of nextStates) {
-        successors.push({ state: nextState, cost: Math.random(), path: [state, nextState] });
-    }
-    return successors;
-};
-
-const initialState = 'Start';
-const goalState = 'Goal';
-const beamWidth = 2;
-
-const result = beamSearch(initialState, goalState, generateSuccessors, beamWidth);
-console.log(result);
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
