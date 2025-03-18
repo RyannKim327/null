@@ -1,49 +1,59 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const totalLength = nums1.length + nums2.length;
-    const half = Math.floor(totalLength / 2);
+type Edge = {
+    source: number;
+    destination: number;
+    weight: number;
+};
 
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+class Graph {
+    private edges: Edge[];
+    private numVertices: number;
+
+    constructor(numVertices: number) {
+        this.numVertices = numVertices;
+        this.edges = [];
     }
 
-    let left = 0;
-    let right = nums1.length;
+    addEdge(source: number, destination: number, weight: number) {
+        this.edges.push({ source, destination, weight });
+    }
 
-    while (left <= right) {
-        const partition1 = Math.floor((left + right) / 2);
-        const partition2 = half - partition1;
+    bellmanFord(startVertex: number): number[] | string {
+        // Step 1: Initialize distances from startVertex to all other vertices as INFINITE
+        const distances: number[] = new Array(this.numVertices).fill(Infinity);
+        distances[startVertex] = 0;
 
-        const maxLeft1 = partition1 === 0 ? -Infinity : nums1[partition1 - 1];
-        const minRight1 = partition1 === nums1.length ? Infinity : nums1[partition1];
-
-        const maxLeft2 = partition2 === 0 ? -Infinity : nums2[partition2 - 1];
-        const minRight2 = partition2 === nums2.length ? Infinity : nums2[partition2];
-
-        if (maxLeft1 <= minRight2 && maxLeft2 <= minRight1) {
-            // We have found the correct partitions
-            if (totalLength % 2 === 0) {
-                return (Math.max(maxLeft1, maxLeft2) + Math.min(minRight1, minRight2)) / 2;
-            } else {
-                return Math.max(maxLeft1, maxLeft2);
+        // Step 2: Relax all edges |V| - 1 times
+        for (let i = 0; i < this.numVertices - 1; i++) {
+            for (const edge of this.edges) {
+                const { source, destination, weight } = edge;
+                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                    distances[destination] = distances[source] + weight;
+                }
             }
-        } else if (maxLeft1 > minRight2) {
-            // Move towards the left in nums1
-            right = partition1 - 1;
-        } else {
-            // Move towards the right in nums1
-            left = partition1 + 1;
         }
-    }
 
-    throw new Error("Input arrays are not sorted.");
+        // Step 3: Check for negative-weight cycles
+        for (const edge of this.edges) {
+            const { source, destination, weight } = edge;
+            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                return "Graph contains a negative-weight cycle";
+            }
+        }
+
+        return distances;
+    }
 }
 
 // Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+const graph = new Graph(5);
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+const distances = graph.bellmanFord(0);
+console.log(distances);
