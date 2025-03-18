@@ -1,50 +1,51 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array has 1 or 0 elements, it is already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    // Split the array into two halves
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    // Recursively sort both halves
-    return merge(mergeSort(left), mergeSort(right));
-}
-
-function merge(left: number[], right: number[]): number[] {
-    const sortedArray: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    // Merge the two arrays while there are elements in both
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            sortedArray.push(left[leftIndex]);
-            leftIndex++;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
         } else {
-            sortedArray.push(right[rightIndex]);
-            rightIndex++;
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
     }
-
-    // If there are remaining elements in the left array, add them
-    while (leftIndex < left.length) {
-        sortedArray.push(left[leftIndex]);
-        leftIndex++;
-    }
-
-    // If there are remaining elements in the right array, add them
-    while (rightIndex < right.length) {
-        sortedArray.push(right[rightIndex]);
-        rightIndex++;
-    }
-
-    return sortedArray;
+    return lps;
 }
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index
+            j = lps[j - 1]; // Get the next position from LPS
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters
+            } else {
+                i++;
+            }
+        }
+    }
+    return result; // Return all starting indices of matches
+}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+
+console.log("Pattern found at indices:", result);
