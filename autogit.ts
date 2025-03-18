@@ -1,29 +1,38 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
     }
+    return count;
 }
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
 
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
 
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return Array.from(str).reduce((count, currentChar) => {
+        return currentChar === char ? count + 1 : count;
+    }, 0);
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    const regex = new RegExp(char, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
