@@ -1,68 +1,35 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found at index pos
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            high = pos - 1;
+        }
     }
+
+    return -1; // Target not found
 }
 
-class LinkedList {
-    head: ListNode | null;
+// Example usage:
+const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const target = 70;
+const index = interpolationSearch(arr, target);
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print the list
-    printList() {
-        let current = this.head;
-        while (current) {
-            process.stdout.write(current.value + " -> ");
-            current = current.next;
-        }
-        console.log("null");
-    }
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found in the array.');
 }
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
-    let next: ListNode | null = null;
-
-    while (current) {
-        next = current.next; // Store the next node
-        current.next = prev; // Reverse the current node's pointer
-        prev = current;      // Move prev and current one step forward
-        current = next;
-    }
-    return prev; // New head of the reversed list
-}
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Original list:");
-list.printList();
-
-list.head = reverseLinkedList(list.head);
-
-console.log("Reversed list:");
-list.printList();
