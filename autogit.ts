@@ -1,35 +1,29 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-    let maxLength = 0;
-    let endingIndex = 0;
-
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endingIndex = i; // Update the ending index of the substring
-                }
-            }
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
         }
     }
-
-    // Extract the longest common substring
-    if (maxLength === 0) {
-        return ""; // No common substring found
-    }
-
-    return str1.substring(endingIndex - maxLength, endingIndex);
+    return count;
 }
 
 // Example usage:
-const str1 = "abcdef";
-const str2 = "zcdemf";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "cd"
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    const regex = new RegExp(char, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
