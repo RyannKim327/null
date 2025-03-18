@@ -1,61 +1,57 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    // Initialize Fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
-
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    // Marks the eliminated range from the front
-    let offset = -1;
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
 
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check if fibM2 is a valid location
-        const i = Math.min(offset + fibM2, n - 1);
+        for (let i = 0; i < patternLength; i++) {
+            table.set(pattern[i], i);
+        }
 
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i; // Update the offset
-        }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else {
-            return i;
-        }
+        return table;
     }
 
-    // Comparing the last element with x
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
-    }
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
 
-    // Element not found
-    return -1;
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found at index i
+                return i; // Return the index of the first match
+            }
+        }
+
+        return -1; // No match found
+    }
 }
 
-// Example usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const bm = new BoyerMoore(pattern);
+const result = bm.search(text);
 
 if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
+    console.log(`Pattern found at index: ${result}`);
 } else {
-    console.log('Element not found in the array.');
+    console.log("Pattern not found");
 }
