@@ -1,57 +1,25 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
-
-    addVertex(vertex: number): void {
-        this.adjacencyList.set(vertex, []);
+    if (n === 0 || n === 1) {
+        return 1;
     }
-
-    addEdge(vertex1: number, vertex2: number): void {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
-
-    bfs(startVertex: number): number[] {
-        const visited: Set<number> = new Set();
-        const queue: number[] = [];
-        const result: number[] = [];
-
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift()!;
-            result.push(currentVertex);
-
-            const neighbors = this.adjacencyList.get(currentVertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        return result;
-    }
+    return n * factorialRecursive(n - 1);
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
+console.log(factorialRecursive(5)); // Output: 120
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
+    }
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
+}
 
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(2, 5);
-graph.addEdge(3, 5);
-
-const bfsResult = graph.bfs(1);
-console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
+// Example usage:
+console.log(factorialIterative(5)); // Output: 120
