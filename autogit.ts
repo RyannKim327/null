@@ -1,132 +1,109 @@
-class BTreeNode {
-    keys: number[];
-    children: BTreeNode[];
-    isLeaf: boolean;
-    t: number; // Minimum degree (defines the range for number of keys)
+class Node {
+    public x: number;
+    public y: number;
+    public g: number; // Cost from start to this node
+    public h: number; // Heuristic cost to goal
+    public f: number; // Total cost (g + h)
+    public parent: Node | null;
 
-    constructor(t: number, isLeaf: boolean) {
-        this.t = t;
-        this.isLeaf = isLeaf;
-        this.keys = [];
-        this.children = [];
-    }
-
-    // Function to traverse all nodes in a subtree rooted with this node
-    traverse() {
-        let i: number;
-        for (i = 0; i < this.keys.length; i++) {
-            // If this is not a leaf, then before the key, traverse the child
-            if (!this.isLeaf) {
-                this.children[i].traverse();
-            }
-            console.log(this.keys[i]);
-        }
-
-        // Finally, traverse the last child
-        if (!this.isLeaf) {
-            this.children[i].traverse();
-        }
-    }
-
-    // Function to search a key in the subtree rooted with this node
-    search(key: number): BTreeNode | null {
-        let i = 0;
-        while (i < this.keys.length && key > this.keys[i]) {
-            i++;
-        }
-
-        // If the found key is equal to the key, return this node
-        if (i < this.keys.length && this.keys[i] === key) {
-            return this;
-        }
-
-        // If this node is a leaf node, then the key is not present
-        if (this.isLeaf) {
-            return null;
-        }
-
-        // Go to the appropriate child
-        return this.children[i].search(key);
-    }
-
-    // Function to insert a new key in the subtree rooted with this node
-    insertNonFull(key: number) {
-        let i = this.keys.length - 1;
-
-        // If this node is a leaf, insert the new key
-        if (this.isLeaf) {
-            // Find the location of the new key to be inserted
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            this.keys.splice(i + 1, 0, key); // Insert the key
-        } else {
-            // Find the child which is going to have the new key
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            i++;
-
-            // Check if the found child is full
-            if (this.children[i].keys.length === 2 * this.t - 1) {
-                // If the child is full, then split it
-                this.splitChild(i);
-
-                // After split, the middle key of child goes up and
-                // this node will have two children. Decide which of the
-                // two children is going to have the new key
-                if (key > this.keys[i]) {
-                    i++;
-                }
-            }
-            this.children[i].insertNonFull(key);
-        }
-    }
-
-    // Function to split the child of this node
-    splitChild(i: number) {
-        const t = this.t;
-        const y = this.children[i];
-        const z = new BTreeNode(t, y.isLeaf);
-
-        // Give z the last t-1 keys of y
-        for (let j = 0; j < t - 1; j++) {
-            z.keys.push(y.keys[j + t]);
-        }
-
-        // If y is not a leaf, then give z the last t children of y
-        if (!y.isLeaf) {
-            for (let j = 0; j < t; j++) {
-                z.children.push(y.children[j + t]);
-            }
-        }
-
-        // Reduce the number of keys in y
-        y.keys.length = t - 1;
-
-        // Since this node is going to have a new child, create space for the new child
-        this.children.splice(i + 1, 0, z);
-
-        // A key of y will move to this node. Find location of new key and move one key forward
-        this.keys.splice(i, 0, y.keys.pop()!);
+    constructor(x: number, y: number, g: number = 0, h: number = 0, parent: Node | null = null) {
+        this.x = x;
+        this.y = y;
+        this.g = g;
+        this.h = h;
+        this.f = g + h;
+        this.parent = parent;
     }
 }
+class PriorityQueue {
+    private elements: Node[] = [];
 
-class BTree {
-    root: BTreeNode;
-    t: number; // Minimum degree
-
-    constructor(t: number) {
-        this.root = new BTreeNode(t, true);
-        this.t = t;
+    public isEmpty(): boolean {
+        return this.elements.length === 0;
     }
 
-    // Function to traverse the tree
-    traverse() {
-        this.root.traverse();
+    public enqueue(node: Node): void {
+        this.elements.push(node);
+        this.elements.sort((a, b) => a.f - b.f); // Sort by f value
     }
 
-    // Function to search a key in the B-tree
-    search(key: number): BTreeNode | null {
-        return this.root.search(key);
-   
+    public dequeue(): Node | undefined {
+        return this.elements.shift();
+    }
+}
+function heuristic(a: Node, b: Node): number {
+    // Using Manhattan distance as the heuristic
+    return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
+}
+
+function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
+    const openSet = new PriorityQueue();
+    const closedSet: Set<string> = new Set();
+
+    openSet.enqueue(start);
+
+    while (!openSet.isEmpty()) {
+        const current = openSet.dequeue();
+
+        if (!current) {
+            break;
+        }
+
+        // Check if we reached the goal
+        if (current.x === goal.x && current.y === goal.y) {
+            const path: Node[] = [];
+            let temp: Node | null = current;
+            while (temp) {
+                path.push(temp);
+                temp = temp.parent;
+            }
+            return path.reverse(); // Return reversed path
+        }
+
+        closedSet.add(`${current.x},${current.y}`);
+
+        // Explore neighbors (4 directions: up, down, left, right)
+        const directions = [
+            { x: 0, y: -1 }, // Up
+            { x: 0, y: 1 },  // Down
+            { x: -1, y: 0 }, // Left
+            { x: 1, y: 0 }   // Right
+        ];
+
+        for (const dir of directions) {
+            const neighborX = current.x + dir.x;
+            const neighborY = current.y + dir.y;
+
+            // Check if neighbor is within bounds and not an obstacle
+            if (neighborX >= 0 && neighborY >= 0 && neighborX < grid.length && neighborY < grid[0].length && grid[neighborX][neighborY] === 0) {
+                const neighbor = new Node(neighborX, neighborY);
+                if (closedSet.has(`${neighbor.x},${neighbor.y}`)) {
+                    continue; // Ignore already evaluated neighbor
+                }
+
+                const tentativeG = current.g + 1; // Assuming cost to move to neighbor is 1
+
+                if (!openSet.elements.some(n => n.x === neighbor.x && n.y === neighbor.y && tentativeG >= n.g)) {
+                    neighbor.g = tentativeG;
+                    neighbor.h = heuristic(neighbor, goal);
+                    neighbor.f = neighbor.g + neighbor.h;
+                    neighbor.parent = current;
+
+                    openSet.enqueue(neighbor);
+                }
+            }
+        }
+    }
+
+    return null; // No path found
+}
+const grid = [
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0],
+    [0, 1, 1, 1, 0],
+    [0, 0, 0, 0, 0]
+];
+
+const start = new Node(0, 0);
+const goal = new
