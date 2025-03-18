@@ -1,49 +1,86 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to the end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
-}
-
-// To maintain the heap property
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
-
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
 }
+class LinkedList<T> {
+    head: Node<T> | null;
+    tail: Node<T> | null;
+    length: number;
 
-// Example usage
-const array = [3, 5, 1, 10, 2, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 10]
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.length = 0;
+    }
+
+    // Add a new node to the end of the list
+    append(value: T): void {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            if (this.tail) {
+                this.tail.next = newNode;
+            }
+            this.tail = newNode;
+        }
+        this.length++;
+    }
+
+    // Remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) return false;
+
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            this.length--;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                if (current.next === null) {
+                    this.tail = current; // Update tail if needed
+                }
+                this.length--;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    // Display the list
+    display(): void {
+        let current = this.head;
+        const elements: T[] = [];
+        while (current) {
+            elements.push(current.value);
+            current = current.next;
+        }
+        console.log(elements.join(' -> '));
+    }
+
+    // Get the size of the list
+    size(): number {
+        return this.length;
+    }
+}
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+list.display(); // Output: 1 -> 2 -> 3
+
+list.remove(2);
+list.display(); // Output: 1 -> 3
+
+console.log(`Size of the list: ${list.size()}`); // Output: Size of the list: 2
