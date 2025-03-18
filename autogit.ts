@@ -1,19 +1,49 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0]; // Initialize maxSoFar with the first element
-    let maxEndingHere = nums[0]; // Initialize maxEndingHere with the first element
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    for (let i = 1; i < nums.length; i++) {
-        // Update maxEndingHere to include the current element
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
-        
-        // Update maxSoFar if maxEndingHere is greater
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
     }
 
-    return maxSoFar;
+    // Method to add a new node at the end of the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
 }
 
 // Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result); // Output: 6 (subarray [4, -1, 2, 1] has the maximum sum)
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+console.log(list.length()); // Output: 3
