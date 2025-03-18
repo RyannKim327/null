@@ -1,57 +1,60 @@
-class Node {
-    value: string;
-    children: Node[];
+type Graph = { [key: string]: string[] };
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
+function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If the node has already been visited, return
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
+    console.log(start); // Process the node (e.g., print it)
+    visited.add(start); // Mark the node as visited
+
+    for (const neighbor of graph[start]) {
+        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
     }
 }
 
-function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearch(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearchIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
 
     while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
+        const node = stack.pop()!; // Get the last node from the stack
 
-        // Check if the current node is the goal
-        if (node.value === goal) {
-            return node; // Goal found
-        }
+        if (!visited.has(node)) {
+            console.log(node); // Process the node (e.g., print it)
+            visited.add(node); // Mark the node as visited
 
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
+            // Add all unvisited neighbors to the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
             }
         }
     }
-
-    return null; // Goal not found within the depth limit
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
-
-const goalNode = depthLimitedSearch(root, "E", 2);
-if (goalNode) {
-    console.log(`Goal found: ${goalNode.value}`);
-} else {
-    console.log("Goal not found within the depth limit.");
-}
+depthFirstSearchIterative(graph, 'A');
