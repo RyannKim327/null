@@ -1,61 +1,57 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Initialize Fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
-
-    // Find the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Marks the eliminated range from the front
-    let offset = -1;
-
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check if fibM2 is a valid location
-        const i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i; // Update the offset
-        }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else {
-            return i;
-        }
-    }
-
-    // Comparing the last element with x
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
-    }
-
-    // Element not found
-    return -1;
 }
 
-// Example usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
+    }
 
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log('Element not found in the array.');
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast && fast.next) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextTemp;
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left.next;
+        right = right.next;
+    }
+
+    return true; // Is a palindrome
 }
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
