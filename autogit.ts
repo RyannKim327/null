@@ -1,22 +1,110 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+class BinaryHeap<T> {
+    private heap: T[] = [];
+    private compare: (a: T, b: T) => number;
 
-    // If lengths are different, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+    constructor(compare: (a: T, b: T) => number) {
+        this.compare = compare;
     }
 
-    // Sort the characters of both strings
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+    public insert(item: T): void {
+        this.heap.push(item);
+        this.bubbleUp(this.heap.length - 1);
+    }
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    public remove(): T | undefined {
+        if (this.heap.length === 0) return undefined;
+        const root = this.heap[0];
+        const last = this.heap.pop();
+        if (this.heap.length > 0 && last !== undefined) {
+            this.heap[0] = last;
+            this.bubbleDown(0);
+        }
+        return root;
+    }
+
+    public peek(): T | undefined {
+        return this.heap[0];
+    }
+
+    public size(): number {
+        return this.heap.length;
+    }
+
+    private bubbleUp(index: number): void {
+        let currentIndex = index;
+        while (currentIndex > 0) {
+            const parentIndex = Math.floor((currentIndex - 1) / 2);
+            if (this.compare(this.heap[currentIndex], this.heap[parentIndex]) < 0) {
+                [this.heap[currentIndex], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[currentIndex]];
+                currentIndex = parentIndex;
+            } else {
+                break;
+            }
+        }
+    }
+
+    private bubbleDown(index: number): void {
+        const length = this.heap.length;
+        let currentIndex = index;
+
+        while (true) {
+            const leftChildIndex = 2 * currentIndex + 1;
+            const rightChildIndex = 2 * currentIndex + 2;
+            let smallestIndex = currentIndex;
+
+            if (leftChildIndex < length && this.compare(this.heap[leftChildIndex], this.heap[smallestIndex]) < 0) {
+                smallestIndex = leftChildIndex;
+            }
+
+            if (rightChildIndex < length && this.compare(this.heap[rightChildIndex], this.heap[smallestIndex]) < 0) {
+                smallestIndex = rightChildIndex;
+            }
+
+            if (smallestIndex === currentIndex) break;
+
+            [this.heap[currentIndex], this.heap[smallestIndex]] = [this.heap[smallestIndex], this.heap[currentIndex]];
+            currentIndex = smallestIndex;
+        }
+    }
+}
+class PriorityQueue<T> {
+    private heap: BinaryHeap<T>;
+
+    constructor(compare: (a: T, b: T) => number) {
+        this.heap = new BinaryHeap(compare);
+    }
+
+    public enqueue(item: T): void {
+        this.heap.insert(item);
+    }
+
+    public dequeue(): T | undefined {
+        return this.heap.remove();
+    }
+
+    public peek(): T | undefined {
+        return this.heap.peek();
+    }
+
+    public size(): number {
+        return this.heap.size();
+    }
+}
+// Define a type for the items in the priority queue
+interface Task {
+    priority: number;
+    name: string;
 }
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-console.log(areAnagrams("Dormitory", "Dirty room")); // true
+// Create a priority queue with a custom comparator
+const pq = new PriorityQueue<Task>((a, b) => a.priority - b.priority);
+
+// Enqueue some tasks
+pq.enqueue({ priority: 3, name: "Task 1" });
+pq.enqueue({ priority: 1, name: "Task 2" });
+pq.enqueue({ priority: 2, name: "Task 3" });
+
+// Dequeue tasks based on priority
+console.log(pq.dequeue()); // { priority: 1, name: "Task 2" }
+console.log(pq.dequeue()); // { priority: 2, name: "Task 3" }
+console.log(pq.dequeue()); // { priority: 3, name: "Task 1" }
