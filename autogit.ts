@@ -1,67 +1,36 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function binarySearch(arr: number[], target: number, start: number, end: number): number {
+    // Base case: if the start index exceeds the end index, the target is not found
+    if (start > end) {
+        return -1;
     }
-}
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
+    // Calculate the middle index
+    const mid = Math.floor((start + end) / 2);
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
-
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
-
-    // Align the starting points
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Use non-null assertion since we checked for null
-        }
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
+    } else if (arr[mid] > target) {
+        // Search in the left half
+        return binarySearch(arr, target, start, mid - 1);
     } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next;
-        }
+        // Search in the right half
+        return binarySearch(arr, target, mid + 1, end);
     }
-
-    // Traverse both lists to find the intersection
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
 }
 
-// Example usage:
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-const intersectionNode = new ListNode(5);
+// Helper function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
+}
 
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const target = 5;
+const result = search(sortedArray, target);
 
-nodeB1.next = nodeB2;
-nodeB2.next = intersectionNode;
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : "No intersection");
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found');
+}
