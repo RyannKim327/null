@@ -1,58 +1,32 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const table: string[] = [];
+npm install axios
+import axios from 'axios';
 
-    // Create the table of rotations
-    for (let i = 0; i < n; i++) {
-        const rotated = input.slice(i) + input.slice(0, i);
-        table.push(rotated);
-    }
-
-    // Sort the table
-    table.sort();
-
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        transformed += table[i][n - 1]; // Take the last character of each sorted rotation
-        if (table[i] === input) {
-            originalIndex = i; // Store the index of the original string
-        }
-    }
-
-    return { transformed, index: originalIndex };
+// Define an interface for the data we expect to receive
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
 
-function burrowsWheelerInverse(bwt: { transformed: string, index: number }): string {
-    const { transformed, index } = bwt;
-    const n = transformed.length;
-    const table: string[] = new Array(n);
+// Function to fetch users from a public API
+const fetchUsers = async (): Promise<void> => {
+    try {
+        const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+        const users = response.data;
 
-    // Initialize the table with empty strings
-    for (let i = 0; i < n; i++) {
-        table[i] = '';
-    }
-
-    // Rebuild the table
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n; j++) {
-            table[j] = transformed[j] + table[j];
+        // Log the users to the console
+        users.forEach(user => {
+            console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+        });
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error message:', error.message);
+        } else {
+            console.error('Unexpected error:', error);
         }
-        // Sort the table
-        table.sort();
     }
+};
 
-    // Return the original string
-    return table[index];
-}
-
-// Example usage
-const input = "banana";
-const bwtResult = burrowsWheelerTransform(input);
-console.log("Transformed:", bwtResult.transformed);
-console.log("Original Index:", bwtResult.index);
-
-const original = burrowsWheelerInverse(bwtResult);
-console.log("Original String:", original);
+// Call the function to fetch users
+fetchUsers();
