@@ -1,29 +1,29 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+function countingSort(arr: number[], max: number): number[] {
+    // Create a count array to store the count of each unique value
+    const count: number[] = new Array(max + 1).fill(0);
+    const output: number[] = new Array(arr.length);
+
+    // Store the count of each number in the count array
+    for (let i = 0; i < arr.length; i++) {
+        count[arr[i]]++;
     }
-    return count;
+
+    // Change count[i] so that it contains the actual position of this number in the output array
+    for (let i = 1; i <= max; i++) {
+        count[i] += count[i - 1];
+    }
+
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        output[count[arr[i]] - 1] = arr[i];
+        count[arr[i]]--;
+    }
+
+    return output;
 }
 
 // Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
