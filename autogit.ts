@@ -1,28 +1,35 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with fewer than 2 elements are already sorted
-    if (arr.length < 2) {
-        return arr;
-    }
+function longestCommonSubstring(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    // Partition the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update the ending index of the substring
+                }
+            }
         }
     }
 
-    // Recursively sort the left and right arrays, and concatenate with the pivot
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
+    }
+
+    return str1.substring(endingIndex - maxLength, endingIndex);
 }
 
 // Example usage:
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
