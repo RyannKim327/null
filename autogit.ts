@@ -1,15 +1,15 @@
-function isArraySortedAscending(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false; // Found an element greater than the next one
-        }
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("The list of numbers is empty.");
     }
-    return true; // All elements are in ascending order
+
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / numbers.length;
+
+    return mean;
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [1, 3, 2, 4, 5];
-
-console.log(isArraySortedAscending(array1)); // Output: true
-console.log(isArraySortedAscending(array2)); // Output: false
+const numbers = [10, 20, 30, 40, 50];
+const mean = calculateMean(numbers);
+console.log(`The mean is: ${mean}`);
