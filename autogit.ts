@@ -1,17 +1,25 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-    // Sort the characters of each string
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
-
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+if (str.includes(substring)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
 }
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-// Example usage:
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+if (str.indexOf(substring) !== -1) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
+}
+const str: string = "Hello, world!";
+const substring: string = "world";
+const regex = new RegExp(substring);
+
+if (regex.test(str)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
+}
