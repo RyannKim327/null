@@ -1,65 +1,13 @@
-type Graph = { [key: string]: string[] };
-
-function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return;
-    }
-
-    // Mark the current node as visited
-    visited.add(start);
-    console.log(start); // Process the node (e.g., print it)
-
-    // Recur for all the vertices adjacent to this vertex
-    for (const neighbor of graph[start]) {
-        dfsRecursive(graph, neighbor, visited);
-    }
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
+    
+    // Compare the normalized versions of both strings
+    return normalize(str1) === normalize(str2);
 }
 
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+// Example usage:
+const string1 = "listen";
+const string2 = "silent";
 
-dfsRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function dfsIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (visited.has(node)) {
-            continue;
-        }
-
-        // Mark the current node as visited
-        visited.add(node);
-        console.log(node); // Process the node (e.g., print it)
-
-        // Add all unvisited neighbors to the stack
-        for (const neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                stack.push(neighbor);
-            }
-        }
-    }
-}
-
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-dfsIterative(graph, 'A');
+console.log(areAnagrams(string1, string2)); // Output: true
