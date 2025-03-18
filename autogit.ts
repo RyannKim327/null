@@ -1,49 +1,25 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+if (str.includes(substring)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
 }
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+if (str.indexOf(substring) !== -1) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
 }
+const str: string = "Hello, world!";
+const substring: string = "world";
+const regex = new RegExp(substring);
 
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-console.log(list.length()); // Output: 3
+if (regex.test(str)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
+}
