@@ -1,57 +1,58 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const table: string[] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
+    // Create the table of rotations
+    for (let i = 0; i < n; i++) {
+        const rotated = input.slice(i) + input.slice(0, i);
+        table.push(rotated);
     }
 
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-    
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
+    // Sort the table
+    table.sort();
 
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
 
-    while (current) {
-        const nextTemp = current.next;
-        current.next = prev;
-        prev = current;
-        current = nextTemp;
-    }
-
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
-
-    while (right) {
-        if (left.value !== right.value) {
-            return false; // Not a palindrome
+    for (let i = 0; i < n; i++) {
+        transformed += table[i][n - 1]; // Take the last character of each sorted rotation
+        if (table[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
-        left = left.next;
-        right = right.next;
     }
 
-    return true; // Is a palindrome
+    return { transformed, index: originalIndex };
 }
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
+function burrowsWheelerInverse(bwt: { transformed: string, index: number }): string {
+    const { transformed, index } = bwt;
+    const n = transformed.length;
+    const table: string[] = new Array(n);
 
-console.log(isPalindrome(head)); // Output: true
+    // Initialize the table with empty strings
+    for (let i = 0; i < n; i++) {
+        table[i] = '';
+    }
+
+    // Rebuild the table
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            table[j] = transformed[j] + table[j];
+        }
+        // Sort the table
+        table.sort();
+    }
+
+    // Return the original string
+    return table[index];
+}
+
+// Example usage
+const input = "banana";
+const bwtResult = burrowsWheelerTransform(input);
+console.log("Transformed:", bwtResult.transformed);
+console.log("Original Index:", bwtResult.index);
+
+const original = burrowsWheelerInverse(bwtResult);
+console.log("Original String:", original);
