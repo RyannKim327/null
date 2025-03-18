@@ -1,46 +1,50 @@
-function createBadCharTable(pattern: string): number[] {
-    const badCharTable: number[] = new Array(256).fill(-1);
-    const patternLength = pattern.length;
-
-    for (let i = 0; i < patternLength; i++) {
-        badCharTable[pattern.charCodeAt(i)] = i;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return badCharTable;
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-    let shift = 0;
-
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            occurrences.push(shift);
-            // Shift the pattern to the right by the length of the pattern
-            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(shift + patternLength)] : 1;
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            // Shift the pattern based on the bad character rule
-            shift += Math.max(1, j - badCharTable[text.charCodeAt(shift + j)]);
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    return occurrences;
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sortedArray.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sortedArray.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return sortedArray;
 }
 
 // Example usage
-const text = "ababcababcabc";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log(`Pattern found at indices: ${result.join(', ')}`);
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
