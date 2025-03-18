@@ -1,29 +1,57 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Create a count array to store the count of each unique object
-    const count: number[] = new Array(max + 1).fill(0);
-    const output: number[] = new Array(arr.length);
+class Node {
+    value: string;
+    children: Node[];
 
-    // Store the count of each number in the count array
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
 
-    // Change count[i] so that it contains the actual position of this number in the output array
-    for (let i = 1; i <= max; i++) {
-        count[i] += count[i - 1];
+    addChild(child: Node) {
+        this.children.push(child);
     }
-
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
-
-    return output;
 }
 
-// Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+function depthLimitedSearch(root: Node, goal: string, limit: number): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node; // Goal found
+        }
+
+        // If the current depth is less than the limit, add children to the stack
+        if (depth < limit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
+        }
+    }
+
+    return null; // Goal not found within the depth limit
+}
+
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const goalNode = depthLimitedSearch(root, "E", 2);
+if (goalNode) {
+    console.log(`Goal found: ${goalNode.value}`);
+} else {
+    console.log("Goal not found within the depth limit.");
+}
