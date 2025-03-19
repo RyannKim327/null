@@ -1,22 +1,46 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-    // Start with the first string as the prefix
-    let prefix = strs[0];
+// Simulated async function to fetch data
+const fetchData = async (): Promise<string> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("Data fetched successfully!");
+        }, 2000); // Simulate a 2-second network request
+    });
+};
 
-    // Compare the prefix with each string in the array
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix by one character from the end
-            prefix = prefix.substring(0, prefix.length - 1);
-            // If the prefix is empty, return it
-            if (prefix === "") return "";
+const App: React.FC = () => {
+    const [data, setData] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleFetchData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await fetchData();
+            setData(result);
+        } catch (err) {
+            setError("Failed to fetch data");
+        } finally {
+            setLoading(false);
         }
-    }
+    };
 
-    return prefix;
-}
+    useEffect(() => {
+        // Optionally fetch data on component mount
+        handleFetchData();
+    }, []);
 
-// Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+    return (
+        <View style={{ padding: 20 }}>
+            <Button title="Fetch Data" onPress={handleFetchData} />
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
+            {data && <Text>{data}</Text>}
+        </View>
+    );
+};
+
+export default App;
