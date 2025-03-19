@@ -1,26 +1,67 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Step 1: Create a count array to store the count of each unique value
-    const count: number[] = new Array(max + 1).fill(0);
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Step 2: Store the count of each number in the input array
-    for (const num of arr) {
-        count[num]++;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
+}
 
-    // Step 3: Build the output array
-    const output: number[] = [];
-    for (let i = 0; i < count.length; i++) {
-        while (count[i] > 0) {
-            output.push(i);
-            count[i]--;
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    const lengthA = getLength(headA);
+    const lengthB = getLength(headB);
+
+    let currentA: ListNode | null = headA;
+    let currentB: ListNode | null = headB;
+
+    // Align the start of both lists
+    if (lengthA > lengthB) {
+        for (let i = 0; i < lengthA - lengthB; i++) {
+            currentA = currentA!.next; // Use non-null assertion since we checked for null
+        }
+    } else {
+        for (let i = 0; i < lengthB - lengthA; i++) {
+            currentB = currentB!.next;
         }
     }
 
-    return output;
+    // Traverse both lists to find the intersection
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
 }
 
 // Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr); // Find the maximum value in the array
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const nodeA1 = new ListNode(1);
+const nodeA2 = new ListNode(2);
+const nodeB1 = new ListNode(3);
+const nodeB2 = new ListNode(4);
+const intersectionNode = new ListNode(5);
+
+nodeA1.next = nodeA2;
+nodeA2.next = intersectionNode;
+
+nodeB1.next = nodeB2;
+nodeB2.next = intersectionNode;
+
+const intersection = getIntersectionNode(nodeA1, nodeB1);
+console.log(intersection ? intersection.value : "No intersection");
