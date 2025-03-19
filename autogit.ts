@@ -1,49 +1,21 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+function insertionSort(arr: number[]): number[] {
+    // Loop through the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The element to be positioned
+        let j = i - 1; // The index of the last sorted element
 
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key; // Place the key in its correct position
     }
-
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
+    return arr; // Return the sorted array
 }
 
-// To maintain the heap property
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
-
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
-}
-
-// Example usage
-const array = [3, 5, 1, 10, 2, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 10]
+// Example usage:
+const array = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
