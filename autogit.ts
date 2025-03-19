@@ -1,35 +1,41 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-    let maxLength = 0;
-    let endingIndex = 0;
+function countingSort(arr: number[], exp: number): number[] {
+    const output: number[] = new Array(arr.length); // Output array
+    const count: number[] = new Array(10).fill(0); // Count array for digits (0-9)
 
-    // Create a 2D array to store lengths of longest common suffixes
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endingIndex = i; // Update ending index of the substring
-                }
-            }
-        }
+    // Store count of occurrences of each digit
+    for (let i = 0; i < arr.length; i++) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        count[index]++;
     }
 
-    // Extract the longest common substring
-    if (maxLength === 0) {
-        return ""; // No common substring found
+    // Change count[i] so that it contains the actual position of this digit in output[]
+    for (let i = 1; i < count.length; i++) {
+        count[i] += count[i - 1];
     }
 
-    return str1.substring(endingIndex - maxLength, endingIndex);
+    // Build the output array
+    for (let i = arr.length - 1; i >= 0; i--) {
+        const index = Math.floor(arr[i] / exp) % 10;
+        output[count[index] - 1] = arr[i];
+        count[index]--;
+    }
+
+    return output;
 }
 
-// Example usage:
-const str1 = "abcdef";
-const str2 = "zcdemf";
-const result = longestCommonSubstring(str1, str2);
-console.log(result); // Output: "cd"
+function radixSort(arr: number[]): number[] {
+    // Find the maximum number to know the number of digits
+    const max = Math.max(...arr);
+
+    // Apply counting sort to sort elements based on place value
+    for (let exp = 1; Math.floor(max / exp) > 0; exp *= 10) {
+        arr = countingSort(arr, exp);
+    }
+
+    return arr;
+}
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArr = radixSort(arr);
+console.log(sortedArr); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
