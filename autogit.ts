@@ -1,43 +1,30 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
+// Define an interface for the data we expect to receive
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
-
-    function height(node: TreeNode | null): number {
-        if (node === null) {
-            return 0;
+// Function to fetch posts
+async function fetchPosts(): Promise<void> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        
+        // Check if the response is ok (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // Recursively find the height of the left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
 
-        // Update the diameter if the path through the current node is larger
-        diameter = Math.max(diameter, leftHeight + rightHeight);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
+        // Log the posts to the console
+        console.log(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
     }
-
-    height(root);
-    return diameter;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Call the function to fetch posts
+fetchPosts();
