@@ -1,29 +1,57 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const table: string[] = [];
+
+    // Create the table of rotations
+    for (let i = 0; i < n; i++) {
+        const rotation = input.slice(i) + input.slice(0, i);
+        table.push(rotation);
+    }
+
+    // Sort the table
+    table.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        transformed += table[i][n - 1]; // Take the last character of each sorted rotation
+        if (table[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
-    return count;
+
+    return { transformed, index: originalIndex };
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
+function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
+    const n = transformed.length;
+    const table: string[] = new Array(n);
+
+    // Initialize the table with empty strings
+    for (let i = 0; i < n; i++) {
+        table[i] = '';
+    }
+
+    // Rebuild the table
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            table[j] = transformed[j] + table[j];
+        }
+        // Sort the table
+        table.sort();
+    }
+
+    // Return the original string
+    return table[index];
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+const original = inverseBurrowsWheelerTransform(transformed, index);
+console.log("Original:", original);
