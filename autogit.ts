@@ -1,14 +1,15 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Get the reversed string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Check if the normalized string is equal to its reverse
-    return normalizedStr === reversedStr;
-}
+// Example array
+let arr: number[] = [1, 2, 3, 4, 5];
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+// Reverse the array
+arr.reverse();
+
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+// Example array
+let originalArr: number[] = [1, 2, 3, 4, 5];
+
+// Create a new reversed array
+let reversedArr: number[] = originalArr.slice().reverse();
+
+console.log(originalArr); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArr); // Output: [5, 4, 3, 2, 1]
