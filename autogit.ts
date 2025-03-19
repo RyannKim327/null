@@ -1,51 +1,46 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+// Simulated API call
+const fetchData = async (): Promise<string> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve("Data fetched successfully!");
+        }, 2000); // Simulate a 2-second network request
+    });
+};
+
+const App: React.FC = () => {
+    const [data, setData] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const handleFetchData = async () => {
+        setLoading(true);
+        setError(null);
+        try {
+            const result = await fetchData();
+            setData(result);
+        } catch (err) {
+            setError("Failed to fetch data");
+        } finally {
+            setLoading(false);
         }
-    }
-    return lps;
-}
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+    };
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+    useEffect(() => {
+        // Optionally fetch data on component mount
+        handleFetchData();
+    }, []);
 
-        if (j === pattern.length) {
-            result.push(i - j); // Match found
-            j = lps[j - 1]; // Get the next position from LPS
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters
-            } else {
-                i++;
-            }
-        }
-    }
-    return result;
-}
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = KMPSearch(text, pattern);
+    return (
+        <View style={{ padding: 20 }}>
+            <Button title="Fetch Data" onPress={handleFetchData} />
+            {loading && <ActivityIndicator size="large" color="#0000ff" />}
+            {error && <Text style={{ color: 'red' }}>{error}</Text>}
+            {data && <Text>{data}</Text>}
+        </View>
+    );
+};
 
-console.log("Pattern found at indices:", result);
+export default App;
