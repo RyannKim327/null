@@ -1,8 +1,10 @@
-function removeSpaces(input: string): string {
-    return input.replace(/\s+/g, '');
-}
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = string1 + string2;
 
-const originalString = "Hello, how are you?";
-const stringWithoutSpaces = removeSpaces(originalString);
+console.log(concatenated); // Output: Hello, world!
+let string1: string = "Hello, ";
+let string2: string = "world!";
+let concatenated: string = `${string1}${string2}`;
 
-console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
+console.log(concatenated); // Output: Hello, world!
