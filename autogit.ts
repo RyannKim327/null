@@ -1,59 +1,80 @@
-type Edge = {
-    source: number;
-    destination: number;
-    weight: number;
+type Graph = {
+    [key: string]: string[];
 };
 
-class Graph {
-    private edges: Edge[];
-    private numVertices: number;
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
 
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
-    }
+    const visitedFromStart = new Set<string>();
+    const visitedFromGoal = new Set<string>();
+    const queueFromStart: string[] = [start];
+    const queueFromGoal: string[] = [goal];
+    const parentFromStart: { [key: string]: string | null } = { [start]: null };
+    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
 
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push({ source, destination, weight });
-    }
+    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
+        // Search from the start
+        const currentFromStart = queueFromStart.shift()!;
+        visitedFromStart.add(currentFromStart);
 
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const edge of this.edges) {
-                const { source, destination, weight } = edge;
-                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                    distances[destination] = distances[source] + weight;
+        for (const neighbor of graph[currentFromStart] || []) {
+            if (!visitedFromStart.has(neighbor)) {
+                parentFromStart[neighbor] = currentFromStart;
+                queueFromStart.push(neighbor);
+                if (visitedFromGoal.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
                 }
             }
         }
 
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            const { source, destination, weight } = edge;
-            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                return "Graph contains a negative-weight cycle";
+        // Search from the goal
+        const currentFromGoal = queueFromGoal.shift()!;
+        visitedFromGoal.add(currentFromGoal);
+
+        for (const neighbor of graph[currentFromGoal] || []) {
+            if (!visitedFromGoal.has(neighbor)) {
+                parentFromGoal[neighbor] = currentFromGoal;
+                queueFromGoal.push(neighbor);
+                if (visitedFromStart.has(neighbor)) {
+                    return constructPath(neighbor, parentFromStart, parentFromGoal);
+                }
             }
         }
-
-        return distances;
     }
+
+    return null; // No path found
 }
 
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
+    const pathFromStart: string[] = [];
+    let current: string | null = meetingPoint;
 
-const distances = graph.bellmanFord(0);
-console.log(distances);
+    while (current !== null) {
+        pathFromStart.push(current);
+        current = parentFromStart[current];
+    }
+
+    const pathFromGoal: string[] = [];
+    current = parentFromGoal[meetingPoint];
+
+    while (current !== null) {
+        pathFromGoal.push(current);
+        current = parentFromGoal[current];
+    }
+
+    return pathFromStart.reverse().concat(pathFromGoal);
+}
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
+
+const startNode = 'A';
+const goalNode = 'F';
+const path = biDirectionalSearch(graph, startNode, goalNode);
+
+console.log(path); // Output: ['A', 'C', 'F'] or ['A', 'B', 'E', 'F']
