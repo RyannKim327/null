@@ -1,30 +1,49 @@
-// Define an interface for the data structure we expect from the API
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function rabinKarp(text: string, pattern: string, d: number = 256, q: number = 101): number[] {
+    const m = pattern.length;
+    const n = text.length;
+    const result: number[] = [];
+    const hPattern = 0; // Hash value for pattern
+    const hText = 0; // Hash value for text
+    const h = Math.pow(d, m - 1) % q; // The value of d^(m-1) % q
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response is ok (status code 200-299)
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
+    // Calculate the hash value of the pattern and the first window of text
+    for (let i = 0; i < m; i++) {
+        hPattern = (d * hPattern + pattern.charCodeAt(i)) % q;
+        hText = (d * hText + text.charCodeAt(i)) % q;
     }
 
-    // Parse the JSON response
-    const data: Post[] = await response.json();
-    return data;
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of the current window of text and pattern
+        if (hPattern === hText) {
+            // If the hash values match, check for characters one by one
+            let j;
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    break;
+                }
+            }
+            if (j === m) {
+                result.push(i); // Pattern found at index i
+            }
+        }
+
+        // Calculate the hash value for the next window of text
+        if (i < n - m) {
+            hText = (d * (hText - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get negative value of hText, converting it to positive
+            if (hText < 0) {
+                hText += q;
+            }
+        }
+    }
+
+    return result; // Return the list of starting indices where pattern is found
 }
 
-// Call the fetchPosts function and handle the response
-fetchPosts()
-    .then(posts => {
-        console.log('Fetched Posts:', posts);
-    })
-    .catch(error => {
-        console.error('Error fetching posts:', error);
-    });
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const indices = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", indices);
