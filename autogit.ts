@@ -1,32 +1,22 @@
-function shellSort(arr: number[]): number[] {
+function bubbleSort(arr: number[]): number[] {
     const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+    let swapped: boolean;
 
-    // Start with the largest gap and reduce the gap until it is 0
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            const temp = arr[i];
-            let j = i;
-
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
             }
-
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
         }
-        gap = Math.floor(gap / 2); // Reduce the gap
-    }
+    } while (swapped);
 
     return arr;
 }
 
 // Example usage:
-const array = [12, 34, 54, 2, 3];
-console.log("Original array:", array);
-const sortedArray = shellSort(array);
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
 console.log("Sorted array:", sortedArray);
