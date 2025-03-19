@@ -1,57 +1,46 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const table: string[] = [];
+class Stack<T> {
+    private items: T[] = [];
 
-    // Create the table of rotations
-    for (let i = 0; i < n; i++) {
-        const rotation = input.slice(i) + input.slice(0, i);
-        table.push(rotation);
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    // Sort the table
-    table.sort();
-
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        transformed += table[i][n - 1]; // Take the last character of each sorted rotation
-        if (table[i] === input) {
-            originalIndex = i; // Store the index of the original string
-        }
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
     }
 
-    return { transformed, index: originalIndex };
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
-function inverseBurrowsWheelerTransform(transformed: string, index: number): string {
-    const n = transformed.length;
-    const table: string[] = new Array(n);
+// Example usage:
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
 
-    // Initialize the table with empty strings
-    for (let i = 0; i < n; i++) {
-        table[i] = '';
-    }
-
-    // Rebuild the table
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n; j++) {
-            table[j] = transformed[j] + table[j];
-        }
-        // Sort the table
-        table.sort();
-    }
-
-    // Return the original string
-    return table[index];
-}
-
-// Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
-
-const original = inverseBurrowsWheelerTransform(transformed, index);
-console.log("Original:", original);
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty()); // Output: false
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
