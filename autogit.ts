@@ -1,55 +1,29 @@
-// Define a Node interface to represent each node in the tree/graph
-interface Node {
-    value: any;
-    children: Node[];
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
-
-// Depth-Limited Search function
-function depthLimitedSearch(node: Node, depth: number, target: any): boolean {
-    // Check if the current node is the target
-    if (node.value === target) {
-        return true;
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    // If the depth limit is reached, return false
-    if (depth === 0) {
-        return false;
-    }
-
-    // Recursively search in the children nodes
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, depth - 1, target)) {
-            return true;
-        }
-    }
-
-    // If the target is not found in this path, return false
-    return false;
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
 }
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-// Example usage
-const rootNode: Node = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ]
-        },
-        {
-            value: 3,
-            children: [
-                { value: 6, children: [] },
-                { value: 7, children: [] }
-            ]
-        }
-    ]
-};
-
-const targetValue = 5;
-const depthLimit = 2;
-
-const found = depthLimitedSearch(rootNode, depthLimit, targetValue);
-console.log(`Target ${targetValue} found: ${found}`);
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
