@@ -1,20 +1,48 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Remove duplicates by converting the array to a Set and back to an array
-    const uniqueArr = Array.from(new Set(arr));
+function createBadCharTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    // If there are less than 2 unique elements, return null
-    if (uniqueArr.length < 2) {
-        return null;
+    // Initialize the bad character table
+    for (let i = 0; i < patternLength - 1; i++) {
+        badCharTable[pattern[i]] = patternLength - 1 - i;
     }
 
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
-
-    // Return the second largest element
-    return uniqueArr[1];
+    return badCharTable;
 }
 
-// Example usage:
-const numbers = [3, 5, 1, 4, 5, 2];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 4
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
+
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare the pattern with the text from the end
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            occurrences.push(i);
+            // Shift the pattern by one position
+            i += (i + patternLength < textLength) ? patternLength - badCharTable[text[i + patternLength]] || 1 : 1;
+        } else {
+            // Shift the pattern based on the bad character rule
+            const shift = badCharTable[text[i + j]] || patternLength;
+            i += shift;
+        }
+    }
+
+    return occurrences;
+}
+
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at indices: ${result.join(', ')}`);
