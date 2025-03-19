@@ -1,79 +1,60 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null;
-    suffixLink: SuffixTreeNode | null;
+type Graph = { [key: string]: string[] };
 
-    constructor(start: number, end: number | null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
-        this.suffixLink = null;
-    }
-}
-
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
-
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1, null);
-        this.text = text;
-        this.buildSuffixTree();
+function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If the node has already been visited, return
     }
 
-    buildSuffixTree() {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(i);
-        }
-    }
+    console.log(start); // Process the node (e.g., print it)
+    visited.add(start); // Mark the node as visited
 
-    insertSuffix(start: number) {
-        let currentNode = this.root;
-        let currentChar = this.text[start];
-
-        for (let i = start; i < this.text.length; i++) {
-            const char = this.text[i];
-            if (!currentNode.children.has(char)) {
-                const newNode = new SuffixTreeNode(start, null);
-                currentNode.children.set(char, newNode);
-                return;
-            }
-            currentNode = currentNode.children.get(char)!;
-            // If we reach the end of the current node's edge, we can stop
-            if (currentNode.end === null) {
-                currentNode.end = i;
-                return;
-            }
-        }
-    }
-
-    search(pattern: string): boolean {
-        let currentNode = this.root;
-        let index = 0;
-
-        while (index < pattern.length) {
-            const char = pattern[index];
-            if (!currentNode.children.has(char)) {
-                return false; // Not found
-            }
-            currentNode = currentNode.children.get(char)!;
-            let edgeLength = currentNode.end !== null ? currentNode.end - currentNode.start + 1 : this.text.length - currentNode.start;
-
-            // Check if the pattern matches the edge
-            for (let j = 0; j < edgeLength && index < pattern.length; j++, index++) {
-                if (this.text[currentNode.start + j] !== pattern[index]) {
-                    return false; // Not found
-                }
-            }
-        }
-        return true; // Found
+    for (const neighbor of graph[start]) {
+        depthFirstSearch(graph, neighbor, visited); // Recur for each neighbor
     }
 }
 
 // Example usage:
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nan")); // false
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearch(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearchIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!; // Get the last element from the stack
+
+        if (!visited.has(node)) {
+            console.log(node); // Process the node (e.g., print it)
+            visited.add(node); // Mark the node as visited
+
+            // Push all unvisited neighbors onto the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearchIterative(graph, 'A');
