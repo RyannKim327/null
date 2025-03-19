@@ -1,63 +1,15 @@
-// Define a Graph class
-class Graph {
-    private adjacencyList: Map<string, string[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
-    }
-
-    // Add a vertex to the graph
-    addVertex(vertex: string) {
-        if (!this.adjacencyList.has(vertex)) {
-            this.adjacencyList.set(vertex, []);
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
         }
     }
-
-    // Add an edge to the graph
-    addEdge(vertex1: string, vertex2: string) {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
-
-    // Implement BFS
-    bfs(startVertex: string): string[] {
-        const visited: Set<string> = new Set();
-        const queue: string[] = [];
-        const result: string[] = [];
-
-        // Start with the initial vertex
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift()!;
-            result.push(currentVertex);
-
-            const neighbors = this.adjacencyList.get(currentVertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        return result;
-    }
+    return true; // All elements are in ascending order
 }
 
-// Example usage
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addVertex("E");
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [1, 3, 2, 4, 5];
 
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "E");
-
-const bfsResult = graph.bfs("A");
-console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D', 'E' ]
+console.log(isArraySortedAscending(array1)); // Output: true
+console.log(isArraySortedAscending(array2)); // Output: false
