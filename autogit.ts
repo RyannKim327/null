@@ -1,30 +1,22 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    // Start with the first string as the prefix
+    let prefix = strs[0];
+
+    // Compare the prefix with each string in the array
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by one character from the end
+            prefix = prefix.substring(0, prefix.length - 1);
+            // If the prefix is empty, return it
+            if (prefix === "") return "";
         }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
     }
+
+    return prefix;
 }
 
-// Call the function to fetch posts
-fetchPosts();
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
