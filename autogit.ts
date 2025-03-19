@@ -1,60 +1,58 @@
-// Define a Node interface
-interface Node {
-    value: any;
-    children: Node[];
-}
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-// Breadth-limited search function
-function breadthLimitedSearch(root: Node, target: any, maxDepth: number): Node | null {
-    // Use a queue to keep track of nodes to explore
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-    
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Return the found node
-        }
-
-        // If we haven't reached the maximum depth, add children to the queue
-        if (depth < maxDepth) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
-        }
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    return null; // Return null if the target is not found
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const length = pattern.length;
+
+        for (let i = 0; i < length; i++) {
+            table.set(pattern[i], i);
+        }
+
+        return table;
+    }
+
+    public search(text: string): number {
+        const m = this.pattern.length;
+        const n = text.length;
+        let skip: number;
+
+        for (let i = 0; i <= n - m; ) {
+            skip = 0;
+
+            for (let j = m - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
+                }
+            }
+
+            if (skip === 0) {
+                // Match found at index i
+                return i; // Return the index of the first match
+            } else {
+                i += skip;
+            }
+        }
+
+        return -1; // No match found
+    }
 }
 
-// Example usage
-const rootNode: Node = {
-    value: 1,
-    children: [
-        {
-            value: 2,
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ]
-        },
-        {
-            value: 3,
-            children: [
-                { value: 6, children: [] },
-                { value: 7, children: [] }
-            ]
-        }
-    ]
-};
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
 
-const targetValue = 5;
-const maxDepth = 2;
-const result = breadthLimitedSearch(rootNode, targetValue, maxDepth);
-
-if (result) {
-    console.log(`Found node with value: ${result.value}`);
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
 } else {
-    console.log('Node not found within the specified depth.');
+    console.log("Pattern not found");
 }
