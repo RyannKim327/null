@@ -1,20 +1,54 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    const dp: number[] = new Array(nums.length).fill(1);
-    
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    // Recursively sort both halves
+    const sortedLeft = mergeSort(left);
+    const sortedRight = mergeSort(right);
+
+    // Merge the sorted halves
+    return merge(sortedLeft, sortedRight);
+}
+
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Merge the two arrays while there are elements in both
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    return Math.max(...dp);
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        result.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        result.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return result;
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const lengthOfLIS = longestIncreasingSubsequence(nums);
-console.log(lengthOfLIS); // Output: 4
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
