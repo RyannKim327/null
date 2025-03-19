@@ -1,19 +1,26 @@
-function countWordOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function countingSort(arr: number[], max: number): number[] {
+    // Step 1: Create a count array to store the count of each unique value
+    const count: number[] = new Array(max + 1).fill(0);
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+    // Step 2: Store the count of each number in the input array
+    for (const num of arr) {
+        count[num]++;
+    }
 
-    // Filter the array to count occurrences of the word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+    // Step 3: Build the output array
+    const output: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            output.push(i);
+            count[i]--;
+        }
+    }
 
-    return count;
+    return output;
 }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countWordOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+// Example usage:
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const max = Math.max(...arr); // Find the maximum value in the array
+const sortedArr = countingSort(arr, max);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
