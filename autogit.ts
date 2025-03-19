@@ -1,50 +1,60 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Graph = { [key: string]: string[] };
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Return null if the list is empty or n is invalid
+function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If the node has already been visited, return
     }
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
+    console.log(start); // Process the node (e.g., print it)
+    visited.add(start); // Mark the node as visited
 
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
-        }
-        firstPointer = firstPointer.next;
+    for (const neighbor of graph[start]) {
+        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
     }
-
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
-    }
-
-    // The second pointer is now at the nth node from the end
-    return secondPointer;
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
 
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
+depthFirstSearch(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function depthFirstSearchIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!; // Get the last node from the stack
+
+        if (!visited.has(node)) {
+            console.log(node); // Process the node (e.g., print it)
+            visited.add(node); // Mark the node as visited
+
+            // Add all unvisited neighbors to the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
 }
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+depthFirstSearchIterative(graph, 'A');
