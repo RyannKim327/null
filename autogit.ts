@@ -1,56 +1,43 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
-
-    addVertex(vertex: number): void {
-        this.adjacencyList.set(vertex, []);
-    }
-
-    addEdge(vertex1: number, vertex2: number): void {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
-
-    bfs(startVertex: number): number[] {
-        const visited: Set<number> = new Set();
-        const queue: number[] = [];
-        const result: number[] = [];
-
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift()!;
-            result.push(currentVertex);
-
-            const neighbors = this.adjacencyList.get(currentVertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        return result;
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
     }
 }
 
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
+
+    function height(node: TreeNode | null): number {
+        if (node === null) {
+            return 0;
+        }
+
+        // Recursively find the height of the left and right subtrees
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
+
+        // Update the diameter if the path through the current node is larger
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        // Return the height of the current node
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    height(root);
+    return diameter;
+}
+
 // Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 5);
-
-const bfsResult = graph.bfs(1);
-console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
+console.log(diameterOfBinaryTree(root)); // Output: 3
