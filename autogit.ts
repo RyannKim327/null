@@ -1,30 +1,119 @@
-// Define an interface for the data we expect to receive
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
+class Graph {
+    private adjList: Map<number, number[]>;
 
-// Function to fetch posts
-async function fetchPosts(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-        
-        // Check if the response is ok (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    constructor() {
+        this.adjList = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+    }
+
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
+
+        const dfs = (v: number) => {
+            visited.add(v);
+            const neighbors = this.adjList.get(v) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(v);
+        };
+
+        for (const vertex of this.adjList.keys()) {
+            if (!visited.has(vertex)) {
+                dfs(vertex);
+            }
         }
 
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-
-        // Log the posts to the console
-        console.log(posts);
-    } catch (error) {
-        console.error('Error fetching posts:', error);
+        return stack.reverse(); // Return in reverse order
     }
 }
 
-// Call the function to fetch posts
-fetchPosts();
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const sortedOrder = graph.topologicalSort();
+console.log(sortedOrder); // Output: A valid topological order
+class GraphKahn {
+    private adjList: Map<number, number[]>;
+
+    constructor() {
+        this.adjList = new Map();
+    }
+
+    addEdge(v: number, w: number) {
+        if (!this.adjList.has(v)) {
+            this.adjList.set(v, []);
+        }
+        this.adjList.get(v)!.push(w);
+    }
+
+    topologicalSort(): number[] {
+        const inDegree: Map<number, number> = new Map();
+        const queue: number[] = [];
+        const sortedOrder: number[] = [];
+
+        // Initialize in-degree of each vertex
+        for (const [vertex, neighbors] of this.adjList.entries()) {
+            if (!inDegree.has(vertex)) {
+                inDegree.set(vertex, 0);
+            }
+            for (const neighbor of neighbors) {
+                inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
+            }
+        }
+
+        // Collect all vertices with in-degree 0
+        for (const [vertex, degree] of inDegree.entries()) {
+            if (degree === 0) {
+                queue.push(vertex);
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            sortedOrder.push(current);
+
+            const neighbors = this.adjList.get(current) || [];
+            for (const neighbor of neighbors) {
+                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+                if (inDegree.get(neighbor) === 0) {
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there was a cycle
+        if (sortedOrder.length !== inDegree.size) {
+            throw new Error("Graph has at least one cycle, topological sort not possible.");
+        }
+
+        return sortedOrder;
+    }
+}
+
+// Example usage:
+const graphKahn = new GraphKahn();
+graphKahn.addEdge(5, 2);
+graphKahn.addEdge(5, 0);
+graphKahn.addEdge(4, 0);
+graphKahn.addEdge(4, 1);
+graphKahn.addEdge(2, 3);
+graphKahn.addEdge(3, 1);
+
+const sortedOrderKahn = graphKahn.topologicalSort();
+console.log(sortedOrderKahn); // Output: A valid topological order
