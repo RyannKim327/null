@@ -1,62 +1,57 @@
-type Graph = { [key: string]: string[] };
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function depthFirstSearch(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If the node has already been visited, return
-    }
-
-    console.log(start); // Process the node (e.g., print it)
-    visited.add(start); // Mark the node as visited
-
-    for (const neighbor of graph[start]) {
-        depthFirstSearch(graph, neighbor, visited); // Recursively visit each neighbor
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-depthFirstSearch(graph, 'A');
-type Graph = { [key: string]: string[] };
-
-function depthFirstSearchIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!; // Get the last node from the stack
-
-        if (visited.has(node)) {
-            continue; // If the node has already been visited, skip it
-        }
-
-        console.log(node); // Process the node (e.g., print it)
-        visited.add(node); // Mark the node as visited
-
-        // Push all unvisited neighbors onto the stack
-        for (const neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                stack.push(neighbor);
-            }
-        }
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
     }
+
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    
+    while (fast && fast.next) {
+        slow = slow!.next; // Move slow by 1
+        fast = fast.next.next; // Move fast by 2
+    }
+
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to next node
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left!.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left!.next;
+        right = right.next;
+    }
+
+    return true; // It is a palindrome
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
 
-depthFirstSearchIterative(graph, 'A');
+console.log(isPalindrome(head)); // Output: true
