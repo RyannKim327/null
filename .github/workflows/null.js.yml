@@ -33,6 +33,11 @@ jobs:
           key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             npm-${{ runner.os }}-
+            npm-
+      - name: Debug Cache Key
+        run: |
+          ls -al
+          echo "Computed Cache Key: npm-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}"
       - run: git fetch
       - run: git pull
       - name: NPM INSTALL
