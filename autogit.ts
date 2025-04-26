@@ -1,55 +1,24 @@
-// Graph interface
-interface Graph {
-    [key: string]: string[];
-}
+let string1: string = "Hello";
+let string2: string = "World";
+let result: string = string1 + " " + string2; // "Hello World"
+let string1: string = "Hello";
+let string2: string = "World";
+let result: string = string1.concat(" ", string2); // "Hello World"
+let string1: string = "Hello";
+let string2: string = "World";
+let result: string = `${string1} ${string2}`; // "Hello World"
+let str1: string = "Hello";
+let str2: string = "World";
 
-// BFS Function
-function bfs(graph: Graph, start: string): string[] {
-    // Create a queue for BFS
-    const queue: string[] = [];
-    // Create a set to keep track of visited nodes
-    const visited: Set<string> = new Set();
-    // Array to store the order of traversal
-    const result: string[] = [];
+// Using + operator
+let concatenated1: string = str1 + " " + str2;
 
-    // Start with the initial node
-    queue.push(start);
-    visited.add(start);
+// Using concat method
+let concatenated2: string = str1.concat(" ", str2);
 
-    while (queue.length > 0) {
-        // Dequeue a node from the beginning of the queue
-        const node = queue.shift();
-        
-        if (node) {
-            // Process the current node
-            result.push(node);
-            
-            // Get all adjacent nodes
-            const neighbors = graph[node];
-            if (neighbors) {
-                for (const neighbor of neighbors) {
-                    if (!visited.has(neighbor)) {
-                        // Mark it visited and enqueue it
-                        visited.add(neighbor);
-                        queue.push(neighbor);
-                    }
-                }
-            }
-        }
-    }
+// Using template literals
+let concatenated3: string = `${str1} ${str2}`;
 
-    return result;
-}
-
-// Example Usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E'],
-};
-
-const result = bfs(graph, 'A');
-console.log(result);  // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+console.log(concatenated1); // Output: "Hello World"
+console.log(concatenated2); // Output: "Hello World"
+console.log(concatenated3); // Output: "Hello World"
