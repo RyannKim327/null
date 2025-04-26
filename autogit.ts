@@ -1,20 +1,36 @@
-const str: string = "123";
-const num: number = parseInt(str, 10);
-console.log(num); // Output: 123
-const str: string = "123";
-const num: number = Number(str);
-console.log(num); // Output: 123
-const str: string = "123";
-const num: number = +str;
-console.log(num); // Output: 123
-const str: string = "123.45";
-const num: number = Math.floor(Number(str));
-console.log(num); // Output: 123
-const str: string = "abc"; // Invalid number
-const num: number = parseInt(str, 10);
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-if (isNaN(num)) {
-    console.log("The string is not a valid number.");
-} else {
-    console.log(num);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
+
+function countLeafNodes(node: TreeNode | null): number {
+    // Base case: if the node is null, there are no leaf nodes
+    if (node === null) {
+        return 0;
+    }
+    
+    // If this node is a leaf, return 1
+    if (node.left === null && node.right === null) {
+        return 1;
+    }
+
+    // Otherwise, recursively count the leaf nodes in the left and right subtrees
+    return countLeafNodes(node.left) + countLeafNodes(node.right);
+}
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`);
