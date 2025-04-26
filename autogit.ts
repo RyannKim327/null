@@ -1,47 +1,22 @@
-// Definition for singly-linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function insertionSort(arr: number[]): number[] {
+    // Iterate over each element in the array starting from the second one
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The current element to be placed in the sorted portion
+        let j = i - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+        // Move elements of arr[0..i-1] that are greater than key
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        // Place the current element in its correct position
+        arr[j + 1] = key;
     }
+    return arr; // Return the sorted array
 }
 
-// Function to find the middle element of the linked list
-function findMiddle(head: ListNode | null): ListNode | null {
-    if (head === null) {
-        return null; // If the list is empty
-    }
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    // Move slow by 1 and fast by 2
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return slow; // Slow is now at the middle node
-}
-
-// Example usage
-function main() {
-    // Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
-    const head = new ListNode(1);
-    head.next = new ListNode(2);
-    head.next.next = new ListNode(3);
-    head.next.next.next = new ListNode(4);
-    head.next.next.next.next = new ListNode(5);
-
-    const middle = findMiddle(head);
-    if (middle) {
-        console.log("The middle element is:", middle.value); // Output: 3
-    } else {
-        console.log("The linked list is empty.");
-    }
-}
-
-main();
+// Example usage:
+const unsortedArray = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
