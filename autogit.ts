@@ -1,50 +1,44 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (head === null || n <= 0) {
-        return null; // If the list is empty or n is not valid
-    }
-
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
-
-    // Move the first pointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is greater than the length of the list
+function longestCommonSubsequence(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+  
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // If the characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max of the two options
+            }
         }
-        firstPointer = firstPointer.next;
     }
-
-    // Move both pointers until the first pointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
+  
+    // The length of LCS is found in dp[m][n]
+  
+    // Now we will reconstruct the LCS from the dp array
+    let lcs = '';
+    let i = m, j = n;
+  
+    while (i > 0 && j > 0) {
+        if (s1[i - 1] === s2[j - 1]) {
+            lcs = s1[i - 1] + lcs; // Add the matching character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up in the dp table
+        } else {
+            j--; // Move left in the dp table
+        }
     }
-
-    // The second pointer now points to the nth node from the end
-    return secondPointer;
+  
+    return lcs; // Return the longest common subsequence
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const nthNode = findNthFromEnd(head, n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
-} else {
-    console.log(`The list does not have ${n} nodes.`);
-}
+const string1 = "AGGTAB";
+const string2 = "GXTXAYB";
+const lcsResult = longestCommonSubsequence(string1, string2);
+console.log(`Longest Common Subsequence: ${lcsResult}`); // Output: "GTAB"
