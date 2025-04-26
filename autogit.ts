@@ -1,37 +1,50 @@
-npm install axios
-import axios from 'axios';
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-// Define a User interface to type our data
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
-async function fetchUsers(): Promise<void> {
-  try {
-    // Make a GET request to the public API
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    
-    // Destructure the data from the response
-    const users = response.data;
-
-    // Log the users' names to the console
-    users.forEach((user) => {
-      console.log(`${user.name} - ${user.username}`);
-    });
-  } catch (error) {
-    // Handle error appropriately
-    if (axios.isAxiosError(error)) {
-      console.error('Error message:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-  }
 }
 
-// Call the function to fetch users
-fetchUsers();
-tsc fetchUsers.ts
-node fetchUsers.js
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (head === null || n <= 0) {
+        return null; // If the list is empty or n is not valid
+    }
+
+    let firstPointer: ListNode | null = head;
+    let secondPointer: ListNode | null = head;
+
+    // Move the first pointer n nodes ahead
+    for (let i = 0; i < n; i++) {
+        if (firstPointer === null) {
+            return null; // n is greater than the length of the list
+        }
+        firstPointer = firstPointer.next;
+    }
+
+    // Move both pointers until the first pointer reaches the end
+    while (firstPointer !== null) {
+        firstPointer = firstPointer.next;
+        secondPointer = secondPointer.next;
+    }
+
+    // The second pointer now points to the nth node from the end
+    return secondPointer;
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const nthNode = findNthFromEnd(head, n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The list does not have ${n} nodes.`);
+}
