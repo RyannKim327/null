@@ -1,21 +1,89 @@
-function insertionSort(arr: number[]): number[] {
-    // Loop through each element in the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i]; // The current element to insert
-        let j = i - 1;
+class Node<T> {
+    data: T;
+    next: Node<T> | null;
 
-        // Move elements greater than 'key' to one position ahead
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
+    constructor(data: T) {
+        this.data = data;
+        this.next = null;
+    }
+}
+class LinkedList<T> {
+    head: Node<T> | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node at the end of the linked list
+    append(data: T): void {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Method to display the list
+    printList(): void {
+        let current = this.head;
+        while (current) {
+            process.stdout.write(`${current.data} -> `);
+            current = current.next;
+        }
+        console.log('null');
+    }
+
+    // Method to remove a node by value
+    remove(data: T): void {
+        if (!this.head) {
+            return;
         }
 
-        // Place 'key' at its correct position
-        arr[j + 1] = key;
-    }
-    return arr;
-}
+        // If the node to be deleted is the head
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return;
+        }
 
-// Example usage:
-const myArray = [5, 2, 9, 1, 5, 6];
-console.log(insertionSort(myArray)); // Output: [1, 2, 5, 5, 6, 9]
+        let current = this.head;
+
+        // Search for the node to be removed
+        while (current.next) {
+            if (current.next.data === data) {
+                current.next = current.next.next; // Skip the node to be removed
+                return;
+            }
+            current = current.next;
+        }
+    }
+
+    // Method to find a node by value
+    find(data: T): boolean {
+        let current = this.head;
+        while (current) {
+            if (current.data === data) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+}
+const list = new LinkedList<number>();
+
+list.append(10);
+list.append(20);
+list.append(30);
+
+list.printList(); // Output: 10 -> 20 -> 30 -> null
+
+list.remove(20);
+list.printList(); // Output: 10 -> 30 -> null
+
+console.log(list.find(30)); // Output: true
+console.log(list.find(20)); // Output: false
