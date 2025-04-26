@@ -1,50 +1,21 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+import kotlinx.coroutines.*
+import java.net.URL
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+// Function to simulate async connection
+suspend fun fetchData(): String {
+    return withContext(Dispatchers.IO) {
+        // Simulate network call
+        URL("https://jsonplaceholder.typicode.com/posts/1").readText()
     }
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome.
-    }
-
-    // Step 1: Convert linked list to array
-    const values: number[] = [];
-    let currentNode: ListNode | null = head;
-
-    while (currentNode) {
-        values.push(currentNode.value);
-        currentNode = currentNode.next;
-    }
-
-    // Step 2: Check if the array is a palindrome
-    let left = 0;
-    let right = values.length - 1;
-
-    while (left < right) {
-        if (values[left] !== values[right]) {
-            return false;
+fun main() {
+    runBlocking {
+        try {
+            val result = fetchData()
+            println("Received data: $result")
+        } catch (e: Exception) {
+            println("Error fetching data: ${e.message}")
         }
-        left++;
-        right--;
     }
-
-    return true; // The linked list is a palindrome
 }
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(1);
-
-console.log(isPalindrome(head)); // true
-
-const head2 = new ListNode(1);
-head2.next = new ListNode(2);
-
-console.log(isPalindrome(head2)); // false
