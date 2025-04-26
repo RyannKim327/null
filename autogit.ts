@@ -1,52 +1,55 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array has 1 or 0 elements, it's already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    // Find the mid index to split the array into two halves
-    const mid = Math.floor(arr.length / 2);
-
-    // Recursively sort the left half and the right half
-    const leftHalf = mergeSort(arr.slice(0, mid));
-    const rightHalf = mergeSort(arr.slice(mid));
-
-    // Merge the sorted halves
-    return merge(leftHalf, rightHalf);
+// Graph interface
+interface Graph {
+    [key: string]: string[];
 }
 
-function merge(left: number[], right: number[]): number[] {
-    let result: number[] = [];
-    let i = 0;
-    let j = 0;
+// BFS Function
+function bfs(graph: Graph, start: string): string[] {
+    // Create a queue for BFS
+    const queue: string[] = [];
+    // Create a set to keep track of visited nodes
+    const visited: Set<string> = new Set();
+    // Array to store the order of traversal
+    const result: string[] = [];
 
-    // Compare elements of left and right arrays and merge them in sorted order
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) {
-            result.push(left[i]);
-            i++;
-        } else {
-            result.push(right[j]);
-            j++;
+    // Start with the initial node
+    queue.push(start);
+    visited.add(start);
+
+    while (queue.length > 0) {
+        // Dequeue a node from the beginning of the queue
+        const node = queue.shift();
+        
+        if (node) {
+            // Process the current node
+            result.push(node);
+            
+            // Get all adjacent nodes
+            const neighbors = graph[node];
+            if (neighbors) {
+                for (const neighbor of neighbors) {
+                    if (!visited.has(neighbor)) {
+                        // Mark it visited and enqueue it
+                        visited.add(neighbor);
+                        queue.push(neighbor);
+                    }
+                }
+            }
         }
-    }
-
-    // If there are remaining elements in left, add them to the result
-    while (i < left.length) {
-        result.push(left[i]);
-        i++;
-    }
-
-    // If there are remaining elements in right, add them to the result
-    while (j < right.length) {
-        result.push(right[j]);
-        j++;
     }
 
     return result;
 }
 
-// Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+// Example Usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
+
+const result = bfs(graph, 'A');
+console.log(result);  // Output: ['A', 'B', 'C', 'D', 'E', 'F']
