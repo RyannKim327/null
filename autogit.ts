@@ -1,25 +1,25 @@
-function selectionSort(arr: number[]): number[] {
-  // Loop through each element in the array
-  for (let i = 0; i < arr.length - 1; i++) {
-    // Assume the current position is the minimum
-    let minIndex = i;
-
-    // Find the index of the minimum element in the remaining unsorted part
-    for (let j = i + 1; j < arr.length; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
+function getRandomNumberInRange(min: number, max: number): number {
+    // Ensure that min is less than max
+    if (min > max) {
+        throw new Error("Min should be less than max");
     }
 
-    // Swap the found minimum element with the current element
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
-  }
-
-  return arr;
+    // Generate a random number between min (inclusive) and max (inclusive)
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 // Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-console.log(selectionSort(unsortedArray));  // Output: [11, 12, 22, 25, 64]
+const min = 1;
+const max = 10;
+const randomNumber = getRandomNumberInRange(min, max);
+console.log(randomNumber); // This will log a random number between 1 and 10
+function getRandomFloatInRange(min: number, max: number): number {
+    if (min > max) {
+        throw new Error("Min should be less than max");
+    }
+    return Math.random() * (max - min) + min;
+}
+
+// Example usage:
+const randomFloat = getRandomFloatInRange(1, 10);
+console.log(randomFloat); // This will log a random float between 1 and 10
