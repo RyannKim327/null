@@ -1,17 +1,17 @@
-// cronJob.ts
-import cron from 'node-cron';
+const numbers: number[] = [1, 5, 3, 9, 2];
+const maxValue = Math.max(...numbers);
+console.log(maxValue); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
+const maxValue = numbers.reduce((max, current) => (current > max ? current : max), numbers[0]);
+console.log(maxValue); // Output: 9
+const numbers: number[] = [1, 5, 3, 9, 2];
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute:', new Date().toLocaleTimeString());
-});
+let maxValue = numbers[0]; // Assume the first element is the max initially
 
-// Start the task
-task.start();
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > maxValue) {
+        maxValue = numbers[i];
+    }
+}
 
-// Stop the task after 5 minutes (for demo purposes)
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped.');
-}, 5 * 60 * 1000);
-npx ts-node cronJob.ts
+console.log(maxValue); // Output: 9
