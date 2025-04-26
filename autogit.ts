@@ -1,21 +1,28 @@
-import kotlinx.coroutines.*
-import java.net.URL
+import axios, { AxiosResponse } from 'axios';
 
-// Function to simulate async connection
-suspend fun fetchData(): String {
-    return withContext(Dispatchers.IO) {
-        // Simulate network call
-        URL("https://jsonplaceholder.typicode.com/posts/1").readText()
-    }
+// Define the shape of the expected response data
+interface Todo {
+  userId: number;
+  id: number;
+  title: string;
+  completed: boolean;
 }
 
-fun main() {
-    runBlocking {
-        try {
-            val result = fetchData()
-            println("Received data: $result")
-        } catch (e: Exception) {
-            println("Error fetching data: ${e.message}")
-        }
+// Asynchronous function to get a Todo item
+async function fetchTodo(id: number): Promise<Todo | null> {
+  try {
+    const response: AxiosResponse<Todo> = await axios.get<Todo>(`https://jsonplaceholder.typicode.com/todos/${id}`);
+    console.log('Fetched Todo:', response.data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
     }
+    return null;
+  }
 }
+
+// Call the function
+fetchTodo(1);
