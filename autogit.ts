@@ -1,12 +1,14 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 is 1
-    if (n === 0) {
-        return 1;
-    }
-    // Recursive case: n! = n * (n-1)!
-    return n * factorial(n - 1);
+function calculateTriangleArea(base: number, height: number): number {
+  return (base * height) / 2;
 }
-
-// Example usage
-const number = 5; // Change this to test with other numbers
-console.log(`The factorial of ${number} is ${factorial(number)}`);
+function calculateHeronArea(a: number, b: number, c: number): number | null {
+  const s = (a + b + c) / 2;
+  const areaSquared = s * (s - a) * (s - b) * (s - c);
+  
+  if (areaSquared <= 0) {
+    // Sides don't form a valid triangle
+    return null;
+  }
+  
+  return Math.sqrt(areaSquared);
+}
