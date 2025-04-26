@@ -1,25 +1,37 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    // Ensure that min is less than max
-    if (min > max) {
-        throw new Error("Min should be less than max");
-    }
+npm install axios
+import axios from 'axios';
 
-    // Generate a random number between min (inclusive) and max (inclusive)
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+// Define a User interface to type our data
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Example usage:
-const min = 1;
-const max = 10;
-const randomNumber = getRandomNumberInRange(min, max);
-console.log(randomNumber); // This will log a random number between 1 and 10
-function getRandomFloatInRange(min: number, max: number): number {
-    if (min > max) {
-        throw new Error("Min should be less than max");
+async function fetchUsers(): Promise<void> {
+  try {
+    // Make a GET request to the public API
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    
+    // Destructure the data from the response
+    const users = response.data;
+
+    // Log the users' names to the console
+    users.forEach((user) => {
+      console.log(`${user.name} - ${user.username}`);
+    });
+  } catch (error) {
+    // Handle error appropriately
+    if (axios.isAxiosError(error)) {
+      console.error('Error message:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
     }
-    return Math.random() * (max - min) + min;
+  }
 }
 
-// Example usage:
-const randomFloat = getRandomFloatInRange(1, 10);
-console.log(randomFloat); // This will log a random float between 1 and 10
+// Call the function to fetch users
+fetchUsers();
+tsc fetchUsers.ts
+node fetchUsers.js
