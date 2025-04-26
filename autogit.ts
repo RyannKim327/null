@@ -1,52 +1,52 @@
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null;
-  right: TreeNode<T> | null;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or 0 elements, it's already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-  constructor(value: T) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+    // Find the mid index to split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+
+    // Recursively sort the left half and the right half
+    const leftHalf = mergeSort(arr.slice(0, mid));
+    const rightHalf = mergeSort(arr.slice(mid));
+
+    // Merge the sorted halves
+    return merge(leftHalf, rightHalf);
 }
 
-class BinaryTree<T> {
-  root: TreeNode<T> | null;
+function merge(left: number[], right: number[]): number[] {
+    let result: number[] = [];
+    let i = 0;
+    let j = 0;
 
-  constructor() {
-    this.root = null;
-  }
-
-  insert(value: T): void {
-    this.root = this._insertRecursively(this.root, value);
-  }
-
-  private _insertRecursively(node: TreeNode<T> | null, value: T): TreeNode<T> {
-    if (node === null) {
-      return new TreeNode(value);
+    // Compare elements of left and right arrays and merge them in sorted order
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
+        } else {
+            result.push(right[j]);
+            j++;
+        }
     }
 
-    if (value < node.value) {
-      node.left = this._insertRecursively(node.left, value);
-    } else {
-      node.right = this._insertRecursively(node.right, value);
+    // If there are remaining elements in left, add them to the result
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
     }
-    return node;
-  }
 
-  // Example traversal: in-order traversal
-  inOrderTraversal(node: TreeNode<T> | null = this.root, visit: (value: T) => void = console.log): void {
-    if (node !== null) {
-      this.inOrderTraversal(node.left, visit);
-      visit(node.value);
-      this.inOrderTraversal(node.right, visit);
+    // If there are remaining elements in right, add them to the result
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
     }
-  }
+
+    return result;
 }
-const tree = new BinaryTree<number>();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(7);
 
-tree.inOrderTraversal();  // Output: 5, 7, 10, 15
+// Example usage:
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
