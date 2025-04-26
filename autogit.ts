@@ -1,36 +1,71 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target
-        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
+}
+class Queue<T> {
+    private head: Node<T> | null = null; // represents the front of the queue
+    private tail: Node<T> | null = null; // represents the end of the queue
+    private length: number = 0; // tracks the number of elements
 
-        // Check if the element at the estimated position is the target
-        if (arr[pos] === target) {
-            return pos; // Target found at position pos
+    // Enqueues an item to the end of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // link the new node to the last node
         }
-
-        // If target is greater than the value at estimated position, narrow down to the right subarray
-        if (arr[pos] < target) {
-            low = pos + 1;
+        this.tail = newNode; // update the tail reference
+        if (!this.head) {
+            this.head = newNode; // if the queue was empty, the head is now the new node
         }
-        // If target is smaller than the value at estimated position, narrow down to the left subarray
-        else {
-            high = pos - 1;
-        }
+        this.length++;
     }
 
-    return -1; // Target not found
-}
+    // Dequeues an item from the front of the queue
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // queue is empty
+        }
+        const value = this.head.value;
+        this.head = this.head.next; // move the head to the next node
+        if (!this.head) {
+            this.tail = null; // if the queue is now empty, update the tail
+        }
+        this.length--;
+        return value;
+    }
 
-// Example usage
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
-const index = interpolationSearch(sortedArray, target);
+    // Peeks at the front of the queue without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null; // return the value at the head
+    }
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log("Element not found");
+    // Checks if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0; // returns true if length is 0
+    }
+
+    // Returns the size of the queue
+    size(): number {
+        return this.length; // return the current size
+    }
 }
+const queue = new Queue<number>();
+
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+
+console.log(queue.peek()); // 1
+console.log(queue.dequeue()); // 1
+console.log(queue.peek()); // 2
+console.log(queue.size()); // 2
+console.log(queue.isEmpty()); // false
+
+queue.dequeue(); // removes 2
+queue.dequeue(); // removes 3
+console.log(queue.isEmpty()); // true
