@@ -1,68 +1,46 @@
-type Edge = {
-    source: number;   // The starting vertex
-    destination: number; // The ending vertex
-    weight: number;     // The weight of the edge
+type Node<T> = {
+  value: T;
+  neighbors: Node<T>[];
 };
 
-class Graph {
-    edges: Edge[];
-    numVertices: number;
+// Function to perform breadth-limited search
+function breadthLimitedSearch<T>(
+  start: Node<T>,
+  target: T,
+  maxDepth: number
+): Node<T> | null {
+  const queue: Array<{ node: Node<T>; depth: number }> = [{ node: start, depth: 0 }];
+  const visited = new Set<Node<T>>();
 
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift()!;
+
+    if (visited.has(node)) continue;
+    visited.add(node);
+
+    if (node.value === target) {
+      return node; // Found target
     }
 
-    addEdge(source: number, destination: number, weight: number) {
-        this.edges.push({ source, destination, weight });
-    }
-
-    // The Bellman-Ford algorithm
-    bellmanFord(start: number) {
-        // Step 1: Initialize distances from start to all vertices as infinite 
-        // and distance to the start vertex as 0
-        const distances = new Array(this.numVertices).fill(Infinity);
-        distances[start] = 0;
-
-        // Step 2: Relax all edges (numVertices - 1) times
-        for (let i = 1; i < this.numVertices; i++) {
-            for (const edge of this.edges) {
-                const { source, destination, weight } = edge;
-                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                    distances[destination] = distances[source] + weight;
-                }
-            }
+    if (depth < maxDepth) {
+      for (const neighbor of node.neighbors) {
+        if (!visited.has(neighbor)) {
+          queue.push({ node: neighbor, depth: depth + 1 });
         }
-
-        // Step 3: Check for negative weight cycles
-        for (const edge of this.edges) {
-            const { source, destination, weight } = edge;
-            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-                throw new Error("Graph contains a negative weight cycle");
-            }
-        }
-
-        return distances;
+      }
     }
-}
+  }
 
-// Example usage
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 1, 1);
-graph.addEdge(3, 2, 5);
-graph.addEdge(4, 3, -3);
-
-try {
-    const distances = graph.bellmanFord(0);
-    console.log("Vertex Distance from Source");
-    for (let i = 0; i < distances.length; i++) {
-        console.log(`Vertex ${i}: ${distances[i]}`);
-    }
-} catch (error) {
-    console.error(error.message);
+  return null; // Target not found within maxDepth
 }
+// Suppose you have a graph setup:
+const nodeA: Node<string> = { value: 'A', neighbors: [] };
+const nodeB: Node<string> = { value: 'B', neighbors: [] };
+const nodeC: Node<string> = { value: 'C', neighbors: [] };
+const nodeD: Node<string> = { value: 'D', neighbors: [] };
+
+nodeA.neighbors = [nodeB, nodeC];
+nodeB.neighbors = [nodeD];
+
+const result = breadthLimitedSearch(nodeA, 'D', 2);
+console.log(result?.value); // Should output: 'D' if within depth, or null if beyond maxDepth
