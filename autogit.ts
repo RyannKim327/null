@@ -1,60 +1,22 @@
-class TrieNode {
-  children: Map<string, TrieNode>;
-  isEndOfWord: boolean;
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const uniqueArray = [...new Set(array)];
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const objects = [
+  { id: 1, name: 'Alice' },
+  { id: 2, name: 'Bob' },
+  { id: 1, name: 'Alice' },
+];
 
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
-  }
-}
-
-class Trie {
-  private root: TrieNode;
-
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  // Insert a word into the trie
-  insert(word: string): void {
-    let currentNode = this.root;
-    for (const char of word) {
-      if (!currentNode.children.has(char)) {
-        currentNode.children.set(char, new TrieNode());
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-    currentNode.isEndOfWord = true;
-  }
-
-  // Search for a word in the trie
-  search(word: string): boolean {
-    let currentNode = this.root;
-    for (const char of word) {
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-    return currentNode.isEndOfWord;
-  }
-
-  // Check if there is any word that starts with the prefix
-  startsWith(prefix: string): boolean {
-    let currentNode = this.root;
-    for (const char of prefix) {
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
+const seenIds = new Set();
+const uniqueObjects = objects.filter(obj => {
+  if (seenIds.has(obj.id)) {
+    return false;
+  } else {
+    seenIds.add(obj.id);
     return true;
   }
-}
-const trie = new Trie();
-trie.insert("hello");
-console.log(trie.search("hello"));   // true
-console.log(trie.search("hel"));     // false
-console.log(trie.startsWith("hel"));// true
-trie.insert("help");
-console.log(trie.search("help"));    // true
+});
