@@ -1,19 +1,25 @@
-function isSortedAscending(arr: number[]): boolean {
+function selectionSort(arr: number[]): number[] {
+  // Loop through each element in the array
   for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] > arr[i + 1]) {
-      return false;
+    // Assume the current position is the minimum
+    let minIndex = i;
+
+    // Find the index of the minimum element in the remaining unsorted part
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    // Swap the found minimum element with the current element
+    if (minIndex !== i) {
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
     }
   }
-  return true;
-}
-function isSortedAscending(arr: number[]): boolean {
-  return arr.every((value, index) => {
-    if (index === 0) return true;
-    return arr[index - 1] <= value;
-  });
-}
-const nums = [1, 2, 3, 4, 5];
-console.log(isSortedAscending(nums)); // true
 
-const mixed = [1, 3, 2, 4];
-console.log(isSortedAscending(mixed)); // false
+  return arr;
+}
+
+// Example usage:
+const unsortedArray = [64, 25, 12, 22, 11];
+console.log(selectionSort(unsortedArray));  // Output: [11, 12, 22, 25, 64]
