@@ -1,24 +1,21 @@
-let string1: string = "Hello";
-let string2: string = "World";
-let result: string = string1 + " " + string2; // "Hello World"
-let string1: string = "Hello";
-let string2: string = "World";
-let result: string = string1.concat(" ", string2); // "Hello World"
-let string1: string = "Hello";
-let string2: string = "World";
-let result: string = `${string1} ${string2}`; // "Hello World"
-let str1: string = "Hello";
-let str2: string = "World";
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-// Using + operator
-let concatenated1: string = str1 + " " + str2;
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
+    }
 
-// Using concat method
-let concatenated2: string = str1.concat(" ", str2);
+    // Sort the characters of both strings and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-// Using template literals
-let concatenated3: string = `${str1} ${str2}`;
+    return sortedStr1 === sortedStr2;
+}
 
-console.log(concatenated1); // Output: "Hello World"
-console.log(concatenated2); // Output: "Hello World"
-console.log(concatenated3); // Output: "Hello World"
+// Example Usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("arnagram", "anagram")); // true
