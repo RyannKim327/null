@@ -1,12 +1,10 @@
-function removeVowels(input: string): string {
-    // Regular expression pattern to match vowels (case insensitive)
-    const vowelsRegex = /[aeiouAEIOU]/g;
-    
-    // Replace vowels with an empty string
-    return input.replace(vowelsRegex, '');
+function getStringLength(str: string): number {
+    let count = 0;
+    for (const char of str) {
+        count++;
+    }
+    return count;
 }
-
-// Example usage
-const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
-console.log(stringWithoutVowels); // Output: "Hll, Wrld!"
+function getUnicodeStrLength(str: string): number {
+    return Array.from(str).length;
+}
