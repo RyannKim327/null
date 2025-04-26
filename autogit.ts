@@ -1,36 +1,19 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function isSortedAscending(arr: number[]): boolean {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
+  }
+  return true;
 }
-
-function countLeafNodes(node: TreeNode | null): number {
-    // Base case: if the node is null, there are no leaf nodes
-    if (node === null) {
-        return 0;
-    }
-    
-    // If this node is a leaf, return 1
-    if (node.left === null && node.right === null) {
-        return 1;
-    }
-
-    // Otherwise, recursively count the leaf nodes in the left and right subtrees
-    return countLeafNodes(node.left) + countLeafNodes(node.right);
+function isSortedAscending(arr: number[]): boolean {
+  return arr.every((value, index) => {
+    if (index === 0) return true;
+    return arr[index - 1] <= value;
+  });
 }
+const nums = [1, 2, 3, 4, 5];
+console.log(isSortedAscending(nums)); // true
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`);
+const mixed = [1, 3, 2, 4];
+console.log(isSortedAscending(mixed)); // false
