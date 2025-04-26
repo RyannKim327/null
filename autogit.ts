@@ -1,20 +1,17 @@
-function calculateTriangleArea(base: number, height: number): number {
-    return 0.5 * base * height;
+function getRandomInt(min: number, max: number): number {
+    // Ensure min and max are integers
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; // Inclusive min and max
 }
 
 // Example usage:
-const base = 5;
-const height = 10;
-const area = calculateTriangleArea(base, height);
-console.log(`The area of the triangle is: ${area}`);
-function calculateAreaHeron(a: number, b: number, c: number): number {
-    const s = (a + b + c) / 2; // semi-perimeter
-    return Math.sqrt(s * (s - a) * (s - b) * (s - c));
+const randomNumber = getRandomInt(1, 10);
+console.log(randomNumber); // Outputs a random integer between 1 and 10
+function getRandomFloat(min: number, max: number): number {
+    return Math.random() * (max - min) + min; // min inclusive, max exclusive
 }
 
 // Example usage:
-const sideA = 5;
-const sideB = 6;
-const sideC = 7;
-const areaHeron = calculateAreaHeron(sideA, sideB, sideC);
-console.log(`The area of the triangle using Heron's formula is: ${areaHeron}`);
+const randomFloat = getRandomFloat(1, 10);
+console.log(randomFloat); // Outputs a random floating-point number between 1 (inclusive) and 10 (exclusive)
