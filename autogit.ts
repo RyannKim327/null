@@ -8,55 +8,43 @@ class ListNode {
     }
 }
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current) {
-        length++;
-        current = current.next;
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome.
     }
-    return length;
+
+    // Step 1: Convert linked list to array
+    const values: number[] = [];
+    let currentNode: ListNode | null = head;
+
+    while (currentNode) {
+        values.push(currentNode.value);
+        currentNode = currentNode.next;
+    }
+
+    // Step 2: Check if the array is a palindrome
+    let left = 0;
+    let right = values.length - 1;
+
+    while (left < right) {
+        if (values[left] !== values[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+
+    return true; // The linked list is a palindrome
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    const lengthA = getLength(headA);
-    const lengthB = getLength(headB);
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(1);
 
-    // Align the start
-    let currentA: ListNode | null = headA;
-    let currentB: ListNode | null = headB;
+console.log(isPalindrome(head)); // true
 
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthA - lengthB; i++) {
-            currentA = currentA!.next; // Non-null assertion
-        }
-    } else {
-        for (let i = 0; i < lengthB - lengthA; i++) {
-            currentB = currentB!.next; // Non-null assertion
-        }
-    }
+const head2 = new ListNode(1);
+head2.next = new ListNode(2);
 
-    // Move both pointers until they find the intersection or both become null
-    while (currentA && currentB) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
-        }
-        currentA = currentA.next;
-        currentB = currentB.next;
-    }
-
-    return null; // No intersection
-}
-
-// Example Usage
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const nodeB2 = new ListNode(4);
-
-nodeA1.next = nodeA2;
-nodeB1.next = nodeB2;
-nodeB2.next = nodeA2; // Create an intersection
-
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection ? intersection.value : 'No intersection'); // Output: 2
+console.log(isPalindrome(head2)); // false
