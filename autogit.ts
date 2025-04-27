@@ -1,72 +1,75 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+npx react-native init MyTypeScriptApp --template react-native-template-typescript
+cd MyTypeScriptApp
+npm install axios
+// src/ApiService.ts
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+import axios from 'axios';
+
+export const fetchRandomData = async () => {
+    try {
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error;
     }
-}
+};
+// App.tsx
 
-class LinkedList {
-    head: ListNode | null;
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, FlatList, Text, View, ActivityIndicator } from 'react-native';
+import { fetchRandomData } from './src/ApiService';
 
-    constructor() {
-        this.head = null;
+const App = () => {
+    const [data, setData] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const loadData = async () => {
+            try {
+                const result = await fetchRandomData();
+                setData(result);
+            } catch (err) {
+                setError('Failed to load data');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadData();
+    }, []);
+
+    if (loading) {
+        return (
+            <SafeAreaView>
+                <ActivityIndicator size="large" color="#0000ff" />
+            </SafeAreaView>
+        );
     }
 
-    // Method to append a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
+    if (error) {
+        return (
+            <SafeAreaView>
+                <Text>{error}</Text>
+            </SafeAreaView>
+        );
     }
+    
+    return (
+        <SafeAreaView>
+            <FlatList
+                data={data}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View>
+                        <Text>{item.title}</Text>
+                    </View>
+                )}
+            />
+        </SafeAreaView>
+    );
+};
 
-    // Method to find the middle element of the linked list
-    findMiddle(): ListNode | null {
-        let slow: ListNode | null = this.head;
-        let fast: ListNode | null = this.head;
-        
-        while (fast && fast.next) {
-            slow = slow!.next; // Move slow pointer by 1
-            fast = fast.next.next; // Move fast pointer by 2
-        }
-        
-        return slow; // Slow will be at the middle element
-    }
-
-    // Utility method to print the list (for debugging)
-    printList(): void {
-        let current = this.head;
-        while (current) {
-            process.stdout.write(current.value + " -> ");
-            current = current.next;
-        }
-        console.log("null");
-    }
-}
-
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-console.log("Linked List:");
-list.printList();
-
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log("The middle element is:", middleNode.value);
-} else {
-    console.log("The list is empty.");
-}
+export default App;
+npx react-native run-android
