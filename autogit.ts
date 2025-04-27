@@ -1,36 +1,38 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+type Graph = Record<string, string[]>;
 
-    // Phase 1: Find a candidate for the majority element
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
+function breadthLimitedSearch(
+  graph: Graph,
+  start: string,
+  target: string,
+  maxDepth: number
+): string[] | null {
+  type QueueItem = { node: string; depth: number; path: string[] };
+  const queue: QueueItem[] = [{ node: start, depth: 0, path: [start] }];
+  const visited = new Set<string>();
+
+  while (queue.length > 0) {
+    const { node, depth, path } = queue.shift()!;
+
+    if (node === target) {
+      return path;
+    }
+
+    if (depth >= maxDepth) continue; // Limit the depth
+
+    if (!visited.has(node)) {
+      visited.add(node);
+      const neighbors = graph[node] || [];
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          queue.push({
+            node: neighbor,
+            depth: depth + 1,
+            path: [...path, neighbor],
+          });
         }
+      }
     }
+  }
 
-    // Phase 2: Verify if the candidate is actually the majority element
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Check if candidate is indeed the majority element
-    if (count > nums.length / 2) {
-        return candidate;
-    } else {
-        return null; // Return null if there is no majority element
-    }
+  return null; // No path found within depth limit
 }
-
-// Example usage
-const nums = [3, 2, 3];
-const result = majorityElement(nums);
-console.log(result); // Output: 3
