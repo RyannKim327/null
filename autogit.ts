@@ -1,38 +1,71 @@
-type Graph = Record<string, string[]>;
+interface Graph {
+  adjList: Map<number, number[]>;
+}
 
-function breadthLimitedSearch(
-  graph: Graph,
-  start: string,
-  target: string,
-  maxDepth: number
-): string[] | null {
-  type QueueItem = { node: string; depth: number; path: string[] };
-  const queue: QueueItem[] = [{ node: start, depth: 0, path: [start] }];
-  const visited = new Set<string>();
+// Function to find SCCs with Tarjan's algorithm
+function tarjanSCC(graph: Graph): number[][] {
+  const indexMap = new Map<number, number>();  // Map node to its index
+  const lowLinkMap = new Map<number, number>(); // Node's lowLink value
+  const onStack = new Set<number>();
+  const stack: number[] = [];
+  let index = 0;
+  const sccs: number[][] = [];
 
-  while (queue.length > 0) {
-    const { node, depth, path } = queue.shift()!;
+  function strongConnect(node: number) {
+    // Set the depth index for node
+    indexMap.set(node, index);
+    lowLinkMap.set(node, index);
+    index++;
 
-    if (node === target) {
-      return path;
+    stack.push(node);
+    onStack.add(node);
+
+    // Consider successors of node
+    const neighbors = graph.adjList.get(node) || [];
+    for (const neighbor of neighbors) {
+      if (!indexMap.has(neighbor)) {
+        // Successor has not yet been visited; recurse on it
+        strongConnect(neighbor);
+        // Update lowLink on callback
+        lowLinkMap.set(node, Math.min(lowLinkMap.get(node)!, lowLinkMap.get(neighbor)!));
+      } else if (onStack.has(neighbor)) {
+        // Successor is in stack and hence in the current SCC
+        lowLinkMap.set(node, Math.min(lowLinkMap.get(node)!, indexMap.get(neighbor)!));
+      }
     }
 
-    if (depth >= maxDepth) continue; // Limit the depth
-
-    if (!visited.has(node)) {
-      visited.add(node);
-      const neighbors = graph[node] || [];
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          queue.push({
-            node: neighbor,
-            depth: depth + 1,
-            path: [...path, neighbor],
-          });
-        }
-      }
+    // If node is root, pop the stack and generate an SCC
+    if (lowLinkMap.get(node) === indexMap.get(node)) {
+      const scc: number[] = [];
+      let v: number;
+      do {
+        v = stack.pop()!;
+        onStack.delete(v);
+        scc.push(v);
+      } while (v !== node);
+      sccs.push(scc);
     }
   }
 
-  return null; // No path found within depth limit
+  // Run strongConnect on each node
+  for (const node of graph.adjList.keys()) {
+    if (!indexMap.has(node)) {
+      strongConnect(node);
+    }
+  }
+
+  return sccs;
 }
+const myGraph: Graph = {
+  adjList: new Map([
+    [1, [2]],
+    [2, [3]],
+    [3, [1, 4]],
+    [4, [5]],
+    [5, [6]],
+    [6, [4]],
+  ])
+};
+
+const components = tarjanSCC(myGraph);
+console.log(components); // Strongly connected components
