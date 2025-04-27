@@ -1,24 +1,75 @@
-function countOccurrences(inputString: string, word: string): number {
-    // Split the string by the word and calculate the occurrences
-    const parts = inputString.split(word);
-    return parts.length - 1; // Subtract 1 because the split generates one more part than the occurrences
-}
+class Node<T> {
+    data: T;
+    next: Node<T> | null;
 
-// Example Usage
-const text = "The quick brown fox jumps over the lazy dog. The dog was not quick.";
-const wordToCount = "quick";
-const count = countOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${count} times.`); // Output: 2
-function countOccurrencesRegex(inputString: string, word: string): number {
-    // Create a case-insensitive regex pattern for the word
-    const regex = new RegExp(`\\b${word}\\b`, 'gi'); // \b ensures the word is matched whole
-    const matches = inputString.match(regex);
-    
-    return matches ? matches.length : 0; // Return the count of matches or 0
+    constructor(data: T) {
+        this.data = data;
+        this.next = null;
+    }
 }
+class LinkedList<T> {
+    head: Node<T> | null;
 
-// Example Usage
-const text = "The quick brown fox jumps over the lazy dog. The dog was not quick.";
-const wordToCount = "quick";
-const count = countOccurrencesRegex(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${count} times.`); // Output: 2
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node with the specified data
+    add(data: T): void {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Method to remove a node with the specified data
+    remove(data: T): void {
+        if (!this.head) return;
+
+        // Handle removing the head
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.data === data) {
+                current.next = current.next.next;
+                return;
+            }
+            current = current.next;
+        }
+    }
+
+    // Method to display the linked list
+    display(): void {
+        let current = this.head;
+        const elements: T[] = [];
+        while (current) {
+            elements.push(current.data);
+            current = current.next;
+        }
+        console.log(elements.join(" -> "));
+    }
+}
+const list = new LinkedList<number>();
+list.add(1);
+list.add(2);
+list.add(3);
+list.display(); // Output: 1 -> 2 -> 3
+
+list.remove(2);
+list.display(); // Output: 1 -> 3
+
+list.remove(1);
+list.display(); // Output: 3
+
+list.remove(3);
+list.display(); // Output: (no output, list is empty)
