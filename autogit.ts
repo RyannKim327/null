@@ -1,25 +1,33 @@
-const array1: number[] = [1, 2, 3, 4, 5];
-const array2: number[] = [4, 5, 6, 7, 8];
-
-const commonElements: number[] = array1.filter(element => array2.includes(element));
-
-console.log(commonElements); // Output: [4, 5]
-const array1: number[] = [1, 2, 3, 4, 5];
-const array2: number[] = [4, 5, 6, 7, 8];
-
-const set2 = new Set(array2);
-const commonElements: number[] = array1.filter(element => set2.has(element));
-
-console.log(commonElements); // Output: [4, 5]
-const array1: number[] = [1, 2, 3, 4, 5];
-const array2: number[] = [4, 5, 6, 7, 8];
-
-const commonElements: number[] = [];
-
-for (const element of array1) {
-    if (array2.includes(element)) {
-        commonElements.push(element);
-    }
+function getMax(arr: number[]): number {
+  return Math.max(...arr);
 }
 
-console.log(commonElements); // Output: [4, 5]
+function countingSortByDigit(arr: number[], digitPlace: number): number[] {
+  const buckets: number[][] = Array.from({ length: 10 }, () => []);
+  
+  // Distribute elements into buckets based on current digit
+  for (const num of arr) {
+    const digit = Math.floor((num / digitPlace) % 10);
+    buckets[digit].push(num);
+  }
+
+  // Collect numbers from buckets
+  return [].concat(...buckets);
+}
+
+function radixSort(arr: number[]): number[] {
+  const maxNumber = getMax(arr);
+  let digitPlace = 1;
+
+  while (Math.floor(maxNumber / digitPlace) > 0) {
+    arr = countingSortByDigit(arr, digitPlace);
+    digitPlace *= 10;
+  }
+
+  return arr;
+}
+
+// Example:
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // [2, 24, 45, 66, 75, 90, 170, 802]
