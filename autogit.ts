@@ -1,76 +1,42 @@
-// Define a key-value pair type
-interface Entry<K, V> {
-  key: K;
-  value: V;
+// Define the structure of a tree node
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// The HashTable class
-class HashTable<K, V> {
-  private buckets: Array<Array<Entry<K, V>>>;
-  private capacity: number;
-
-  constructor(size: number = 32) {
-    this.capacity = size;
-    this.buckets = new Array(size).fill(null).map(() => []);
-  }
-
-  // Hash function (simple example)
-  private hash(key: K): number {
-    const stringKey = String(key);
-    let hash = 0;
-
-    for (let char of stringKey) {
-      hash += char.charCodeAt(0);
+// Function to find the maximum depth of a binary tree
+function maxDepth(root: TreeNode | null): number {
+    // Base case: if the node is null, the depth is 0
+    if (root === null) {
+        return 0;
     }
 
-    return hash % this.capacity;
-  }
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-  // Set method
-  set(key: K, value: V): void {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-
-    // Check if key exists; if so, update
-    for (let entry of bucket) {
-      if (entry.key === key) {
-        entry.value = value;
-        return;
-      }
-    }
-
-    // Otherwise, add new entry
-    bucket.push({ key, value });
-  }
-
-  // Get method
-  get(key: K): V | undefined {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-
-    for (let entry of bucket) {
-      if (entry.key === key) {
-        return entry.value;
-      }
-    }
-    return undefined;
-  }
-
-  // Delete method
-  delete(key: K): boolean {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-
-    const entryIndex = bucket.findIndex(entry => entry.key === key);
-    if (entryIndex !== -1) {
-      bucket.splice(entryIndex, 1);
-      return true;
-    }
-    return false;
-  }
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
-const myMap = new HashTable<string, number>();
-myMap.set("apple", 5);
-console.log(myMap.get("apple")); // Output: 5
-myMap.delete("apple");
-console.log(myMap.get("apple")); // Output: undefined
+
+// Example usage:
+// Create a binary tree:  
+//         1
+//        / \
+//       2   3
+//      / \
+//     4   5
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
