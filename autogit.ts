@@ -1,8 +1,9 @@
-function reverseString(str: string): string {
-    return str.split('').reverse().join('');
-}
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const cleaned = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
 
-// Example usage:
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: "!dlroW ,olleH"
+    // Check if the cleaned string is the same as its reverse
+    const reversed = cleaned.split('').reverse().join('');
+
+    return cleaned === reversed;
+}
