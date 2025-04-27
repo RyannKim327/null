@@ -1,62 +1,46 @@
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null;
-  right: TreeNode<T> | null;
+function buildLSP(pattern: string): number[] {
+  const lsp = new Array(pattern.length).fill(0);
+  let prefixIndex = 0; // length of the previous longest prefix suffix
 
-  constructor(value: T) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+  for (let i = 1; i < pattern.length; i++) {
+    while (prefixIndex > 0 && pattern[i] !== pattern[prefixIndex]) {
+      prefixIndex = lsp[prefixIndex - 1];
+    }
+
+    if (pattern[i] === pattern[prefixIndex]) {
+      prefixIndex++;
+      lsp[i] = prefixIndex;
+    }
   }
+
+  return lsp;
 }
-class BinaryTree<T> {
-  root: TreeNode<T> | null;
 
-  constructor() {
-    this.root = null;
-  }
+function kmpSearch(text: string, pattern: string): number[] {
+  const lsp = buildLSP(pattern);
+  const result: number[] = [];
+  let j = 0; // index for pattern
 
-  insert(value: T): void {
-    const newNode = new TreeNode(value);
-    if (!this.root) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+  for (let i = 0; i < text.length; i++) {
+    while (j > 0 && text[i] !== pattern[j]) {
+      j = lsp[j - 1];
+    }
+
+    if (text[i] === pattern[j]) {
+      j++;
+    }
+
+    if (j === pattern.length) {
+      // match found, store starting index
+      result.push(i - pattern.length + 1);
+      j = lsp[j - 1];
     }
   }
 
-  private insertNode(current: TreeNode<T>, newNode: TreeNode<T>): void {
-    // For simplicity, assume we're building a binary search tree
-    if (newNode.value < current.value) {
-      if (current.left) {
-        this.insertNode(current.left, newNode);
-      } else {
-        current.left = newNode;
-      }
-    } else {
-      if (current.right) {
-        this.insertNode(current.right, newNode);
-      } else {
-        current.right = newNode;
-      }
-    }
-  }
-
-  // In-order traversal (Left, Node, Right)
-  inOrderTraversal(node: TreeNode<T> | null = this.root, visit: (value: T) => void): void {
-    if (node !== null) {
-      this.inOrderTraversal(node.left, visit);
-      visit(node.value);
-      this.inOrderTraversal(node.right, visit);
-    }
-  }
+  return result;
 }
-const tree = new BinaryTree<number>();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(7);
+const text = "ababcabcabababd";
+const pattern = "ababd";
 
-tree.inOrderTraversal(tree.root, (value) => {
-  console.log(value);
-});
+const matches = kmpSearch(text, pattern);
+console.log(matches); // Output: [10]
