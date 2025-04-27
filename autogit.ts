@@ -1,41 +1,20 @@
-interface State {
-    sequence: string[];
-    score: number;
-}
+function firstNonRepeatingChar(str: string): string | null {
+  const charCount: Record<string, number> = {};
 
-function beamSearch(
-    initialState: State,
-    expandFunction: (state: State) => State[],
-    beamWidth: number,
-    maxSteps: number
-): State[] {
-    let currentBeams: State[] = [initialState];
+  // Count the frequency of each character
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
 
-    for (let step = 0; step < maxSteps; step++) {
-        const allSuccessors: State[] = [];
-
-        // Expand each beam
-        for (const state of currentBeams) {
-            const successors = expandFunction(state);
-            allSuccessors.push(...successors);
-        }
-
-        // Keep only the top `beamWidth` based on score
-        currentBeams = allSuccessors
-            .sort((a, b) => b.score - a.score) // Descending order
-            .slice(0, beamWidth);
+  // Find the first character with a count of 1
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
     }
+  }
 
-    return currentBeams;
+  // If no non-repeating character is found
+  return null;
 }
-function expandSequence(state: State): State[] {
-    const possibleNextWords = ["hello", "world", "foo", "bar"]; // dummy
-    return possibleNextWords.map(word => ({
-        sequence: [...state.sequence, word],
-        score: state.score + Math.random() // dummy scoring
-    }));
-}
-const initialState: State = { sequence: [], score: 0 };
-const results = beamSearch(initialState, expandSequence, 3, 5);
-
-console.log(results);
+console.log(firstNonRepeatingChar("abaccdeff")); // Output: 'b'
+console.log(firstNonRepeatingChar("aabbcc"));   // Output: null
