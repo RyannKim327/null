@@ -1,55 +1,29 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap
 
-    constructor(value: number, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
-    }
-}
+    while (gap > 0) {
+        // Perform a gapped insertion sort for this gap size.
+        for (let i = gap; i < n; i++) {
+            const temp = arr[i]; // Store the current element
+            let j = i;
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) return true;
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
 
-    // Step 1: Find the middle of the list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast.next && fast.next.next) {
-        slow = slow!.next;
-        fast = fast.next.next;
-    }
-
-    // Step 2: Reverse the second half of the list
-    let secondHalfHead = reverseList(slow!.next);
-    let firstHalfPointer = head;
-    let secondHalfPointer = secondHalfHead;
-
-    // Step 3: Compare the two halves
-    while (secondHalfPointer) {
-        if (firstHalfPointer!.value !== secondHalfPointer.value) {
-            return false;
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
-        firstHalfPointer = firstHalfPointer!.next;
-        secondHalfPointer = secondHalfPointer.next;
+        gap = Math.floor(gap / 2); // Reduce the gap
     }
 
-    // (Optional) Step 4: Restore the list
-    slow!.next = reverseList(secondHalfHead);
-
-    return true;
+    return arr;
 }
 
-function reverseList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current = head;
-
-    while (current) {
-        const nextNode = current.next;
-        current.next = prev;
-        prev = current;
-        current = nextNode;
-    }
-
-    return prev;
-}
+// Example usage:
+const unsortedArray = [5, 2, 9, 1, 5, 6];
+const sortedArray = shellSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
