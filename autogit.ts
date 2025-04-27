@@ -1,52 +1,80 @@
-type Graph = { [key: string]: string[] };
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-function depthLimitedSearch(graph: Graph, startNode: string, goalNode: string, depthLimit: number): boolean {
-    // Helper function for the recursive search
-    function dls(currentNode: string, currentDepth: number): boolean {
-        console.log(`Visiting node: ${currentNode} at depth: ${currentDepth}`);
-        
-        // If we reach the goal node
-        if (currentNode === goalNode) {
-            return true;
-        }
-
-        // If we've reached the depth limit, stop searching further
-        if (currentDepth >= depthLimit) {
-            return false;
-        }
-
-        // Get the neighbors of the current node
-        const neighbors = graph[currentNode] || [];
-        
-        // Explore each neighbor
-        for (let neighbor of neighbors) {
-            if (dls(neighbor, currentDepth + 1)) {
-                return true; // If the goal is found in deeper search
-            }
-        }
-
-        return false; // Goal not found in this path
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    return dls(startNode, 0);
 }
 
-// Sample graph
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F', 'G'],
-    D: [],
-    E: ['H'],
-    F: [],
-    G: [],
-    H: []
-};
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
+    
+    // Recursively compute the depth of the left and right children
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    
+    // The maximum depth at the current node is 1 + the maximum of the depths of its children
+    return Math.max(leftDepth, rightDepth) + 1;
+}
 
-// Example usage
-const startNode = 'A';
-const goalNode = 'H';
-const depthLimit = 3;
-const found = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-console.log(found ? 'Goal found!' : 'Goal not found.');
+console.log(maxDepth(root)); // Output: 3
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
+
+    let depth = 0;
+    const queue: TreeNode[] = [root]; // Start with the root node
+
+    while (queue.length > 0) {
+        let levelSize = queue.length; // Number of nodes at the current level
+        depth++; // Increase depth for each level
+
+        for (let i = 0; i < levelSize; i++) {
+            const node = queue.shift(); // Dequeue the front node
+
+            if (node?.left) {
+                queue.push(node.left); // Add left child to the queue
+            }
+            if (node?.right) {
+                queue.push(node.right); // Add right child to the queue
+            }
+        }
+    }
+
+    return depth;
+}
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(maxDepth(root)); // Output: 3
