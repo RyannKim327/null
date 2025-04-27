@@ -1,29 +1,25 @@
-// Simulate an asynchronous connection function
-function connectToServer(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    console.log('Starting connection...');
-    setTimeout(() => {
-      const success = Math.random() > 0.2; // 80% chance to succeed
-      if (success) {
-        resolve('Connection successful!');
-      } else {
-        reject('Connection failed.');
-      }
-    }, 3000); // simulate network delay
-  });
+const array1: number[] = [1, 2, 3, 4, 5];
+const array2: number[] = [4, 5, 6, 7, 8];
+
+const commonElements: number[] = array1.filter(element => array2.includes(element));
+
+console.log(commonElements); // Output: [4, 5]
+const array1: number[] = [1, 2, 3, 4, 5];
+const array2: number[] = [4, 5, 6, 7, 8];
+
+const set2 = new Set(array2);
+const commonElements: number[] = array1.filter(element => set2.has(element));
+
+console.log(commonElements); // Output: [4, 5]
+const array1: number[] = [1, 2, 3, 4, 5];
+const array2: number[] = [4, 5, 6, 7, 8];
+
+const commonElements: number[] = [];
+
+for (const element of array1) {
+    if (array2.includes(element)) {
+        commonElements.push(element);
+    }
 }
 
-// Async function to handle connection
-async function connectAsync() {
-  try {
-    const message = await connectToServer();
-    console.log(message);
-    // handle success (e.g., update UI, proceed to next step)
-  } catch (error) {
-    console.error(error);
-    // handle error (e.g., show retry option)
-  }
-}
-
-// Call the async connection
-connectAsync();
+console.log(commonElements); // Output: [4, 5]
