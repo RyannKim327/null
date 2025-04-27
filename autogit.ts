@@ -1,41 +1,38 @@
-function boyerMooreHorspoolSearch(haystack: string, needle: string): number {
-  if (needle.length === 0) return 0; // empty needle, match at start
-  if (needle.length > haystack.length) return -1;
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0, j = 0;
 
-  // Build shift table
-  const shiftTable: { [char: string]: number } = {};
-
-  // Populate shift table for all but the last character of pattern
-  for (let i = 0; i < needle.length - 1; i++) {
-    shiftTable[needle[i]] = needle.length - 1 - i;
-  }
-
-  const lastIndex = needle.length - 1;
-  let index = 0;
-
-  while (index <= haystack.length - needle.length) {
-    let matchIndex = lastIndex;
-
-    // Check for match from the end of pattern
-    while (matchIndex >= 0 && haystack[index + matchIndex] === needle[matchIndex]) {
-      matchIndex--;
-    }
-
-    if (matchIndex < 0) {
-      // Found a match
-      return index;
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) {
+      result.push(left[i]);
+      i++;
     } else {
-      // Mismatch found, determine how far to shift
-      const mismatchedChar = haystack[index + lastIndex];
-      const shift = shiftTable[mismatchedChar] || needle.length;
-      index += shift;
+      result.push(right[j]);
+      j++;
     }
   }
 
-  return -1; // no match found
+  // Append remaining elements
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
-const text = "here is a sample text to search within.";
-const pattern = "search";
 
-const position = boyerMooreHorspoolSearch(text, pattern);
-console.log(position); // Should print the index where "search" starts, or -1 if not found.
+function iterativeMergeSort(arr: number[]): number[] {
+  const n = arr.length;
+  let width = 1;
+  let sortedArray = [...arr];
+
+  while (width < n) {
+    let tempArray: number[] = [];
+
+    for (let i = 0; i < n; i += 2 * width) {
+      const left = sortedArray.slice(i, i + width);
+      const right = sortedArray.slice(i + width, i + 2 * width);
+      tempArray = tempArray.concat(merge(left, right));
+    }
+
+    sortedArray = tempArray;
+    width *= 2;
+  }
+
+  return sortedArray;
+}
