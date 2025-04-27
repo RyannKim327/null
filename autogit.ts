@@ -1,72 +1,33 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode> = new Map();
-    start?: number; // optional, for edges
-    end?: { value: number }; // to support open-ended edges
-    suffixLink?: SuffixTreeNode;
+class ListNode {
+  value: any;
+  next: ListNode | null;
 
-    constructor(start?: number, end?: { value: number }) {
-        this.start = start;
-        this.end = end;
-    }
+  constructor(value: any) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-class SuffixTree {
-    private text: string;
-    private root: SuffixTreeNode;
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+  if (!head || n < 1) return null; 
 
-    constructor(text: string) {
-        this.text = text;
-        this.root = new SuffixTreeNode();
-        this.buildNaively();
+  let fast: ListNode | null = head;
+  let slow: ListNode | null = head;
+
+  // Move fast n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (fast === null) return null; // n is larger than the length
+    fast = fast.next;
+  }
+
+  // Move both until fast reaches the end
+  while (fast !== null) {
+    fast = fast.next;
+    if (slow !== null) {
+      slow = slow.next;
     }
+  }
 
-    private buildNaively() {
-        // Naively insert all suffixes
-        for (let i = 0; i < this.text.length; i++) {
-            this.insertSuffix(i);
-        }
-    }
-
-    private insertSuffix(startIndex: number) {
-        let currentNode = this.root;
-        let currentPos = startIndex;
-
-        while (currentPos < this.text.length) {
-            const currentChar = this.text[currentPos];
-            if (currentNode.children.has(currentChar)) {
-                // Follow existing edge
-                const child = currentNode.children.get(currentChar)!;
-                let edgeStart = child.start!;
-                let edgeEnd = child.end!.value;
-
-                // Match as many characters as possible on the edge
-                let labelPos = edgeStart;
-                while (labelPos <= edgeEnd && currentPos < this.text.length && this.text[labelPos] === this.text[currentPos]) {
-                    labelPos++;
-                    currentPos++;
-                }
-
-                if (labelPos > edgeEnd) {
-                    // Continue to next node
-                    currentNode = child;
-                } else {
-                    // Need to split edge (not implemented here for simplicity)
-                    // For a real implementation, you'd split the edge here
-                    // and create new nodes accordingly.
-                    return; // For now, stop
-                }
-            } else {
-                // Create new leaf node
-                const leaf = new SuffixTreeNode(currentPos, { value: this.text.length - 1 });
-                currentNode.children.set(currentChar, leaf);
-                break; // Inserted suffix, move to next
-            }
-        }
-    }
-
-    // You can add search methods here
+  // slow is now at the nth node from the end
+  return slow;
 }
-
-// Usage:
-const text = "banana$";
-const suffixTree = new SuffixTree(text);
