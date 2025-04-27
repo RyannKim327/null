@@ -1,10 +1,32 @@
-function getRandomInRange(min: number, max: number): number {
-  // Math.random() returns a float between 0 (inclusive) and 1 (exclusive)
-  // Multiply by the size of the range (max - min + 1) for inclusive upper bound
-  // Then add the min to shift the range
-  return Math.random() * (max - min) + min;
+function bubbleSort(arr: number[]): number[] {
+    const n: number = arr.length;
+    let swapped: boolean;
+
+    // Traverse through all array elements
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
+
+        // Last i elements are already in place
+        for (let j = 0; j < n - 1 - i; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true; // Set swapped to true
+            }
+        }
+
+        // If no two elements were swapped by inner loop, then break
+        if (!swapped) {
+            break;
+        }
+    }
+
+    return arr;
 }
-function getRandomIntInRange(min: number, max: number): number {
-  // This will give an integer between min (inclusive) and max (inclusive)
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+
+// Example usage:
+const numbers: number[] = [64, 34, 25, 12, 22, 11, 90];
+const sortedNumbers: number[] = bubbleSort(numbers);
+console.log("Sorted array:", sortedNumbers);
+Sorted array: [11, 12, 22, 25, 34, 64, 90]
