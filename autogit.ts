@@ -1,75 +1,37 @@
-npx react-native init MyTypeScriptApp --template react-native-template-typescript
-cd MyTypeScriptApp
-npm install axios
-// src/ApiService.ts
+function getMaxValue(arr: number[]): number {
+  return Math.max(...arr);
+}
 
-import axios from 'axios';
+function getDigit(num: number, digitIndex: number): number {
+  // Extract the digit at digitIndex (0 = least significant digit)
+  return Math.floor(Math.abs(num) / Math.pow(10, digitIndex)) % 10;
+}
 
-export const fetchRandomData = async () => {
-    try {
-        const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        throw error;
-    }
-};
-// App.tsx
+function countingSortByDigit(arr: number[], digitIndex: number): number[] {
+  const buckets: number[][] = Array.from({ length: 10 }, () => []);
 
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, FlatList, Text, View, ActivityIndicator } from 'react-native';
-import { fetchRandomData } from './src/ApiService';
+  for (const num of arr) {
+    const digit = getDigit(num, digitIndex);
+    buckets[digit].push(num);
+  }
 
-const App = () => {
-    const [data, setData] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+  // Concatenate all buckets into one array, maintaining stability
+  return buckets.flat();
+}
 
-    useEffect(() => {
-        const loadData = async () => {
-            try {
-                const result = await fetchRandomData();
-                setData(result);
-            } catch (err) {
-                setError('Failed to load data');
-            } finally {
-                setLoading(false);
-            }
-        };
+function radixSort(arr: number[]): number[] {
+  if (arr.length === 0) return arr;
 
-        loadData();
-    }, []);
+  const maxVal = getMaxValue(arr);
+  const maxDigits = Math.floor(Math.log10(maxVal)) + 1;
 
-    if (loading) {
-        return (
-            <SafeAreaView>
-                <ActivityIndicator size="large" color="#0000ff" />
-            </SafeAreaView>
-        );
-    }
+  let result = [...arr];
 
-    if (error) {
-        return (
-            <SafeAreaView>
-                <Text>{error}</Text>
-            </SafeAreaView>
-        );
-    }
-    
-    return (
-        <SafeAreaView>
-            <FlatList
-                data={data}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View>
-                        <Text>{item.title}</Text>
-                    </View>
-                )}
-            />
-        </SafeAreaView>
-    );
-};
+  for (let digitIndex = 0; digitIndex < maxDigits; digitIndex++) {
+    result = countingSortByDigit(result, digitIndex);
+  }
 
-export default App;
-npx react-native run-android
+  return result;
+}
+const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(numbers)); // [2, 24, 45, 66, 75, 90, 170, 802]
