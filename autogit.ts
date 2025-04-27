@@ -1,24 +1,10 @@
-// Define an interface for the expected data structure
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
-
-async function fetchPost(postId: number): Promise<void> {
-  try {
-    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+function decimalToBinary(decimalNumber: number): string {
+    // Check if the input is a valid number
+    if (!Number.isInteger(decimalNumber) || decimalNumber < 0) {
+        throw new Error("Input must be a non-negative integer");
     }
-    const post: Post = await response.json();
-    console.log(`Post Title: ${post.title}`);
-    console.log(`Post Body: ${post.body}`);
-  } catch (error) {
-    console.error('Error fetching post:', error);
-  }
+    // Convert the number to binary string
+    return decimalNumber.toString(2);
 }
-
-// Call the function with a specific post ID
-fetchPost(1);
+console.log(decimalToBinary(10)); // Output: '1010'
+console.log(decimalToBinary(255)); // Output: '11111111'
