@@ -1,19 +1,14 @@
-function findSecondLargest(arr: number[]): number | undefined {
-  if (arr.length < 2) {
-    return undefined; // Or handle as per your needs
-  }
-
-  let first = -Infinity;
-  let second = -Infinity;
-
-  for (const num of arr) {
-    if (num > first) {
-      second = first;
-      first = num;
-    } else if (num > second && num < first) {
-      second = num;
+function factorial(n: number): number {
+    // Base case
+    if (n === 0 || n === 1) {
+        return 1;
+    } else {
+        // Recursive case
+        return n * factorial(n - 1);
     }
-  }
-
-  return second === -Infinity ? undefined : second;
 }
+
+// Example usage
+console.log(factorial(5)); // Output: 120
+console.log(factorial(0)); // Output: 1
+console.log(factorial(1)); // Output: 1
