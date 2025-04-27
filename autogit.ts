@@ -1,21 +1,14 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
-
-    constructor(val: number, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
-}
-
-function getLinkedListLength(head: ListNode | null): number {
-    let count = 0;
-    let current = head;
-
-    while (current !== null) {
-        count++;
-        current = current.next;
-    }
-
-    return count;
-}
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce((acc, curr) => {
+  if (!acc.includes(curr)) {
+    acc.push(curr);
+  }
+  return acc;
+}, []);
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
