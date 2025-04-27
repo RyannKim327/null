@@ -1,42 +1,46 @@
-// Define the structure of a tree node
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Helper function to heapify a subtree rooted at index i
+    const heapify = (heapSize: number, i: number): void => {
+        let largest = i;
+        const left = 2 * i + 1;
+        const right = 2 * i + 2;
+
+        // If left child is larger than root
+        if (left < heapSize && arr[left] > arr[largest]) {
+            largest = left;
+        }
+
+        // If right child is larger than current largest
+        if (right < heapSize && arr[right] > arr[largest]) {
+            largest = right;
+        }
+
+        // If largest is not root
+        if (largest !== i) {
+            [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
+            heapify(heapSize, largest); // Heapify the root.
+        }
+    };
+
+    // Build max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(n, i);
     }
-}
 
-// Function to find the maximum depth of a binary tree
-function maxDepth(root: TreeNode | null): number {
-    // Base case: if the node is null, the depth is 0
-    if (root === null) {
-        return 0;
+    // One by one extract elements from heap
+    for (let i = n - 1; i > 0; i--) {
+        // Move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+        // Call max heapify on the reduced heap
+        heapify(i, 0);
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    return arr;
 }
 
 // Example usage:
-// Create a binary tree:  
-//         1
-//        / \
-//       2   3
-//      / \
-//     4   5
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
+const data = [3, 6, 5, 0, 8, 2, 1, 9, 7, 4];
+console.log(heapSort(data)); // Sorted array
+function heapSort<T>(arr: T[], compare: (a: T, b: T) => number): T[] { /* ... */ }
