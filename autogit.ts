@@ -1,27 +1,76 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+// Define a key-value pair type
+interface Entry<K, V> {
+  key: K;
+  value: V;
+}
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Handle the case where the array contains all identical elements
-        if (arr[high] === arr[low]) {
-            if (arr[low] === target) return low;
-            break;
-        }
+// The HashTable class
+class HashTable<K, V> {
+  private buckets: Array<Array<Entry<K, V>>>;
+  private capacity: number;
 
-        // Calculate the probable position of the target
-        const ratio = (target - arr[low]) / (arr[high] - arr[low]);
-        const mid = low + Math.floor(ratio * (high - low));
+  constructor(size: number = 32) {
+    this.capacity = size;
+    this.buckets = new Array(size).fill(null).map(() => []);
+  }
 
-        if (arr[mid] === target) {
-            return mid;
-        } else if (arr[mid] < target) {
-            low = mid + 1;
-        } else {
-            high = mid - 1;
-        }
+  // Hash function (simple example)
+  private hash(key: K): number {
+    const stringKey = String(key);
+    let hash = 0;
+
+    for (let char of stringKey) {
+      hash += char.charCodeAt(0);
     }
 
-    // Not found
-    return -1;
+    return hash % this.capacity;
+  }
+
+  // Set method
+  set(key: K, value: V): void {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    // Check if key exists; if so, update
+    for (let entry of bucket) {
+      if (entry.key === key) {
+        entry.value = value;
+        return;
+      }
+    }
+
+    // Otherwise, add new entry
+    bucket.push({ key, value });
+  }
+
+  // Get method
+  get(key: K): V | undefined {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    for (let entry of bucket) {
+      if (entry.key === key) {
+        return entry.value;
+      }
+    }
+    return undefined;
+  }
+
+  // Delete method
+  delete(key: K): boolean {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    const entryIndex = bucket.findIndex(entry => entry.key === key);
+    if (entryIndex !== -1) {
+      bucket.splice(entryIndex, 1);
+      return true;
+    }
+    return false;
+  }
 }
+const myMap = new HashTable<string, number>();
+myMap.set("apple", 5);
+console.log(myMap.get("apple")); // Output: 5
+myMap.delete("apple");
+console.log(myMap.get("apple")); // Output: undefined
