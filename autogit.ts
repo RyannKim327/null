@@ -1,19 +1,44 @@
-function bwtTransform(input: string): string {
-  const length = input.length;
-  // Generate all rotations
-  const rotations: string[] = [];
-  for (let i = 0; i < length; i++) {
-    const rotation = input.slice(i) + input.slice(0, i);
-    rotations.push(rotation);
-  }
-  // Sort rotations lexicographically
-  rotations.sort();
+class ListNode {
+    val: number;
+    next: ListNode | null;
 
-  // Construct the BWT result by taking the last character of each rotation
-  const result = rotations.map(rotation => rotation.charAt(rotation.length - 1)).join('');
-  return result;
+    constructor(val: number) {
+        this.val = val;
+        this.next = null;
+    }
 }
 
-// Example usage:
-const inputString = "banana";
-console.log(bwtTransform(inputString)); // Output should be "annb$aa" with proper terminator
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    const nodes = new Set<ListNode>();
+    let currentA = headA;
+
+    // Traverse list A and store the nodes in a set
+    while (currentA !== null) {
+        nodes.add(currentA);
+        currentA = currentA.next;
+    }
+
+    let currentB = headB;
+
+    // Traverse list B and check if any node is in the set
+    while (currentB !== null) {
+        if (nodes.has(currentB)) {
+            return currentB; // Intersection found
+        }
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection
+}
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+    let pointerA = headA;
+    let pointerB = headB;
+
+    while (pointerA !== pointerB) {
+        pointerA = (pointerA !== null) ? pointerA.next : headB;
+        pointerB = (pointerB !== null) ? pointerB.next : headA;
+    }
+
+    return pointerA;
+}
