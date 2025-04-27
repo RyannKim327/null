@@ -1,43 +1,76 @@
-function longestCommonSubsequence(s1: string, s2: string): string {
-    const m = s1.length;
-    const n = s2.length;
+function lengthOfLIS(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-    // Create a 2D array to store lengths of longest common subsequence.
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    const tails: number[] = [];
 
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
+    for (const num of nums) {
+        let left = 0;
+        let right = tails.length;
+
+        // Binary search for the first element in tails >= num
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (tails[mid] < num) {
+                left = mid + 1;
             } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Characters do not match
+                right = mid;
             }
         }
-    }
 
-    // Reconstruct the longest common subsequence
-    let lcs = '';
-    let i = m;
-    let j = n;
-
-    while (i > 0 && j > 0) {
-        if (s1[i - 1] === s2[j - 1]) {
-            lcs = s1[i - 1] + lcs; // Append the matching character
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move up in the DP table
+        // If num is larger than any element in tails
+        if (left === tails.length) {
+            tails.push(num);
         } else {
-            j--; // Move left in the DP table
+            tails[left] = num; // Replace to maintain minimal tail
         }
     }
 
-    return lcs; // Return the longest common subsequence
+    return tails.length;
 }
+function longestIncreasingSubsequence(nums: number[]): number[] {
+    if (nums.length === 0) return [];
 
-// Example usage
-const s1 = "abcde";
-const s2 = "ace";
-const result = longestCommonSubsequence(s1, s2);
-console.log(result); // Output: "ace"
+    const tails: number[] = [];
+    const indices: number[] = []; // store the indices of tails
+    const predecessors: number[] = new Array(nums.length).fill(-1);
+    let length = 0;
+    let lastIndex = -1;
+
+    for (let i = 0; i < nums.length; i++) {
+        // Binary search in tails
+        let left = 0, right = length;
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (nums[indices[mid]] < nums[i]) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+
+        if (left === length) {
+            indices[length] = i;
+            length++;
+        } else {
+            indices[left] = i;
+        }
+
+        // Track predecessor
+        predecessors[i] = left > 0 ? indices[left - 1] : -1;
+
+        // Keep track of last index of the LIS
+        if (left === length - 1) {
+            lastIndex = i;
+        }
+    }
+
+    // Reconstruct the sequence
+    const lis: number[] = [];
+    let cur = lastIndex;
+    while (cur !== -1) {
+        lis.unshift(nums[cur]);
+        cur = predecessors[cur];
+    }
+
+    return lis;
+}
