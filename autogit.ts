@@ -1,103 +1,92 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
-        this.left = null;
-        this.right = null;
+        this.next = null;
     }
 }
-
-class BinarySearchTree {
-    root: Node | null;
+class LinkedList<T> {
+    head: Node<T> | null;
+    size: number;
 
     constructor() {
-        this.root = null;
+        this.head = null;
+        this.size = 0;
     }
 
-    insert(value: number): void {
+    // Method to add a node at the end of the list
+    add(value: T): void {
         const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
+        if (!this.head) {
+            this.head = newNode;
         } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
             }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
+            current.next = newNode;
         }
+        this.size++;
     }
 
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
+    // Method to remove a node by value
+    remove(value: T): boolean {
+        if (!this.head) {
+            return false; // List is empty
         }
-        if (value === node.value) {
+
+        if (this.head.value === value) {
+            this.head = this.head.next; // Remove head
+            this.size--;
             return true;
-        } else if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else {
-            return this.searchNode(node.right, value);
         }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next; // Remove the node
+                this.size--;
+                return true;
+            }
+            current = current.next;
+        }
+        return false; // Value not found
     }
 
-    inOrderTraversal(node: Node | null): number[] {
-        const result: number[] = [];
-        if (node !== null) {
-            result.push(...this.inOrderTraversal(node.left));
-            result.push(node.value);
-            result.push(...this.inOrderTraversal(node.right));
+    // Method to find a node by value
+    find(value: T): Node<T> | null {
+        let current = this.head;
+        while (current) {
+            if (current.value === value) {
+                return current; // Node found
+            }
+            current = current.next;
         }
-        return result;
+        return null; // Node not found
     }
 
-    preOrderTraversal(node: Node | null): number[] {
-        const result: number[] = [];
-        if (node !== null) {
-            result.push(node.value);
-            result.push(...this.preOrderTraversal(node.left));
-            result.push(...this.preOrderTraversal(node.right));
+    // Method to display the linked list
+    display(): void {
+        let current = this.head;
+        const elements: T[] = [];
+        while (current) {
+            elements.push(current.value);
+            current = current.next;
         }
-        return result;
-    }
-
-    postOrderTraversal(node: Node | null): number[] {
-        const result: number[] = [];
-        if (node !== null) {
-            result.push(...this.postOrderTraversal(node.left));
-            result.push(...this.postOrderTraversal(node.right));
-            result.push(node.value);
-        }
-        return result;
+        console.log(elements.join(' -> '));
     }
 }
+const linkedList = new LinkedList<number>();
 
-// Example usage
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(2);
-bst.insert(7);
+linkedList.add(1);
+linkedList.add(2);
+linkedList.add(3);
+linkedList.display(); // Output: 1 -> 2 -> 3
 
-console.log("In-order Traversal:", bst.inOrderTraversal(bst.root)); // [2, 5, 7, 10, 15]
-console.log("Search 7:", bst.search(7)); // true
-console.log("Search 8:", bst.search(8)); // false
+linkedList.remove(2);
+linkedList.display(); // Output: 1 -> 3
+
+const foundNode = linkedList.find(3);
+console.log(foundNode ? foundNode.value : 'Not found'); // Output: 3
