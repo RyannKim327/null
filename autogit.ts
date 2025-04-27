@@ -1,16 +1,36 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return '';
+class Stack<T> {
+    private items: T[] = [];
 
-    let prefix = strs[0];
-
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            prefix = prefix.slice(0, -1); // reduce prefix
-            if (prefix === '') return '';
-        }
+    // Add an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    return prefix;
+    // Remove and return the top item
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // View the top item without removing
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Optional: size of the stack
+    size(): number {
+        return this.items.length;
+    }
 }
-const words = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(words)); // Output: "fl"
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.peek()); // 3
+console.log(stack.pop());  // 3
+console.log(stack.size()); // 2
