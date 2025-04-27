@@ -1,28 +1,40 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+// Define a TreeNode class to represent each node in the binary tree
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted part
-        let minIndex = i;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-        // Find the index of the minimum element in the unsorted portion
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if a smaller element is found
-            }
-        }
-
-        // Swap the found minimum element with the first unsorted element
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swapping elements
-        }
+// Function to count the number of leaf nodes
+function countLeafNodes(node: TreeNode | null): number {
+    // If the node is null, return 0 (base case)
+    if (node === null) {
+        return 0;
     }
 
-    return arr; // Return the sorted array
+    // If the node is a leaf (no children), return 1
+    if (node.left === null && node.right === null) {
+        return 1;
+    }
+
+    // Recursively count the leaf nodes in the left and right subtrees
+    return countLeafNodes(node.left) + countLeafNodes(node.right);
 }
 
 // Example usage:
-const array = [64, 25, 12, 22, 11];
-console.log("Unsorted array:", array);
-const sortedArray = selectionSort(array);
-console.log("Sorted array:", sortedArray);
+// Creating a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
+
+const leafCount = countLeafNodes(root); // Count the leaf nodes
+console.log(`Number of leaf nodes: ${leafCount}`); // Output the result
