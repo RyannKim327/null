@@ -1,7 +1,24 @@
-function countWordOccurrences(text: string, word: string): number {
-  const regex = new RegExp(`\\b${word}\\b`, 'gi'); // \b for word boundary, g for global, i for case-insensitive
-  const matches = text.match(regex);
-  return matches ? matches.length : 0;
+// Define an interface for the expected data structure
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
-const sentence = "The cat chased the cat around the cathedral.";
-console.log(countWordOccurrences(sentence, "cat")); // Outputs: 2
+
+async function fetchPost(postId: number): Promise<void> {
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const post: Post = await response.json();
+    console.log(`Post Title: ${post.title}`);
+    console.log(`Post Body: ${post.body}`);
+  } catch (error) {
+    console.error('Error fetching post:', error);
+  }
+}
+
+// Call the function with a specific post ID
+fetchPost(1);
