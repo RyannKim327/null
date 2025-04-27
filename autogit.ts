@@ -1,40 +1,87 @@
-// Define a TreeNode class to represent each node in the binary tree
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class TrieNode {
+  children: Map<string, TrieNode>;
+  isEndOfWord: boolean;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
+  }
 }
 
-// Function to count the number of leaf nodes
-function countLeafNodes(node: TreeNode | null): number {
-    // If the node is null, return 0 (base case)
-    if (node === null) {
-        return 0;
+class Trie {
+  private root: TrieNode;
+
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  // Insert a word into the trie
+  insert(word: string): void {
+    let currentNode = this.root;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new TrieNode());
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    currentNode.isEndOfWord = true;
+  }
+
+  // Search for a complete word
+  search(word: string): boolean {
+    let currentNode = this.root;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return currentNode.isEndOfWord;
+  }
+
+  // Check if any words start with the prefix
+  startsWith(prefix: string): boolean {
+    let currentNode = this.root;
+    for (const char of prefix) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return true;
+  }
+
+  // Optional: Get all words matching a prefix
+  getWordsWithPrefix(prefix: string): string[] {
+    let currentNode = this.root;
+    for (const char of prefix) {
+      if (!currentNode.children.has(char)) {
+        return [];
+      }
+      currentNode = currentNode.children.get(char)!;
     }
 
-    // If the node is a leaf (no children), return 1
-    if (node.left === null && node.right === null) {
-        return 1;
+    const results: string[] = [];
+
+    function dfs(node: TrieNode, path: string) {
+      if (node.isEndOfWord) {
+        results.push(path);
+      }
+      for (const [char, childNode] of node.children) {
+        dfs(childNode, path + char);
+      }
     }
 
-    // Recursively count the leaf nodes in the left and right subtrees
-    return countLeafNodes(node.left) + countLeafNodes(node.right);
+    dfs(currentNode, prefix);
+    return results;
+  }
 }
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("helium");
+trie.insert("happy");
 
-// Example usage:
-// Creating a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-
-const leafCount = countLeafNodes(root); // Count the leaf nodes
-console.log(`Number of leaf nodes: ${leafCount}`); // Output the result
+console.log(trie.search("hello")); // true
+console.log(trie.search("hel")); // false
+console.log(trie.startsWith("hel")); // true
+console.log(trie.getWordsWithPrefix("he")); // ['hello', 'helium']
