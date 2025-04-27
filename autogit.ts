@@ -1,50 +1,27 @@
-interface SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start?: number; // start index of label in text
-    end?: number;   // end index of label in text
-    suffixLink?: SuffixTreeNode; // used in Ukkonen's algorithm
-    suffixIndex?: number;        // for leaf nodes
-}
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-class SuffixTree {
-    private root: SuffixTreeNode;
-    private text: string;
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted portion
+        let minIndex = i;
 
-    constructor(text: string) {
-        this.text = text;
-        this.root = this.createNode();
-        this.buildSuffixTree();
-    }
-
-    private createNode(): SuffixTreeNode {
-        return {
-            children: new Map(),
-        };
-    }
-
-    private buildSuffixTree() {
-        // Naive implementation: insert each suffix explicitly
-        for (let i = 0; i < this.text.length; i++) {
-            this.insertSuffix(i);
-        }
-    }
-
-    private insertSuffix(index: number) {
-        let currentNode = this.root;
-        let currentSuffix = this.text.slice(index);
-
-        for (let i = 0; i < currentSuffix.length; i++) {
-            const c = currentSuffix[i];
-            if (!currentNode.children.has(c)) {
-                const newNode = this.createNode();
-                currentNode.children.set(c, newNode);
-                // We'd need to set start/end indices of edges here.
+        // Check the remaining elements to find the minimum
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j; // Update minIndex if a smaller element is found
             }
-            currentNode = currentNode.children.get(c)!;
         }
-        // mark leaf node with suffix index if needed
-        currentNode.suffixIndex = index;
+
+        // Swap the found minimum element with the first element of the unsorted portion
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
 
-    // Add methods for pattern search, etc.
+    return arr;
 }
+
+// Example usage
+const data = [64, 25, 12, 22, 11];
+const sortedData = selectionSort(data);
+console.log(sortedData); // Output: [11, 12, 22, 25, 64]
