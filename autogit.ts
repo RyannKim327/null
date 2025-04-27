@@ -1,9 +1,19 @@
-const myArray = [1, 2, 3, 4, 5];
-const reversedArray = myArray.reverse();
+function findSecondLargest(arr: number[]): number | undefined {
+  if (arr.length < 2) {
+    return undefined; // Or handle as per your needs
+  }
 
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-const originalArray = [1, 2, 3, 4, 5];
-const reversedCopy = [...originalArray].reverse();
+  let first = -Infinity;
+  let second = -Infinity;
 
-console.log(originalArray); // [1, 2, 3, 4, 5]
-console.log(reversedCopy);  // [5, 4, 3, 2, 1]
+  for (const num of arr) {
+    if (num > first) {
+      second = first;
+      first = num;
+    } else if (num > second && num < first) {
+      second = num;
+    }
+  }
+
+  return second === -Infinity ? undefined : second;
+}
