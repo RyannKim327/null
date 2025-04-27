@@ -1,80 +1,113 @@
 class TreeNode {
     value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+    left: TreeNode | null = null;
+    right: TreeNode | null = null;
 
     constructor(value: number) {
         this.value = value;
-        this.left = null;
-        this.right = null;
     }
 }
+class BinarySearchTree {
+    root: TreeNode | null = null;
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
-    }
-    
-    // Recursively compute the depth of the left and right children
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-    
-    // The maximum depth at the current node is 1 + the maximum of the depths of its children
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
+    // Method to insert a value
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
     }
 
-    let depth = 0;
-    const queue: TreeNode[] = [root]; // Start with the root node
-
-    while (queue.length > 0) {
-        let levelSize = queue.length; // Number of nodes at the current level
-        depth++; // Increase depth for each level
-
-        for (let i = 0; i < levelSize; i++) {
-            const node = queue.shift(); // Dequeue the front node
-
-            if (node?.left) {
-                queue.push(node.left); // Add left child to the queue
+    // Helper method for inserting a node
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
             }
-            if (node?.right) {
-                queue.push(node.right); // Add right child to the queue
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    return depth;
+    // Method to search for a value
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    // Helper method for searching a node
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // value is found
+        }
+    }
+
+    // In-order Traversal (Left, Root, Right)
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
+    }
+
+    // Pre-order Traversal (Root, Left, Right)
+    preOrderTraversal(callback: (value: number) => void): void {
+        this.preOrder(this.root, callback);
+    }
+
+    private preOrder(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            callback(node.value);
+            this.preOrder(node.left, callback);
+            this.preOrder(node.right, callback);
+        }
+    }
+
+    // Post-order Traversal (Left, Right, Root)
+    postOrderTraversal(callback: (value: number) => void): void {
+        this.postOrder(this.root, callback);
+    }
+
+    private postOrder(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.postOrder(node.left, callback);
+            this.postOrder(node.right, callback);
+            callback(node.value);
+        }
+    }
 }
+const bst = new BinarySearchTree();
+bst.insert(7);
+bst.insert(3);
+bst.insert(9);
+bst.insert(1);
+bst.insert(5);
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Search for a value
+console.log(bst.search(5)); // true
+console.log(bst.search(2)); // false
 
-console.log(maxDepth(root)); // Output: 3
+// In-order traversal
+bst.inOrderTraversal((value) => {
+    console.log(value); // 1, 3, 5, 7, 9
+});
