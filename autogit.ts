@@ -1,36 +1,28 @@
-// Define an interface for the joke response
-interface JokeResponse {
-    setup?: string;
-    delivery?: string;
-    joke?: string;
-}
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-// Function to fetch a random joke
-async function fetchRandomJoke(): Promise<void> {
-    try {
-        const response = await fetch('https://v2.jokeapi.dev/joke/Any');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
+
+        // Find the index of the minimum element in the unsorted portion
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j; // Update minIndex if a smaller element is found
+            }
         }
-        
-        const jokeData: JokeResponse = await response.json();
-        displayJoke(jokeData);
-    } catch (error) {
-        console.error('Error fetching the joke:', error);
+
+        // Swap the found minimum element with the first unsorted element
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swapping elements
+        }
     }
+
+    return arr; // Return the sorted array
 }
 
-// Function to display the joke
-function displayJoke(jokeData: JokeResponse): void {
-    if (jokeData.setup) {
-        console.log(`Setup: ${jokeData.setup}`);
-        console.log(`Delivery: ${jokeData.delivery}`);
-    } else if (jokeData.joke) {
-        console.log(`Joke: ${jokeData.joke}`);
-    } else {
-        console.log('No joke found!');
-    }
-}
-
-// Call the function to fetch a random joke
-fetchRandomJoke();
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+console.log("Unsorted array:", array);
+const sortedArray = selectionSort(array);
+console.log("Sorted array:", sortedArray);
