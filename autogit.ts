@@ -1,24 +1,19 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+function bwtTransform(input: string): string {
+  const length = input.length;
+  // Generate all rotations
+  const rotations: string[] = [];
+  for (let i = 0; i < length; i++) {
+    const rotation = input.slice(i) + input.slice(0, i);
+    rotations.push(rotation);
+  }
+  // Sort rotations lexicographically
+  rotations.sort();
 
-    // Outer loop to ensure we go through the whole array
-    do {
-        swapped = false; // Reset the swapped flag each time
-        // Inner loop for comparing adjacent elements
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap if the elements are in the wrong order
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-                swapped = true; // Set flag to true to indicate a swap occurred
-            }
-        }
-    } while (swapped); // Repeat until no swaps occur
-
-    return arr; // Return the sorted array
+  // Construct the BWT result by taking the last character of each rotation
+  const result = rotations.map(rotation => rotation.charAt(rotation.length - 1)).join('');
+  return result;
 }
 
-// Example usage
-const numbers = [64, 34, 25, 12, 22, 11, 90];
-const sortedNumbers = bubbleSort(numbers);
-console.log("Sorted Array:", sortedNumbers);
+// Example usage:
+const inputString = "banana";
+console.log(bwtTransform(inputString)); // Output should be "annb$aa" with proper terminator
