@@ -1,7 +1,37 @@
-function triangleAreaWithBaseAndHeight(base: number, height: number): number {
-    return (base * height) / 2;
+type Graph = Record<string, string[]>;
+
+function bfs(graph: Graph, startNode: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [];
+  const result: string[] = [];
+
+  // Start from the initial node
+  queue.push(startNode);
+  visited.add(startNode);
+
+  while (queue.length > 0) {
+    const currentNode = queue.shift()!;
+    result.push(currentNode);
+
+    // Explore neighbors
+    for (const neighbor of graph[currentNode]) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return result;
 }
-function triangleAreaHeron(a: number, b: number, c: number): number {
-    const s = (a + b + c) / 2;
-    return Math.sqrt(s * (s - a) * (s - b) * (s - c));
-}
+const myGraph: Graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E']
+};
+
+console.log(bfs(myGraph, 'A'));
+// Output: ['A', 'B', 'C', 'D', 'E', 'F']
