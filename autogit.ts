@@ -1,37 +1,33 @@
-type Graph = Record<string, string[]>;
+interface State {
+  // define your state shape
+}
 
-function bfs(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const queue: string[] = [];
-  const result: string[] = [];
+type SuccessorFunction = (state: State) => State[];
 
-  // Start from the initial node
-  queue.push(startNode);
-  visited.add(startNode);
+function depthLimitedSearch(
+  startState: State,
+  goalTest: (state: State) => boolean,
+  successors: SuccessorFunction,
+  limit: number
+): State | null {
+  // Stack holds tuples: [state, depth]
+  const stack: Array<[State, number]> = [];
+  stack.push([startState, 0]);
 
-  while (queue.length > 0) {
-    const currentNode = queue.shift()!;
-    result.push(currentNode);
+  while (stack.length > 0) {
+    const [currentState, depth] = stack.pop()!
 
-    // Explore neighbors
-    for (const neighbor of graph[currentNode]) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
+    if (goalTest(currentState)) {
+      return currentState; // or store path info if needed
+    }
+    
+    if (depth < limit) {
+      const nextStates = successors(currentState);
+      for (const nextState of nextStates) {
+        // push with incremented depth
+        stack.push([nextState, depth + 1]);
       }
     }
   }
-
-  return result;
+  return null; // no solution within depth limit
 }
-const myGraph: Graph = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E']
-};
-
-console.log(bfs(myGraph, 'A'));
-// Output: ['A', 'B', 'C', 'D', 'E', 'F']
