@@ -1,19 +1,7 @@
-function insertionSort(arr: number[]): number[] {
-  for (let i = 1; i < arr.length; i++) {
-    const key = arr[i];
-    let j = i - 1;
-
-    // Move elements of arr[0..i-1], that are greater than key,
-    // to one position ahead of their current position
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j--;
-    }
-    arr[j + 1] = key;
-  }
-  return arr;
-}
-
-// Example usage:
-const numbers = [5, 2, 9, 1, 5, 6];
-console.log(insertionSort(numbers)); // Output: [1, 2, 5, 5, 6, 9]
+let myArray = [1, 2, 3, 4, 5];
+myArray.reverse();
+console.log(myArray); // Output: [5, 4, 3, 2, 1]
+const originalArray = [1, 2, 3, 4, 5];
+const reversedArray = [...originalArray].reverse();
+console.log(reversedArray); // [5, 4, 3, 2, 1]
+console.log(originalArray); // [1, 2, 3, 4, 5]
