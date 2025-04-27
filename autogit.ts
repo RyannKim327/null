@@ -1,42 +1,103 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    // Ensure nums1 is the smaller array for efficiency
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+class Node {
+    value: number;
+    left: Node | null;
+    right: Node | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinarySearchTree {
+    root: Node | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    const m = nums1.length;
-    const n = nums2.length;
-
-    let left = 0;
-    let right = m;
-
-    while (left <= right) {
-        const i = Math.floor((left + right) / 2); // Partition in nums1
-        const j = Math.floor((m + n + 1) / 2) - i; // Complement partition in nums2
-
-        const nums1LeftMax = i === 0 ? -Infinity : nums1[i - 1];
-        const nums1RightMin = i === m ? Infinity : nums1[i];
-
-        const nums2LeftMax = j === 0 ? -Infinity : nums2[j - 1];
-        const nums2RightMin = j === n ? Infinity : nums2[j];
-
-        if (nums1LeftMax <= nums2RightMin && nums2LeftMax <= nums1RightMin) {
-            // Correct partition found
-            if ((m + n) % 2 === 0) {
-                // Even total length
-                return (Math.max(nums1LeftMax, nums2LeftMax) + Math.min(nums1RightMin, nums2RightMin)) / 2;
-            } else {
-                // Odd total length
-                return Math.max(nums1LeftMax, nums2LeftMax);
-            }
-        } else if (nums1LeftMax > nums2RightMin) {
-            // Move partition in nums1 to the left
-            right = i - 1;
+    insert(value: number): void {
+        const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
         } else {
-            // Move partition in nums1 to the right
-            left = i + 1;
+            this.insertNode(this.root, newNode);
         }
     }
 
-    throw new Error("Input arrays are not sorted or invalid");
+    private insertNode(node: Node, newNode: Node): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: Node | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value === node.value) {
+            return true;
+        } else if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else {
+            return this.searchNode(node.right, value);
+        }
+    }
+
+    inOrderTraversal(node: Node | null): number[] {
+        const result: number[] = [];
+        if (node !== null) {
+            result.push(...this.inOrderTraversal(node.left));
+            result.push(node.value);
+            result.push(...this.inOrderTraversal(node.right));
+        }
+        return result;
+    }
+
+    preOrderTraversal(node: Node | null): number[] {
+        const result: number[] = [];
+        if (node !== null) {
+            result.push(node.value);
+            result.push(...this.preOrderTraversal(node.left));
+            result.push(...this.preOrderTraversal(node.right));
+        }
+        return result;
+    }
+
+    postOrderTraversal(node: Node | null): number[] {
+        const result: number[] = [];
+        if (node !== null) {
+            result.push(...this.postOrderTraversal(node.left));
+            result.push(...this.postOrderTraversal(node.right));
+            result.push(node.value);
+        }
+        return result;
+    }
 }
+
+// Example usage
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(2);
+bst.insert(7);
+
+console.log("In-order Traversal:", bst.inOrderTraversal(bst.root)); // [2, 5, 7, 10, 15]
+console.log("Search 7:", bst.search(7)); // true
+console.log("Search 8:", bst.search(8)); // false
