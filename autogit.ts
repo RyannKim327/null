@@ -1,16 +1,51 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((item, index) => 
-  array.indexOf(item) === index
-);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce((acc, current) => {
-  if (!acc.includes(current)) {
-    acc.push(current);
-  }
-  return acc;
-}, [] as typeof array);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
+class ListNode {
+    val: number; // or any data type
+    next: ListNode | null;
+
+    constructor(val: number) {
+        this.val = val;
+        this.next = null;
+    }
+}
+
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    const lenA = getLength(headA);
+    const lenB = getLength(headB);
+
+    let currentA = headA;
+    let currentB = headB;
+
+    // Advance the longer list
+    if (lenA > lenB) {
+        for (let i = 0; i < lenA - lenB; i++) {
+            currentA = currentA!.next;
+        }
+    } else {
+        for (let i = 0; i < lenB - lenA; i++) {
+            currentB = currentB!.next;
+        }
+    }
+
+    // Move both pointers together until they meet
+    while (currentA && currentB) {
+        if (currentA === currentB) {
+            return currentA;
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null;
+}
