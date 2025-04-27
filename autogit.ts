@@ -1,28 +1,52 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-    const len1 = str1.length;
-    const len2 = str2.length;
-    let maxLen = 0;
-    let endIndexStr1 = 0;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    // Create a 2D array initialized with zeros
-    const dp: number[][] = Array.from({ length: len1 + 1 }, () => Array(len2 + 1).fill(0));
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    return lps;
+}
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
 
-    for (let i = 1; i <= len1; i++) {
-        for (let j = 1; j <= len2; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLen) {
-                    maxLen = dp[i][j];
-                    endIndexStr1 = i - 1; // last character index of the substring in str1
-                }
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+            if (j === pattern.length) {
+                result.push(i - j); // match found
+                j = lps[j - 1]; // continue searching
+            }
+        } else {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
             }
         }
     }
 
-    return maxLen > 0 ? str1.slice(endIndexStr1 - maxLen + 1, endIndexStr1 + 1) : '';
+    return result;
 }
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-// Example usage:
-const s1 = "ABABC";
-const s2 = "BABCA";
-console.log(longestCommonSubstring(s1, s2)); // Output: "BABC"
+const positions = kmpSearch(text, pattern);
+console.log(positions); // Should output [10]
