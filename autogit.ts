@@ -1,83 +1,8 @@
-class TrieNode {
-  children: Map<string, TrieNode>;
-  isEndOfWord: boolean;
-
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
-  }
+function removeVowels(input: string): string {
+    return input.replace(/[aeiouAEIOU]/g, '');
 }
 
-class Trie {
-  root: TrieNode;
-
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  // Insert a word into the trie
-  insert(word: string): void {
-    let currentNode = this.root;
-    for (const char of word) {
-      if (!currentNode.children.has(char)) {
-        currentNode.children.set(char, new TrieNode());
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-    currentNode.isEndOfWord = true;
-  }
-
-  // Search for a complete word
-  search(word: string): boolean {
-    let currentNode = this.root;
-    for (const char of word) {
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-    return currentNode.isEndOfWord;
-  }
-
-  // Check if there's any word starting with the prefix
-  startsWith(prefix: string): boolean {
-    let currentNode = this.root;
-    for (const char of prefix) {
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-    return true;
-  }
-
-  // Optional: collect all words with a given prefix
-  getWordsWithPrefix(prefix: string): string[] {
-    let currentNode = this.root;
-    for (const char of prefix) {
-      if (!currentNode.children.has(char)) {
-        return [];
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-
-    const words: string[] = [];
-    const dfs = (node: TrieNode, path: string) => {
-      if (node.isEndOfWord) {
-        words.push(path);
-      }
-      for (const [char, childNode] of node.children) {
-        dfs(childNode, path + char);
-      }
-    };
-
-    dfs(currentNode, prefix);
-    return words;
-  }
-}
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("helium");
-console.log(trie.search("hello")); // true
-console.log(trie.startsWith("hel")); // true
-console.log(trie.getWordsWithPrefix("hel")); // ["hello", "helium"]
+// Example usage
+const originalString = "Hello TypeScript!";
+const stringWithoutVowels = removeVowels(originalString);
+console.log(stringWithoutVowels); // Output: "Hll TyprScrpt!"
