@@ -1,46 +1,83 @@
-function buildLSP(pattern: string): number[] {
-  const lsp = new Array(pattern.length).fill(0);
-  let prefixIndex = 0; // length of the previous longest prefix suffix
+class TrieNode {
+  children: Map<string, TrieNode>;
+  isEndOfWord: boolean;
 
-  for (let i = 1; i < pattern.length; i++) {
-    while (prefixIndex > 0 && pattern[i] !== pattern[prefixIndex]) {
-      prefixIndex = lsp[prefixIndex - 1];
-    }
-
-    if (pattern[i] === pattern[prefixIndex]) {
-      prefixIndex++;
-      lsp[i] = prefixIndex;
-    }
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
   }
-
-  return lsp;
 }
 
-function kmpSearch(text: string, pattern: string): number[] {
-  const lsp = buildLSP(pattern);
-  const result: number[] = [];
-  let j = 0; // index for pattern
+class Trie {
+  root: TrieNode;
 
-  for (let i = 0; i < text.length; i++) {
-    while (j > 0 && text[i] !== pattern[j]) {
-      j = lsp[j - 1];
-    }
-
-    if (text[i] === pattern[j]) {
-      j++;
-    }
-
-    if (j === pattern.length) {
-      // match found, store starting index
-      result.push(i - pattern.length + 1);
-      j = lsp[j - 1];
-    }
+  constructor() {
+    this.root = new TrieNode();
   }
 
-  return result;
-}
-const text = "ababcabcabababd";
-const pattern = "ababd";
+  // Insert a word into the trie
+  insert(word: string): void {
+    let currentNode = this.root;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new TrieNode());
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    currentNode.isEndOfWord = true;
+  }
 
-const matches = kmpSearch(text, pattern);
-console.log(matches); // Output: [10]
+  // Search for a complete word
+  search(word: string): boolean {
+    let currentNode = this.root;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return currentNode.isEndOfWord;
+  }
+
+  // Check if there's any word starting with the prefix
+  startsWith(prefix: string): boolean {
+    let currentNode = this.root;
+    for (const char of prefix) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return true;
+  }
+
+  // Optional: collect all words with a given prefix
+  getWordsWithPrefix(prefix: string): string[] {
+    let currentNode = this.root;
+    for (const char of prefix) {
+      if (!currentNode.children.has(char)) {
+        return [];
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+
+    const words: string[] = [];
+    const dfs = (node: TrieNode, path: string) => {
+      if (node.isEndOfWord) {
+        words.push(path);
+      }
+      for (const [char, childNode] of node.children) {
+        dfs(childNode, path + char);
+      }
+    };
+
+    dfs(currentNode, prefix);
+    return words;
+  }
+}
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("helium");
+console.log(trie.search("hello")); // true
+console.log(trie.startsWith("hel")); // true
+console.log(trie.getWordsWithPrefix("hel")); // ["hello", "helium"]
