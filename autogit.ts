@@ -1,33 +1,9 @@
-interface State {
-  // define your state shape
+function triangleAreaWithBaseHeight(base: number, height: number): number {
+  return 0.5 * base * height;
 }
-
-type SuccessorFunction = (state: State) => State[];
-
-function depthLimitedSearch(
-  startState: State,
-  goalTest: (state: State) => boolean,
-  successors: SuccessorFunction,
-  limit: number
-): State | null {
-  // Stack holds tuples: [state, depth]
-  const stack: Array<[State, number]> = [];
-  stack.push([startState, 0]);
-
-  while (stack.length > 0) {
-    const [currentState, depth] = stack.pop()!
-
-    if (goalTest(currentState)) {
-      return currentState; // or store path info if needed
-    }
-    
-    if (depth < limit) {
-      const nextStates = successors(currentState);
-      for (const nextState of nextStates) {
-        // push with incremented depth
-        stack.push([nextState, depth + 1]);
-      }
-    }
-  }
-  return null; // no solution within depth limit
+function triangleAreaWithSides(a: number, b: number, c: number): number {
+  const s = (a + b + c) / 2; // semi-perimeter
+  return Math.sqrt(s * (s - a) * (s - b) * (s - c));
 }
+console.log(triangleAreaWithBaseHeight(10, 5)); // Output: 25
+console.log(triangleAreaWithSides(3, 4, 5));   // Output: 6
