@@ -1,15 +1,26 @@
-function findSecondLargest(arr: number[]): number | null {
-    // Step 1: Remove duplicates using Set
-    const uniqueValues = Array.from(new Set(arr));
-
-    // Step 2: Sort the unique values in descending order
-    uniqueValues.sort((a, b) => b - a);
-
-    // Step 3: Return the second largest if it exists
-    return uniqueValues.length >= 2 ? uniqueValues[1] : null;
+// Define the shape of the expected data
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Example usage:
-const array = [3, 5, 1, 3, 7, 7, 2];
-const secondLargest = findSecondLargest(array);
-console.log(secondLargest); // Output: 5
+async function fetchUserData(userId: number): Promise<void> {
+  const url = `https://jsonplaceholder.typicode.com/users/${userId}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Error fetching user: ${response.status} ${response.statusText}`);
+    }
+
+    const userData: User = await response.json();
+
+    console.log(`Fetched User: ${userData.name} (${userData.email})`);
+  } catch (error) {
+    console.error('Oops, something went wrong:', error);
+  }
+}
+
+// Call the function with a user ID
+fetchUserData(3);
