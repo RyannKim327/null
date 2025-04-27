@@ -1,14 +1,31 @@
-function factorial(n: number): number {
-    // Base case
-    if (n === 0 || n === 1) {
-        return 1;
-    } else {
-        // Recursive case
-        return n * factorial(n - 1);
-    }
+import axios from 'axios';
+
+// Define an interface for the user data
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Example usage
-console.log(factorial(5)); // Output: 120
-console.log(factorial(0)); // Output: 1
-console.log(factorial(1)); // Output: 1
+// Function to fetch users
+async function fetchUsers(): Promise<void> {
+  try {
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    const users: User[] = response.data;
+
+    console.log('Fetched Users:');
+    users.forEach(user => {
+      console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error fetching users:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
+}
+
+// Call the function to fetch users
+fetchUsers();
