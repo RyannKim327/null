@@ -1,17 +1,25 @@
-function decimalToBinary(decimalNumber: number): string {
-    return decimalNumber.toString(2);
+function countingSort(arr: number[], maxNum: number): number[] {
+    // Step 1: Create a counting array
+    const count: number[] = new Array(maxNum + 1).fill(0);
+
+    // Step 2: Store the count of each number in the count array
+    for (let num of arr) {
+        count[num]++;
+    }
+
+    // Step 3: Build the output array
+    const output: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        for (let j = 0; j < count[i]; j++) {
+            output.push(i);
+        }
+    }
+
+    return output;
 }
 
-// Usage
-const num = 29;
-console.log(decimalToBinary(num)); // Output: "11101"
-function decimalToBinary(decimalNumber: number): string {
-    if (!Number.isInteger(decimalNumber)) {
-        throw new Error("Input must be an integer");
-    }
-    if (decimalNumber < 0) {
-        // Handling negative numbers by converting the absolute value and prefixing a minus sign
-        return '-' + Math.abs(decimalNumber).toString(2);
-    }
-    return decimalNumber.toString(2);
-}
+// Example usage
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const maxNum = Math.max(...arr);
+const sortedArr = countingSort(arr, maxNum);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
