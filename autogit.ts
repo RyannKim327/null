@@ -1,27 +1,52 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+type Graph = { [key: string]: string[] };
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted portion
-        let minIndex = i;
+function depthLimitedSearch(graph: Graph, startNode: string, goalNode: string, depthLimit: number): boolean {
+    // Helper function for the recursive search
+    function dls(currentNode: string, currentDepth: number): boolean {
+        console.log(`Visiting node: ${currentNode} at depth: ${currentDepth}`);
+        
+        // If we reach the goal node
+        if (currentNode === goalNode) {
+            return true;
+        }
 
-        // Check the remaining elements to find the minimum
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update minIndex if a smaller element is found
+        // If we've reached the depth limit, stop searching further
+        if (currentDepth >= depthLimit) {
+            return false;
+        }
+
+        // Get the neighbors of the current node
+        const neighbors = graph[currentNode] || [];
+        
+        // Explore each neighbor
+        for (let neighbor of neighbors) {
+            if (dls(neighbor, currentDepth + 1)) {
+                return true; // If the goal is found in deeper search
             }
         }
 
-        // Swap the found minimum element with the first element of the unsorted portion
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-        }
+        return false; // Goal not found in this path
     }
 
-    return arr;
+    return dls(startNode, 0);
 }
 
+// Sample graph
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F', 'G'],
+    D: [],
+    E: ['H'],
+    F: [],
+    G: [],
+    H: []
+};
+
 // Example usage
-const data = [64, 25, 12, 22, 11];
-const sortedData = selectionSort(data);
-console.log(sortedData); // Output: [11, 12, 22, 25, 64]
+const startNode = 'A';
+const goalNode = 'H';
+const depthLimit = 3;
+const found = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
+
+console.log(found ? 'Goal found!' : 'Goal not found.');
