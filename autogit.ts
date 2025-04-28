@@ -1,20 +1,45 @@
-function bubbleSort(arr: number[]): number[] {
-    let n = arr.length;
-    let swapped: boolean;
+class ListNode {
+  value: number;
+  next: ListNode | null;
 
-    do {
-        swapped = false;
-        for (let i = 0; i < n - 1; i++) {
-            if (arr[i] > arr[i + 1]) {
-                // Swap adjacent elements
-                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
-                swapped = true;
-            }
-        }
-        n--; // After each pass, the largest element is bubbled to the end
-    } while (swapped);
-
-    return arr;
+  constructor(value: number, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
-const unsortedArray = [5, 2, 9, 1, 5, 6];
-console.log(bubbleSort(unsortedArray)); // [1, 2, 5, 5, 6, 9]
+function isPalindrome(head: ListNode | null): boolean {
+  if (!head || !head.next) return true; // Empty or single node
+
+  // Find middle (slow/fast pointer)
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
+
+  while (fast && fast.next) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+  // 'slow' is now at middle
+
+  // Reverse second half
+  let prev: ListNode | null = null;
+  let current: ListNode | null = slow;
+
+  while (current) {
+    const nextNode = current.next;
+    current.next = prev;
+    prev = current;
+    current = nextNode;
+  }
+
+  // Compare first half and reversed second half
+  let firstHalf: ListNode | null = head;
+  let secondHalf: ListNode | null = prev;
+
+  while (secondHalf) {
+    if (firstHalf!.value !== secondHalf.value) return false;
+    firstHalf = firstHalf!.next;
+    secondHalf = secondHalf.next;
+  }
+
+  return true;
+}
