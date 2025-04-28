@@ -1,27 +1,25 @@
-// Define the shape of the data we're expecting
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
-
-// Function to fetch a post by ID
-async function fetchPost(postId: number): Promise<Post> {
-  const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
-  if (!response.ok) {
-    throw new Error(`Error fetching post: ${response.statusText}`);
+function findSecondLargest(arr: number[]): number | null {
+  if (arr.length < 2) {
+    // Not enough elements for a second largest
+    return null;
   }
-  const data: Post = await response.json();
-  return data;
+
+  let max = -Infinity;
+  let secondMax = -Infinity;
+
+  for (const num of arr) {
+    if (num > max) {
+      secondMax = max;
+      max = num;
+    } else if (num > secondMax && num !== max) {
+      secondMax = num;
+    }
+  }
+
+  // If secondMax is still -Infinity, it means there's no second distinct largest
+  return secondMax === -Infinity ? null : secondMax;
 }
 
-// Usage
-fetchPost(1)
-  .then(post => {
-    console.log(`Title: ${post.title}`);
-    console.log(`Body: ${post.body}`);
-  })
-  .catch(error => {
-    console.error(error);
-  });
+// Example usage:
+const numbers = [3, 1, 4, 2, 5, 5];
+console.log(findSecondLargest(numbers)); // Output: 4
