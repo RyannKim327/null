@@ -1,69 +1,73 @@
-type Graph = Map<number, number[]>;
+class ListNode {
+    val: number;
+    next: ListNode | null;
 
-function tarjanSCC(graph: Graph): number[][] {
-  const indexMap: Map<number, number> = new Map(); // node -> index
-  const lowLinkMap: Map<number, number> = new Map();
-  const onStack: Set<number> = new Set();
-  const stack: number[] = [];
-  const sccs: number[][] = [];
-  let index = 0;
-
-  function strongConnect(node: number) {
-    indexMap.set(node, index);
-    lowLinkMap.set(node, index);
-    index++;
-    stack.push(node);
-    onStack.add(node);
-
-    const neighbors = graph.get(node) || [];
-    for (const neighbor of neighbors) {
-      if (!indexMap.has(neighbor)) {
-        // Successor has not yet been visited; recurse on it
-        strongConnect(neighbor);
-        lowLinkMap.set(
-          node,
-          Math.min(lowLinkMap.get(node)!, lowLinkMap.get(neighbor)!)
-        );
-      } else if (onStack.has(neighbor)) {
-        // Successor is in the current SCC
-        lowLinkMap.set(
-          node,
-          Math.min(lowLinkMap.get(node)!, indexMap.get(neighbor)!)
-        );
-      }
+    constructor(val: number) {
+        this.val = val;
+        this.next = null;
     }
-
-    // If node is a root node, pop the stack and generate an SCC
-    if (lowLinkMap.get(node) === indexMap.get(node)) {
-      const scc: number[] = [];
-      let w: number;
-      do {
-        w = stack.pop()!;
-        onStack.delete(w);
-        scc.push(w);
-      } while (w !== node);
-      sccs.push(scc);
-    }
-  }
-
-  // Run the algorithm for each node
-  for (const node of graph.keys()) {
-    if (!indexMap.has(node)) {
-      strongConnect(node);
-    }
-  }
-
-  return sccs;
 }
-const graph: Graph = new Map([
-  [1, [2]],
-  [2, [3]],
-  [3, [1, 4]],
-  [4, [5]],
-  [5, [6]],
-  [6, [4]],
-]);
 
-const components = tarjanSCC(graph);
-console.log(components);
-[ [ 3, 2, 1 ], [ 6, 5, 4 ] ]
+class LinkedList {
+    head: ListNode | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    append(val: number) {
+        const newNode = new ListNode(val);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+}
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
+
+    let aPointer: ListNode | null = headA;
+    let bPointer: ListNode | null = headB;
+
+    // Traverse through both lists, once reaching the end switch to the head of the other list
+    while (aPointer !== bPointer) {
+        aPointer = aPointer ? aPointer.next : headB;
+        bPointer = bPointer ? bPointer.next : headA;
+    }
+
+    // Either both pointers meet at the intersection node or both are null (no intersection)
+    return aPointer;
+}
+
+// Example usage:
+
+const listA = new LinkedList();
+const listB = new LinkedList();
+
+// Create first linked list: 1 -> 3 -> 5
+listA.append(1);
+listA.append(3);
+listA.append(5);
+
+// Create second linked list: 2 -> 4 and then intersects with listA at node with value 5
+listB.append(2);
+listB.append(4);
+
+// Manually link the end of listB to the node of listA to create an intersection
+if (listA.head) {
+    let current = listA.head;
+    while (current.next) {
+        current = current.next;
+    }
+    current.next = listB.head!.next!.next; // Make the intersection point at value 5
+}
+
+// Find intersection
+const intersectionNode = getIntersectionNode(listA.head, listB.head);
+console.log(intersectionNode ? intersectionNode.val : "No intersection");
