@@ -1,67 +1,40 @@
-// Define a node in the binary tree
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null;
-  right: TreeNode<T> | null;
-
-  constructor(value: T) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: array of 0 or 1 elements is already sorted
   }
+
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
+
+  // Recursively sort both halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
+
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-// Define the binary tree class
-class BinaryTree<T> {
-  root: TreeNode<T> | null;
+function merge(left: number[], right: number[]): number[] {
+  const sorted: number[] = [];
+  let i = 0, j = 0;
 
-  constructor() {
-    this.root = null;
-  }
-
-  // Insert a value into the tree (simple insertion for a binary search tree)
-  insert(value: T): void {
-    const newNode = new TreeNode(value);
-    if (!this.root) {
-      this.root = newNode;
-      return;
-    }
-    this.insertNode(this.root, newNode);
-  }
-
-  private insertNode(current: TreeNode<T>, newNode: TreeNode<T>): void {
-    if (newNode.value < current.value) {
-      if (current.left === null) {
-        current.left = newNode;
-      } else {
-        this.insertNode(current.left, newNode);
-      }
+  // Compare elements from both arrays and push smaller one into sorted
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      sorted.push(left[i]);
+      i++;
     } else {
-      if (current.right === null) {
-        current.right = newNode;
-      } else {
-        this.insertNode(current.right, newNode);
-      }
+      sorted.push(right[j]);
+      j++;
     }
   }
 
-  // Example traversal: in-order
-  inOrderTraversal(node: TreeNode<T> | null = this.root, callback: (value: T) => void): void {
-    if (node !== null) {
-      this.inOrderTraversal(node.left, callback);
-      callback(node.value);
-      this.inOrderTraversal(node.right, callback);
-    }
-  }
+  // Concatenate remaining elements (if any)
+  return sorted.concat(left.slice(i)).concat(right.slice(j));
 }
-const tree = new BinaryTree<number>();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(7);
 
-tree.inOrderTraversal(tree.root, (value) => console.log(value));
-5
-7
-10
-15
+// Example usage:
+const arrayToSort = [34, 7, 23, 32, 5, 62];
+const sortedArray = mergeSort(arrayToSort);
+console.log(sortedArray);
