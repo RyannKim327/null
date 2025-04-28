@@ -1,57 +1,24 @@
-function fibonacciSearch(arr: number[], x: number): number {
-  const n = arr.length;
-
-  // Initialize Fibonacci numbers
-  let fibM2 = 0; // (m-2)'th Fibonacci number
-  let fibM1 = 1; // (m-1)'th Fibonacci number
-  let fibM = fibM1 + fibM2; // m'th Fibonacci number
-
-  // Find the smallest Fibonacci number greater than or equal to n
-  while (fibM < n) {
-    fibM2 = fibM1;
-    fibM1 = fibM;
-    fibM = fibM1 + fibM2;
-  }
-
-  // Marks the eliminated range from front
-  let offset = -1;
-
-  // While there are elements to be inspected.
-  while (fibM > 1) {
-    // Check if fibM2 is a valid location
-    const i = Math.min(offset + fibM2, n - 1);
-
-    // If x is greater than the value at index i, cut the subarray after i
-    if (arr[i] < x) {
-      fibM = fibM1;
-      fibM1 = fibM2;
-      fibM2 = fibM - fibM1;
-      offset = i; // Update the offset
-    }
-    // If x is less than the value at index i, cut the subarray before i
-    else if (arr[i] > x) {
-      fibM = fibM2;
-      fibM1 = fibM1 - fibM2;
-      fibM2 = fibM - fibM1;
-    }
-    // Element found
-    else return i;
-  }
-
-  // Comparing the last element with x
-  if (fibM1 && arr[offset + 1] === x) return offset + 1;
-
-  // Element not found
-  return -1;
+function calculateTriangleArea(base: number, height: number): number {
+    return 0.5 * base * height;
 }
 
-// Example usage
-const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const target = 85;
+// Example usage:
+const base = 5;
+const height = 10;
+const area = calculateTriangleArea(base, height);
+console.log(`The area of the triangle is: ${area}`); // Output: The area of the triangle is: 25
+function calculateTriangleAreaBySides(a: number, b: number, c: number): number {
+    // Calculate the semi-perimeter
+    const s = (a + b + c) / 2;
 
-const index = fibonacciSearch(sortedArray, target);
-if (index >= 0) {
-  console.log(`Element found at index: ${index}`);
-} else {
-  console.log('Element not found');
+    // Calculate the area using Heron's formula
+    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    return area;
 }
+
+// Example usage:
+const sideA = 5;
+const sideB = 6;
+const sideC = 7;
+const areaBySides = calculateTriangleAreaBySides(sideA, sideB, sideC);
+console.log(`The area of the triangle by sides is: ${areaBySides}`); // Output will vary based on side lengths
