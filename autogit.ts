@@ -1,36 +1,19 @@
-// Define the User type according to the expected structure of the data
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-}
+function insertionSort(arr: number[]): number[] {
+  for (let i = 1; i < arr.length; i++) {
+    const key = arr[i];
+    let j = i - 1;
 
-// Function to fetch users from a public API
-async function fetchUsers(): Promise<void> {
-    const url = 'https://jsonplaceholder.typicode.com/users';
-
-    try {
-        // Use fetch to get the data
-        const response = await fetch(url);
-
-        // Check if the response is OK (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        // Parse the JSON data
-        const users: User[] = await response.json();
-
-        // Log user names to the console
-        users.forEach(user => {
-            console.log(`User: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-        });
-    } catch (error) {
-        // Handle errors (e.g., network issues, parsing issues)
-        console.error('Error fetching users:', error);
+    // Move elements greater than key one position ahead
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j--;
     }
+    // Place the key at its correct position
+    arr[j + 1] = key;
+  }
+  return arr;
 }
 
-// Call the function to fetch users
-fetchUsers();
+// Example usage:
+const data = [5, 2, 9, 1, 5, 6];
+console.log(insertionSort(data));  // Output: [1, 2, 5, 5, 6, 9]
