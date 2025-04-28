@@ -1,35 +1,35 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  const normalize = (str: string) => 
-    str.replace(/\s+/g, '').toLowerCase(); // Remove spaces and convert to lowercase
-
-  const sortedStr1 = normalize(str1).split('').sort().join('');
-  const sortedStr2 = normalize(str2).split('').sort().join('');
-
-  return sortedStr1 === sortedStr2;
+// Define an interface for the Post
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'billion')); // false
-function areAnagramsFast(str1: string, str2: string): boolean {
-  const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
 
-  const buildFrequencyMap = (str: string) => {
-    const map: Record<string, number> = {};
-    for (const char of str) {
-      map[char] = (map[char] || 0) + 1;
+// Function to fetch posts
+async function fetchPosts(): Promise<Post[]> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        
+        // Check if the response is ok (status in the range 200-299)
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const posts: Post[] = await response.json();
+        return posts;
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        return [];
     }
-    return map;
-  };
-
-  const s1 = normalize(str1);
-  const s2 = normalize(str2);
-
-  if (s1.length !== s2.length) return false;
-
-  const freq1 = buildFrequencyMap(s1);
-  const freq2 = buildFrequencyMap(s2);
-
-  for (const key in freq1) {
-    if (freq1[key] !== freq2[key]) return false;
-  }
-  return true;
 }
+
+// Main function to execute the fetchPosts function
+async function main() {
+    const posts = await fetchPosts();
+    
+    console.log('Posts fetched from API:', posts);
+}
+
+// Execute the main function
+main();
