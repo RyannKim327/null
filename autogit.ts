@@ -1,76 +1,22 @@
-function boyerMooreSearch(text: string, pattern: string): number[] {
-    const m = pattern.length;
-    const n = text.length;
-    const result: number[] = [];
+function binarySearch(arr: number[], target: number, low: number = 0, high: number = arr.length - 1): number {
+  if (low > high) {
+    // Base case: target not found
+    return -1;
+  }
 
-    if (m === 0 || n === 0 || m > n) return result;
-
-    // Preprocessing: Bad Character Rule
-    const badCharTable: Record<string, number> = {};
-    for (let i = 0; i < m; i++) {
-        badCharTable[pattern[i]] = i;
-    }
-
-    // Preprocessing: Good Suffix Rule (Optional for basic implementation)
-    const suffixes = computeSuffixes(pattern);
-    const shift = computeGoodSuffixShifts(suffixes, m);
-
-    let s = 0; // shift of the pattern with respect to text
-    while (s <= n - m) {
-        let j = m - 1;
-
-        // Compare pattern from end
-        while (j >= 0 && pattern[j] === text[s + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            result.push(s); // match found
-            s += s + m < n ? shift[0] : 1; // shift pattern
-        } else {
-            const badCharShift = Math.max(1, j - (badCharTable[text[s + j]] ?? -1));
-            const goodSuffixShift = shift[j + 1] || 1;
-            s += Math.max(badCharShift, goodSuffixShift);
-        }
-    }
-
-    return result;
+  const mid = Math.floor((low + high) / 2);
+  
+  if (arr[mid] === target) {
+    // Target found at mid
+    return mid;
+  } else if (arr[mid] < target) {
+    // Search right half
+    return binarySearch(arr, target, mid + 1, high);
+  } else {
+    // Search left half
+    return binarySearch(arr, target, low, mid - 1);
+  }
 }
-
-// Compute suffixes for Boyer-Moore's good suffix rule
-function computeSuffixes(pattern: string): number[] {
-    const m = pattern.length;
-    const suffixes = new Array(m).fill(0);
-    suffixes[m - 1] = m;
-    let g = m - 1;
-    for (let i = m - 2; i >= 0; i--) {
-        if (i > g && suffixes[i + m - 1 - g] < i - g) {
-            suffixes[i] = suffixes[i + m - 1 - g];
-        } else {
-            g = i;
-            while (g >= 0 && pattern[g] === pattern[g + m - 1 - i]) {
-                g--;
-            }
-            suffixes[i] = i - g;
-        }
-    }
-    return suffixes;
-}
-
-// Compute shift amounts based on suffixes
-function computeGoodSuffixShifts(suffixes: number[], m: number): number[] {
-    const shift = new Array(m + 1).fill(0);
-    for (let i = 0; i <= m; i++) {
-        shift[i] = m;
-    }
-    for (let i = 0; i < m; i++) {
-        const s = suffixes[i];
-        shift[m - s] = i;
-    }
-    return shift;
-}
-const text = "here is a simple example text to search within.";
-const pattern = "example";
-
-const positions = boyerMooreSearch(text, pattern);
-console.log(positions); // Should output starting indices where pattern is found
+const sortedArray = [1, 3, 5, 7, 9, 11];
+console.log(binarySearch(sortedArray, 7)); // Output: 3
+console.log(binarySearch(sortedArray, 2)); // Output: -1
