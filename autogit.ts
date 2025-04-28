@@ -1,35 +1,22 @@
-function findMajorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
-
-    // First pass: Find a candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
+function isArraySortedAsc(arr: number[]): boolean {
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < arr[i - 1]) {
+      return false; // Found a pair out of order
     }
-
-    // Second pass: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    if (count > nums.length / 2) {
-        return candidate; // Return the majority element
-    } else {
-        return null; // No majority element found
-    }
+  }
+  return true; // All pairs are in order
 }
-
-// Example usage:
-const nums = [3, 2, 3];
-const majorityElement = findMajorityElement(nums);
-console.log(majorityElement); // Output: 3
+function isArraySortedAsc(arr: number[]): boolean {
+  return arr.every((value, index) => {
+    if (index === 0) return true;
+    return value >= arr[index - 1];
+  });
+}
+function isArraySortedAsc<T>(arr: T[], compare: (a: T, b: T) => number = (a, b) => a > b ? 1 : a < b ? -1 : 0): boolean {
+  for (let i = 1; i < arr.length; i++) {
+    if (compare(arr[i - 1], arr[i]) > 0) {
+      return false;
+    }
+  }
+  return true;
+}
