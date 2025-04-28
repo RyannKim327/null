@@ -1,6 +1,9 @@
-function factorial(n: number): number {
-    if (n <= 1) {
-        return 1;
-    }
-    return n * factorial(n - 1);
-}
+const str1 = "Hello, ";
+const str2 = "World!";
+const concatenated = str1 + str2; // "Hello, World!"
+const str1 = "Hello, ";
+const str2 = "World!";
+const concatenated = `${str1}${str2}`; // "Hello, World!"
+const str1 = "Hello, ";
+const str2 = "World!";
+const concatenated = str1.concat(str2); // "Hello, World!"
