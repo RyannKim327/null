@@ -1,62 +1,38 @@
-class SuffixTreeNode {
-    public children: Map<string, SuffixTreeNode>;
-    public isEndOfWord: boolean;
-
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
-    }
+// Define the structure of a binary tree node
+interface TreeNode {
+  value: any; // or specific type, e.g., number
+  left?: TreeNode;
+  right?: TreeNode;
 }
-class SuffixTree {
-    private root: SuffixTreeNode;
 
-    constructor() {
-        this.root = new SuffixTreeNode();
-    }
+/**
+ * Counts the number of leaf nodes in a binary tree.
+ * @param node - The root node of the binary tree
+ * @returns The number of leaf nodes
+ */
+function countLeaves(node?: TreeNode): number {
+  if (!node) {
+    return 0; // Empty node, no leaves here
+  }
 
-    // Insert a string's suffixes into the tree
-    insert(text: string): void {
-        const length = text.length;
-        for (let i = 0; i < length; i++) {
-            this.insertSuffix(text.substring(i, length));
-        }
-    }
+  // If both children are absent, it's a leaf
+  if (!node.left && !node.right) {
+    return 1;
+  }
 
-    // Insert a suffix into the tree
-    private insertSuffix(suffix: string): void {
-        let currentNode = this.root;
-
-        for (const char of suffix) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new SuffixTreeNode());
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        currentNode.isEndOfWord = true; // Mark the end of a suffix
-    }
-
-    // Search for a substring in the suffix tree
-    search(pattern: string): boolean {
-        return this.searchPattern(this.root, pattern);
-    }
-
-    // Helper function to search for the pattern recursively
-    private searchPattern(node: SuffixTreeNode, pattern: string): boolean {
-        let currentNode = node;
-
-        for (const char of pattern) {
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return true; // Pattern found
-    }
+  // Recursively count leaves in left and right subtrees
+  return countLeaves(node.left) + countLeaves(node.right);
 }
-const suffixTree = new SuffixTree();
-const text = "banana";
-suffixTree.insert(text);
+const root: TreeNode = {
+  value: 1,
+  left: {
+    value: 2,
+    left: { value: 4 },
+    right: { value: 5 }
+  },
+  right: {
+    value: 3
+  }
+};
 
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("na"));  // true
-console.log(suffixTree.search("xyz")); // false
+console.log(countLeaves(root)); // Should output 3 (nodes with values 4, 5, 3)
