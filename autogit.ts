@@ -1,22 +1,22 @@
-function isArraySortedAsc(arr: number[]): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < arr[i - 1]) {
-      return false; // Found a pair out of order
-    }
-  }
-  return true; // All pairs are in order
+function countOccurrences(str: string, word: string): number {
+    const wordsArray = str.split(/\s+/);  // Split by whitespace
+    const occurrences = wordsArray.filter(w => w === word).length; // Filter the array for the specific word
+    return occurrences;
 }
-function isArraySortedAsc(arr: number[]): boolean {
-  return arr.every((value, index) => {
-    if (index === 0) return true;
-    return value >= arr[index - 1];
-  });
+
+// Example usage:
+const text = "Hello world! Hello everyone. Hello there.";
+const wordToCount = "Hello";
+const count = countOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${count} times.`);
+function countOccurrencesRegex(str: string, word: string): number {
+    const regex = new RegExp(`\\b${word}\\b`, 'gi'); // Create a regex to match whole word (case insensitive)
+    const matches = str.match(regex);
+    return matches ? matches.length : 0; // Return the number of matches or 0 if none found
 }
-function isArraySortedAsc<T>(arr: T[], compare: (a: T, b: T) => number = (a, b) => a > b ? 1 : a < b ? -1 : 0): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (compare(arr[i - 1], arr[i]) > 0) {
-      return false;
-    }
-  }
-  return true;
-}
+
+// Example usage:
+const text = "Hello world! Hello everyone. Hello there.";
+const wordToCount = "Hello";
+const count = countOccurrencesRegex(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${count} times.`);
