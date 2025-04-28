@@ -1,30 +1,21 @@
-class ListNode<T> {
-  val: T;
-  next: ListNode<T> | null;
+function longestIncreasingSubsequence(arr: number[]): number {
+    if (arr.length === 0) return 0;
+    
+    const dp: number[] = new Array(arr.length).fill(1); // Initialize DP array
 
-  constructor(val: T, next: ListNode<T> | null = null) {
-    this.val = val;
-    this.next = next;
-  }
+    for (let i = 1; i < arr.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[i] > arr[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+
+    // The length of the longest increasing subsequence
+    return Math.max(...dp);
 }
 
-function getNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
-  if (!head || n < 1) return null;
-  
-  let slow: ListNode<T> | null = head;
-  let fast: ListNode<T> | null = head;
-
-  // Move fast n steps ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) return null; // list shorter than n
-    fast = fast.next;
-  }
-
-  // Move both pointers until fast reaches the end
-  while (fast !== null) {
-    slow = slow!.next;
-    fast = fast.next;
-  }
-
-  return slow;
-}
+// Example usage
+const array = [10, 22, 9, 33, 21, 50, 41, 60, 80];
+const lisLength = longestIncreasingSubsequence(array);
+console.log(`Length of Longest Increasing Subsequence: ${lisLength}`);
