@@ -1,24 +1,20 @@
-function calculateTriangleArea(base: number, height: number): number {
-    return 0.5 * base * height;
+function firstNonRepeatingChar(str: string): string | null {
+  const charCount: Record<string, number> = {};
+
+  // Count the frequency of each character
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
+
+  // Find the first character with a count of 1
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  // If no non-repeating character found
+  return null;
 }
-
-// Example usage:
-const base = 5;
-const height = 10;
-const area = calculateTriangleArea(base, height);
-console.log(`The area of the triangle is: ${area}`); // Output: The area of the triangle is: 25
-function calculateTriangleAreaBySides(a: number, b: number, c: number): number {
-    // Calculate the semi-perimeter
-    const s = (a + b + c) / 2;
-
-    // Calculate the area using Heron's formula
-    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
-    return area;
-}
-
-// Example usage:
-const sideA = 5;
-const sideB = 6;
-const sideC = 7;
-const areaBySides = calculateTriangleAreaBySides(sideA, sideB, sideC);
-console.log(`The area of the triangle by sides is: ${areaBySides}`); // Output will vary based on side lengths
+console.log(firstNonRepeatingChar("swiss")); // Output: 'w'
+console.log(firstNonRepeatingChar("aabbcc")); // Output: null
