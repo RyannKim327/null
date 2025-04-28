@@ -1,114 +1,173 @@
-type Node = string;  // or a more complex object
-type Graph = Map<Node, Node[]>;
+class Node {
+    public data: number;
+    public color: 'RED' | 'BLACK';
+    public left: Node | null;
+    public right: Node | null;
+    public parent: Node | null;
 
-interface SearchResult {
-  path: Node[];
-  found: boolean;
-}
-
-function bidirectionalSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node
-): SearchResult {
-  if (start === goal) return { path: [start], found: true };
-
-  // Initialize frontiers
-  const forwardQueue: Node[] = [start];
-  const backwardQueue: Node[] = [goal];
-
-  // Visited maps for path reconstruction
-  const visitedForward: Map<Node, Node | null> = new Map([[start, null]]);
-  const visitedBackward: Map<Node, Node | null> = new Map([[goal, null]]);
-
-  while (forwardQueue.length && backwardQueue.length) {
-    // Expand the smaller frontier for efficiency
-    if (forwardQueue.length <= backwardQueue.length) {
-      if (expandFrontier(graph, forwardQueue, visitedForward, visitedBackward)) {
-        return reconstructPath(visitedForward, visitedBackward, start, goal);
-      }
-    } else {
-      if (expandFrontier(graph, backwardQueue, visitedBackward, visitedForward)) {
-        return reconstructPath(visitedForward, visitedBackward, start, goal);
-      }
+    constructor(data: number) {
+        this.data = data;
+        this.color = 'RED'; // New nodes are red by default
+        this.left = null;
+        this.right = null;
+        this.parent = null;
     }
-  }
-
-  return { path: [], found: false };
 }
 
-function expandFrontier(
-  graph: Graph,
-  frontier: Node[],
-  visited: Map<Node, Node | null>,
-  otherVisited: Map<Node, Node | null>
-): boolean {
-  const current = frontier.shift()!;
-  for (const neighbor of graph.get(current) || []) {
-    if (!visited.has(neighbor)) {
-      visited.set(neighbor, current);
-      frontier.push(neighbor);
-      if (otherVisited.has(neighbor)) {
-        // Path found
-        return true;
-      }
+class RedBlackTree {
+    private root: Node | null;
+
+    constructor() {
+        this.root = null;
     }
-  }
-  return false;
-}
 
-function reconstructPath(
-  visitedForward: Map<Node, Node | null>,
-  visitedBackward: Map<Node, Node | null>,
-  start: Node,
-  goal: Node
-): SearchResult {
-  let intersectionNode: Node | null = null;
+    private rotateLeft(node: Node) {
+        const rightNode = node.right;
+        if (!rightNode) return;
 
-  // Find the overlapping node
-  for (const node of visitedForward.keys()) {
-    if (visitedBackward.has(node)) {
-      intersectionNode = node;
-      break;
+        node.right = rightNode.left;
+        if (rightNode.left) {
+            rightNode.left.parent = node;
+        }
+
+        rightNode.parent = node.parent;
+        if (!node.parent) {
+            this.root = rightNode;
+        } else if (node === node.parent.left) {
+            node.parent.left = rightNode;
+        } else {
+            node.parent.right = rightNode;
+        }
+
+        rightNode.left = node;
+        node.parent = rightNode;
     }
-  }
 
-  if (!intersectionNode) {
-    return { path: [], found: false };
-  }
+    private rotateRight(node: Node) {
+        const leftNode = node.left;
+        if (!leftNode) return;
 
-  // Build path from start to intersection
-  const pathForward: Node[] = [];
-  let current: Node | null = intersectionNode;
-  while (current !== null) {
-    pathForward.unshift(current);
-    current = visitedForward.get(current) || null;
-  }
+        node.left = leftNode.right;
+        if (leftNode.right) {
+            leftNode.right.parent = node;
+        }
 
-  // Build path from intersection to goal
-  const pathBackward: Node[] = [];
-  current = visitedBackward.get(intersectionNode);
-  while (current !== null) {
-    pathBackward.push(current);
-    current = visitedBackward.get(current) || null;
-  }
+        leftNode.parent = node.parent;
+        if (!node.parent) {
+            this.root = leftNode;
+        } else if (node === node.parent.right) {
+            node.parent.right = leftNode;
+        } else {
+            node.parent.left = leftNode;
+        }
 
-  // Combine the paths
-  const fullPath = [...pathForward, ...pathBackward.slice(1)];
+        leftNode.right = node;
+        node.parent = leftNode;
+    }
 
-  return { path: fullPath, found: true };
+    private fixViolation(node: Node) {
+        let currentNode = node;
+
+        while (currentNode !== this.root && currentNode.parent?.color === 'RED') {
+            const parentNode = currentNode.parent;
+            const grandParentNode = parentNode.parent;
+
+            // Case A: Parent is a left child
+            if (parentNode === grandParentNode.left) {
+                const uncleNode = grandParentNode.right;
+                if (uncleNode && uncleNode.color === 'RED') {
+                    // Case A1: Uncle is red
+                    grandParentNode.color = 'RED';
+                    parentNode.color = 'BLACK';
+                    uncleNode.color = 'BLACK';
+                    currentNode = grandParentNode;
+                } else {
+                    // Case A2: Uncle is black
+                    if (currentNode === parentNode.right) {
+                        this.rotateLeft(parentNode);
+                        currentNode = parentNode;
+                        parentNode = currentNode.parent!;
+                    }
+                    this.rotateRight(grandParentNode);
+                    [parentNode.color, grandParentNode.color] = [grandParentNode.color, parentNode.color];
+                    currentNode = parentNode;
+                }
+            } else {
+                // Case B: Parent is a right child
+                const uncleNode = grandParentNode.left;
+                if (uncleNode && uncleNode.color === 'RED') {
+                    // Case B1: Uncle is red
+                    grandParentNode.color = 'RED';
+                    parentNode.color = 'BLACK';
+                    uncleNode.color = 'BLACK';
+                    currentNode = grandParentNode;
+                } else {
+                    // Case B2: Uncle is black
+                    if (currentNode === parentNode.left) {
+                        this.rotateRight(parentNode);
+                        currentNode = parentNode;
+                        parentNode = currentNode.parent!;
+                    }
+                    this.rotateLeft(grandParentNode);
+                    [parentNode.color, grandParentNode.color] = [grandParentNode.color, parentNode.color];
+                    currentNode = parentNode;
+                }
+            }
+        }
+
+        this.root.color = 'BLACK';
+    }
+
+    public insert(data: number) {
+        const newNode = new Node(data);
+
+        if (!this.root) {
+            this.root = newNode;
+            this.root.color = 'BLACK'; // Make the root black
+        } else {
+            let currentNode: Node | null = this.root;
+            let parentNode: Node | null = null;
+
+            while (currentNode) {
+                parentNode = currentNode;
+                if (newNode.data < currentNode.data) {
+                    currentNode = currentNode.left;
+                } else {
+                    currentNode = currentNode.right;
+                }
+            }
+
+            newNode.parent = parentNode;
+            if (newNode.data < parentNode.data) {
+                parentNode.left = newNode;
+            } else {
+                parentNode.right = newNode;
+            }
+
+            // Fix the red-black tree properties
+            this.fixViolation(newNode);
+        }
+    }
+
+    // Optional: In-order traversal for checking the tree
+    public inOrderTraversal(node: Node | null = this.root): number[] {
+        if (!node) return [];
+        return [
+            ...this.inOrderTraversal(node.left),
+            node.data,
+            ...this.inOrderTraversal(node.right),
+        ];
+    }
+
+    public getRoot(): Node | null {
+        return this.root;
+    }
 }
 
-// Example usage:
-const graph: Graph = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['A', 'D']],
-  ['C', ['A', 'E']],
-  ['D', ['B', 'F']],
-  ['E', ['C', 'F']],
-  ['F', ['D', 'E', 'G']],
-  ['G', ['F']]
-]);
-
-const result = bidirectionalSearch(graph, 'A', 'G');
-console.log(result);
+// Usage
+const rbt = new RedBlackTree();
+rbt.insert(10);
+rbt.insert(20);
+rbt.insert(15);
+rbt.insert(30);
+console.log(rbt.inOrderTraversal()); // Output: [10, 15, 20, 30]
