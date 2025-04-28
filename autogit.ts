@@ -1,37 +1,35 @@
-function getMaxDigits(arr: number[]): number {
-  // Find the maximum number to know the number of digits
-  const max = Math.max(...arr);
-  return max.toString().length;
-}
+function findMajorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-function getDigit(num: number, place: number): number {
-  // Extract digit at 'place' (1 for units, 10 for tens, etc.)
-  return Math.floor(Math.abs(num) / place) % 10;
-}
-
-function radixSort(arr: number[]): number[] {
-  const maxDigits = getMaxDigits(arr);
-  let result = [...arr]; // Make a copy to avoid in-place modification
-  let place = 1;
-
-  for (let i = 0; i < maxDigits; i++) {
-    // Create buckets for each digit (0-9)
-    const buckets: number[][] = Array.from({ length: 10 }, () => []);
-
-    for (const num of result) {
-      const digit = getDigit(num, place);
-      buckets[digit].push(num);
+    // First pass: Find a candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
     }
 
-    // Flatten buckets back into the array
-    result = [].concat(...buckets);
+    // Second pass: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
 
-    // Move to the next digit place
-    place *= 10;
-  }
-
-  return result;
+    if (count > nums.length / 2) {
+        return candidate; // Return the majority element
+    } else {
+        return null; // No majority element found
+    }
 }
-const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedNumbers = radixSort(numbers);
-console.log(sortedNumbers); // [2, 24, 45, 66, 75, 90, 170, 802]
+
+// Example usage:
+const nums = [3, 2, 3];
+const majorityElement = findMajorityElement(nums);
+console.log(majorityElement); // Output: 3
