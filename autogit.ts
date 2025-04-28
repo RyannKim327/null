@@ -1,80 +1,69 @@
-class Node {
+class ListNode {
     value: number;
-    next: Node | null;
+    next: ListNode | null;
 
     constructor(value: number) {
         this.value = value;
-        this.next = null; // Initially, the next node is null
+        this.next = null;
     }
 }
 
 class LinkedList {
-    head: Node | null;
+    head: ListNode | null;
 
     constructor() {
-        this.head = null; // Initialize the head of the list
+        this.head = null;
     }
 
-    // Method to add a new node at the end
+    // Method to add a new node at the end of the list
     append(value: number) {
-        const newNode = new Node(value);
+        const newNode = new ListNode(value);
         if (!this.head) {
             this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
+            return;
         }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
     }
 
     // Method to print the list
     printList() {
         let current = this.head;
+        const values: number[] = [];
         while (current) {
-            process.stdout.write(`${current.value} -> `);
+            values.push(current.value);
             current = current.next;
         }
-        console.log("null");
-    }
-
-    // Method to reverse the linked list
-    reverse() {
-        let previous: Node | null = null;
-        let current: Node | null = this.head;
-        let next: Node | null = null;
-
-        while (current) {
-            next = current.next; // Store the next node
-            current.next = previous; // Reverse the current node's pointer
-            previous = current; // Move pointers one position ahead
-            current = next;
-        }
-        this.head = previous; // Update head to the new first element
+        console.log(values.join(' -> '));
     }
 }
-// Create a new linked list
-const list = new LinkedList();
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+    let next: ListNode | null = null;
 
-// Add values to the linked list
+    while (current) {
+        next = current.next; // Store the next node
+        current.next = prev; // Reverse the current node's pointer
+        prev = current;      // Move prev and current one step forward
+        current = next;
+    }
+    return prev; // New head of the reversed list
+}
+const list = new LinkedList();
 list.append(1);
 list.append(2);
 list.append(3);
 list.append(4);
 list.append(5);
 
-// Print the original list
-console.log("Original Linked List:");
+console.log("Original List:");
 list.printList();
 
-// Reverse the linked list
-list.reverse();
+list.head = reverseLinkedList(list.head);
 
-// Print the reversed list
-console.log("Reversed Linked List:");
+console.log("Reversed List:");
 list.printList();
-Original Linked List:
-1 -> 2 -> 3 -> 4 -> 5 -> null
-Reversed Linked List:
-5 -> 4 -> 3 -> 2 -> 1 -> null
