@@ -1,40 +1,27 @@
-function mergeSort(arr: number[]): number[] {
-  if (arr.length <= 1) {
-    return arr; // Base case: array of 0 or 1 elements is already sorted
-  }
+function insertionSort(arr: number[]): number[] {
+    // Iterate through the length of the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        // Store the current element in a variable
+        const current = arr[i];
 
-  const mid = Math.floor(arr.length / 2);
-  const left = arr.slice(0, mid);
-  const right = arr.slice(mid);
+        // Find the position where current should be inserted in the sorted part
+        let j = i - 1;
 
-  // Recursively sort both halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
+        // Shift elements of the sorted portion to the right to make space for current
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j]; // Shift element to the right
+            j--;
+        }
 
-  // Merge the sorted halves
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(left: number[], right: number[]): number[] {
-  const sorted: number[] = [];
-  let i = 0, j = 0;
-
-  // Compare elements from both arrays and push smaller one into sorted
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      sorted.push(left[i]);
-      i++;
-    } else {
-      sorted.push(right[j]);
-      j++;
+        // Insert the current element into its correct position
+        arr[j + 1] = current;
     }
-  }
 
-  // Concatenate remaining elements (if any)
-  return sorted.concat(left.slice(i)).concat(right.slice(j));
+    return arr; // Return the sorted array
 }
 
 // Example usage:
-const arrayToSort = [34, 7, 23, 32, 5, 62];
-const sortedArray = mergeSort(arrayToSort);
-console.log(sortedArray);
+const array = [5, 2, 4, 6, 1, 3];
+console.log('Unsorted array:', array);
+const sortedArray = insertionSort(array);
+console.log('Sorted array:', sortedArray);
