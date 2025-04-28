@@ -1,52 +1,55 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+function buildBadCharTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-  constructor(value: T) {
-    this.value = value;
-    this.next = null;
-  }
+    // Fill the table with the last index of each character
+    for (let i = 0; i < patternLength; i++) {
+        // Store the last occurrence of each character
+        badCharTable[pattern[i]] = i;
+    }
+
+    return badCharTable;
 }
-class Queue<T> {
-  private head: ListNode<T> | null = null; // points to the front
-  private tail: ListNode<T> | null = null; // points to the end
 
-  enqueue(value: T): void {
-    const newNode = new ListNode(value);
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;   // link new node at the end
-      this.tail = newNode;        // update tail
+function boyerMooreSearch(text: string, pattern: string): number {
+    const badCharTable = buildBadCharTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+
+    let s = 0; // s is the shift of the pattern with respect to text
+
+    while (s <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        // Keep reducing j while characters of pattern and text are matching
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            return s; // Match found at index s
+        } else {
+            // Calculate shift based on the bad character heuristic
+            const badCharShift = badCharTable[text[s + j]] !== undefined 
+                ? Math.max(1, j - badCharTable[text[s + j]]) 
+                : j + 1;
+
+            // Shift the pattern to align with the next character
+            s += badCharShift;
+        }
     }
-  }
 
-  dequeue(): T | null {
-    if (!this.head) {
-      return null; // queue is empty
-    }
-    const value = this.head.value;
-    this.head = this.head.next;
-    if (!this.head) {
-      this.tail = null; // queue is now empty
-    }
-    return value;
-  }
-
-  peek(): T | null {
-    return this.head ? this.head.value : null;
-  }
-
-  isEmpty(): boolean {
-    return this.head === null;
-  }
+    return -1; // No match found
 }
-const myQueue = new Queue<number>();
-myQueue.enqueue(1);
-myQueue.enqueue(2);
-console.log(myQueue.dequeue()); // 1
-console.log(myQueue.peek());    // 2
-console.log(myQueue.isEmpty()); // false
-myQueue.dequeue(); 
-console.log(myQueue.isEmpty()); // true
+
+// Example Usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const result = boyerMooreSearch(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index ${result}`);
+} else {
+    console.log("Pattern not found");
+}
