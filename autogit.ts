@@ -1,19 +1,23 @@
-function burrowsWheelerTransform(input: string): string {
-  // Generate all rotations of the input string
-  const rotations = [];
-  for (let i = 0; i < input.length; i++) {
-    rotations.push(input.slice(i) + input.slice(0, i));
+function findSecondLargest(arr: number[]): number | null {
+  if (arr.length < 2) return null; // Not enough elements
+  
+  let max = -Infinity;
+  let secondMax = -Infinity;
+
+  for (const num of arr) {
+    if (num > max) {
+      secondMax = max;  // Update second largest before updating max
+      max = num;
+    } else if (num > secondMax && num !== max) {
+      secondMax = num;
+    }
   }
 
-  // Sort the rotations lexicographically
-  rotations.sort();
-
-  // Construct the last column by taking the last character of each rotation
-  const lastColumn = rotations.map(rotation => rotation.slice(-1)).join('');
-
-  return lastColumn;
+  return secondMax === -Infinity ? null : secondMax;
 }
-
-// Example usage:
-const inputStr = "BANANA";
-console.log(burrowsWheelerTransform(inputStr));  // Output: "ANNB$A" (assuming input ended with a unique end marker)
+const array = [3, 1, 4, 2, 5];
+console.log(findSecondLargest(array)); // Output: 4
+function findSecondLargestSort(arr: number[]): number | null {
+  const uniqueSorted = Array.from(new Set(arr)).sort((a, b) => b - a);
+  return uniqueSorted.length >= 2 ? uniqueSorted[1] : null;
+}
