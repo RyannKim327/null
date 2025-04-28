@@ -1,12 +1,15 @@
-function isPalindrome(input: string): boolean {
-    // Remove non-alphanumeric characters and convert to lowercase
-    const cleanedInput = input.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-    // Reverse the cleaned string
-    const reversedInput = cleanedInput.split('').reverse().join('');
-    // Check if the cleaned string is equal to its reverse
-    return cleanedInput === reversedInput;
+function triangleAreaBaseHeight(base: number, height: number): number {
+  return 0.5 * base * height;
+}
+interface Point {
+  x: number;
+  y: number;
 }
 
-// Example usage:
-const testString = "A man, a plan, a canal: Panama";
-console.log(isPalindrome(testString)); // Output: true
+function triangleAreaCoords(p1: Point, p2: Point, p3: Point): number {
+  return Math.abs(
+    p1.x * (p2.y - p3.y) +
+    p2.x * (p3.y - p1.y) +
+    p3.x * (p1.y - p2.y)
+  ) / 2;
+}
