@@ -1,14 +1,23 @@
-const mainString = "Hello, TypeScript!";
-const substring = "TypeScript";
+function selectionSort(arr: number[]): number[] {
+  const n = arr.length;
 
-if (mainString.includes(substring)) {
-  console.log("The string contains the substring!");
-} else {
-  console.log("The substring was not found.");
+  for (let i = 0; i < n - 1; i++) {
+    let minIndex = i;
+
+    // Find the minimum element's index in the unsorted part
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
+    }
+
+    // Swap if a smaller element was found
+    if (minIndex !== i) {
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+    }
+  }
+
+  return arr;
 }
-if (mainString.toLowerCase().includes(substring.toLowerCase())) {
-  // case-insensitive match
-}
-if (mainString.indexOf(substring) !== -1) {
-  // substring found
-}
+const myArray = [64, 25, 12, 22, 11];
+console.log(selectionSort(myArray));  // Output: [11, 12, 22, 25, 64]
