@@ -1,92 +1,57 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPS(pattern);
-    const matches: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+function fibonacciSearch(arr: number[], x: number): number {
+  const n = arr.length;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+  // Initialize Fibonacci numbers
+  let fibM2 = 0; // (m-2)'th Fibonacci number
+  let fibM1 = 1; // (m-1)'th Fibonacci number
+  let fibM = fibM1 + fibM2; // m'th Fibonacci number
 
-        if (j === pattern.length) {
-            matches.push(i - j); // a match was found
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
+  // Find the smallest Fibonacci number greater than or equal to n
+  while (fibM < n) {
+    fibM2 = fibM1;
+    fibM1 = fibM;
+    fibM = fibM1 + fibM2;
+  }
+
+  // Marks the eliminated range from front
+  let offset = -1;
+
+  // While there are elements to be inspected.
+  while (fibM > 1) {
+    // Check if fibM2 is a valid location
+    const i = Math.min(offset + fibM2, n - 1);
+
+    // If x is greater than the value at index i, cut the subarray after i
+    if (arr[i] < x) {
+      fibM = fibM1;
+      fibM1 = fibM2;
+      fibM2 = fibM - fibM1;
+      offset = i; // Update the offset
     }
+    // If x is less than the value at index i, cut the subarray before i
+    else if (arr[i] > x) {
+      fibM = fibM2;
+      fibM1 = fibM1 - fibM2;
+      fibM2 = fibM - fibM1;
+    }
+    // Element found
+    else return i;
+  }
 
-    return matches;
+  // Comparing the last element with x
+  if (fibM1 && arr[offset + 1] === x) return offset + 1;
+
+  // Element not found
+  return -1;
 }
 
-function computeLPS(pattern: string): number[] {
-    const lps: number[] = Array(pattern.length).fill(0);
-    let len = 0; // Length of the previous longest prefix suffix
-    let i = 1;
+// Example usage
+const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const target = 85;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    return lps;
+const index = fibonacciSearch(sortedArray, target);
+if (index >= 0) {
+  console.log(`Element found at index: ${index}`);
+} else {
+  console.log('Element not found');
 }
-
-// Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = KMPSearch(pattern, text);
-console.log(result); // Output: [10]
-function BoyerMooreSearch(pattern: string, text: string): number[] {
-    const matches: number[] = [];
-    const badCharShift = preprocessBadChar(pattern);
-    const m = pattern.length;
-    const n = text.length;
-
-    let s = 0; // Shift of the pattern with respect to text
-    while (s <= n - m) {
-        let j = m - 1;
-
-        while (j >= 0 && pattern[j] === text[s + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            matches.push(s); // A match was found
-            s += (s + m < n) ? m - badCharShift[text.charCodeAt(s + m)] : 1;
-        } else {
-            s += Math.max(1, j - badCharShift[text.charCodeAt(s + j)]);
-        }
-    }
-
-    return matches;
-}
-
-function preprocessBadChar(pattern: string): number[] {
-    const badCharShift = Array(256).fill(-1); // Assuming ASCII
-    for (let i = 0; i < pattern.length; i++) {
-        badCharShift[pattern.charCodeAt(i)] = i;
-    }
-    return badCharShift;
-}
-
-// Example usage:
-const text2 = "ABABDABACDABABCABAB";
-const pattern2 = "ABABCABAB";
-const result2 = BoyerMooreSearch(pattern2, text2);
-console.log(result2); // Output: [10]
