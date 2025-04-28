@@ -1,53 +1,35 @@
-function mergeSortedArrays(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let i = 0, j = 0;
+function areAnagrams(str1: string, str2: string): boolean {
+  const normalize = (str: string) => 
+    str.replace(/\s+/g, '').toLowerCase(); // Remove spaces and convert to lowercase
 
-    while (i < left.length && j < right.length) {
-        if (left[i] <= right[j]) {
-            result.push(left[i]);
-            i++;
-        } else {
-            result.push(right[j]);
-            j++;
-        }
-    }
+  const sortedStr1 = normalize(str1).split('').sort().join('');
+  const sortedStr2 = normalize(str2).split('').sort().join('');
 
-    // Append any remaining elements
-    return result.concat(left.slice(i)).concat(right.slice(j));
+  return sortedStr1 === sortedStr2;
 }
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'billion')); // false
+function areAnagramsFast(str1: string, str2: string): boolean {
+  const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
 
-function mergeSortIterative(array: number[]): number[] {
-    const n = array.length;
-    let width = 1; // Subarray size to merge
-    let sortedArray = array.slice(); // Work with a copy
-
-    while (width < n) {
-        let i = 0;
-
-        while (i < n) {
-            const leftStart = i;
-            const mid = Math.min(i + width, n);
-            const rightEnd = Math.min(i + 2 * width, n);
-
-            const left = sortedArray.slice(leftStart, mid);
-            const right = sortedArray.slice(mid, rightEnd);
-
-            const merged = mergeSortedArrays(left, right);
-
-            // Place merged subarray back into main array
-            for (let j = 0; j < merged.length; j++) {
-                sortedArray[leftStart + j] = merged[j];
-            }
-
-            i += 2 * width;
-        }
-
-        width *= 2; // Double the size for next pass
+  const buildFrequencyMap = (str: string) => {
+    const map: Record<string, number> = {};
+    for (const char of str) {
+      map[char] = (map[char] || 0) + 1;
     }
+    return map;
+  };
 
-    return sortedArray;
+  const s1 = normalize(str1);
+  const s2 = normalize(str2);
+
+  if (s1.length !== s2.length) return false;
+
+  const freq1 = buildFrequencyMap(s1);
+  const freq2 = buildFrequencyMap(s2);
+
+  for (const key in freq1) {
+    if (freq1[key] !== freq2[key]) return false;
+  }
+  return true;
 }
-
-// Example usage:
-const arr = [38, 27, 43, 3, 9, 82, 10];
-console.log(mergeSortIterative(arr));
