@@ -1,39 +1,23 @@
-// Define the linked list node
-class ListNode<T> {
-    value: T;
-    next: ListNode<T> | null;
+function binarySearch(arr: number[], target: number): number {
+  let left = 0;
+  let right = arr.length - 1;
 
-    constructor(value: T, next: ListNode<T> | null = null) {
-        this.value = value;
-        this.next = next;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) {
+      return mid; // Found the target
+    } else if (arr[mid] < target) {
+      left = mid + 1; // Search right half
+    } else {
+      right = mid - 1; // Search left half
     }
-}
+  }
 
-// Function to find the middle node
-function findMiddle<T>(head: ListNode<T> | null): ListNode<T> | null {
-    if (!head) return null;
-
-    let slow: ListNode<T> | null = head;
-    let fast: ListNode<T> | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    return slow; // 'slow' is at the middle when 'fast' reaches the end
+  return -1; // Not found
 }
 
 // Example usage:
-const list = new ListNode(1,
-    new ListNode(2,
-        new ListNode(3,
-            new ListNode(4,
-                new ListNode(5)
-            )
-        )
-    )
-);
-
-const middleNode = findMiddle(list);
-console.log(middleNode?.value); // Should output 3
+const sortedArray = [1, 3, 5, 7, 9, 11];
+const index = binarySearch(sortedArray, 7);
+console.log(index); // Output: 3
