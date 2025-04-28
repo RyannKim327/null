@@ -1,22 +1,54 @@
-function binarySearch(arr: number[], target: number, low: number = 0, high: number = arr.length - 1): number {
-  if (low > high) {
-    // Base case: target not found
-    return -1;
-  }
+// Define a type for the adjacency list representation of a graph
+type Graph = { [key: string]: string[] };
 
-  const mid = Math.floor((low + high) / 2);
-  
-  if (arr[mid] === target) {
-    // Target found at mid
-    return mid;
-  } else if (arr[mid] < target) {
-    // Search right half
-    return binarySearch(arr, target, mid + 1, high);
-  } else {
-    // Search left half
-    return binarySearch(arr, target, low, mid - 1);
-  }
+// Example of a graph using an adjacency list
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+// Recursive DFS implementation
+function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    // Mark the current node as visited
+    visited.add(start);
+    console.log(start); // Process the node
+
+    // Go through each neighbor
+    for (const neighbor of graph[start]) {
+        if (!visited.has(neighbor)) {
+            dfsRecursive(graph, neighbor, visited);
+        }
+    }
 }
-const sortedArray = [1, 3, 5, 7, 9, 11];
-console.log(binarySearch(sortedArray, 7)); // Output: 3
-console.log(binarySearch(sortedArray, 2)); // Output: -1
+
+// Iterative DFS implementation
+function dfsIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited = new Set<string>();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        if (!visited.has(node)) {
+            visited.add(node);
+            console.log(node); // Process the node
+            // Push neighbors onto the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
+}
+
+// Test the recursive DFS
+console.log("Recursive DFS:");
+dfsRecursive(graph, 'A');
+
+// Test the iterative DFS
+console.log("Iterative DFS:");
+dfsIterative(graph, 'A');
