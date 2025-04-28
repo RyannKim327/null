@@ -1,73 +1,64 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
-
-    constructor(val: number) {
-        this.val = val;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k should be in the range from 1 to the length of the array.");
     }
 
-    append(val: number) {
-        const newNode = new ListNode(val);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    let aPointer: ListNode | null = headA;
-    let bPointer: ListNode | null = headB;
-
-    // Traverse through both lists, once reaching the end switch to the head of the other list
-    while (aPointer !== bPointer) {
-        aPointer = aPointer ? aPointer.next : headB;
-        bPointer = bPointer ? bPointer.next : headA;
-    }
-
-    // Either both pointers meet at the intersection node or both are null (no intersection)
-    return aPointer;
+    // Sort the array
+    const sortedArray = arr.slice().sort((a, b) => a - b);
+    
+    // Return the kth smallest (1-based index)
+    return sortedArray[k - 1];
 }
 
 // Example usage:
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(array, k)); // Output: 7
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    // Move the pivot to the end
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
 
-const listA = new LinkedList();
-const listB = new LinkedList();
-
-// Create first linked list: 1 -> 3 -> 5
-listA.append(1);
-listA.append(3);
-listA.append(5);
-
-// Create second linked list: 2 -> 4 and then intersects with listA at node with value 5
-listB.append(2);
-listB.append(4);
-
-// Manually link the end of listB to the node of listA to create an intersection
-if (listA.head) {
-    let current = listA.head;
-    while (current.next) {
-        current = current.next;
+    for (let i = left; i < right; i++) {
+        if (arr[i] < pivotValue) {
+            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+            storeIndex++;
+        }
     }
-    current.next = listB.head!.next!.next; // Make the intersection point at value 5
+
+    // Move the pivot to its final place
+    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
+    return storeIndex;
 }
 
-// Find intersection
-const intersectionNode = getIntersectionNode(listA.head, listB.head);
-console.log(intersectionNode ? intersectionNode.val : "No intersection");
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left];
+    }
+
+    const pivotIndex = Math.floor((right + left) / 2);
+    const newPivotIndex = partition(arr, left, right, pivotIndex);
+
+    // The pivot is in its final sorted position
+    if (k === newPivotIndex) {
+        return arr[k];
+    } else if (k < newPivotIndex) {
+        return quickSelect(arr, left, newPivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, newPivotIndex + 1, right, k);
+    }
+}
+
+function kthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k should be in the range from 1 to the length of the array.");
+    }
+
+    return quickSelect(arr, 0, arr.length - 1, k - 1);
+}
+
+// Example usage:
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(kthSmallest(array, k)); // Output: 7
