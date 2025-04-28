@@ -1,30 +1,47 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+function fibonacciSearch(arr: number[], target: number): number {
+  const n = arr.length;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+  // Initialize Fibonacci numbers
+  let fibMMm2 = 0;   // (m-2)'th Fibonacci number
+  let fibMMm1 = 1;   // (m-1)'th Fibonacci number
+  let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci
 
-        if (arr[mid] === target) {
-            return mid; // Target found
-        } else if (arr[mid] < target) {
-            left = mid + 1; // Search in the right half
-        } else {
-            right = mid - 1; // Search in the left half
-        }
+  // Find the smallest Fibonacci number greater than or equal to n
+  while (fibM < n) {
+    fibMMm2 = fibMMm1;
+    fibMMm1 = fibM;
+    fibM = fibMMm2 + fibMMm1;
+  }
+
+  // Marks the eliminated range from front
+  let offset = -1;
+
+  while (fibM > 1) {
+    // Check if fibMMm2 is a valid location
+    const i = Math.min(offset + fibMMm2, n - 1);
+
+    if (arr[i] < target) {
+      // Move to the subarray after i
+      fibM = fibMMm1;
+      fibMMm1 = fibMMm2;
+      fibMMm2 = fibM - fibMMm1;
+      offset = i;
+    } else if (arr[i] > target) {
+      // Move to the subarray before i
+      fibM = fibMMm2;
+      fibMMm1 = fibMMm1 - fibMMm2;
+      fibMMm2 = fibM - fibMMm1;
+    } else {
+      // Found the target
+      return i;
     }
+  }
 
-    return -1; // Target not found
-}
+  // Comparing the last element with target
+  if (fibMMm1 && arr[offset + 1] === target) {
+    return offset + 1;
+  }
 
-// Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const targetValue = 5;
-
-const result = binarySearch(sortedArray, targetValue);
-
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found');
+  // Element not found
+  return -1;
 }
