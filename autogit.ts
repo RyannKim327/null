@@ -1,34 +1,63 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  const normalize = (str: string) => 
-    str.toLowerCase().replace(/\s+/g, '').split('').sort().join('');
-  return normalize(str1) === normalize(str2);
+function computeLPS(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // Length of the previous longest prefix suffix
+    let i = 1;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use the previously computed lps
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
-// Usage
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-function areAnagrams(str1: string, str2: string): boolean {
-  const charCount = (str: string): Record<string, number> => {
-    const count: Record<string, number> = {};
-    for (const ch of str.toLowerCase().replace(/\s+/g, '')) {
-      count[ch] = (count[ch] || 0) + 1;
-    }
-    return count;
-  };
-  const count1 = charCount(str1);
-  const count2 = charCount(str2);
+function KMPSearch(text: string, pattern: string): number {
+    const m = pattern.length;
+    const n = text.length;
 
-  if (Object.keys(count1).length !== Object.keys(count2).length) {
-    return false;
-  }
+    const lps = computeLPS(pattern); // Preprocess the pattern
 
-  for (const key in count1) {
-    if (count1[key] !== count2[key]) {
-      return false;
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            // Found pattern at index (i - j)
+            return i - j; // index of the pattern in text
+        } else if (i < n && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Move to the next matching position
+            } else {
+                i++;
+            }
+        }
     }
-  }
-  return true;
+
+    return -1; // Pattern not found
 }
 
-// Usage
-console.log(areAnagrams("Clint Eastwood", "Old West Action")); // true
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
