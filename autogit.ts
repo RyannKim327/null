@@ -1,39 +1,86 @@
-function insertionSort(arr: number[]): number[] {
-  for (let i = 1; i < arr.length; i++) {
-    const key = arr[i];
-    let j = i - 1;
+class Node<T> {
+    data: T;
+    next: Node<T> | null = null;
 
-    // Shift elements greater than key to the right
-    while (j >= 0 && arr[j] > key) {
-      arr[j + 1] = arr[j];
-      j--;
+    constructor(data: T) {
+        this.data = data;
     }
-
-    // Place the key at its correct position
-    arr[j + 1] = key;
-  }
-  return arr;
 }
 
-// Example usage:
-const numbers = [5, 2, 9, 1, 5, 6];
-console.log(insertionSort(numbers));  // Output: [1, 2, 5, 5, 6, 9]
-function insertionSort<T>(arr: T[], compare: (a: T, b: T) => number): T[] {
-  for (let i = 1; i < arr.length; i++) {
-    const key = arr[i];
-    let j = i - 1;
+class LinkedList<T> {
+    head: Node<T> | null = null;
 
-    while (j >= 0 && compare(arr[j], key) > 0) {
-      arr[j + 1] = arr[j];
-      j--;
+    // Method to append a node at the end of the list
+    append(data: T): void {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
     }
 
-    arr[j + 1] = key;
-  }
+    // Method to display the list
+    display(): void {
+        let current = this.head;
+        const values: T[] = [];
+        while (current) {
+            values.push(current.data);
+            current = current.next;
+        }
+        console.log(values.join(' -> '));
+    }
 
-  return arr;
+    // Method to remove a node by value
+    remove(data: T): boolean {
+        if (!this.head) return false;
+
+        // Handle the case for the head node
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.data === data) {
+                current.next = current.next.next;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    // Method to find a node by value
+    find(data: T): Node<T> | null {
+        let current = this.head;
+        while (current) {
+            if (current.data === data) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null;
+    }
 }
 
-// Usage with numbers
-const nums = [3, 1, 4, 1, 5, 9];
-console.log(insertionSort(nums, (a, b) => a - b));
+// Example usage
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.append(30);
+list.display(); // Output: 10 -> 20 -> 30
+
+list.remove(20);
+list.display(); // Output: 10 -> 30
+
+const foundNode = list.find(30);
+if (foundNode) {
+    console.log(`Found node with data: ${foundNode.data}`); // Output: Found node with data: 30
+}
