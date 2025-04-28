@@ -1,20 +1,15 @@
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = originalArray.filter(item => item !== elementToRemove);
-console.log(newArray); // [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const index = array.indexOf(3);
-
-if (index !== -1) {
-  array.splice(index, 1);
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
+    
+    // Check if the normalized string is equal to its reverse
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    return normalizedStr === reversedStr;
 }
-console.log(array); // [1, 2, 4, 5]
-const array = [1, 2, 3, 3, 4, 5];
-const result = array.filter(item => item !== 3);
-console.log(result); // [1, 2, 4, 5]
-const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
-const idToRemove = 2;
 
-const filteredArray = array.filter(item => item.id !== idToRemove);
-console.log(filteredArray); // [{ id: 1 }, { id: 3 }]
+// Example usages
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
+console.log(isPalindrome("")); // true
+console.log(isPalindrome("No 'x' in Nixon")); // true
