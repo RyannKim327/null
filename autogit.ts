@@ -1,83 +1,83 @@
-class PriorityQueue<T> {
-  private heap: T[] = [];
-  private comparator: (a: T, b: T) => number;
+type TKey = number; // or string, depending on your use case
 
-  constructor(comparator?: (a: T, b: T) => number) {
-    // Default to min-heap
-    this.comparator = comparator || ((a, b) => a < b ? -1 : a > b ? 1 : 0);
-  }
+class BTreeNode {
+  keys: TKey[];
+  children: BTreeNode[];
+  leaf: boolean;
 
-  size() {
-    return this.heap.length;
-  }
-
-  isEmpty() {
-    return this.heap.length === 0;
-  }
-
-  peek(): T | undefined {
-    return this.heap[0];
-  }
-
-  enqueue(item: T): void {
-    this.heap.push(item);
-    this.bubbleUp(this.heap.length - 1);
-  }
-
-  dequeue(): T | undefined {
-    if (this.heap.length === 0) return undefined;
-    const top = this.heap[0];
-
-    const end = this.heap.pop()!;
-    if (this.heap.length > 0) {
-      this.heap[0] = end;
-      this.bubbleDown(0);
-    }
-    return top;
-  }
-
-  private bubbleUp(index: number): void {
-    while (index > 0) {
-      const parentIdx = Math.floor((index - 1) / 2);
-      if (this.comparator(this.heap[index], this.heap[parentIdx]) >= 0) {
-        break;
-      }
-      this.swap(index, parentIdx);
-      index = parentIdx;
-    }
-  }
-
-  private bubbleDown(index: number): void {
-    const length = this.heap.length;
-    while (true) {
-      let leftIdx = 2 * index + 1;
-      let rightIdx = 2 * index + 2;
-      let smallest = index;
-
-      if (leftIdx < length && this.comparator(this.heap[leftIdx], this.heap[smallest]) < 0) {
-        smallest = leftIdx;
-      }
-
-      if (rightIdx < length && this.comparator(this.heap[rightIdx], this.heap[smallest]) < 0) {
-        smallest = rightIdx;
-      }
-
-      if (smallest === index) break;
-
-      this.swap(index, smallest);
-      index = smallest;
-    }
-  }
-
-  private swap(i: number, j: number): void {
-    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+  constructor(leaf: boolean) {
+    this.keys = [];
+    this.children = [];
+    this.leaf = leaf;
   }
 }
-const pq = new PriorityQueue<number>();
 
-pq.enqueue(5);
-pq.enqueue(2);
-pq.enqueue(8);
+class BTree {
+  root: BTreeNode | null;
+  t: number; // minimum degree
 
-console.log(pq.dequeue()); // 2 (smallest)
-console.log(pq.peek());    // 5
+  constructor(t: number) {
+    this.t = t;
+    this.root = null;
+  }
+
+  // To be implemented:
+  insert(key: TKey): void { /* insertion logic */ }
+  search(key: TKey): BTreeNode | null { /* search logic */ }
+}
+insert(key: TKey): void {
+  if (!this.root) {
+    this.root = new BTreeNode(true);
+    this.root.keys.push(key);
+    return;
+  }
+
+  if (this.root.keys.length === 2 * this.t - 1) {
+    const newRoot = new BTreeNode(false);
+    newRoot.children.push(this.root);
+    this.splitChild(newRoot, 0);
+    this.root = newRoot;
+    this.insertNonFull(newRoot, key);
+  } else {
+    this.insertNonFull(this.root, key);
+  }
+}
+
+private splitChild(parent: BTreeNode, index: number): void {
+  const node = parent.children[index];
+  const newNode = new BTreeNode(node.leaf);
+  const mid = this.t - 1;
+
+  // Move second half keys to new node
+  newNode.keys = node.keys.splice(mid + 1);
+  const medianKey = node.keys.splice(mid, 1)[0];
+
+  // If not leaf, move corresponding children
+  if (!node.leaf) {
+    newNode.children = node.children.splice(mid + 1);
+  }
+
+  parent.keys.splice(index, 0, medianKey);
+  parent.children.splice(index + 1, 0, newNode);
+}
+
+private insertNonFull(node: BTreeNode, key: TKey): void {
+  let i = node.keys.length - 1;
+
+  if (node.leaf) {
+    // Insert at the correct position
+    while (i >= 0 && key < node.keys[i]) {
+      i--;
+    }
+    node.keys.splice(i + 1, 0, key);
+  } else {
+    // Find child to recurse into
+    while (i >= 0 && key < node.keys[i]) i--;
+    i++;
+    if (node.children[i].keys.length === 2 * this.t - 1) {
+      this.splitChild(node, i);
+      if (key > node.keys[i]) i++;
+    }
+    this.insertNonFull(node.children[i], key);
+  }
+}
