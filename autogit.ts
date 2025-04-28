@@ -1,45 +1,69 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null = null;
+    right: TreeNode<T> | null = null;
 
-    // Helper function to heapify a subtree rooted at index i
-    function heapify(size: number, i: number): void {
-        let largest = i;
-        const left = 2 * i + 1;
-        const right = 2 * i + 2;
-
-        // If left child exists and is greater than root
-        if (left < size && arr[left] > arr[largest]) {
-            largest = left;
-        }
-
-        // If right child exists and is greater than current largest
-        if (right < size && arr[right] > arr[largest]) {
-            largest = right;
-        }
-
-        // If largest is not root
-        if (largest !== i) {
-            [arr[i], arr[largest]] = [arr[largest], arr[i]];
-            heapify(size, largest);
-        }
+    constructor(value: T) {
+        this.value = value;
     }
-
-    // 1. Build max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(n, i);
-    }
-
-    // 2. Extract elements from heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-        // Call max heapify on the reduced heap
-        heapify(i, 0);
-    }
-
-    return arr;
 }
+class BinarySearchTree<T> {
+    private root: TreeNode<T> | null = null;
 
-// Example usage:
-const array = [4, 10, 3, 5, 1];
-console.log(heapSort(array)); // Output: [1, 3, 4, 5, 10]
+    constructor(private compare: (a: T, b: T) => number) {}
+
+    insert(value: T): void {
+        if (!this.root) {
+            this.root = new TreeNode(value);
+            return;
+        }
+        this._insert(this.root, value);
+    }
+
+    private _insert(node: TreeNode<T>, value: T): void {
+        if (this.compare(value, node.value) < 0) {
+            if (node.left) {
+                this._insert(node.left, value);
+            } else {
+                node.left = new TreeNode(value);
+            }
+        } else {
+            if (node.right) {
+                this._insert(node.right, value);
+            } else {
+                node.right = new TreeNode(value);
+            }
+        }
+    }
+
+    search(value: T): TreeNode<T> | null {
+        return this._search(this.root, value);
+    }
+
+    private _search(node: TreeNode<T> | null, value: T): TreeNode<T> | null {
+        if (!node) return null;
+        const cmp = this.compare(value, node.value);
+        if (cmp === 0) return node;
+        if (cmp < 0) return this._search(node.left, value);
+        return this._search(node.right, value);
+    }
+
+    // Optional: Implement traversal methods like inOrder, preOrder, postOrder
+    inOrder(callback: (node: TreeNode<T>) => void): void {
+        this._inOrder(this.root, callback);
+    }
+
+    private _inOrder(node: TreeNode<T> | null, callback: (node: TreeNode<T>) => void): void {
+        if (!node) return;
+        this._inOrder(node.left, callback);
+        callback(node);
+        this._inOrder(node.right, callback);
+    }
+}
+const bst = new BinarySearchTree<number>((a, b) => a - b);
+
+bst.insert(5);
+bst.insert(3);
+bst.insert(7);
+
+console.log(bst.search(3)); // should find the node
