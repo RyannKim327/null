@@ -1,26 +1,39 @@
-import axios, { AxiosResponse } from 'axios';
+// Define the linked list node
+class ListNode<T> {
+    value: T;
+    next: ListNode<T> | null;
 
-// Define an interface for the expected data structure
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
-async function fetchUser(userId: number): Promise<void> {
-  try {
-    const response: AxiosResponse<User> = await axios.get<User>(`https://jsonplaceholder.typicode.com/users/${userId}`);
-    const user = response.data;
-    console.log(`User: ${user.name} (${user.email})`);
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(`Error fetching user: ${error.message}`);
-    } else {
-      console.error(`Unexpected error: ${error}`);
+    constructor(value: T, next: ListNode<T> | null = null) {
+        this.value = value;
+        this.next = next;
     }
-  }
 }
 
-// Fetch user with ID 1
-fetchUser(1);
+// Function to find the middle node
+function findMiddle<T>(head: ListNode<T> | null): ListNode<T> | null {
+    if (!head) return null;
+
+    let slow: ListNode<T> | null = head;
+    let fast: ListNode<T> | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    return slow; // 'slow' is at the middle when 'fast' reaches the end
+}
+
+// Example usage:
+const list = new ListNode(1,
+    new ListNode(2,
+        new ListNode(3,
+            new ListNode(4,
+                new ListNode(5)
+            )
+        )
+    )
+);
+
+const middleNode = findMiddle(list);
+console.log(middleNode?.value); // Should output 3
