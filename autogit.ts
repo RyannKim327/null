@@ -1,20 +1,14 @@
-function firstNonRepeatingChar(str: string): string | null {
-  const charCount: Record<string, number> = {};
-
-  // Count the frequency of each character
-  for (const char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-
-  // Find the first character with a count of 1
-  for (const char of str) {
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  // If no non-repeating character found
-  return null;
+function countWordOccurrences(str: string, word: string): number {
+    const regex = new RegExp(`\\b${word}\\b`, 'g'); // word boundary to match whole words
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
 }
-console.log(firstNonRepeatingChar("swiss")); // Output: 'w'
-console.log(firstNonRepeatingChar("aabbcc")); // Output: null
+
+const text = "This is a test. Testing is fun. Test the testing.";
+const count = countWordOccurrences(text, "test");
+console.log(count); // Output: 1 (case-sensitive)
+function countWordOccurrencesInsensitive(str: string, word: string): number {
+    const regex = new RegExp(`\\b${word}\\b`, 'gi'); // 'i' for case-insensitive
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
