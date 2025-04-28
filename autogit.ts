@@ -1,72 +1,42 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null = null;
-
-    constructor(value: T) {
-        this.value = value;
+function kthSmallestSort(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
+    const sorted = arr.slice().sort((a, b) => a - b);
+    return sorted[k - 1];
 }
-class LinkedList<T> {
-    private head: Node<T> | null = null;
-
-    // Add a new node to the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
+function quickselect(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
 
-    // Remove a node by value
-    remove(value: T): void {
-        if (!this.head) return;
-
-        // If the head needs to be removed
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            return;
+    function select(low: number, high: number): number {
+        if (low === high) {
+            return arr[low];
         }
+        const pivotIndex = partition(low, high);
+        const length = pivotIndex - low + 1;
+        if (k === length) {
+            return arr[pivotIndex];
+        } else if (k < length) {
+            return select(low, pivotIndex - 1);
+        } else {
+            return select(pivotIndex + 1, high, k - length);
+        }
+    }
 
-        let current: Node<T> | null = this.head;
-        while (current && current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                return;
+    function partition(low: number, high: number): number {
+        const pivot = arr[high];
+        let i = low;
+        for (let j = low; j < high; j++) {
+            if (arr[j] <= pivot) {
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+                i++;
             }
-            current = current.next;
         }
+        [arr[i], arr[high]] = [arr[high], arr[i]];
+        return i;
     }
 
-    // Traverse the list
-    traverse(): T[] {
-        const result: T[] = [];
-        let current = this.head;
-        while (current) {
-            result.push(current.value);
-            current = current.next;
-        }
-        return result;
-    }
-
-    // Print the list
-    print(): void {
-        console.log(this.traverse().join(' -> '));
-    }
+    return select(0, arr.length - 1);
 }
-const linkedList = new LinkedList<number>();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.print(); // Output: 1 -> 2 -> 3
-
-linkedList.remove(2);
-linkedList.print(); // Output: 1 -> 3
-
-linkedList.append(4);
-linkedList.print(); // Output: 1 -> 3 -> 4
