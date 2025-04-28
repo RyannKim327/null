@@ -1,45 +1,18 @@
-class ListNode {
-  value: number;
-  next: ListNode | null;
+const originalArray: number[] = [1, 2, 3, 4, 5];
+console.log("Original Array:", originalArray);
 
-  constructor(value: number, next: ListNode | null = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
-function isPalindrome(head: ListNode | null): boolean {
-  if (!head || !head.next) return true; // Empty or single node
+originalArray.reverse();
 
-  // Find middle (slow/fast pointer)
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head;
+console.log("Reversed Array:", originalArray);
+Original Array: [1, 2, 3, 4, 5]
+Reversed Array: [5, 4, 3, 2, 1]
+const originalArray: number[] = [1, 2, 3, 4, 5];
+console.log("Original Array:", originalArray);
 
-  while (fast && fast.next) {
-    slow = slow!.next;
-    fast = fast.next.next;
-  }
-  // 'slow' is now at middle
+const reversedArray = originalArray.slice().reverse();
 
-  // Reverse second half
-  let prev: ListNode | null = null;
-  let current: ListNode | null = slow;
-
-  while (current) {
-    const nextNode = current.next;
-    current.next = prev;
-    prev = current;
-    current = nextNode;
-  }
-
-  // Compare first half and reversed second half
-  let firstHalf: ListNode | null = head;
-  let secondHalf: ListNode | null = prev;
-
-  while (secondHalf) {
-    if (firstHalf!.value !== secondHalf.value) return false;
-    firstHalf = firstHalf!.next;
-    secondHalf = secondHalf.next;
-  }
-
-  return true;
-}
+console.log("Reversed Array:", reversedArray);
+console.log("Original Array after reverse:", originalArray); // Original array remains unchanged
+Original Array: [1, 2, 3, 4, 5]
+Reversed Array: [5, 4, 3, 2, 1]
+Original Array after reverse: [1, 2, 3, 4, 5]
