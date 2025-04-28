@@ -1,21 +1,30 @@
-function insertionSort(arr: number[]): number[] {
-    // Traverse through 1 to arr.length
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i];
-        let j = i - 1;
+import { useState, useEffect } from 'react';
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j = j - 1;
-        }
-        arr[j + 1] = key;
-    }
-    return arr;
+async function fetchData() {
+  // Simulating a network request with a delay
+  return new Promise<string>((resolve) => {
+    setTimeout(() => {
+      resolve("Data fetched successfully!");
+    }, 2000); // 2-second delay
+  });
 }
 
-// Example usage:
-const unsortedArray = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+function MyComponent() {
+  const [data, setData] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      const result = await fetchData();
+      setData(result);
+      setLoading(false);
+    }
+    load();
+  }, []);
+
+  if (loading) {
+    return <Text>Loading...</Text>;
+  }
+
+  return <Text>{data}</Text>;
+}
