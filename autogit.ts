@@ -1,22 +1,24 @@
-class ListNode {
-    data: number;
-    next: ListNode | null;
-
-    constructor(data: number, next: ListNode | null = null) {
-        this.data = data;
-        this.next = next;
-    }
+interface Graph {
+  [node: string]: string[]; // or number[] if your nodes are numeric
 }
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
 
-    while (current !== null) {
-        const nextNode = current.next;   // Store the next node
-        current.next = prev;             // Reverse the link
-        prev = current;                  // Move prev forward
-        current = nextNode;              // Move current forward
-    }
+function dfs(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+  if (visited.has(start)) return;
 
-    return prev; // Prev is the new head of the reversed list
+  console.log(start); // or process the node as needed
+  visited.add(start);
+
+  for (const neighbor of graph[start]) {
+    dfs(graph, neighbor, visited);
+  }
 }
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
+
+dfs(graph, 'A');
