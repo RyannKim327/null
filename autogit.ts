@@ -1,19 +1,30 @@
-function getRandomInt(min: number, max: number): number {
-    // Ensure that min and max are integers
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    
-    // Generate random integer between min (inclusive) and max (inclusive)
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+class ListNode<T> {
+  val: T;
+  next: ListNode<T> | null;
+
+  constructor(val: T, next: ListNode<T> | null = null) {
+    this.val = val;
+    this.next = next;
+  }
 }
 
-// Example usage:
-const randomNumber = getRandomInt(1, 10);
-console.log(randomNumber);  // Outputs a random integer between 1 and 10
-function getRandomFloat(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
-}
+function getNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
+  if (!head || n < 1) return null;
+  
+  let slow: ListNode<T> | null = head;
+  let fast: ListNode<T> | null = head;
 
-// Example usage:
-const randomFloatNumber = getRandomFloat(1.5, 5.5);
-console.log(randomFloatNumber);  // Outputs a random float between 1.5 and 5.5
+  // Move fast n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (fast === null) return null; // list shorter than n
+    fast = fast.next;
+  }
+
+  // Move both pointers until fast reaches the end
+  while (fast !== null) {
+    slow = slow!.next;
+    fast = fast.next;
+  }
+
+  return slow;
+}
