@@ -1,25 +1,22 @@
-function findSecondLargest(arr: number[]): number | null {
-  if (arr.length < 2) {
-    // Not enough elements for a second largest
-    return null;
-  }
+class ListNode {
+    data: number;
+    next: ListNode | null;
 
-  let max = -Infinity;
-  let secondMax = -Infinity;
-
-  for (const num of arr) {
-    if (num > max) {
-      secondMax = max;
-      max = num;
-    } else if (num > secondMax && num !== max) {
-      secondMax = num;
+    constructor(data: number, next: ListNode | null = null) {
+        this.data = data;
+        this.next = next;
     }
-  }
-
-  // If secondMax is still -Infinity, it means there's no second distinct largest
-  return secondMax === -Infinity ? null : secondMax;
 }
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
 
-// Example usage:
-const numbers = [3, 1, 4, 2, 5, 5];
-console.log(findSecondLargest(numbers)); // Output: 4
+    while (current !== null) {
+        const nextNode = current.next;   // Store the next node
+        current.next = prev;             // Reverse the link
+        prev = current;                  // Move prev forward
+        current = nextNode;              // Move current forward
+    }
+
+    return prev; // Prev is the new head of the reversed list
+}
