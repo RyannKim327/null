@@ -1,39 +1,50 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+function fibonacciSearch(arr: number[], target: number): number {
+  const n = arr.length;
 
-    // Helper function to heapify a subtree rooted with node i
-    function heapify(heap: number[], size: number, i: number): void {
-        let largest = i;
-        const left = 2 * i + 1;
-        const right = 2 * i + 2;
+  // Generate Fibonacci numbers up to n
+  let fibMm2 = 0; // (m-2)th Fibonacci
+  let fibMm1 = 1; // (m-1)th Fibonacci
+  let fibM = fibMm2 + fibMm1; // mth Fibonacci
 
-        if (left < size && heap[left] > heap[largest]) {
-            largest = left;
-        }
-        if (right < size && heap[right] > heap[largest]) {
-            largest = right;
-        }
+  while (fibM < n) {
+    fibMm2 = fibMm1;
+    fibMm1 = fibM;
+    fibM = fibMm2 + fibMm1;
+  }
 
-        if (largest !== i) {
-            [heap[i], heap[largest]] = [heap[largest], heap[i]];
-            heapify(heap, size, largest);
-        }
+  // Marks the eliminated range from front
+  let offset = -1;
+
+  // While there are elements to inspect
+  while (fibM > 1) {
+    // Check if fibMm2 is a valid location
+    const i = Math.min(offset + fibMm2, n - 1);
+
+    if (arr[i] < target) {
+      // Move the three Fibonacci variables down two
+      fibM = fibMm1;
+      fibMm1 = fibMm2;
+      fibMm2 = fibM - fibMm1;
+      offset = i;
+    } else if (arr[i] > target) {
+      // Move the three Fibonacci variables down two in other direction
+      fibM = fibMm2;
+      fibMm1 = fibMm1 - fibMm2;
+      fibMm2 = fibM - fibMm1;
+    } else {
+      // Found the target
+      return i;
     }
+  }
 
-    // Build max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
+  // Checking if the last element is the target
+  if (fibMm1 && arr[offset + 1] === target) {
+    return offset + 1;
+  }
 
-    // Extract elements from heap one by one
-    for (let i = n - 1; i > 0; i--) {
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // move current root to end
-        heapify(arr, i, 0); // heapify reduced heap
-    }
-
-    return arr;
+  // Element not found
+  return -1;
 }
-
-// Example usage:
-const array = [3, 1, 4, 1, 5, 9, 2, 6];
-console.log(heapSort(array)); // [1, 1, 2, 3, 4, 5, 6, 9]
+const data = [1, 3, 5, 7, 9, 11, 13];
+console.log(fibonacciSearch(data, 7)); // Output: 3
+console.log(fibonacciSearch(data, 2)); // Output: -1
