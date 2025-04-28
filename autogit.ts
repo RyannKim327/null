@@ -1,52 +1,22 @@
-type Graph = { [node: string]: string[] };
-
-function depthFirstSearch(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const result: string[] = [];
-
-  function dfs(node: string) {
-    if (visited.has(node)) return;
-    visited.add(node);
-    result.push(node);
-
-    for (const neighbor of graph[node]) {
-      dfs(neighbor);
+function maxSubArray(arr: number[]): number {
+    if (arr.length === 0) {
+        throw new Error("Array cannot be empty");
     }
-  }
 
-  dfs(startNode);
-  return result;
+    let maxCurrent = arr[0];
+    let maxGlobal = arr[0];
+
+    for (let i = 1; i < arr.length; i++) {
+        maxCurrent = Math.max(arr[i], maxCurrent + arr[i]); // Decide to add the current element or start new subarray
+        if (maxCurrent > maxGlobal) {
+            maxGlobal = maxCurrent; // Update the global maximum if necessary
+        }
+    }
+
+    return maxGlobal;
 }
 
 // Example usage:
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: []
-};
-
-console.log(depthFirstSearch(graph, 'A')); // Output: DFS traversal order
-function depthFirstSearchIterative(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const stack: string[] = [startNode];
-  const result: string[] = [];
-
-  while (stack.length) {
-    const node = stack.pop()!;
-    if (!visited.has(node)) {
-      visited.add(node);
-      result.push(node);
-      // Push neighbors onto the stack in reverse order for correct traversal
-      for (const neighbor of graph[node].slice().reverse()) {
-        if (!visited.has(neighbor)) {
-          stack.push(neighbor);
-        }
-      }
-    }
-  }
-
-  return result;
-}
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSubArray(array);
+console.log(`The maximum sum of the subarray is: ${maxSum}`); // Output: 6
