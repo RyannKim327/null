@@ -1,54 +1,66 @@
-// Define a type for the adjacency list representation of a graph
-type Graph = { [key: string]: string[] };
+class Node<T> {
+    value: T;
+    next: Node<T> | null = null;
 
-// Example of a graph using an adjacency list
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-// Recursive DFS implementation
-function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    // Mark the current node as visited
-    visited.add(start);
-    console.log(start); // Process the node
-
-    // Go through each neighbor
-    for (const neighbor of graph[start]) {
-        if (!visited.has(neighbor)) {
-            dfsRecursive(graph, neighbor, visited);
-        }
+    constructor(value: T) {
+        this.value = value;
     }
 }
+class Queue<T> {
+    private head: Node<T> | null = null; // Points to the front of the queue
+    private tail: Node<T> | null = null; // Points to the end of the queue
+    private length: number = 0; // Track the size of the queue
 
-// Iterative DFS implementation
-function dfsIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited = new Set<string>();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        if (!visited.has(node)) {
-            visited.add(node);
-            console.log(node); // Process the node
-            // Push neighbors onto the stack
-            for (const neighbor of graph[node]) {
-                if (!visited.has(neighbor)) {
-                    stack.push(neighbor);
-                }
-            }
+    // Add an item to the end of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the current tail to the new node
         }
+        this.tail = newNode; // Move the tail to the new node
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, now the head is the new node
+        }
+        this.length++; // Increase the size of the queue
+    }
+
+    // Remove and return the item from the front of the queue
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Queue is empty
+        }
+        const value = this.head.value; // Get value from the head node
+        this.head = this.head.next; // Move head to the next node
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, tail should also be null
+        }
+        this.length--; // Decrease the size of the queue
+        return value; // Return the dequeued value
+    }
+
+    // Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
+    }
+
+    // Get the size of the queue
+    size(): number {
+        return this.length;
+    }
+
+    // Peek at the front item without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null;
     }
 }
+const queue = new Queue<number>();
 
-// Test the recursive DFS
-console.log("Recursive DFS:");
-dfsRecursive(graph, 'A');
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-// Test the iterative DFS
-console.log("Iterative DFS:");
-dfsIterative(graph, 'A');
+console.log(queue.dequeue()); // Outputs: 1
+console.log(queue.dequeue()); // Outputs: 2
+console.log(queue.peek());     // Outputs: 3
+console.log(queue.isEmpty());  // Outputs: false
+console.log(queue.size());      // Outputs: 1
