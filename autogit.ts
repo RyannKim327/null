@@ -1,15 +1,34 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^A-Za-z0-9]/g, '').toLowerCase();
-    
-    // Check if the normalized string is equal to its reverse
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    return normalizedStr === reversedStr;
+type Graph = { [node: string]: string[] };
+
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
+function dfs(
+  graph: Graph,
+  startNode: string,
+  visited: Set<string> = new Set()
+): string[] {
+  // Mark the current node as visited
+  visited.add(startNode);
+  
+  // Store the traversal order
+  const traversal: string[] = [startNode];
+  
+  // Visit each neighbor recursively
+  for (const neighbor of graph[startNode]) {
+    if (!visited.has(neighbor)) {
+      traversal.push(...dfs(graph, neighbor, visited));
+    }
+  }
+  
+  return traversal;
 }
 
-// Example usages
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
-console.log(isPalindrome("")); // true
-console.log(isPalindrome("No 'x' in Nixon")); // true
+// Usage:
+const traversalOrder = dfs(graph, 'A');
+console.log(traversalOrder); // e.g., ['A', 'B', 'D', 'E', 'F', 'C']
