@@ -1,30 +1,46 @@
-// Simulated async connection task
-async function connectToDevice(deviceId: string): Promise<string> {
-  console.log(`Attempting to connect to device ${deviceId}...`);
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-  return new Promise((resolve, reject) => {
-    // Simulate connection delay
-    setTimeout(() => {
-      // Simulating a success or failure randomly
-      const success = Math.random() > 0.3;
-
-      if (success) {
-        resolve(`Connected to device ${deviceId}`);
-      } else {
-        reject(new Error(`Failed to connect to device ${deviceId}`));
-      }
-    }, 2000);
-  });
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-// Usage example
-async function runConnection() {
-  try {
-    const result = await connectToDevice("android-device-123");
-    console.log(result);
-  } catch (error: any) {
-    console.error(error.message);
-  }
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    let first: ListNode | null = head;
+    let second: ListNode | null = head;
+
+    // Move first pointer n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (first === null) {
+            return null; // n is greater than the length of the list
+        }
+        first = first.next;
+    }
+
+    // Move both pointers until the first pointer reaches the end
+    while (first !== null) {
+        first = first.next;
+        second = second.next;
+    }
+
+    return second; // second pointer now points to the nth node from the end
 }
 
-runConnection();
+// Example usage:
+// Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
+let head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+// Finding the 2nd node from the end
+const nthNode = findNthFromEnd(head, 2);
+if (nthNode) {
+    console.log(nthNode.value); // Output: 4
+} else {
+    console.log("Node not found.");
+}
