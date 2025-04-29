@@ -1,12 +1,26 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  // Remove spaces and convert to lowercase for a case-insensitive check
-  const normalize = (str: string) =>
-    str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
+function firstNonRepeatingCharacter(input: string): string | null {
+    const charCount: { [key: string]: number } = {};
 
-  return normalize(str1) === normalize(str2);
+    // Count the occurrences of each character
+    for (const char of input) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    // Find the first character with a count of 1
+    for (const char of input) {
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+
+    // If no non-repeating character found, return null
+    return null;
 }
 
 // Example usage:
-console.log(areAnagrams('Listen', 'Silent')); // true
-console.log(areAnagrams('Hello', 'Olelh'));   // true
-console.log(areAnagrams('Apple', 'Pabble'));  // false
+const str = "swiss";
+const result = firstNonRepeatingCharacter(str);
+console.log(result); // Output: "w"
+console.log(firstNonRepeatingCharacter("aabbcc")); // Outputs: null
+console.log(firstNonRepeatingCharacter("apple")); // Outputs: "a"
+console.log(firstNonRepeatingCharacter("stress")); // Outputs: "t"
