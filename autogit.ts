@@ -1,29 +1,32 @@
-function shellSort(arr: number[]): number[] {
-  let n = arr.length;
+function longestCommonSubstring(str1: string, str2: string): string {
+  const m = str1.length;
+  const n = str2.length;
 
-  // Start with a big gap, then reduce the gap
-  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    // Do a gapped insertion sort for this gap size.
-    // The first gap elements arr[0..gap-1] are already in gapped order
-    for (let i = gap; i < n; i++) {
-      // Save arr[i] in temp and make a hole at position i
-      let temp = arr[i];
+  // Create a 2D array initialized with 0
+  const dp: number[][] = Array(m + 1)
+    .fill(null)
+    .map(() => Array(n + 1).fill(0));
 
-      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-      let j = i;
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
+  let maxLength = 0;
+  let endIndex = 0;
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i; // end of substring in str1
+        }
       }
-
-      // Put temp (the original arr[i]) in its correct location
-      arr[j] = temp;
     }
   }
 
-  return arr;
+  // Return the substring from str1 using the endIndex and maxLength
+  return str1.slice(endIndex - maxLength, endIndex);
 }
+const s1 = "helloWorld";
+const s2 = "yellowLord";
 
-// Example usage:
-const array = [23, 12, 1, 8, 34, 54, 2, 3];
-console.log(shellSort(array)); // [1, 2, 3, 8, 12, 23, 34, 54]
+console.log(longestCommonSubstring(s1, s2)); // Output: "ello"
