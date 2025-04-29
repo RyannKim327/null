@@ -1,45 +1,38 @@
-type Node = {
-    state: any; // replace 'any' with the state type you're using (e.g. string, number, object, etc.)
-    score: number; // the score used for sorting
-};
-
-// Example scoring function
-function scoreFunction(state: any): number {
-    // Implement your scoring function here
-    return Math.random(); // Placeholder for demo purposes
+function buildBadCharacterTable(pattern: string): { [key: string]: number } {
+    const table: { [key: string]: number } = {};
+    for (let i = 0; i < pattern.length; i++) {
+        table[pattern[i]] = i;
+    }
+    return table;
 }
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const badCharTable = buildBadCharacterTable(pattern);
+    const matches: number[] = [];
+    const m = pattern.length;
+    const n = text.length;
+    let s = 0; // shift of the pattern with respect to text
 
-// Beam Search Implementation
-function beamSearch(startState: any, beamWidth: number, maxIterations: number): any {
-    let beam: Node[] = [{ state: startState, score: scoreFunction(startState) }];
+    while (s <= n - m) {
+        let j = m - 1;
 
-    for (let iteration = 0; iteration < maxIterations; iteration++) {
-        let nextBeam: Node[] = [];
-
-        // Expand each node in the current beam
-        for (const node of beam) {
-            const newStates = generateSuccessors(node.state); // user-defined method to generate successors
-            for (const newState of newStates) {
-                const newNode: Node = { state: newState, score: scoreFunction(newState) };
-                nextBeam.push(newNode);
-            }
+        // Decrease j while characters match
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
         }
 
-        // Sort through the next nodes and select the best ones to form the next beam
-        nextBeam.sort((a, b) => b.score - a.score); // Sort in descending order
-        beam = nextBeam.slice(0, beamWidth); // Keep only the best 'beamWidth' nodes
+        if (j < 0) {
+            // Pattern found at position s
+            matches.push(s);
+            s += s + m < n ? m - (badCharTable[text[s + m]] ?? -1) : 1; // shift pattern
+        } else {
+            const badCharShift = badCharTable[text[s + j]] ?? -1;
+            s += Math.max(1, j - badCharShift);
+        }
     }
-
-    // Return the best state from the final beam
-    return beam[0].state; // or adjust according to your needs
+    return matches;
 }
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
 
-// Example successor generation (user-defined)
-function generateSuccessors(state: any): any[] {
-    // Replace this with your actual logic to generate valid successors to the current state
-    return [state + 1, state - 1]; // Dummy example
-}
-
-// Example usage
-const bestState = beamSearch(0, 3, 5);
-console.log('Best state found:', bestState);
+const positions = boyerMooreSearch(text, pattern);
+console.log(positions); // Outputs: [17]
