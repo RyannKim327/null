@@ -1,23 +1,10 @@
-const originalArray = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(originalArray));
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const originalArray = ['a', 'b', 'a', 'c', 'b'];
-const uniqueArray = originalArray.filter((item, index) => 
-  originalArray.indexOf(item) === index
-);
-console.log(uniqueArray); // ['a', 'b', 'c']
-interface Person {
-  id: number;
-  name: string;
+function calculateMean(numbers: number[]): number {
+  if (numbers.length === 0) return 0; // or handle empty case differently
+  const sum = numbers.reduce((acc, num) => acc + num, 0);
+  return sum / numbers.length;
 }
 
-const people: Person[] = [
-  { id: 1, name: 'Alice' },
-  { id: 2, name: 'Bob' },
-  { id: 1, name: 'Alice' },
-];
-
-const uniquePeople = Array.from(
-  new Map(people.map(person => [person.id, person])).values()
-);
-console.log(uniquePeople);
+// Usage example:
+const myNumbers = [10, 20, 30, 40, 50];
+const mean = calculateMean(myNumbers);
+console.log(mean); // Output: 30
