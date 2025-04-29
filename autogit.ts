@@ -1,58 +1,53 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
-
-  constructor(val: number, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-function isPalindrome(head: ListNode | null): boolean {
-  if (!head || !head.next) {
-    return true; // Empty or single element list is palindrome
-  }
-
-  // Step 1: Find the middle of the linked list (fast & slow pointers)
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head;
-
-  while (fast && fast.next) {
-    slow = slow!.next;
-    fast = fast.next.next;
-  }
-
-  // Step 2: Reverse the second half of the list
-  let secondHalfHead = reverseList(slow);
-
-  // Step 3: Compare the first half and the reversed second half
-  let firstHalfHead: ListNode | null = head;
-  let secondHalfIter = secondHalfHead;
-
-  while (secondHalfIter) {
-    if (firstHalfHead!.val !== secondHalfIter.val) {
-      return false;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array is of length 0 or 1, it's already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
-    firstHalfHead = firstHalfHead!.next;
-    secondHalfIter = secondHalfIter.next;
-  }
 
-  // Optional: Restore the original list (reverse again)
-  reverseList(secondHalfHead);
+    // Step 1: Divide the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-  return true;
+    // Step 2: Recursively sort both halves
+    const sortedLeft = mergeSort(left);
+    const sortedRight = mergeSort(right);
+
+    // Step 3: Merge the sorted halves
+    return merge(sortedLeft, sortedRight);
 }
 
-// Helper to reverse a linked list
-function reverseList(head: ListNode | null): ListNode | null {
-  let prev: ListNode | null = null;
-  let current = head;
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let i = 0, j = 0;
 
-  while (current) {
-    let nextTemp = current.next;
-    current.next = prev;
-    prev = current;
-    current = nextTemp;
-  }
+    // Compare elements from left and right arrays and push the smaller element into the result
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
+        } else {
+            result.push(right[j]);
+            j++;
+        }
+    }
 
-  return prev;
+    // If there are remaining elements in the left array, add them to the result
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
+    }
+
+    // If there are remaining elements in the right array, add them to the result
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
+    }
+
+    return result;
 }
+
+// Example usage:
+const arr = [38, 27, 43, 3, 9, 82, 10];
+const sortedArr = mergeSort(arr);
+console.log(sortedArr);  // Output: [3, 9, 10, 27, 38, 43, 82]
