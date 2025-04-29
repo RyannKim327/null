@@ -1,40 +1,37 @@
-function mergeSort(arr: number[]): number[] {
-  if (arr.length <= 1) {
-    return arr; // Base case: already sorted
-  }
+function bfs(graph: { [node: string]: string[] }, startNode: string): string[] {
+    const visited: Set<string> = new Set();
+    const queue: string[] = [];
+    const result: string[] = [];
 
-  const middle = Math.floor(arr.length / 2);
-  const left = arr.slice(0, middle);
-  const right = arr.slice(middle);
+    // Start with the starting node
+    visited.add(startNode);
+    queue.push(startNode);
 
-  // Recursively sort both halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
+    while (queue.length > 0) {
+        const currentNode = queue.shift()!;
+        result.push(currentNode);
 
-  // Merge sorted halves
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(left: number[], right: number[]): number[] {
-  const result: number[] = [];
-  let i = 0; // pointer for left
-  let j = 0; // pointer for right
-
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
+        // Explore neighbors
+        const neighbors = graph[currentNode] || [];
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
+            }
+        }
     }
-  }
 
-  // Add remaining elements, if any
-  return result.concat(left.slice(i)).concat(right.slice(j));
+    return result;
 }
 
 // Example usage
-const arrayToSort = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(arrayToSort);
-console.log(sortedArray); // [3, 9, 10, 27, 38, 43, 82]
+const graphExample = {
+    A: ["B", "C"],
+    B: ["D", "E"],
+    C: ["F"],
+    D: [],
+    E: ["F"],
+    F: []
+};
+
+console.log(bfs(graphExample, "A")); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
