@@ -1,49 +1,18 @@
-class Stack<T> {
-    private items: T[];
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+    const normalizedStr = str
+        .replace(/[^0-9a-z]/gi, '')  // Remove non-alphanumeric characters
+        .toLowerCase();              // Convert to lowercase
 
-    constructor() {
-        this.items = [];
-    }
+    // Reverse the normalized string
+    const reversedStr = normalizedStr.split('').reverse().join('');
 
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
-    }
-
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
+    // Check if the normalized string is equal to its reversed version
+    return normalizedStr === reversedStr;
 }
 
 // Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.peek()); // 3
-console.log(stack.pop());   // 3
-console.log(stack.isEmpty()); // false
-console.log(stack.size());   // 2
-stack.clear();
-console.log(stack.isEmpty()); // true
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("Not a palindrome"));                // false
+console.log(isPalindrome("12321"));                           // true
+console.log(isPalindrome("12345"));                           // false
