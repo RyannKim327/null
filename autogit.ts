@@ -1,151 +1,40 @@
-interface Node {
-    x: number;
-    y: number;
-    gScore: number;
-    fScore: number;
-    cameFrom?: Node;
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: already sorted
+  }
+
+  const middle = Math.floor(arr.length / 2);
+  const left = arr.slice(0, middle);
+  const right = arr.slice(middle);
+
+  // Recursively sort both halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
+
+  // Merge sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-function aStar(start: Node, goal: Node, getNeighbors: (node: Node) => Node[], heuristic: (a: Node, b: Node) => number): Node[] | null {
-    const openSet = new PriorityQueue<Node>((a, b) => a.fScore - b.fScore);
-    start.gScore = 0;
-    start.fScore = heuristic(start, goal);
-    openSet.enqueue(start);
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0; // pointer for left
+  let j = 0; // pointer for right
 
-    const closedSet = new Set<string>();
-
-    while (!openSet.isEmpty()) {
-        const current = openSet.dequeue()!;
-        if (current.x === goal.x && current.y === goal.y) {
-            // reconstruct path
-            return reconstructPath(current);
-        }
-
-        closedSet.add(`${current.x},${current.y}`);
-
-        for (const neighbor of getNeighbors(current)) {
-            const neighborKey = `${neighbor.x},${neighbor.y}`;
-            if (closedSet.has(neighborKey)) continue;
-
-            const tentativeGScore = current.gScore + distance(current, neighbor);
-
-            let seenNeighbor = // find in openSet or create if no
-            // For simplicity, assuming neighbor obj pre-created and mutable
-
-            if (tentativeGScore < neighbor.gScore) {
-                neighbor.cameFrom = current;
-                neighbor.gScore = tentativeGScore;
-                neighbor.fScore = tentativeGScore + heuristic(neighbor, goal);
-                if (!openSet.has(neighbor)) {
-                    openSet.enqueue(neighbor);
-                }
-            }
-        }
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
     }
+  }
 
-    return null; // no path found
-
-    function reconstructPath(node: Node): Node[] {
-        const path: Node[] = [];
-        let current = node;
-        while (current) {
-            path.push(current);
-            current = current.cameFrom!;
-        }
-        return path.reverse();
-    }
+  // Add remaining elements, if any
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
 
-function distance(a: Node, b: Node): number {
-    // Assuming uniform grid
-    return Math.hypot(b.x - a.x, b.y - a.y);
-}
-
-// Example heuristics: Euclidean distance
-function heuristic(a: Node, b: Node): number {
-    return Math.hypot(b.x - a.x, b.y - a.y);
-}
-
-// PriorityQueue implementation (https://stackoverflow.com/questions/59460961/how-to-implement-a-priority-queue-in-typescript)
-class PriorityQueue<T> {
-    private heap: T[];
-    private comparator: (a: T, b: T) => number;
-
-    constructor(comparator: (a: T, b: T) => number) {
-        this.heap = [];
-        this.comparator = comparator;
-    }
-
-    enqueue(item: T) {
-        this.heap.push(item);
-        this.bubbleUp();
-    }
-
-    dequeue(): T | undefined {
-        if (this.heap.length === 0) return undefined;
-        const top = this.heap[0];
-        const bottom = this.heap.pop()!;
-        if (this.heap.length > 0) {
-            this.heap[0] = bottom;
-            this.bubbleDown();
-        }
-        return top;
-    }
-
-    isEmpty() {
-        return this.heap.length === 0;
-    }
-
-    has(item: T): boolean {
-        return this.heap.includes(item);
-    }
-
-    private bubbleUp() {
-        let index = this.heap.length - 1;
-        const element = this.heap[index];
-
-        while (index > 0) {
-            const parentIdx = Math.floor((index - 1) / 2);
-            const parent = this.heap[parentIdx];
-
-            if (this.comparator(element, parent) >= 0) break;
-
-            this.heap[index] = parent;
-            index = parentIdx;
-        }
-        this.heap[index] = element;
-    }
-
-    private bubbleDown() {
-        let index = 0;
-        const length = this.heap.length;
-        const element = this.heap[0];
-
-        while (true) {
-            let leftIdx = 2 * index + 1;
-            let rightIdx = 2 * index + 2;
-            let swapIdx = -1;
-
-            if (leftIdx < length) {
-                if (this.comparator(this.heap[leftIdx], element) < 0) {
-                    swapIdx = leftIdx;
-                }
-            }
-
-            if (rightIdx < length) {
-                if (
-                    (swapIdx === -1 && this.comparator(this.heap[rightIdx], element) < 0) ||
-                    (swapIdx !== -1 && this.comparator(this.heap[rightIdx], this.heap[swapIdx]) < 0)
-                ) {
-                    swapIdx = rightIdx;
-                }
-            }
-
-            if (swapIdx === -1) break;
-
-            this.heap[index] = this.heap[swapIdx];
-            index = swapIdx;
-        }
-        this.heap[index] = element;
-    }
-}
+// Example usage
+const arrayToSort = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(arrayToSort);
+console.log(sortedArray); // [3, 9, 10, 27, 38, 43, 82]
