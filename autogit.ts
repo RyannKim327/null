@@ -1,30 +1,49 @@
-function largestPrimeFactor(n: number): number {
-  let number = n;
-  let largestFactor = -1;
+class Stack<T> {
+    private items: T[];
 
-  // Divide out factors of 2 first
-  while (number % 2 === 0) {
-    largestFactor = 2;
-    number /= 2;
-  }
-
-  // Now number is odd; start checking odd factors from 3 upwards
-  let factor = 3;
-  while (factor * factor <= number) {
-    while (number % factor === 0) {
-      largestFactor = factor;
-      number /= factor;
+    constructor() {
+        this.items = [];
     }
-    factor += 2;
-  }
 
-  // If number is still greater than 2, then it's prime and largest
-  if (number > 2) {
-    largestFactor = number;
-  }
+    // Add an element to the top of the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
 
-  return largestFactor;
+    // Remove and return the top element of the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Return the top element without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Return the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
-// Example
-console.log(largestPrimeFactor(13195)); // Output: 29
+// Example usage
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.size());  // Output: 2
+console.log(stack.isEmpty());// Output: false
+stack.clear();
+console.log(stack.isEmpty());// Output: true
