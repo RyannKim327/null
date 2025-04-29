@@ -1,11 +1,12 @@
-npm install node-cron
-import cron from 'node-cron';
+function isPalindrome(str: string): boolean {
+  // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+  const cleaned = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-  const now = new Date();
-  console.log(`Current time: ${now.toISOString()}`);
-});
+  // Check if cleaned string is equal to its reverse
+  const reversed = cleaned.split('').reverse().join('');
+  return cleaned === reversed;
+}
 
-// Start the scheduled task
-task.start();
+// Usage:
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("hello")); // false
