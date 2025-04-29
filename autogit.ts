@@ -1,37 +1,17 @@
-function bfs(graph: { [node: string]: string[] }, startNode: string): string[] {
-    const visited: Set<string> = new Set();
-    const queue: string[] = [];
-    const result: string[] = [];
+function reverseWords(input: string): string {
+    // Split the input string into an array of words
+    const wordsArray = input.split(' ');
 
-    // Start with the starting node
-    visited.add(startNode);
-    queue.push(startNode);
+    // Reverse the array of words
+    const reversedArray = wordsArray.reverse();
 
-    while (queue.length > 0) {
-        const currentNode = queue.shift()!;
-        result.push(currentNode);
+    // Join the reversed array back into a string
+    const reversedString = reversedArray.join(' ');
 
-        // Explore neighbors
-        const neighbors = graph[currentNode] || [];
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push(neighbor);
-            }
-        }
-    }
-
-    return result;
+    return reversedString;
 }
 
-// Example usage
-const graphExample = {
-    A: ["B", "C"],
-    B: ["D", "E"],
-    C: ["F"],
-    D: [],
-    E: ["F"],
-    F: []
-};
-
-console.log(bfs(graphExample, "A")); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+// Example Usage:
+const originalString = "Hello world this is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is this world Hello"
