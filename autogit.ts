@@ -1,24 +1,22 @@
-function gnomeSort(arr: number[]): number[] {
-  let i = 1;
-  let j = 2;
+function insertionSort(arr: number[]): number[] {
+    // Make a copy of the array to avoid mutating the original
+    const sortedArr = [...arr];
 
-  while (i < arr.length) {
-    if (arr[i - 1] <= arr[i]) {
-      i = j;
-      j++;
-    } else {
-      [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
-      i--;
-      if (i === 0) {
-        i = j;
-        j++;
-      }
+    for (let i = 1; i < sortedArr.length; i++) {
+        const key = sortedArr[i];
+        let j = i - 1;
+
+        // Move elements of sortedArr[0..i-1], that are greater than key,
+        // one position ahead of their current position
+        while (j >= 0 && sortedArr[j] > key) {
+            sortedArr[j + 1] = sortedArr[j];
+            j--;
+        }
+        sortedArr[j + 1] = key;
     }
-  }
-
-  return arr;
+    return sortedArr;
 }
 
 // Example usage:
-const unsorted = [34, 2, 78, 1, 55, 99, 12];
-console.log("Sorted array:", gnomeSort(unsorted));
+const numbers = [5, 2, 9, 1, 5, 6];
+console.log(insertionSort(numbers)); // Output: [1, 2, 5, 5, 6, 9]
