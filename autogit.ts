@@ -1,49 +1,42 @@
-function buildSkipTable(pattern: string): Record<string, number> {
-  const skipTable: Record<string, number> = {};
-  const patternLength = pattern.length;
+function areAnagrams(str1: string, str2: string): boolean {
+  // Remove whitespace and convert to lowercase if needed
+  const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
 
-  // Initialize all characters with the default shift
-  for (let i = 0; i < patternLength - 1; i++) {
-    skipTable[pattern[i]] = patternLength - 1 - i;
-  }
+  const s1 = normalize(str1);
+  const s2 = normalize(str2);
 
-  return skipTable;
+  // If lengths differ after normalization, they can't be anagrams
+  if (s1.length !== s2.length) return false;
+
+  // Compare sorted characters
+  const sortedS1 = s1.split('').sort().join('');
+  const sortedS2 = s2.split('').sort().join('');
+  return sortedS1 === sortedS2;
 }
-function boyerMooreHorspool(text: string, pattern: string): number {
-  if (pattern.length === 0) return 0;
-  if (pattern.length > text.length) return -1;
+function areAnagrams(str1: string, str2: string): boolean {
+  const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
 
-  const skipTable = buildSkipTable(pattern);
-  const textLength = text.length;
-  const patternLength = pattern.length;
-  let i = 0;
+  const s1 = normalize(str1);
+  const s2 = normalize(str2);
 
-  while (i <= textLength - patternLength) {
-    let matchFound = true;
+  if (s1.length !== s2.length) return false;
 
-    // Compare pattern from right to left
-    for (let j = patternLength - 1; j >= 0; j--) {
-      if (text[i + j] !== pattern[j]) {
-        // Mismatch - decide how far to shift
-        const shiftChar = text[i + patternLength - 1];
-        const shift = skipTable[shiftChar] ?? patternLength;
-        i += shift;
-        matchFound = false;
-        break;
-      }
+  const getCharCount = (str: string): Record<string, number> => {
+    const count: Record<string, number> = {};
+    for (const char of str) {
+      count[char] = (count[char] || 0) + 1;
     }
+    return count;
+  };
 
-    if (matchFound) {
-      // Match found!
-      return i;
-    }
+  const count1 = getCharCount(s1);
+  const count2 = getCharCount(s2);
+
+  // Compare the frequency maps
+  for (const key in count1) {
+    if (count1[key] !== count2[key]) return false;
   }
-
-  return -1; // Not found
+  return true;
 }
-const text = "here is some sample text for testing";
-const pattern = "sample";
-
-const index = boyerMooreHorspool(text, pattern);
-
-console.log(index); // Should output the starting index of 'sample', e.g., 17
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world")); // false
