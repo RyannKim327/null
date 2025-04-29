@@ -1,9 +1,12 @@
-let str: string = "  Hello, TypeScript!  ";
-let trimmedStr: string = str.trim();
-console.log(trimmedStr); // Output: "Hello, TypeScript!"
-let str: string = "  Hello,   TypeScript! \n Welcome to   \t TypeScript. ";
-let noWhitespaceStr: string = str.replace(/\s+/g, ''); // Removes all whitespace
-console.log(noWhitespaceStr); // Output: "Hello,TypeScript!WelcometoTypeScript."
-let str: string = "  Hello,   TypeScript! \n Welcome to   \t TypeScript. ";
-let noSpacesStr: string = str.replace(/ +/g, ''); // Removes only spaces
-console.log(noSpacesStr); // Output: "Hello,TypeScript!\nWelcometo\tTypeScript."
+function countWordOccurrences(text: string, word: string): number {
+  // Escape the word for use in a regex if needed
+  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // Create a regex with word boundaries to match whole words, case-insensitive
+  const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
+  const matches = text.match(regex);
+  return matches ? matches.length : 0;
+}
+
+// Example usage:
+const sentence = "The quick brown fox jumps over the lazy dog. The fox is clever.";
+console.log(countWordOccurrences(sentence, "fox")); // Output: 2
