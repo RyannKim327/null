@@ -1,32 +1,23 @@
-type Graph = Map<string, string[]>;
+function findFirstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
 
-function depthFirstSearch(graph: Graph, startNode: string): Set<string> {
-    const visited = new Set<string>();
-
-    function dfs(node: string) {
-        if (visited.has(node)) return;
-        visited.add(node);
-        console.log(`Visiting: ${node}`); // or handle the node as needed
-
-        const neighbors = graph.get(node) ?? [];
-        for (const neighbor of neighbors) {
-            dfs(neighbor);
+    for (const char of str) {
+        // Check if the character is already in the set
+        if (seenCharacters.has(char)) {
+            return char; // Found the first repeated character
         }
+        // Add the character to the set
+        seenCharacters.add(char);
     }
 
-    dfs(startNode);
-    return visited; // returns all nodes reachable from startNode
+    return null; // No repeated character found
 }
 
 // Example usage:
-const myGraph: Graph = new Map([
-    ['A', ['B', 'C']],
-    ['B', ['D', 'E']],
-    ['C', ['F']],
-    ['D', []],
-    ['E', ['F']],
-    ['F', []]
-]);
-
-const visitedNodes = depthFirstSearch(myGraph, 'A');
-console.log('Visited:', Array.from(visitedNodes));
+const exampleString = "abca";
+const firstRepeatedChar = findFirstRepeatedCharacter(exampleString);
+if (firstRepeatedChar) {
+    console.log(`The first repeated character is: ${firstRepeatedChar}`);
+} else {
+    console.log("No repeated character found.");
+}
