@@ -1,19 +1,30 @@
-function longestCommonPrefix(strs: string[]): string {
-  if (strs.length === 0) return "";
+// Simulated async connection task
+async function connectToDevice(deviceId: string): Promise<string> {
+  console.log(`Attempting to connect to device ${deviceId}...`);
 
-  // Start by assuming the whole first string is the prefix
-  let prefix = strs[0];
+  return new Promise((resolve, reject) => {
+    // Simulate connection delay
+    setTimeout(() => {
+      // Simulating a success or failure randomly
+      const success = Math.random() > 0.3;
 
-  for (let i = 1; i < strs.length; i++) {
-    // Check the current prefix against the current string
-    while (strs[i].indexOf(prefix) !== 0) {
-      // If the current prefix is not a prefix of strs[i], shorten it
-      prefix = prefix.slice(0, prefix.length - 1);
-      if (prefix === "") return ""; // No common prefix
-    }
-  }
-
-  return prefix;
+      if (success) {
+        resolve(`Connected to device ${deviceId}`);
+      } else {
+        reject(new Error(`Failed to connect to device ${deviceId}`));
+      }
+    }, 2000);
+  });
 }
-console.log(longestCommonPrefix(["flower","flow","flight"]));  // Output: "fl"
-console.log(longestCommonPrefix(["dog","racecar","car"]));     // Output: ""
+
+// Usage example
+async function runConnection() {
+  try {
+    const result = await connectToDevice("android-device-123");
+    console.log(result);
+  } catch (error: any) {
+    console.error(error.message);
+  }
+}
+
+runConnection();
