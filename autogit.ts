@@ -1,36 +1,43 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-  // Ensure nums1 is the smaller array
-  if (nums1.length > nums2.length) [nums1, nums2] = [nums2, nums1];
+// Define the linked list node
+class ListNode<T> {
+    value: T;
+    next: ListNode<T> | null;
 
-  const m = nums1.length;
-  const n = nums2.length;
-  let low = 0, high = m;
-
-  while (low <= high) {
-    const i = Math.floor((low + high) / 2);
-    const j = Math.floor((m + n + 1) / 2) - i;
-
-    const maxLeftX = i === 0 ? -Infinity : nums1[i - 1];
-    const minRightX = i === m ? Infinity : nums1[i];
-    const maxLeftY = j === 0 ? -Infinity : nums2[j - 1];
-    const minRightY = j === n ? Infinity : nums2[j];
-
-    if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
-      if ((m + n) % 2 === 0) {
-        // Even total length
-        return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
-      } else {
-        // Odd total length
-        return Math.max(maxLeftX, maxLeftY);
-      }
-    } else if (maxLeftX > minRightY) {
-      // Move towards the left in nums1
-      high = i - 1;
-    } else {
-      // Move towards the right in nums1
-      low = i + 1;
+    constructor(value: T, next: ListNode<T> | null = null) {
+        this.value = value;
+        this.next = next;
     }
-  }
-
-  throw new Error('Input arrays are not sorted or invalid.');
 }
+
+function getNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
+    let fast: ListNode<T> | null = head;
+    let slow: ListNode<T> | null = head;
+
+    // Move fast pointer n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (fast === null) return null; // n is larger than list length
+        fast = fast.next;
+    }
+
+    // Move both pointers until fast reaches the end
+    while (fast !== null) {
+        fast = fast.next;
+        slow = (slow as ListNode<T>).next;
+    }
+
+    return slow;
+}
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1,
+    new ListNode(2,
+        new ListNode(3,
+            new ListNode(4,
+                new ListNode(5)
+            )
+        )
+    )
+);
+
+// Find the 2nd node from the end (which should be node with value 4)
+const node = getNthFromEnd(head, 2);
+console.log(node?.value); // Output: 4
