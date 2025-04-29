@@ -1,51 +1,37 @@
-type Node = {
-    value: string;
-    neighbors: Node[];
-};
-
-function depthLimitedSearch(startNode: Node, depthLimit: number, goal: string): Node | null {
-    const stack: { node: Node; depth: number }[] = [];
-    const visited = new Set<Node>();
-    
-    stack.push({ node: startNode, depth: 0 });
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-        
-        // If we found the goal, return the node
-        if (node.value === goal) {
-            return node;
-        }
-
-        // If we haven't reached the depth limit, explore neighbors
-        if (depth < depthLimit) {
-            visited.add(node); // Mark the node as visited
-            for (const neighbor of node.neighbors) {
-                if (!visited.has(neighbor)) {
-                    stack.push({ node: neighbor, depth: depth + 1 });
-                }
-            }
-        }
-    }
-
-    // If we get here, it means we didn't find the goal within the depth limit
-    return null;
+function getMax(arr: number[]): number {
+  return Math.max(...arr);
 }
 
-// Example usage with a graph
-const nodeA: Node = { value: 'A', neighbors: [] };
-const nodeB: Node = { value: 'B', neighbors: [] };
-const nodeC: Node = { value: 'C', neighbors: [] };
-const nodeD: Node = { value: 'D', neighbors: [] };
-
-nodeA.neighbors.push(nodeB, nodeC);
-nodeB.neighbors.push(nodeD);
-
-const depthLimit = 2;
-const foundNode = depthLimitedSearch(nodeA, depthLimit, 'D');
-
-if (foundNode) {
-    console.log(`Found node with value: ${foundNode.value}`);
-} else {
-    console.log('Node not found within depth limit.');
+function getDigit(num: number, digitPlace: number): number {
+  // Extract the digit at 'digitPlace'
+  return Math.floor(Math.abs(num) / Math.pow(10, digitPlace)) % 10;
 }
+
+function countSortByDigit(arr: number[], digitPlace: number): number[] {
+  const buckets: number[][] = Array.from({ length: 10 }, () => []);
+  
+  for (const num of arr) {
+    const digit = getDigit(num, digitPlace);
+    buckets[digit].push(num);
+  }
+  
+  // Flatten the buckets back into the array
+  return buckets.flat();
+}
+
+function radixSort(arr: number[]): number[] {
+  const maxNum = getMax(arr);
+  const maxDigits = Math.floor(Math.log10(maxNum)) + 1;
+  let sortedArray = [...arr];
+
+  for (let digitPlace = 0; digitPlace < maxDigits; digitPlace++) {
+    sortedArray = countSortByDigit(sortedArray, digitPlace);
+  }
+
+  return sortedArray;
+}
+
+// Example Usage:
+const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedNumbers = radixSort(numbers);
+console.log(sortedNumbers);  // Output: [ 2, 24, 45, 66, 75, 90, 170, 802 ]
