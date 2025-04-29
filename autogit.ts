@@ -1,71 +1,22 @@
-class Node<T> {
-    data: T;
-    next: Node<T> | null;
+function binarySearch<T>(arr: T[], target: T, compare: (a: T, b: T) => number): number {
+  let left = 0;
+  let right = arr.length - 1;
 
-    constructor(data: T) {
-        this.data = data;
-        this.next = null;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    const comparison = compare(arr[mid], target);
+
+    if (comparison === 0) {
+      return mid; // Found the target
+    } else if (comparison < 0) {
+      left = mid + 1; // Continue search in right half
+    } else {
+      right = mid - 1; // Continue search in left half
     }
+  }
+
+  return -1; // Not found
 }
-class LinkedList<T> {
-    private head: Node<T> | null = null;
-
-    // Adds a new node with the specified data to the end of the list
-    add(data: T): void {
-        const newNode = new Node(data);
-        if (this.head === null) {
-            this.head = newNode;
-            return;
-        }
-        let current: Node<T> | null = this.head;
-        while (current.next !== null) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Removes the first occurrence of a node with the specified data
-    remove(data: T): boolean {
-        if (this.head === null) return false;
-
-        if (this.head.data === data) {
-            this.head = this.head.next;
-            return true;
-        }
-
-        let current: Node<T> | null = this.head;
-        while (current.next !== null) {
-            if (current.next.data === data) {
-                current.next = current.next.next;
-                return true;
-            }
-            current = current.next;
-        }
-        return false; // data not found
-    }
-
-    // Displays the contents of the list
-    display(): void {
-        let current: Node<T> | null = this.head;
-        const elements: T[] = [];
-        while (current !== null) {
-            elements.push(current.data);
-            current = current.next;
-        }
-        console.log(elements.join(' -> '));
-    }
-}
-const list = new LinkedList<number>();
-list.add(1);
-list.add(2);
-list.add(3);
-list.display(); // Output: 1 -> 2 -> 3
-
-list.remove(2);
-list.display(); // Output: 1 -> 3
-
-list.remove(1);
-list.display(); // Output: 3
-
-list.remove(3);
-list.display(); // Output: (empty)
+const numbers = [1, 3, 5, 7, 9];
+const index = binarySearch(numbers, 5, (a, b) => a - b);
+console.log(index); // Output: 2
