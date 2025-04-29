@@ -1,107 +1,63 @@
-class BTreeNode<T> {
-    keys: T[] = [];
-    children: BTreeNode<T>[] = [];
-    leaf: boolean;
-    t: number; // minimum degree
+class TrieNode {
+    children: { [key: string]: TrieNode };
+    isEndOfWord: boolean;
 
-    constructor(t: number, leaf: boolean) {
-        this.t = t;
-        this.leaf = leaf;
-    }
-
-    // Insert a new key when node is not full
-    insertNonFull(key: T) {
-        let i = this.keys.length - 1;
-
-        if (this.leaf) {
-            // Insert the key in the correct position in keys
-            while (i >= 0 && this.keys[i] > key) {
-                i--;
-            }
-            this.keys.splice(i + 1, 0, key); // Insert after i
-        } else {
-            // Find child to insert into
-            while (i >= 0 && this.keys[i] > key) {
-                i--;
-            }
-            i++;
-            if (this.children[i].keys.length === 2 * this.t - 1) {
-                this.splitChild(i);
-                if (this.keys[i] < key) {
-                    i++;
-                }
-            }
-            this.children[i].insertNonFull(key);
-        }
-    }
-
-    splitChild(i: number) {
-        const t = this.t;
-        const y = this.children[i];
-        const z = new BTreeNode<T>(t, y.leaf);
-
-        // z gets t-1 keys from y
-        z.keys = y.keys.splice(t); 
-        if (!y.leaf) {
-            z.children = y.children.splice(t);
-        }
-
-        // Insert middle key into this node
-        const midKey = y.keys.pop()!;
-        this.keys.splice(i, 0, midKey);
-        // Add new child
-        this.children.splice(i + 1, 0, z);
-    }
-
-    // Search key in subtree rooted with this node
-    search(key: T): BTreeNode<T> | null {
-        let i = 0;
-        while (i < this.keys.length && key > this.keys[i]) {
-            i++;
-        }
-        if (i < this.keys.length && this.keys[i] === key) {
-            return this;
-        }
-        if (this.leaf) {
-            return null;
-        }
-        return this.children[i].search(key);
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
     }
 }
-class BTree<T> {
-    root: BTreeNode<T> | null = null;
-    t: number; // minimum degree
+class Trie {
+    root: TrieNode;
 
-    constructor(t: number) {
-        this.t = t;
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    insert(key: T) {
-        if (this.root === null) {
-            this.root = new BTreeNode<T>(this.t, true);
-            this.root.keys.push(key);
-        } else {
-            if (this.root.keys.length === 2 * this.t - 1) {
-                // Root full, need to split
-                const s = new BTreeNode<T>(this.t, false);
-                s.children.push(this.root);
-                s.splitChild(0);
-                this.root = s;
+    // Insert a word into the trie
+    insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children[char]) {
+                currentNode.children[char] = new TrieNode();
             }
-            this.root.insertNonFull(key);
+            currentNode = currentNode.children[char];
         }
+        currentNode.isEndOfWord = true; // mark the end of the word
     }
 
-    search(key: T): BTreeNode<T> | null {
-        return this.root ? this.root.search(key) : null;
+    // Search for a word in the trie
+    search(word: string): boolean {
+        const node = this._findNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if there is any word in the trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this._findNode(prefix) !== null;
+    }
+
+    // Helper function to find the node based on the word
+    private _findNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children[char]) {
+                return null;  // Character not found, return null
+            }
+            currentNode = currentNode.children[char];
+        }
+        return currentNode; // Return the node corresponding to the last character
     }
 }
-const btree = new BTree<number>(3); // t=3 means max 5 keys per node
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+trie.insert("hi");
 
-const values = [10, 20, 5, 6, 12, 30, 7, 17];
-for (const val of values) {
-    btree.insert(val);
-}
-
-const foundNode = btree.search(6);
-console.log(foundNode ? "Found!" : "Not Found");
+console.log(trie.search("hello")); // Output: true
+console.log(trie.search("hell")); // Output: false
+console.log(trie.startsWith("he")); // Output: true
+console.log(trie.startsWith("wor")); // Output: true
+console.log(trie.startsWith("woa")); // Output: false
