@@ -1,33 +1,52 @@
-function lengthOfLIS(nums: number[]): number {
-  if (nums.length === 0) return 0;
-
-  const sub: number[] = [];
-
-  for (let num of nums) {
-    // Binary search for the index to place current number
-    let left = 0;
-    let right = sub.length;
-
-    while (left < right) {
-      const mid = Math.floor((left + right) / 2);
-      if (sub[mid] < num) {
-        left = mid + 1;
-      } else {
-        right = mid;
-      }
-    }
-
-    // If left is equal to length of sub, append num
-    // else replace element at left
-    if (left < sub.length) {
-      sub[left] = num;
-    } else {
-      sub.push(num);
-    }
-  }
-
-  return sub.length;
+class Node {
+    constructor(public value: string, public children: Node[] = []) {}
 }
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(arr)); // Output: 4
-// The longest increasing subsequence is [2, 3, 7, 101]
+
+function breadthLimitedSearch(root: Node, target: string, limit: number): Node | null {
+    const queue: { node: Node, depth: number }[] = [];
+    queue.push({ node: root, depth: 0 });
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!;
+
+        // Check if we've found the target
+        if (node.value === target) {
+            return node;
+        }
+
+        // Only continue if we haven't reached the depth limit
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+
+    // If target is not found within the limit
+    return null;
+}
+
+// Example usage
+const root = new Node("A", [
+    new Node("B", [
+        new Node("D"),
+        new Node("E")
+    ]),
+    new Node("C", [
+        new Node("F"),
+        new Node("G", [
+            new Node("I"),
+            new Node("J")
+        ])
+    ])
+]);
+
+const targetNode = "E";
+const limit = 2;
+
+const result = breadthLimitedSearch(root, targetNode, limit);
+if (result) {
+    console.log(`Found: ${result.value}`);
+} else {
+    console.log("Not Found within the limit");
+}
