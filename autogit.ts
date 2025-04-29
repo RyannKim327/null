@@ -1,61 +1,65 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+class Graph {
+    private edges: Map<string, Array<{ node: string, weight: number }>> = new Map();
 
-    // Initialize fibonacci numbers
-    let fibM2 = 0; // (m-2)'th Fibonacci number
-    let fibM1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
-
-    // fibM is the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+    addEdge(source: string, destination: string, weight: number): void {
+        if (!this.edges.has(source)) {
+            this.edges.set(source, []);
+        }
+        this.edges.get(source)?.push({ node: destination, weight });
+        
+        // If you want to make the graph undirected, uncomment the following line:
+        // this.addEdge(destination, source, weight);
     }
 
-    // Marks the eliminated range from front
-    let offset = -1;
-
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check if fibM2 is a valid location
-        const i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fibM - fibM1;
-            offset = i;
-        }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2;
-            fibM2 = fibM - fibM1;
-        }
-        // Element found
-        else {
-            return i;
-        }
+    getNeighbors(node: string): Array<{ node: string, weight: number }> {
+        return this.edges.get(node) || [];
     }
 
-    // Compare the last element with x
-    if (fibM1 && arr[offset + 1] === x) {
-        return offset + 1;
+    getNodes(): string[] {
+        return Array.from(this.edges.keys());
     }
-
-    // Element not found
-    return -1;
 }
+function dijkstra(graph: Graph, start: string): Map<string, number> {
+    const distances = new Map<string, number>();
+    const visited = new Set<string>();
+    const priorityQueue: { node: string, weight: number }[] = [];
 
-// Example usage:
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-const result = fibonacciSearch(arr, x);
+    // Initialize distances
+    graph.getNodes().forEach(node => distances.set(node, Infinity));
+    distances.set(start, 0);
+    priorityQueue.push({ node: start, weight: 0 });
 
-if (result !== -1) {
-    console.log(`Element found at index ${result}`);
-} else {
-    console.log(`Element not found`);
+    while (priorityQueue.length > 0) {
+        // Sort priority queue based on weights
+        priorityQueue.sort((a, b) => a.weight - b.weight);
+        const { node } = priorityQueue.shift()!;
+
+        // Skip if the node has already been visited
+        if (visited.has(node)) {
+            continue;
+        }
+        visited.add(node);
+
+        // Get neighbors and update distances
+        for (const { node: neighbor, weight } of graph.getNeighbors(node)) {
+            const newDist = distances.get(node)! + weight;
+            if (newDist < distances.get(neighbor)!) {
+                distances.set(neighbor, newDist);
+                priorityQueue.push({ node: neighbor, weight: newDist });
+            }
+        }
+    }
+
+    return distances;
 }
+const graph = new Graph();
+graph.addEdge('A', 'B', 1);
+graph.addEdge('A', 'C', 4);
+graph.addEdge('B', 'C', 2);
+graph.addEdge('B', 'D', 5);
+graph.addEdge('C', 'D', 1);
+
+const shortestPaths = dijkstra(graph, 'A');
+shortestPaths.forEach((distance, node) => {
+    console.log(`Distance from A to ${node} is ${distance}`);
+});
