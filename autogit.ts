@@ -1,19 +1,13 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
-
-    let prefix = strs[0];
-
-    for (let i = 1; i < strs.length; i++) {
-        let j = 0;
-        while (j < prefix.length && j < strs[i].length && prefix[j] === strs[i][j]) {
-            j++;
-        }
-        prefix = prefix.substring(0, j);
-
-        if (prefix === "") break; // no common prefix at all
-    }
-
-    return prefix;
+function isPalindrome(input: string): boolean {
+    // Normalize the input by removing spaces and converting to lower case
+    const normalizedInput = input.replace(/\s+/g, '').toLowerCase();
+    // Reverse the normalized input
+    const reversedInput = normalizedInput.split('').reverse().join('');
+    // Compare the normalized input with its reversed version
+    return normalizedInput === reversedInput;
 }
-const result = longestCommonPrefix(["flower", "flow", "flight"]);
-console.log(result); // outputs "fl"
+
+// Example usage:
+console.log(isPalindrome("A man a plan a canal Panama")); // true
+console.log(isPalindrome("Hello")); // false
+console.log(isPalindrome("Able was I saw Elba")); // true
