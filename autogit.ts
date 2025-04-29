@@ -1,22 +1,22 @@
-function binarySearch<T>(arr: T[], target: T, compare: (a: T, b: T) => number): number {
-  let left = 0;
-  let right = arr.length - 1;
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-    const comparison = compare(arr[mid], target);
+async function fetchPost(postId: number): Promise<Post> {
+  const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
 
-    if (comparison === 0) {
-      return mid; // Found the target
-    } else if (comparison < 0) {
-      left = mid + 1; // Continue search in right half
-    } else {
-      right = mid - 1; // Continue search in left half
-    }
+  if (!response.ok) {
+    throw new Error(`Error fetching post: ${response.statusText}`);
   }
 
-  return -1; // Not found
+  const data: Post = await response.json();
+  return data;
 }
-const numbers = [1, 3, 5, 7, 9];
-const index = binarySearch(numbers, 5, (a, b) => a - b);
-console.log(index); // Output: 2
+
+// Usage example
+fetchPost(1)
+  .then(post => console.log(post))
+  .catch(error => console.error(error));
