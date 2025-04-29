@@ -1,46 +1,159 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+enum Color {
+    RED,
+    BLACK,
+}
 
-    constructor(value: number) {
+class Node<T> {
+    value: T;
+    color: Color;
+    left: Node<T> | null;
+    right: Node<T> | null;
+    parent: Node<T> | null;
+
+    constructor(value: T) {
         this.value = value;
-        this.next = null;
+        this.color = Color.RED; // New nodes are always red
+        this.left = null;
+        this.right = null;
+        this.parent = null;
     }
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
+class RedBlackTree<T> {
+    private root: Node<T> | null = null;
 
-    // Move first pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (first === null) {
-            return null; // n is greater than the length of the list
+    private rotateLeft(x: Node<T>): void {
+        const y = x.right!;
+        x.right = y.left;
+
+        if (y.left !== null) {
+            y.left.parent = x;
         }
-        first = first.next;
+        y.parent = x.parent;
+
+        if (x.parent === null) {
+            this.root = y; // y becomes the new root
+        } else if (x === x.parent.left) {
+            x.parent.left = y;
+        } else {
+            x.parent.right = y;
+        }
+
+        y.left = x;
+        x.parent = y;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second.next;
+    private rotateRight(y: Node<T>): void {
+        const x = y.left!;
+        y.left = x.right;
+
+        if (x.right !== null) {
+            x.right.parent = y;
+        }
+        x.parent = y.parent;
+
+        if (y.parent === null) {
+            this.root = x; // x becomes the new root
+        } else if (y === y.parent.right) {
+            y.parent.right = x;
+        } else {
+            y.parent.left = x;
+        }
+
+        x.right = y;
+        y.parent = x;
     }
 
-    return second; // second pointer now points to the nth node from the end
+    private fixInsertion(z: Node<T>): void {
+        let y: Node<T> | null;
+
+        while (z.parent?.color === Color.RED) {
+            if (z.parent === z.parent.parent?.left) {
+                y = z.parent.parent?.right;
+
+                if (y?.color === Color.RED) { // Case 1
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent.color = Color.RED;
+                    z = z.parent.parent;
+                } else {
+                    if (z === z.parent.right) { // Case 2
+                        z = z.parent;
+                        this.rotateLeft(z);
+                    }
+                    // Case 3
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent.color = Color.RED;
+                    this.rotateRight(z.parent.parent);
+                }
+            } else {
+                y = z.parent.parent?.left;
+
+                if (y?.color === Color.RED) { // Case 1
+                    z.parent.color = Color.BLACK;
+                    y.color = Color.BLACK;
+                    z.parent.parent.color = Color.RED;
+                    z = z.parent.parent;
+                } else {
+                    if (z === z.parent.left) { // Case 2
+                        z = z.parent;
+                        this.rotateRight(z);
+                    }
+                    // Case 3
+                    z.parent.color = Color.BLACK;
+                    z.parent.parent.color = Color.RED;
+                    this.rotateLeft(z.parent.parent);
+                }
+            }
+        }
+        this.root.color = Color.BLACK;
+    }
+
+    public insert(value: T): void {
+        const z = new Node(value);
+        let y: Node<T> | null = null;
+        let x: Node<T> | null = this.root;
+
+        while (x !== null) {
+            y = x;
+            if (z.value < x.value) {
+                x = x.left;
+            } else {
+                x = x.right;
+            }
+        }
+
+        z.parent = y;
+
+        if (y === null) {
+            this.root = z; // Tree was empty
+        } else if (z.value < y.value) {
+            y.left = z;
+        } else {
+            y.right = z;
+        }
+
+        this.fixInsertion(z);
+    }
+
+    public inorderTraversal(node: Node<T> | null = this.root): void {
+        if (node !== null) {
+            this.inorderTraversal(node.left);
+            console.log(node.value, node.color);
+            this.inorderTraversal(node.right);
+        }
+    }
+
+    public print(): void {
+        this.inorderTraversal();
+    }
 }
 
-// Example usage:
-// Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
-let head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-// Finding the 2nd node from the end
-const nthNode = findNthFromEnd(head, 2);
-if (nthNode) {
-    console.log(nthNode.value); // Output: 4
-} else {
-    console.log("Node not found.");
-}
+// Usage
+const rbTree = new RedBlackTree<number>();
+rbTree.insert(10);
+rbTree.insert(20);
+rbTree.insert(30);
+rbTree.insert(15);
+rbTree.insert(25);
+rbTree.print(); // Traverses tree in order and prints
