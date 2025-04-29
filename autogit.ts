@@ -1,8 +1,12 @@
-function getRandomInt(min: number, max: number): number {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function areAnagrams(str1: string, str2: string): boolean {
+  // Remove spaces and convert to lowercase for a case-insensitive check
+  const normalize = (str: string) =>
+    str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
+
+  return normalize(str1) === normalize(str2);
 }
-function getRandomFloat(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
-}
+
+// Example usage:
+console.log(areAnagrams('Listen', 'Silent')); // true
+console.log(areAnagrams('Hello', 'Olelh'));   // true
+console.log(areAnagrams('Apple', 'Pabble'));  // false
