@@ -1,32 +1,60 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  const normalize = (s: string) =>
-    s.toLowerCase()
-     .replace(/[\W_]+/g, '') // removes non-alphanumeric characters
-     .split('')
-     .sort()
-     .join('');
-
-  return normalize(str1) === normalize(str2);
+// user.ts - Defines a User interface
+export interface User {
+  id: number;
+  name: string;
+  email: string;
 }
-console.log(areAnagrams('Listen', 'Silent')); // true
-console.log(areAnagrams('Hello', 'Olelh'));   // true
-console.log(areAnagrams('Test', 'Best'));     // false
-function areAnagrams(str1: string, str2: string): boolean {
-  const cleanStr1 = str1.toLowerCase().replace(/[\W_]+/g, '');
-  const cleanStr2 = str2.toLowerCase().replace(/[\W_]+/g, '');
 
-  if (cleanStr1.length !== cleanStr2.length) return false;
+// api.ts - Contains the function for fetching users from the API
+const API_URL = 'https://jsonplaceholder.typicode.com/users'; // Example API endpoint
 
-  const charCount: Record<string, number> = {};
-
-  for (const char of cleanStr1) {
-    charCount[char] = (charCount[char] || 0) + 1;
+export const fetchUsers = async (): Promise<User[]> => {
+  try {
+    const response = await fetch(API_URL);
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    const data: User[] = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+    throw error;
   }
+};
 
-  for (const char of cleanStr2) {
-    if (!charCount[char]) return false;
-    charCount[char]--;
+// main.ts - Main file to execute the code
+import { fetchUsers } from './api';
+
+const displayUsers = async () => {
+  const userListElement = document.getElementById('user-list'); // Assuming an element with id 'user-list'
+
+  if (userListElement) {
+    try {
+      const users = await fetchUsers();
+      users.forEach(user => {
+        const userItem = document.createElement('li');
+        userItem.textContent = `${user.name} (${user.email})`;
+        userListElement.appendChild(userItem);
+      });
+    } catch (error) {
+      userListElement.textContent = 'Failed to load users.';
+    }
   }
+};
 
-  return true;
-}
+// Initialize the application
+displayUsers();
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript API Example</title>
+</head>
+<body>
+    <h1>Users List</h1>
+    <ul id="user-list"></ul>
+    <script src="dist/main.js" type="module"></script>  <!-- Adjust the path as needed -->
+</body>
+</html>
+tsc
