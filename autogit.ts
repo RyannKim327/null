@@ -1,21 +1,13 @@
-function longestCommonPrefix(strs: string[]): string {
-  if (strs.length === 0) return '';
+function isPalindrome(input: string): boolean {
+  // Normalize: lowercase and remove non-alphanumeric characters
+  const normalized = input.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  // Use the first string as the baseline
-  const firstStr = strs[0];
+  // Reverse the normalized string
+  const reversed = normalized.split('').reverse().join('');
 
-  for (let i = 0; i < firstStr.length; i++) {
-    const char = firstStr[i];
-    
-    // Check all other strings
-    for (let j = 1; j < strs.length; j++) {
-      // If the character at position i doesn't match or we've reached the end of a string
-      if (strs[j][i] !== char || i >= strs[j].length) {
-        return firstStr.substring(0, i);
-      }
-    }
-  }
-
-  // If the loop completes, the entire first string is a common prefix
-  return firstStr;
+  // Check if original normalized string is the same as its reverse
+  return normalized === reversed;
 }
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
