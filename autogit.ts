@@ -1,62 +1,107 @@
-class Node {
-    value: number;
-    next: Node | null;
+class BTreeNode<T> {
+    keys: T[] = [];
+    children: BTreeNode<T>[] = [];
+    leaf: boolean;
+    t: number; // minimum degree
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor(t: number, leaf: boolean) {
+        this.t = t;
+        this.leaf = leaf;
+    }
+
+    // Insert a new key when node is not full
+    insertNonFull(key: T) {
+        let i = this.keys.length - 1;
+
+        if (this.leaf) {
+            // Insert the key in the correct position in keys
+            while (i >= 0 && this.keys[i] > key) {
+                i--;
+            }
+            this.keys.splice(i + 1, 0, key); // Insert after i
+        } else {
+            // Find child to insert into
+            while (i >= 0 && this.keys[i] > key) {
+                i--;
+            }
+            i++;
+            if (this.children[i].keys.length === 2 * this.t - 1) {
+                this.splitChild(i);
+                if (this.keys[i] < key) {
+                    i++;
+                }
+            }
+            this.children[i].insertNonFull(key);
+        }
+    }
+
+    splitChild(i: number) {
+        const t = this.t;
+        const y = this.children[i];
+        const z = new BTreeNode<T>(t, y.leaf);
+
+        // z gets t-1 keys from y
+        z.keys = y.keys.splice(t); 
+        if (!y.leaf) {
+            z.children = y.children.splice(t);
+        }
+
+        // Insert middle key into this node
+        const midKey = y.keys.pop()!;
+        this.keys.splice(i, 0, midKey);
+        // Add new child
+        this.children.splice(i + 1, 0, z);
+    }
+
+    // Search key in subtree rooted with this node
+    search(key: T): BTreeNode<T> | null {
+        let i = 0;
+        while (i < this.keys.length && key > this.keys[i]) {
+            i++;
+        }
+        if (i < this.keys.length && this.keys[i] === key) {
+            return this;
+        }
+        if (this.leaf) {
+            return null;
+        }
+        return this.children[i].search(key);
     }
 }
+class BTree<T> {
+    root: BTreeNode<T> | null = null;
+    t: number; // minimum degree
 
-class LinkedList {
-    head: Node | null;
-
-    constructor() {
-        this.head = null;
+    constructor(t: number) {
+        this.t = t;
     }
 
-    // Method to append a new node to the linked list
-    append(value: number): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+    insert(key: T) {
+        if (this.root === null) {
+            this.root = new BTreeNode<T>(this.t, true);
+            this.root.keys.push(key);
+        } else {
+            if (this.root.keys.length === 2 * this.t - 1) {
+                // Root full, need to split
+                const s = new BTreeNode<T>(this.t, false);
+                s.children.push(this.root);
+                s.splitChild(0);
+                this.root = s;
+            }
+            this.root.insertNonFull(key);
         }
-
-        let current: Node | null = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
     }
 
-    // Method to find the middle element of the linked list
-    findMiddle(): Node | null {
-        if (!this.head) {
-            return null; // Return null if the list is empty
-        }
-
-        let slow: Node | null = this.head; // Moves one step at a time
-        let fast: Node | null = this.head; // Moves two steps at a time
-
-        while (fast && fast.next) {
-            slow = slow.next;         // Move slow pointer one step
-            fast = fast.next.next;   // Move fast pointer two steps
-        }
-
-        return slow; // The slow pointer will point to the middle node
+    search(key: T): BTreeNode<T> | null {
+        return this.root ? this.root.search(key) : null;
     }
 }
+const btree = new BTree<number>(3); // t=3 means max 5 keys per node
 
-// Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log('Middle element:', middleNode.value); // Output: Middle element: 3
+const values = [10, 20, 5, 6, 12, 30, 7, 17];
+for (const val of values) {
+    btree.insert(val);
 }
+
+const foundNode = btree.search(6);
+console.log(foundNode ? "Found!" : "Not Found");
