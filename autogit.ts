@@ -1,36 +1,49 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Stack<T> {
+    private items: T[];
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor() {
+        this.items = [];
+    }
+
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
+
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
     }
 }
-function countLeafNodes(root: TreeNode | null): number {
-    // If the tree is empty
-    if (root === null) {
-        return 0;
-    }
 
-    // If the current node is a leaf node
-    if (root.left === null && root.right === null) {
-        return 1;
-    }
-
-    // Recursively count leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-// Create a sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.right = new TreeNode(6);
-
-// Count the leaf nodes
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
+// Example usage:
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.peek()); // 3
+console.log(stack.pop());   // 3
+console.log(stack.isEmpty()); // false
+console.log(stack.size());   // 2
+stack.clear();
+console.log(stack.isEmpty()); // true
