@@ -1,12 +1,22 @@
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+function firstNonRepeatingCharacter(s: string): string | null {
+    const charCount: { [key: string]: number } = {};
 
-function validateEmail(email: string): boolean {
-    return emailRegex.test(email);
+    // Build the frequency map
+    for (const char of s) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    // Find the first non-repeating character
+    for (const char of s) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
+
+    return null; // Return null if there is no non-repeating character
 }
 
-// Example usage:
-const email1 = "example@mail.com";
-const email2 = "invalid-email@.com";
-
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
+// Example usage
+const inputString = "swiss";
+const result = firstNonRepeatingCharacter(inputString);
+console.log(result); // Output: "w"
