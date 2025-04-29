@@ -1,39 +1,61 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
-}
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let maxDiameter = 0;
+    // Initialize fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
 
-    function dfs(node: TreeNode | null): number {
-        if (node === null) return 0;
-
-        const leftHeight = dfs(node.left);
-        const rightHeight = dfs(node.right);
-
-        // Update maxDiameter if the path passing through this node is longer
-        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
-
-        // Return height of current node
-        return Math.max(leftHeight, rightHeight) + 1;
+    // fibM is the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
 
-    dfs(root);
-    return maxDiameter;
+    // Marks the eliminated range from front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Check if fibM2 is a valid location
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i;
+        }
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else {
+            return i;
+        }
+    }
+
+    // Compare the last element with x
+    if (fibM1 && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
+const result = fibonacciSearch(arr, x);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
+if (result !== -1) {
+    console.log(`Element found at index ${result}`);
+} else {
+    console.log(`Element not found`);
+}
