@@ -1,32 +1,26 @@
-type Graph = Record<string, string[]>;
+function countingSort(arr: number[]): number[] {
+  if (arr.length === 0) return [];
 
-function depthFirstSearch(
-  graph: Graph,
-  start: string,
-  visited: Set<string> = new Set()
-): string[] {
-  const result: string[] = [];
+  // Find the min and max values to determine range
+  const min = Math.min(...arr);
+  const max = Math.max(...arr);
+  
+  // Initialize count array
+  const count = new Array(max - min + 1).fill(0);
 
-  function dfs(node: string) {
-    if (visited.has(node)) return;
-    visited.add(node);
-    result.push(node);
-    for (const neighbor of graph[node] || []) {
-      dfs(neighbor);
+  // Count the occurrence of each value
+  for (const num of arr) {
+    count[num - min]++;
+  }
+
+  // Reconstruct the sorted array
+  const sortedArr: number[] = [];
+  for (let i = 0; i < count.length; i++) {
+    while (count[i] > 0) {
+      sortedArr.push(i + min);
+      count[i]--;
     }
   }
 
-  dfs(start);
-  return result;
+  return sortedArr;
 }
-const myGraph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: [],
-};
-
-const traversalOrder = depthFirstSearch(myGraph, 'A');
-console.log(traversalOrder);
