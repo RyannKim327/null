@@ -1,52 +1,53 @@
-function fibonacciSearch(arr: number[], target: number): number {
-  const n = arr.length;
+function buildShiftTable(pattern: string): Record<string, number> {
+  const length = pattern.length;
+  const table: Record<string, number> = {};
 
-  // Initialize fibonacci numbers
-  let fibMMm2 = 0;   // (m-2)'th Fibonacci
-  let fibMMm1 = 1;   // (m-1)'th Fibonacci
-  let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci
+  // Default shift for characters not in the pattern
+  const defaultShift = length;
 
-  // fibM is going to store the smallest Fibonacci number greater than or equal to n
-  while (fibM < n) {
-    fibMMm2 = fibMMm1;
-    fibMMm1 = fibM;
-    fibM = fibMMm2 + fibMMm1;
+  for (let i = 0; i < length - 1; i++) {
+    // Set shift distance based on distance from end
+    table[pattern[i]] = length - 1 - i;
   }
 
-  // Marks the eliminated range from front
-  let offset = -1;
+  // Characters not in pattern will default to length
+  return new Proxy(table, {
+    get: (target, prop: string) => (prop in target ? target[prop] : defaultShift),
+  });
+}
 
-  while (fibM > 1) {
-    // Check if fibMMm2 is a valid location
-    let i = Math.min(offset + fibMMm2, n - 1);
+function boyerMooreHorspool(text: string, pattern: string): number {
+  const n = text.length;
+  const m = pattern.length;
 
-    if (arr[i] < target) {
-      // Move the three fibonacci variables down by one
-      fibM = fibMMm1;
-      fibMMm1 = fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-      offset = i;
-    } else if (arr[i] > target) {
-      // Move the three fibonacci variables down by two
-      fibM = fibMMm2;
-      fibMMm1 = fibMMm1 - fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
+  if (m === 0) return 0; // immediate match for empty pattern
+  if (m > n) return -1;  // pattern longer than text means no match
+
+  const shiftTable = buildShiftTable(pattern);
+
+  let index = 0;
+  while (index <= n - m) {
+    let j = m - 1;
+    while (j >= 0 && pattern[j] === text[index + j]) {
+      j--;
+    }
+    if (j < 0) {
+      // All characters matched
+      return index;
     } else {
-      return i; // Found target
+      // Shift by the amount defined in the shift table for the char after the current mismatch
+      const mismatchedChar = text[index + m - 1];
+      index += shiftTable[mismatchedChar];
     }
   }
 
-  // Comparing the last element with target
-  if (fibMMm1 && arr[offset + 1] === target) {
-    return offset + 1;
-  }
-
-  // Element not found
+  // No match found
   return -1;
 }
 
-// Example usage:
-const sortedArr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const target = 85;
-const index = fibonacciSearch(sortedArr, target);
-console.log(index);  // Output: 8
+// Example:
+const text = "here is a simple example";
+const pattern = "simple";
+
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Prints 10 (start index of "simple")
