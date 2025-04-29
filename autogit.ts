@@ -1,53 +1,51 @@
-function buildShiftTable(pattern: string): Record<string, number> {
-  const length = pattern.length;
-  const table: Record<string, number> = {};
+type Graph = Map<number, number[]>;
 
-  // Default shift for characters not in the pattern
-  const defaultShift = length;
+function topologicalSort(graph: Graph): number[] | null {
+  const visited = new Set<number>();
+  const onStack = new Set<number>(); // For cycle detection
+  const stack: number[] = [];
+  let hasCycle = false;
 
-  for (let i = 0; i < length - 1; i++) {
-    // Set shift distance based on distance from end
-    table[pattern[i]] = length - 1 - i;
+  function dfs(node: number) {
+    if (onStack.has(node)) {
+      hasCycle = true; // Found a cycle
+      return;
+    }
+    if (visited.has(node) || hasCycle) return;
+
+    onStack.add(node);
+    const neighbors = graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      dfs(neighbor);
+    }
+    onStack.delete(node);
+    visited.add(node);
+    stack.push(node);
   }
 
-  // Characters not in pattern will default to length
-  return new Proxy(table, {
-    get: (target, prop: string) => (prop in target ? target[prop] : defaultShift),
-  });
-}
-
-function boyerMooreHorspool(text: string, pattern: string): number {
-  const n = text.length;
-  const m = pattern.length;
-
-  if (m === 0) return 0; // immediate match for empty pattern
-  if (m > n) return -1;  // pattern longer than text means no match
-
-  const shiftTable = buildShiftTable(pattern);
-
-  let index = 0;
-  while (index <= n - m) {
-    let j = m - 1;
-    while (j >= 0 && pattern[j] === text[index + j]) {
-      j--;
+  for (const node of graph.keys()) {
+    if (!visited.has(node)) {
+      dfs(node);
     }
-    if (j < 0) {
-      // All characters matched
-      return index;
-    } else {
-      // Shift by the amount defined in the shift table for the char after the current mismatch
-      const mismatchedChar = text[index + m - 1];
-      index += shiftTable[mismatchedChar];
+    if (hasCycle) {
+      return null; // No topological sort if there’s a cycle
     }
   }
 
-  // No match found
-  return -1;
+  return stack.reverse();
 }
+const graph: Graph = new Map([
+  [5, [2, 0]],
+  [4, [0, 1]],
+  [2, [3]],
+  [3, [1]],
+  [0, []],
+  [1, []]
+]);
 
-// Example:
-const text = "here is a simple example";
-const pattern = "simple";
-
-const result = boyerMooreHorspool(text, pattern);
-console.log(result); // Prints 10 (start index of "simple")
+const order = topologicalSort(graph);
+if (order === null) {
+  console.log("Graph has a cycle, no topological ordering possible.");
+} else {
+  console.log("Topological order:", order);
+}
