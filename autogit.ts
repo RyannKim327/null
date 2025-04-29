@@ -1,39 +1,18 @@
-interface Node {
-  id: string; // or any data you want to store
-  children?: Node[];
-}
-
-/**
- * Performs a breadth-limited search on a graph/tree.
- * @param root - starting node
- * @param targetId - the id we're searching for
- * @param limit - maximum depth to search
- * @returns the node if found, else null
- */
-function breadthLimitedSearch(
-  root: Node,
-  targetId: string,
-  limit: number
-): Node | null {
-  // Queue holds nodes along with their current depth
-  const queue: Array<{ node: Node; depth: number }> = [{ node: root, depth: 0 }];
-
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift()!;
+function maxSubArray(nums: number[]): number {
+    if (nums.length === 0) return 0; // Handle empty array case
     
-    // Check if current node matches target
-    if (node.id === targetId) {
-      return node;
+    let maxSoFar = nums[0];
+    let maxEndingHere = nums[0];
+    
+    for (let i = 1; i < nums.length; i++) {
+        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
-
-    // Limit search to specified depth
-    if (depth < limit && node.children) {
-      for (const child of node.children) {
-        queue.push({ node: child, depth: depth + 1 });
-      }
-    }
-  }
-
-  // Not found within depth limit
-  return null;
+    
+    return maxSoFar;
 }
+
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (the maximum sum subarray is [4, -1, 2, 1])
