@@ -1,18 +1,24 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str
-        .replace(/[^0-9a-z]/gi, '')  // Remove non-alphanumeric characters
-        .toLowerCase();              // Convert to lowercase
+function gnomeSort(arr: number[]): number[] {
+  let i = 1;
+  let j = 2;
 
-    // Reverse the normalized string
-    const reversedStr = normalizedStr.split('').reverse().join('');
+  while (i < arr.length) {
+    if (arr[i - 1] <= arr[i]) {
+      i = j;
+      j++;
+    } else {
+      [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+      i--;
+      if (i === 0) {
+        i = j;
+        j++;
+      }
+    }
+  }
 
-    // Check if the normalized string is equal to its reversed version
-    return normalizedStr === reversedStr;
+  return arr;
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("Not a palindrome"));                // false
-console.log(isPalindrome("12321"));                           // true
-console.log(isPalindrome("12345"));                           // false
+const unsorted = [34, 2, 78, 1, 55, 99, 12];
+console.log("Sorted array:", gnomeSort(unsorted));
