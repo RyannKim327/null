@@ -1,98 +1,29 @@
-function topologicalSortKahn(graph: Map<number, number[]>): number[] {
-    const inDegree: Map<number, number> = new Map();
-    const result: number[] = [];
-    const queue: number[] = [];
+function countingSort(arr: number[], k: number): number[] {
+    const n = arr.length;
+    const output: number[] = new Array(n); // Output array
+    const count: number[] = new Array(k + 1).fill(0); // Count array
 
-    // Calculate in-degree of each node
-    for (const [key, neighbors] of graph.entries()) {
-        if (!inDegree.has(key)) {
-            inDegree.set(key, 0);
-        }
-
-        for (const neighbor of neighbors) {
-            inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
-        }
+    // Store the count of each number
+    for (let i = 0; i < n; i++) {
+        count[arr[i]] += 1; // Increment the count of the respective index
     }
 
-    // Initialize queue with nodes having in-degree of 0
-    for (const [node, degree] of inDegree.entries()) {
-        if (degree === 0) {
-            queue.push(node);
-        }
+    // Change count[i] so that it contains the actual position of this element in the output array
+    for (let i = 1; i <= k; i++) {
+        count[i] += count[i - 1];
     }
 
-    // Process nodes in the queue
-    while (queue.length > 0) {
-        const node = queue.shift()!;
-        result.push(node);
-
-        for (const neighbor of graph.get(node) || []) {
-            inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
-            if (inDegree.get(neighbor) === 0) {
-                queue.push(neighbor);
-            }
-        }
+    // Build the output array
+    for (let i = n - 1; i >= 0; i--) {
+        output[count[arr[i]] - 1] = arr[i];
+        count[arr[i]] -= 1;
     }
 
-    // Check for cycle (if the result contains all nodes)
-    if (result.length !== graph.size) {
-        throw new Error("Graph has a cycle, topological sort not possible.");
-    }
-
-    return result;
+    return output;
 }
 
 // Example usage:
-const graph = new Map<number, number[]>([
-    [5, [2, 0]],
-    [4, [0, 1]],
-    [3, [1]],
-    [2, [3]],
-    [0, []],
-    [1, []]
-]);
-
-console.log(topologicalSortKahn(graph)); // Output could be: [5, 4, 2, 0, 3, 1]
-function topologicalSortDFS(graph: Map<number, number[]>): number[] {
-    const visited: Set<number> = new Set();
-    const stack: number[] = [];
-    const result: number[] = [];
-
-    function dfs(node: number): void {
-        if (visited.has(node)) {
-            return;
-        }
-        
-        visited.add(node);
-        for (const neighbor of graph.get(node) || []) {
-            dfs(neighbor);
-        }
-
-        stack.push(node);
-    }
-
-    for (const node of graph.keys()) {
-        if (!visited.has(node)) {
-            dfs(node);
-        }
-    }
-
-    // Since the nodes are in reverse order in the stack, we reverse it to get the correct topological order
-    while (stack.length) {
-        result.push(stack.pop()!);
-    }
-    
-    return result;
-}
-
-// Example usage:
-const graphDFS = new Map<number, number[]>([
-    [5, [2, 0]],
-    [4, [0, 1]],
-    [3, [1]],
-    [2, [3]],
-    [0, []],
-    [1, []]
-]);
-
-console.log(topologicalSortDFS(graphDFS)); // Output could be: [5, 4, 2, 3, 0, 1]
+const arr = [4, 2, 2, 8, 3, 3, 1];
+const maxValue = Math.max(...arr); // Find the maximum value to define the range
+const sortedArr = countingSort(arr, maxValue);
+console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
