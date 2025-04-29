@@ -1,51 +1,45 @@
-interface Edge {
-  from: number;
-  to: number;
-  weight: number;
+type Node = {
+    state: any; // replace 'any' with the state type you're using (e.g. string, number, object, etc.)
+    score: number; // the score used for sorting
+};
+
+// Example scoring function
+function scoreFunction(state: any): number {
+    // Implement your scoring function here
+    return Math.random(); // Placeholder for demo purposes
 }
 
-function bellmanFord(
-  verticesCount: number,
-  edges: Edge[],
-  source: number
-): { distances: number[]; hasNegativeCycle: boolean } {
-  const distances = new Array(verticesCount).fill(Infinity);
-  distances[source] = 0;
+// Beam Search Implementation
+function beamSearch(startState: any, beamWidth: number, maxIterations: number): any {
+    let beam: Node[] = [{ state: startState, score: scoreFunction(startState) }];
 
-  // Relax edges repeatedly
-  for (let i = 0; i < verticesCount - 1; i++) {
-    let updated = false;
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
+        let nextBeam: Node[] = [];
 
-    for (const edge of edges) {
-      if (distances[edge.from] + edge.weight < distances[edge.to]) {
-        distances[edge.to] = distances[edge.from] + edge.weight;
-        updated = true;
-      }
+        // Expand each node in the current beam
+        for (const node of beam) {
+            const newStates = generateSuccessors(node.state); // user-defined method to generate successors
+            for (const newState of newStates) {
+                const newNode: Node = { state: newState, score: scoreFunction(newState) };
+                nextBeam.push(newNode);
+            }
+        }
+
+        // Sort through the next nodes and select the best ones to form the next beam
+        nextBeam.sort((a, b) => b.score - a.score); // Sort in descending order
+        beam = nextBeam.slice(0, beamWidth); // Keep only the best 'beamWidth' nodes
     }
 
-    // Optimization: stop if no update in this iteration
-    if (!updated) break;
-  }
-
-  // Check for negative cycles
-  let hasNegativeCycle = false;
-  for (const edge of edges) {
-    if (distances[edge.from] + edge.weight < distances[edge.to]) {
-      hasNegativeCycle = true;
-      break;
-    }
-  }
-
-  return { distances, hasNegativeCycle };
+    // Return the best state from the final beam
+    return beam[0].state; // or adjust according to your needs
 }
-const edges: Edge[] = [
-  { from: 0, to: 1, weight: 5 },
-  { from: 0, to: 2, weight: 4 },
-  { from: 1, to: 3, weight: 3 },
-  { from: 2, to: 1, weight: 6 },
-  { from: 3, to: 2, weight: -2 }
-];
 
-const result = bellmanFord(4, edges, 0);
-console.log('Distances:', result.distances);
-console.log('Negative cycle detected:', result.hasNegativeCycle);
+// Example successor generation (user-defined)
+function generateSuccessors(state: any): any[] {
+    // Replace this with your actual logic to generate valid successors to the current state
+    return [state + 1, state - 1]; // Dummy example
+}
+
+// Example usage
+const bestState = beamSearch(0, 3, 5);
+console.log('Best state found:', bestState);
