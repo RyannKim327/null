@@ -1,33 +1,36 @@
-function maxSubArraySum(arr: number[]): { maxSum: number, start: number, end: number } {
-    if (arr.length === 0) {
-        return { maxSum: 0, start: -1, end: -1 }; // Or handle empty array as needed
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+  // Ensure nums1 is the smaller array
+  if (nums1.length > nums2.length) [nums1, nums2] = [nums2, nums1];
+
+  const m = nums1.length;
+  const n = nums2.length;
+  let low = 0, high = m;
+
+  while (low <= high) {
+    const i = Math.floor((low + high) / 2);
+    const j = Math.floor((m + n + 1) / 2) - i;
+
+    const maxLeftX = i === 0 ? -Infinity : nums1[i - 1];
+    const minRightX = i === m ? Infinity : nums1[i];
+    const maxLeftY = j === 0 ? -Infinity : nums2[j - 1];
+    const minRightY = j === n ? Infinity : nums2[j];
+
+    if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
+      if ((m + n) % 2 === 0) {
+        // Even total length
+        return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
+      } else {
+        // Odd total length
+        return Math.max(maxLeftX, maxLeftY);
+      }
+    } else if (maxLeftX > minRightY) {
+      // Move towards the left in nums1
+      high = i - 1;
+    } else {
+      // Move towards the right in nums1
+      low = i + 1;
     }
+  }
 
-    let maxSum = arr[0];
-    let currentSum = 0;
-    let start = 0;
-    let maxStart = 0;
-    let maxEnd = 0;
-
-    for (let i = 0; i < arr.length; i++) {
-        if (currentSum <= 0) {
-            currentSum = arr[i];
-            start = i;
-        } else {
-            currentSum += arr[i];
-        }
-
-        if (currentSum > maxSum) {
-            maxSum = currentSum;
-            maxStart = start;
-            maxEnd = i;
-        }
-    }
-
-    return { maxSum, start: maxStart, end: maxEnd };
+  throw new Error('Input arrays are not sorted or invalid.');
 }
-
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArraySum(array);
-console.log(`Maximum sum: ${result.maxSum}, from index ${result.start} to ${result.end}`);
