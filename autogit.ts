@@ -1,20 +1,29 @@
-function firstNonRepeatingCharacter(str: string): string | null {
-  const charCount: { [key: string]: number } = {};
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-  // Count the occurrences of each character
-  for (const char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first unsorted element
+        let minIndex = i;
 
-  // Find the first character with a count of 1
-  for (const char of str) {
-    if (charCount[char] === 1) {
-      return char;
+        // Check the rest of the array to find the smallest element
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j; // Update the index of the minimum element
+            }
+        }
+
+        // Swap the found minimum element with the first unsorted element
+        if (minIndex !== i) {
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
     }
-  }
 
-  // Return null if there's no non-repeating character
-  return null;
+    return arr;
 }
-console.log(firstNonRepeatingCharacter("stress")); // Output: 't'
-console.log(firstNonRepeatingCharacter("aabbcc")); // Output: null
+
+// Example usage:
+const unsortedArray: number[] = [64, 25, 12, 22, 11];
+const sortedArray: number[] = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
