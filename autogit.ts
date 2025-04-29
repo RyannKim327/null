@@ -1,43 +1,51 @@
-// Define the linked list node
-class ListNode<T> {
-    value: T;
-    next: ListNode<T> | null;
+type Node = {
+    value: string;
+    neighbors: Node[];
+};
 
-    constructor(value: T, next: ListNode<T> | null = null) {
-        this.value = value;
-        this.next = next;
+function depthLimitedSearch(startNode: Node, depthLimit: number, goal: string): Node | null {
+    const stack: { node: Node; depth: number }[] = [];
+    const visited = new Set<Node>();
+    
+    stack.push({ node: startNode, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!;
+        
+        // If we found the goal, return the node
+        if (node.value === goal) {
+            return node;
+        }
+
+        // If we haven't reached the depth limit, explore neighbors
+        if (depth < depthLimit) {
+            visited.add(node); // Mark the node as visited
+            for (const neighbor of node.neighbors) {
+                if (!visited.has(neighbor)) {
+                    stack.push({ node: neighbor, depth: depth + 1 });
+                }
+            }
+        }
     }
+
+    // If we get here, it means we didn't find the goal within the depth limit
+    return null;
 }
 
-function getNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
-    let fast: ListNode<T> | null = head;
-    let slow: ListNode<T> | null = head;
+// Example usage with a graph
+const nodeA: Node = { value: 'A', neighbors: [] };
+const nodeB: Node = { value: 'B', neighbors: [] };
+const nodeC: Node = { value: 'C', neighbors: [] };
+const nodeD: Node = { value: 'D', neighbors: [] };
 
-    // Move fast pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (fast === null) return null; // n is larger than list length
-        fast = fast.next;
-    }
+nodeA.neighbors.push(nodeB, nodeC);
+nodeB.neighbors.push(nodeD);
 
-    // Move both pointers until fast reaches the end
-    while (fast !== null) {
-        fast = fast.next;
-        slow = (slow as ListNode<T>).next;
-    }
+const depthLimit = 2;
+const foundNode = depthLimitedSearch(nodeA, depthLimit, 'D');
 
-    return slow;
+if (foundNode) {
+    console.log(`Found node with value: ${foundNode.value}`);
+} else {
+    console.log('Node not found within depth limit.');
 }
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1,
-    new ListNode(2,
-        new ListNode(3,
-            new ListNode(4,
-                new ListNode(5)
-            )
-        )
-    )
-);
-
-// Find the 2nd node from the end (which should be node with value 4)
-const node = getNthFromEnd(head, 2);
-console.log(node?.value); // Output: 4
