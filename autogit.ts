@@ -1,21 +1,12 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+function validateEmail(email: string): boolean {
+    return emailRegex.test(email);
 }
 
-function getLength<T>(head: ListNode<T> | null): number {
-  let count = 0;
-  let current = head;
+// Example usage:
+const email1 = "example@mail.com";
+const email2 = "invalid-email@.com";
 
-  while (current !== null) {
-    count++;
-    current = current.next;
-  }
-
-  return count;
-}
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
