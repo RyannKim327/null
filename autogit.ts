@@ -1,51 +1,58 @@
-type Graph = Map<number, number[]>;
+class ListNode {
+  val: number;
+  next: ListNode | null;
 
-function topologicalSort(graph: Graph): number[] | null {
-  const visited = new Set<number>();
-  const onStack = new Set<number>(); // For cycle detection
-  const stack: number[] = [];
-  let hasCycle = false;
-
-  function dfs(node: number) {
-    if (onStack.has(node)) {
-      hasCycle = true; // Found a cycle
-      return;
-    }
-    if (visited.has(node) || hasCycle) return;
-
-    onStack.add(node);
-    const neighbors = graph.get(node) || [];
-    for (const neighbor of neighbors) {
-      dfs(neighbor);
-    }
-    onStack.delete(node);
-    visited.add(node);
-    stack.push(node);
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
   }
-
-  for (const node of graph.keys()) {
-    if (!visited.has(node)) {
-      dfs(node);
-    }
-    if (hasCycle) {
-      return null; // No topological sort if there’s a cycle
-    }
-  }
-
-  return stack.reverse();
 }
-const graph: Graph = new Map([
-  [5, [2, 0]],
-  [4, [0, 1]],
-  [2, [3]],
-  [3, [1]],
-  [0, []],
-  [1, []]
-]);
+function isPalindrome(head: ListNode | null): boolean {
+  if (!head || !head.next) {
+    return true; // Empty or single element list is palindrome
+  }
 
-const order = topologicalSort(graph);
-if (order === null) {
-  console.log("Graph has a cycle, no topological ordering possible.");
-} else {
-  console.log("Topological order:", order);
+  // Step 1: Find the middle of the linked list (fast & slow pointers)
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
+
+  while (fast && fast.next) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  // Step 2: Reverse the second half of the list
+  let secondHalfHead = reverseList(slow);
+
+  // Step 3: Compare the first half and the reversed second half
+  let firstHalfHead: ListNode | null = head;
+  let secondHalfIter = secondHalfHead;
+
+  while (secondHalfIter) {
+    if (firstHalfHead!.val !== secondHalfIter.val) {
+      return false;
+    }
+    firstHalfHead = firstHalfHead!.next;
+    secondHalfIter = secondHalfIter.next;
+  }
+
+  // Optional: Restore the original list (reverse again)
+  reverseList(secondHalfHead);
+
+  return true;
+}
+
+// Helper to reverse a linked list
+function reverseList(head: ListNode | null): ListNode | null {
+  let prev: ListNode | null = null;
+  let current = head;
+
+  while (current) {
+    let nextTemp = current.next;
+    current.next = prev;
+    prev = current;
+    current = nextTemp;
+  }
+
+  return prev;
 }
