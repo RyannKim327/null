@@ -1,29 +1,12 @@
-function largestPrimeFactor(n: number): number {
-  let largestFactor = 1;
+const numbers = [3, 7, 2, 9, 4];
 
-  // Divide out all factors of 2
-  while (n % 2 === 0) {
-    largestFactor = 2;
-    n /= 2;
-  }
+const maxValue = Math.max(...numbers);
 
-  // Check for odd factors starting from 3
-  let factor = 3;
-  const maxFactor = Math.sqrt(n);
-  while (factor <= maxFactor && n > 1) {
-    while (n % factor === 0) {
-      largestFactor = factor;
-      n /= factor;
-    }
-    factor += 2;
-  }
+console.log(maxValue); // Output: 9
+const numbers: number[] = [];
 
-  // If n > 1, then n is a prime factor itself
-  if (n > 1) {
-    largestFactor = n;
-  }
+const maxValue = numbers.length > 0 ? Math.max(...numbers) : undefined;
 
-  return largestFactor;
-}
-const num = 13195;
-console.log(largestPrimeFactor(num)); // Outputs: 29
+console.log(maxValue); // Output: undefined if array is empty
+const maxValue = numbers.reduce((max, current) => (current > max ? current : max), -Infinity);
+console.log(maxValue); // Output: 9
