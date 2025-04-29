@@ -1,52 +1,6 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    return lps;
+function reverseString(str: string): string {
+  return str.split('').reverse().join('');
 }
-
-function kmpSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const resultIndices: number[] = [];
-
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-            if (j === pattern.length) {
-                resultIndices.push(i - j);
-                j = lps[j - 1];
-            }
-        } else {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return resultIndices;
+function reverseStringUnicode(str: string): string {
+  return [...str].reverse().join('');
 }
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log(matches); // Output: [10]
