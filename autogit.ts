@@ -1,32 +1,14 @@
-type Node = {
-  id: string;
-  neighbors: Node[];
-};
-
-function breadthLimitedSearch(
-  start: Node,
-  goalId: string,
-  maxDepth: number
-): Node | null {
-  // Each item in the queue holds current node + depth
-  const queue: Array<{ node: Node; depth: number }> = [{ node: start, depth: 0 }];
-  const visited = new Set<string>();
-
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift()!;
-    if (node.id === goalId) {
-      return node; // Found the goal
-    }
-
-    if (depth < maxDepth) {
-      visited.add(node.id);
-      for (const neighbor of node.neighbors) {
-        if (!visited.has(neighbor.id)) {
-          queue.push({ node: neighbor, depth: depth + 1 });
-        }
-      }
-    }
-  }
-
-  return null; // Not found within depth limit
+function isPalindrome(s: string): boolean {
+    // Normalize the string: convert to lowercase and remove non-alphanumeric characters
+    const normalizedString = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Reverse the string
+    const reversedString = normalizedString.split('').reverse().join('');
+    
+    // Check if the original normalized string is equal to the reversed string
+    return normalizedString === reversedString;
 }
+
+// Example usage
+const testString = "A man, a plan, a canal: Panama";
+console.log(isPalindrome(testString)); // Output: true
