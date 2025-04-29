@@ -1,32 +1,32 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+function areAnagrams(str1: string, str2: string): boolean {
+  const normalize = (s: string) =>
+    s.toLowerCase()
+     .replace(/[\W_]+/g, '') // removes non-alphanumeric characters
+     .split('')
+     .sort()
+     .join('');
 
-    // Start with the largest gap and reduce it
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size.
-        // The first gap elements arr[0..gap-1] are already in gapped order
-        for (let i = gap; i < n; i++) {
-            // Add arr[i] to the elements that have been gap sorted
-            // Save arr[i] in temp and make a hole at position i
-            const temp = arr[i];
-            let j: number;
-
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                arr[j] = arr[j - gap];
-            }
-
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2); // Reduce the gap
-    }
-
-    return arr;
+  return normalize(str1) === normalize(str2);
 }
+console.log(areAnagrams('Listen', 'Silent')); // true
+console.log(areAnagrams('Hello', 'Olelh'));   // true
+console.log(areAnagrams('Test', 'Best'));     // false
+function areAnagrams(str1: string, str2: string): boolean {
+  const cleanStr1 = str1.toLowerCase().replace(/[\W_]+/g, '');
+  const cleanStr2 = str2.toLowerCase().replace(/[\W_]+/g, '');
 
-// Example Usage
-const array = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(array);
-console.log('Sorted Array:', sortedArray);
+  if (cleanStr1.length !== cleanStr2.length) return false;
+
+  const charCount: Record<string, number> = {};
+
+  for (const char of cleanStr1) {
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
+
+  for (const char of cleanStr2) {
+    if (!charCount[char]) return false;
+    charCount[char]--;
+  }
+
+  return true;
+}
