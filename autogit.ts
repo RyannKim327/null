@@ -1,16 +1,8 @@
-function sortArray(arr: number[]): number[] {
-    return arr.sort((a, b) => a - b);
+function countWordOccurrences(text: string, word: string): number {
+  const regex = new RegExp(`\\b${word}\\b`, 'gi'); // 'g' for global, 'i' for case-insensitive
+  const matches = text.match(regex);
+  return matches ? matches.length : 0;
 }
-
-// Example usage:
-const numbers: number[] = [5, 3, 8, 1, 2];
-const sortedNumbers = sortArray(numbers);
-console.log(sortedNumbers); // Output: [1, 2, 3, 5, 8]
-const sortedNumbers = [...numbers].sort((a, b) => a - b);
-function sortArrayDescending(arr: number[]): number[] {
-    return arr.sort((a, b) => b - a);
-}
-
-// Example usage:
-const sortedNumbersDesc = sortArrayDescending(numbers);
-console.log(sortedNumbersDesc); // Output: [8, 5, 3, 2, 1]
+const myString = "The quick brown fox jumps over the lazy dog. The fox was quick.";
+const count = countWordOccurrences(myString, "fox");
+console.log(count); // Output: 2
