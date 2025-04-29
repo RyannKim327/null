@@ -1,9 +1,5 @@
-function removeSpaces(input: string): string {
-    return input.replace(/\s+/g, '');
-}
+const originalString: string = "Hello, World!";
+const lowerCaseString: string = originalString.toLowerCase();
 
-// Example usage:
-const originalString = "Hello, how are you?";
-const stringWithoutSpaces = removeSpaces(originalString);
-console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
-return input.replace(/ /g, '');
+console.log(lowerCaseString); // Output: "hello, world!"
+const localeLowerCaseString: string = originalString.toLocaleLowerCase();
