@@ -1,12 +1,54 @@
-function countWordOccurrences(text: string, word: string): number {
-  // Escape the word for use in a regex if needed
-  const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  // Create a regex with word boundaries to match whole words, case-insensitive
-  const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
-  const matches = text.match(regex);
-  return matches ? matches.length : 0;
+class Stack<T> {
+    private items: T[] = [];
+
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
+
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
+
+    // Get all items in the stack (for debugging purposes)
+    print(): void {
+        console.log(this.items);
+    }
 }
 
 // Example usage:
-const sentence = "The quick brown fox jumps over the lazy dog. The fox is clever.";
-console.log(countWordOccurrences(sentence, "fox")); // Output: 2
+const stack = new Stack<number>();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+stack.print(); // Output: [1, 2, 3]
+
+console.log(stack.pop()); // Output: 3
+console.log(stack.peek()); // Output: 2
+console.log(stack.size()); // Output: 2
+console.log(stack.isEmpty()); // Output: false
+
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
