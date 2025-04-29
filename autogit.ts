@@ -1,29 +1,40 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first unsorted element
-        let minIndex = i;
-
-        // Check the rest of the array to find the smallest element
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update the index of the minimum element
-            }
-        }
-
-        // Swap the found minimum element with the first unsorted element
-        if (minIndex !== i) {
-            const temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
-    }
-
-    return arr;
+interface Node {
+  state: any; // replace 'any' with your specific state type
 }
 
-// Example usage:
-const unsortedArray: number[] = [64, 25, 12, 22, 11];
-const sortedArray: number[] = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+function depthLimitedSearch(
+  startNode: Node,
+  goalTest: (node: Node) => boolean,
+  expandNode: (node: Node) => Node[],
+  limit: number
+): Node | null {
+  // Stack holds objects with node and current depth
+  const stack: { node: Node; depth: number }[] = [{ node: startNode, depth: 0 }];
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop()!; // non-null assertion since loop condition ensures stack not empty
+    
+    // Check if we've reached target
+    if (goalTest(node)) {
+      return node;
+    }
+
+    // If we're within depth limit, expand
+    if (depth < limit) {
+      const children = expandNode(node);
+      // Push children with incremented depth
+      for (const child of children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
+    }
+  }
+
+  // Goal not found within depth limit
+  return null;
+}
+const result = depthLimitedSearch(start, node => node.state === targetState, node => expand(node), 10);
+if (result) {
+  console.log("Found goal node:", result);
+} else {
+  console.log("Goal not found within depth limit");
+}
