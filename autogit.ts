@@ -1,16 +1,32 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false; // 0, 1 and negatives are not prime
-  if (num <= 3) return true;  // 2 and 3 are prime
+type Node = {
+  id: string;
+  neighbors: Node[];
+};
 
-  // Eliminate multiples of 2 and 3 early
-  if (num % 2 === 0 || num % 3 === 0) return false;
+function breadthLimitedSearch(
+  start: Node,
+  goalId: string,
+  maxDepth: number
+): Node | null {
+  // Each item in the queue holds current node + depth
+  const queue: Array<{ node: Node; depth: number }> = [{ node: start, depth: 0 }];
+  const visited = new Set<string>();
 
-  // Check divisors from 5 to sqrt(num), jumping by 6 to skip multiples of 2 and 3
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) {
-      return false;
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift()!;
+    if (node.id === goalId) {
+      return node; // Found the goal
+    }
+
+    if (depth < maxDepth) {
+      visited.add(node.id);
+      for (const neighbor of node.neighbors) {
+        if (!visited.has(neighbor.id)) {
+          queue.push({ node: neighbor, depth: depth + 1 });
+        }
+      }
     }
   }
 
-  return true;
+  return null; // Not found within depth limit
 }
