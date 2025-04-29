@@ -1,32 +1,21 @@
-function longestCommonSubstring(str1: string, str2: string): string {
-  const m = str1.length;
-  const n = str2.length;
+function firstNonRepeatingChar(str: string): string | null {
+  const charCount: { [key: string]: number } = {};
 
-  // Create a 2D array initialized with 0
-  const dp: number[][] = Array(m + 1)
-    .fill(null)
-    .map(() => Array(n + 1).fill(0));
+  // Count character frequencies
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
 
-  let maxLength = 0;
-  let endIndex = 0;
-
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i; // end of substring in str1
-        }
-      }
+  // Find the first character with a count of 1
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
     }
   }
 
-  // Return the substring from str1 using the endIndex and maxLength
-  return str1.slice(endIndex - maxLength, endIndex);
+  return null; // If no unique character found
 }
-const s1 = "helloWorld";
-const s2 = "yellowLord";
 
-console.log(longestCommonSubstring(s1, s2)); // Output: "ello"
+// Example usage:
+const result = firstNonRepeatingChar("swiss");
+console.log(result); // "w"
