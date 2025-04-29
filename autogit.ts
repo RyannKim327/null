@@ -1,27 +1,18 @@
-const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-function validateEmail(email: string): boolean {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
-}
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
+let arr: number[] = [1, 2, 3, 4, 5];
+console.log("Original array:", arr);
 
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
-function validateEmail(email: string): boolean {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
-}
+// Reverse the array
+arr.reverse();
+console.log("Reversed array:", arr);
+Original array: [1, 2, 3, 4, 5]
+Reversed array: [5, 4, 3, 2, 1]
+let originalArr: number[] = [1, 2, 3, 4, 5];
+console.log("Original array:", originalArr);
 
-// Test the function
-const emails = [
-    "test@example.com",
-    "invalid-email",
-    "another.test@domain.co",
-    "user@sub.domain.com",
-    "user@.com",
-];
-
-emails.forEach(email => {
-    console.log(`Is "${email}" a valid email? ${validateEmail(email)}`);
-});
+// Create a new reversed array
+let reversedArr: number[] = originalArr.slice().reverse();
+console.log("New reversed array:", reversedArr);
+console.log("Original array after reverse:", originalArr);
+Original array: [1, 2, 3, 4, 5]
+New reversed array: [5, 4, 3, 2, 1]
+Original array after reverse: [1, 2, 3, 4, 5]
