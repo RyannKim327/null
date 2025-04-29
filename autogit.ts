@@ -1,12 +1,32 @@
-function isPalindrome(str: string): boolean {
-  // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-  const cleaned = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+type Graph = Map<string, string[]>;
 
-  // Check if cleaned string is equal to its reverse
-  const reversed = cleaned.split('').reverse().join('');
-  return cleaned === reversed;
+function depthFirstSearch(graph: Graph, startNode: string): Set<string> {
+    const visited = new Set<string>();
+
+    function dfs(node: string) {
+        if (visited.has(node)) return;
+        visited.add(node);
+        console.log(`Visiting: ${node}`); // or handle the node as needed
+
+        const neighbors = graph.get(node) ?? [];
+        for (const neighbor of neighbors) {
+            dfs(neighbor);
+        }
+    }
+
+    dfs(startNode);
+    return visited; // returns all nodes reachable from startNode
 }
 
-// Usage:
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("hello")); // false
+// Example usage:
+const myGraph: Graph = new Map([
+    ['A', ['B', 'C']],
+    ['B', ['D', 'E']],
+    ['C', ['F']],
+    ['D', []],
+    ['E', ['F']],
+    ['F', []]
+]);
+
+const visitedNodes = depthFirstSearch(myGraph, 'A');
+console.log('Visited:', Array.from(visitedNodes));
