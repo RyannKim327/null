@@ -1,54 +1,55 @@
-type Graph = {
-    [key: string]: { neighbor: string; weight: number }[];
-};
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0;  // Length of the previous longest prefix suffix
+    let i = 1;
 
-function dijkstra(graph: Graph, start: string): { [key: string]: number } {
-    // Create a map to track the shortest distance to each node
-    const distances: { [key: string]: number } = {};
-    const visited: Set<string> = new Set();
-    const priorityQueue: { node: string; distance: number }[] = [];
-
-    // Initialize distances
-    for (const node in graph) {
-        distances[node] = Infinity; // Set initial distance to "infinity"
-    }
-    distances[start] = 0; // Distance to the start node is 0
-
-    // Add the start node to the priority queue
-    priorityQueue.push({ node: start, distance: 0 });
-
-    while (priorityQueue.length > 0) {
-        // Sort the priority queue by the distance (smallest distance first)
-        priorityQueue.sort((a, b) => a.distance - b.distance);
-        const { node: currentNode } = priorityQueue.shift()!; // Get the node with the smallest distance
-
-        if (visited.has(currentNode)) {
-            continue; // If we've visited this node, skip it
-        }
-        visited.add(currentNode);
-
-        // Explore neighbors
-        for (const { neighbor, weight } of graph[currentNode]) {
-            const newDistance = distances[currentNode] + weight;
-
-            // Only consider this new path if it's better
-            if (newDistance < distances[neighbor]) {
-                distances[neighbor] = newDistance;
-                priorityQueue.push({ node: neighbor, distance: newDistance });
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
     }
-
-    return distances;
+    return lps;
 }
 
-// Example usage
-const graph: Graph = {
-    A: [{ neighbor: "B", weight: 1 }, { neighbor: "C", weight: 4 }],
-    B: [{ neighbor: "A", weight: 1 }, { neighbor: "C", weight: 2 }, { neighbor: "D", weight: 5 }],
-    C: [{ neighbor: "A", weight: 4 }, { neighbor: "B", weight: 2 }, { neighbor: "D", weight: 1 }],
-    D: [{ neighbor: "B", weight: 5 }, { neighbor: "C", weight: 1 }],
-};
+function KMPsearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // Index for text
+    let j = 0; // Index for pattern
 
-const shortestDistances = dijkstra(graph, 'A');
-console.log(shortestDistances);
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            // Pattern found, add the start index to results
+            result.push(i - j);
+            j = lps[j - 1]; // Update j to look for the next match
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Update j using the lps array
+            } else {
+                i++;
+            }
+        }
+    }
+    return result; // Return the indices where the pattern is found in the text
+}
+
+// Example usage:
+const text = "ababcababcabc";
+const pattern = "abc";
+const indices = KMPsearch(text, pattern);
+
+console.log(`Pattern found at indices: ${indices}`);
