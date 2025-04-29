@@ -1,11 +1,32 @@
-function countWordOccurrences(text: string, word: string): number {
-  // Create a regex that matches the word with word boundaries, case-insensitive
-  const regex = new RegExp(`\\b${word}\\b`, 'gi');
-  const matches = text.match(regex);
-  return matches ? matches.length : 0;
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+
+    // Start with the largest gap and reduce it
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size.
+        // The first gap elements arr[0..gap-1] are already in gapped order
+        for (let i = gap; i < n; i++) {
+            // Add arr[i] to the elements that have been gap sorted
+            // Save arr[i] in temp and make a hole at position i
+            const temp = arr[i];
+            let j: number;
+
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
+
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
+        }
+        gap = Math.floor(gap / 2); // Reduce the gap
+    }
+
+    return arr;
 }
 
-// Example usage:
-const sentence = "The quick brown fox jumps over the lazy dog. The dog was not amused.";
-const count = countWordOccurrences(sentence, "the");
-console.log(count);  // Output: 3
+// Example Usage
+const array = [12, 34, 54, 2, 3];
+const sortedArray = shellSort(array);
+console.log('Sorted Array:', sortedArray);
