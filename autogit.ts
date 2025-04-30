@@ -1,33 +1,23 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: The depth of an empty tree is 0
+function maxSumSubarray(arr: number[]): number {
+    if (arr.length === 0) {
+        return 0; // Handle the case when the array is empty
     }
 
-    // Recursively find the maximum depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    let currentMax = arr[0];
+    let overallMax = arr[0];
 
-    // The maximum depth is the greater of the two depths, plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    for (let i = 1; i < arr.length; i++) {
+        // Update the current maximum sum
+        currentMax = Math.max(arr[i], currentMax + arr[i]);
+
+        // Update the overall maximum sum
+        overallMax = Math.max(overallMax, currentMax);
+    }
+
+    return overallMax;
 }
 
 // Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const maxSum = maxSumSubarray(array);
+console.log(`Maximum sum of subarray: ${maxSum}`); // Output: 6
