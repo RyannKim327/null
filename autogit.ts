@@ -1,9 +1,19 @@
-function countWordOccurrences(text: string, word: string): number {
-  // Create a regex to match the word with word boundaries, case-insensitive
-  const regex = new RegExp(`\\b${word}\\b`, 'gi');
-  const matches = text.match(regex);
-  return matches ? matches.length : 0;
+function binarySearch<T>(arr: T[], target: T, left = 0, right = arr.length - 1): number {
+  if (left > right) {
+    return -1; // Target not found
+  }
+
+  const mid = Math.floor((left + right) / 2);
+
+  if (arr[mid] === target) {
+    return mid; // Found the target
+  } else if (arr[mid] > target) {
+    return binarySearch(arr, target, left, mid - 1);
+  } else {
+    return binarySearch(arr, target, mid + 1, right);
+  }
 }
-const text = "Hello world! The world is wide and the world is beautiful.";
-const word = "world";
-console.log(countWordOccurrences(text, word)); // Output: 3
+const nums = [1, 3, 5, 7, 9];
+const target = 7;
+const index = binarySearch(nums, target);
+console.log(index); // Output: 3
