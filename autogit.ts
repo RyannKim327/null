@@ -1,59 +1,89 @@
-class Graph {
-    private adjList: Map<number, number[]>;
+class HashTable<K, V> {
+    private table: Array<Array<[K, V]> | null>;
+    private size: number;
 
-    constructor() {
-        this.adjList = new Map();
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null);
     }
 
-    // Add a vertex to the graph
-    addVertex(vertex: number): void {
-        if (!this.adjList.has(vertex)) {
-            this.adjList.set(vertex, []);
+    private hash(key: K): number {
+        let hashValue = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hashValue += keyString.charCodeAt(i);
         }
+        return hashValue % this.size;
     }
 
-    // Add an edge to the graph
-    addEdge(v1: number, v2: number): void {
-        this.addVertex(v1);
-        this.addVertex(v2);
-        this.adjList.get(v1)!.push(v2);
-        this.adjList.get(v2)!.push(v1); // For undirected graph
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        if (!this.table[index]) {
+            this.table[index] = [];
+        }
+
+        // Check if the key already exists and update the value
+        for (let i = 0; i < this.table[index]!.length; i++) {
+            if (this.table[index]![i][0] === key) {
+                this.table[index]![i][1] = value;
+                return;
+            }
+        }
+        
+        // If key does not exist, add a new key-value pair
+        this.table[index]!.push([key, value]);
     }
 
-    // Perform BFS starting from a source vertex
-    bfs(startVertex: number): number[] {
-        const visited: Set<number> = new Set();
-        const queue: number[] = [];
-        const result: number[] = [];
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
 
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift();
-            if (currentVertex !== undefined) {
-                result.push(currentVertex);
-
-                const neighbors = this.adjList.get(currentVertex) || [];
-                for (const neighbor of neighbors) {
-                    if (!visited.has(neighbor)) {
-                        visited.add(neighbor);
-                        queue.push(neighbor);
-                    }
+        if (bucket) {
+            for (const [k, v] of bucket) {
+                if (k === key) {
+                    return v;
                 }
             }
         }
+        return undefined; // Key not found
+    }
 
-        return result;
+    public delete(key: K): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        if (bucket) {
+            this.table[index] = bucket.filter(([k]) => k !== key);
+        }
+    }
+
+    public has(key: K): boolean {
+        return this.get(key) !== undefined;
+    }
+
+    public clear(): void {
+        this.table = new Array(this.size).fill(null);
+    }
+
+    public sizeOf(): number {
+        let count = 0;
+        for (const bucket of this.table) {
+            if (bucket) {
+                count += bucket.length;
+            }
+        }
+        return count;
     }
 }
 
-// Example usage:
-const graph = new Graph();
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 5);
-
-const bfsResult = graph.bfs(1);
-console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
+// Example of using HashTable
+const hashTable = new HashTable<string, number>(50);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.delete("apple");
+console.log(hashTable.has("apple")); // Output: false
+console.log(hashTable.sizeOf()); // Output: 1
+hashTable.clear();
+console.log(hashTable.sizeOf()); // Output: 0
