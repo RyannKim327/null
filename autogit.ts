@@ -1,9 +1,19 @@
-function decimalToBinary(decimal: number): string {
-    return decimal.toString(2);
+class ListNode {
+  value: any;
+  next: ListNode | null;
+
+  constructor(value: any) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example usage:
-const decimalNumber = 42;
-const binaryString = decimalToBinary(decimalNumber);
-console.log(`The binary representation of ${decimalNumber} is ${binaryString}`);
-The binary representation of 42 is 101010
+function getLength(head: ListNode | null): number {
+  let length = 0;
+  let current = head;
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
+  return length;
+}
