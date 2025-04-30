@@ -1,13 +1,24 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    
+    // Loop through the array
+    for (let i = 0; i < n; i++) {
+        // Last i elements are already sorted, no need to check them
+        for (let j = 0; j < n - i - 1; j++) {
+            // If the current element is greater than the next element, swap them
+            if (arr[j] > arr[j + 1]) {
+                // Swap
+                const temp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = temp;
+            }
+        }
     }
-    // Recursive case: n * factorial(n - 1)
-    return n * factorial(n - 1);
+    
+    return arr;
 }
 
-// Example usage:
-const num = 5;
-const result = factorial(num);
-console.log(`The factorial of ${num} is ${result}`);
+// Example usage
+const array = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 34, 64, 90]
