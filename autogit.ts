@@ -1,24 +1,21 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+function countChar(str: string, charToCount: string): number {
+    let count = 0;
+    for (let char of str) {
+        if (char === charToCount) {
+            count++;
+        }
+    }
+    return count;
 }
-function sumTree(root: TreeNode | null): number {
-  if (root === null) return 0;
-  return root.val + sumTree(root.left) + sumTree(root.right);
-}
-const tree = new TreeNode(1,
-  new TreeNode(2,
-    new TreeNode(4),
-    new TreeNode(5)
-  ),
-  new TreeNode(3)
-);
 
-console.log(sumTree(tree)); // Outputs 15 (1+2+4+5+3)
+console.log(countChar("hello world", "l")); // Output: 3
+function countChar(str: string, charToCount: string): number {
+    return str.split(charToCount).length - 1;
+}
+
+console.log(countChar("hello world", "l")); // Output: 3
+function countChar(str: string, charToCount: string): number {
+    return [...str].reduce((acc, char) => char === charToCount ? acc + 1 : acc, 0);
+}
+
+console.log(countChar("hello world", "l")); // Output: 3
