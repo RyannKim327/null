@@ -1,60 +1,32 @@
-// user.ts - Defines a User interface
-export interface User {
-  id: number;
-  name: string;
-  email: string;
+function majorityElement(nums: number[]): number | null {
+  const counts: { [key: number]: number } = {};
+  const majorityCount = Math.floor(nums.length / 2) + 1;
+
+  for (const num of nums) {
+    counts[num] = (counts[num] || 0) + 1;
+    if (counts[num] >= majorityCount) {
+      return num;
+    }
+  }
+
+  return null;  // no majority element found
 }
+function majorityElement(nums: number[]): number | null {
+  let count = 0;
+  let candidate: number | null = null;
 
-// api.ts - Contains the function for fetching users from the API
-const API_URL = 'https://jsonplaceholder.typicode.com/users'; // Example API endpoint
-
-export const fetchUsers = async (): Promise<User[]> => {
-  try {
-    const response = await fetch(API_URL);
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+  for (const num of nums) {
+    if (count === 0) {
+      candidate = num;
     }
-    const data: User[] = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Failed to fetch users:', error);
-    throw error;
+    count += (num === candidate) ? 1 : -1;
   }
-};
 
-// main.ts - Main file to execute the code
-import { fetchUsers } from './api';
-
-const displayUsers = async () => {
-  const userListElement = document.getElementById('user-list'); // Assuming an element with id 'user-list'
-
-  if (userListElement) {
-    try {
-      const users = await fetchUsers();
-      users.forEach(user => {
-        const userItem = document.createElement('li');
-        userItem.textContent = `${user.name} (${user.email})`;
-        userListElement.appendChild(userItem);
-      });
-    } catch (error) {
-      userListElement.textContent = 'Failed to load users.';
-    }
+  // Optionally, verify candidate is actually a majority
+  count = 0;
+  for (const num of nums) {
+    if (num === candidate) count++;
   }
-};
 
-// Initialize the application
-displayUsers();
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeScript API Example</title>
-</head>
-<body>
-    <h1>Users List</h1>
-    <ul id="user-list"></ul>
-    <script src="dist/main.js" type="module"></script>  <!-- Adjust the path as needed -->
-</body>
-</html>
-tsc
+  return count > Math.floor(nums.length / 2) ? candidate : null;
+}
