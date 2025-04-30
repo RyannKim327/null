@@ -1,26 +1,27 @@
-function quickSort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr; // Base case: arrays with 0 or 1 element are already sorted
-    }
+function binarySearchRecursive(
+  arr: number[],
+  target: number,
+  left: number = 0,
+  right: number = arr.length - 1
+): number {
+  if (left > right) {
+    return -1; // Target not found
+  }
 
-    const pivot = arr[arr.length - 1]; // Choose the last element as the pivot
-    const left: number[] = []; // Elements less than the pivot
-    const right: number[] = []; // Elements greater than the pivot
+  const mid = Math.floor((left + right) / 2);
 
-    // Partition the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]); // Add to left if less than pivot
-        } else {
-            right.push(arr[i]); // Add to right if greater than or equal to pivot
-        }
-    }
-
-    // Recursively sort the left and right arrays and concatenate the results
-    return [...quickSort(left), pivot, ...quickSort(right)];
+  if (arr[mid] === target) {
+    return mid; // Found the target
+  } else if (arr[mid] > target) {
+    // Search left half
+    return binarySearchRecursive(arr, target, left, mid - 1);
+  } else {
+    // Search right half
+    return binarySearchRecursive(arr, target, mid + 1, right);
+  }
 }
+const sortedArray = [1, 3, 5, 7, 9, 11];
+const target = 7;
+const index = binarySearchRecursive(sortedArray, target);
 
-// Example usage
-const arrayToSort: number[] = [5, 3, 8, 4, 2];
-const sortedArray: number[] = quickSort(arrayToSort);
-console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
+console.log(index); // Outputs: 3
