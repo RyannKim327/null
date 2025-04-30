@@ -1,39 +1,7 @@
-function findMajorityElement(nums: number[]): number | null {
-    const counts = new Map<number, number>();
-    const majorityCount = Math.floor(nums.length / 2);
-
-    for (const num of nums) {
-        counts.set(num, (counts.get(num) || 0) + 1);
-        if (counts.get(num)! > majorityCount) {
-            return num;
-        }
-    }
-    return null;  // no majority element found
-}
-function findMajorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
-
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
-    }
-
-    // Optional verification step if your input might not have a majority element
-    if (candidate !== null) {
-        let occurrence = 0;
-        for (const num of nums) {
-            if (num === candidate) occurrence++;
-        }
-        if (occurrence > Math.floor(nums.length / 2)) {
-            return candidate;
-        }
-    }
-    return null;
-}
+const arr = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+const arr = [1, 2, 3, 4, 5];
+const reversed = [...arr].reverse();
+console.log(reversed); // [5, 4, 3, 2, 1]
+console.log(arr);      // [1, 2, 3, 4, 5] - original untouched
