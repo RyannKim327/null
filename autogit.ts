@@ -1,21 +1,19 @@
-function countChar(str: string, charToCount: string): number {
-    let count = 0;
-    for (let char of str) {
-        if (char === charToCount) {
-            count++;
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
+
+    let prefix = strs[0];
+
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Reduce the prefix by one character until it matches
+            prefix = prefix.slice(0, prefix.length - 1);
+            if (prefix === "") return ""; // No common prefix
         }
     }
-    return count;
+    return prefix;
 }
 
-console.log(countChar("hello world", "l")); // Output: 3
-function countChar(str: string, charToCount: string): number {
-    return str.split(charToCount).length - 1;
-}
-
-console.log(countChar("hello world", "l")); // Output: 3
-function countChar(str: string, charToCount: string): number {
-    return [...str].reduce((acc, char) => char === charToCount ? acc + 1 : acc, 0);
-}
-
-console.log(countChar("hello world", "l")); // Output: 3
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+const result = longestCommonPrefix(strings);
+console.log(result); // Output: "fl"
