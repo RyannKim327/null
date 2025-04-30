@@ -1,52 +1,41 @@
-function buildShiftTable(pattern: string): Record<string, number> {
-    const m = pattern.length;
-    const table: Record<string, number> = {};
+function longestCommonSubsequence(text1: string, text2: string): string {
+    const m = text1.length;
+    const n = text2.length;
+    
+    // Create a 2D array to store lengths of longest common subsequence.
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    // Default shift is the pattern length for characters not in the pattern
-    for(let i = 0; i < 256; i++) {
-        table[String.fromCharCode(i)] = m;
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (text1[i - 1] === text2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
     }
 
-    // Fill shift table based on the pattern characters except the last one
-    for(let i = 0; i < m - 1; i++) {
-        table[pattern[i]] = m - 1 - i;
-    }
+    // Now, backtrack to find the LCS
+    let i = m, j = n;
+    let lcs = '';
 
-    return table;
-}
-
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const n = text.length;
-    const m = pattern.length;
-    if (m === 0) return 0; // Immediate match if pattern empty
-    if (m > n) return -1; // Pattern longer than text can't match
-
-    const shiftTable = buildShiftTable(pattern);
-
-    let i = 0;
-    while (i <= n - m) {
-        let j = m - 1;
-
-        // Match characters from the end of the pattern moving backward
-        while (j >= 0 && pattern[j] === text[i + j]) {
+    while (i > 0 && j > 0) {
+        if (text1[i - 1] === text2[j - 1]) {
+            lcs = text1[i - 1] + lcs; // Add to the front of the LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
             j--;
         }
-
-        if (j < 0) {
-            return i; // Match found at index i
-        }
-
-        // Shift the pattern based on the mismatch character in the text
-        const shift = shiftTable[text[i + m - 1]] ?? m;
-        i += shift;
     }
 
-    return -1; // No match found
+    return lcs;
 }
 
 // Example usage:
-const text = "Here is a simple example";
-const pattern = "example";
-
-const index = boyerMooreHorspool(text, pattern);
-console.log(index); // Output: 17
+const str1 = "abcde";
+const str2 = "ace"; 
+console.log(longestCommonSubsequence(str1, str2)); // Output: "ace"
