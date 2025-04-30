@@ -1,6 +1,7 @@
-const str: string = "123";
-const num: number = parseInt(str, 10);  // 10 is the radix for decimal
-const str: string = "123";
-const num: number = +str;
-const str: string = "123";
-const num: number = Number(str);
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+const strictEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+console.log(isValidEmail("test@example.com")); // true
+console.log(isValidEmail("bad email@example.com")); // false
