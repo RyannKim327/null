@@ -1,32 +1,80 @@
-function countingSort(arr: number[]): number[] {
-    if (arr.length === 0) return [];
+type Graph<T> = Map<T, T[]>;
 
-    // Find max and min values to handle possible negative numbers as well
-    let max = arr[0];
-    let min = arr[0];
-    for (const num of arr) {
-        if (num > max) max = num;
-        if (num < min) min = num;
+function bidirectionalSearch<T>(
+  graph: Graph<T>,
+  start: T,
+  goal: T
+): T[] | null {
+  if (start === goal) return [start];
+
+  // Queues for BFS from start and goal
+  const frontierStart: T[] = [start];
+  const frontierGoal: T[] = [goal];
+
+  // Visited maps to track from where we came
+  const visitedStart = new Map<T, T | null>();
+  const visitedGoal = new Map<T, T | null>();
+  visitedStart.set(start, null);
+  visitedGoal.set(goal, null);
+
+  // Helper to build path once meeting point is found
+  function buildPath(meetNode: T): T[] {
+    const pathStart: T[] = [];
+    let current: T | null = meetNode;
+    while (current !== null) {
+      pathStart.push(current);
+      current = visitedStart.get(current) || null;
+    }
+    pathStart.reverse();
+
+    const pathGoal: T[] = [];
+    current = visitedGoal.get(meetNode) || null;
+    while (current !== null) {
+      pathGoal.push(current);
+      current = visitedGoal.get(current) || null;
     }
 
-    const range = max - min + 1;
-    const count = new Array(range).fill(0);
+    return pathStart.concat(pathGoal);
+  }
 
-    // Count each number's frequency
-    for (const num of arr) {
-        count[num - min]++;
-    }
-
-    // Reconstruct the sorted array
-    const sortedArr: number[] = [];
-    for (let i = 0; i < count.length; i++) {
-        while (count[i] > 0) {
-            sortedArr.push(i + min);
-            count[i]--;
+  while (frontierStart.length > 0 && frontierGoal.length > 0) {
+    // Expand one step from start side
+    const currentStart = frontierStart.shift()!;
+    const neighborsStart = graph.get(currentStart) || [];
+    for (const neighbor of neighborsStart) {
+      if (!visitedStart.has(neighbor)) {
+        visitedStart.set(neighbor, currentStart);
+        frontierStart.push(neighbor);
+        if (visitedGoal.has(neighbor)) {
+          return buildPath(neighbor);
         }
+      }
     }
 
-    return sortedArr;
+    // Expand one step from goal side
+    const currentGoal = frontierGoal.shift()!;
+    const neighborsGoal = graph.get(currentGoal) || [];
+    for (const neighbor of neighborsGoal) {
+      if (!visitedGoal.has(neighbor)) {
+        visitedGoal.set(neighbor, currentGoal);
+        frontierGoal.push(neighbor);
+        if (visitedStart.has(neighbor)) {
+          return buildPath(neighbor);
+        }
+      }
+    }
+  }
+
+  // No connection found
+  return null;
 }
-console.log(countingSort([4, 2, -3, 6, 1, 2, -3]));
-// Output: [-3, -3, 1, 2, 2, 4, 6]
+const graph = new Map<string, string[]>([
+  ['A', ['B', 'C']],
+  ['B', ['A', 'D']],
+  ['C', ['A', 'D']],
+  ['D', ['B', 'C', 'E']],
+  ['E', ['D']],
+]);
+
+const path = bidirectionalSearch(graph, 'A', 'E');
+console.log(path); // Example output: ['A', 'B', 'D', 'E'] or ['A', 'C', 'D', 'E']
