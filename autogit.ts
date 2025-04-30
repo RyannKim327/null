@@ -1,47 +1,65 @@
-function fibonacciSearch(arr: number[], x: number): number {
-  const n = arr.length;
+type Graph = Map<number, number[]>;
 
-  // Initialize fibonacci numbers
-  let fibMm2 = 0; // (m-2)'th Fibonacci No.
-  let fibMm1 = 1; // (m-1)'th Fibonacci No.
-  let fibM = fibMm2 + fibMm1; // m'th Fibonacci
+function tarjanSCC(graph: Graph): number[][] {
+    let index = 0;                         // To assign indices to nodes
+    const stack: number[] = [];            // Stack for current DFS path
+    const indices = new Map<number, number>();  // Index of each node
+    const lowLink = new Map<number, number>();  // Lowest index reachable
+    const onStack = new Set<number>();           // Nodes on stack
+    const sccs: number[][] = [];           // Result: list of SCCs
 
-  // fibM is going to store the smallest Fibonacci number >= n
-  while (fibM < n) {
-    fibMm2 = fibMm1;
-    fibMm1 = fibM;
-    fibM = fibMm2 + fibMm1;
-  }
+    function strongConnect(v: number) {
+        indices.set(v, index);
+        lowLink.set(v, index);
+        index++;
+        stack.push(v);
+        onStack.add(v);
 
-  // Marks the eliminated range from front
-  let offset = -1;
+        for (const w of graph.get(v) || []) {
+            if (!indices.has(w)) {
+                // Not yet visited, recurse
+                strongConnect(w);
+                lowLink.set(v, Math.min(lowLink.get(v)!, lowLink.get(w)!));
+            } else if (onStack.has(w)) {
+                // Node in stack -> update lowLink[v]
+                lowLink.set(v, Math.min(lowLink.get(v)!, indices.get(w)!));
+            }
+        }
 
-  // while there are elements to be inspected.
-  while (fibM > 1) {
-    // Check if fibMm2 is a valid location
-    const i = Math.min(offset + fibMm2, n - 1);
-
-    if (arr[i] < x) {
-      // Move fibonacci numbers one down
-      fibM = fibMm1;
-      fibMm1 = fibMm2;
-      fibMm2 = fibM - fibMm1;
-      offset = i;
-    } else if (arr[i] > x) {
-      // Move fibonacci numbers two down
-      fibM = fibMm2;
-      fibMm1 = fibMm1 - fibMm2;
-      fibMm2 = fibM - fibMm1;
-    } else {
-      return i; // element found, return index
+        // If v is root of SCC
+        if (lowLink.get(v) === indices.get(v)) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = stack.pop()!;
+                onStack.delete(w);
+                scc.push(w);
+            } while (w !== v);
+            sccs.push(scc);
+        }
     }
-  }
 
-  // comparing the last element with x
-  if (fibMm1 && arr[offset + 1] === x) {
-    return offset + 1;
-  }
+    // Run DFS for each node
+    for (const v of graph.keys()) {
+        if (!indices.has(v)) {
+            strongConnect(v);
+        }
+    }
 
-  // element not found
-  return -1;
+    return sccs;
 }
+
+// Usage example:
+const graph: Graph = new Map([
+    [0, [1]],
+    [1, [2]],
+    [2, [0, 3]],
+    [3, [4]],
+    [4, [5, 7]],
+    [5, [6]],
+    [6, [4]],
+    [7, []]
+]);
+
+console.log(tarjanSCC(graph));
+// Output: strongly connected components like [[0,1,2], [3], [4,5,6], [7]]
