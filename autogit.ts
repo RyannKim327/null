@@ -1,57 +1,58 @@
-class SuffixTreeNode {
-  children: Map<string, SuffixTreeNode>;
-  isEndOfSubstring: boolean;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-  constructor() {
-    this.children = new Map<string, SuffixTreeNode>();
-    this.isEndOfSubstring = false;
-  }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
-class SuffixTree {
-  root: SuffixTreeNode;
 
-  constructor() {
-    this.root = new SuffixTreeNode();
-  }
-
-  // Function to insert suffixes into the suffix tree
-  insertSuffixes(text: string) {
-    const n = text.length;
-    for (let i = 0; i < n; i++) {
-      const suffix = text.substring(i);
-      this.insert(suffix);
+function isPalindrome(head: ListNode | null): boolean {
+    if (head === null || head.next === null) {
+        return true; // Empty list or single element is a palindrome.
     }
-  }
 
-  // Helper function to insert a single suffix into the tree
-  insert(suffix: string) {
-    let node = this.root;
-    for (const char of suffix) {
-      if (!node.children.has(char)) {
-        node.children.set(char, new SuffixTreeNode());
-      }
-      node = node.children.get(char)!;
-    }
-    node.isEndOfSubstring = true; // Mark the end of a valid substring
-  }
+    // Step 1: Find the middle of the linked list.
+    let slow = head;
+    let fast = head;
 
-  // Function to search for a substring in the suffix tree
-  search(pattern: string): boolean {
-    let node = this.root;
-    for (const char of pattern) {
-      if (!node.children.has(char)) {
-        return false; // Character not found, pattern doesn't exist
-      }
-      node = node.children.get(char)!;
+    while (fast && fast.next) {
+        slow = slow.next!;
+        fast = fast.next.next!;
     }
-    return true; // The pattern exists
-  }
+
+    // Step 2: Reverse the second half of the linked list.
+    let prev: ListNode | null = null;
+    let current = slow;
+
+    while (current) {
+        const nextNode = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextNode;
+    }
+
+    // Step 3: Compare the first half and the reversed second half.
+    let left = head;
+    let right = prev; // 'prev' is now the head of the reversed second half.
+
+    while (right) {
+        if (left.value !== right.value) {
+            return false; // Not a palindrome.
+        }
+        left = left.next!;
+        right = right.next!;
+    }
+
+    return true; // It's a palindrome.
 }
-const suffixTree = new SuffixTree();
-const text = "banana";
-suffixTree.insertSuffixes(text);
 
-console.log(suffixTree.search("nan")); // true
-console.log(suffixTree.search("ana"));  // true
-console.log(suffixTree.search("ba"));   // true
-console.log(suffixTree.search("xyz"));  // false
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(2);
+head.next.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
