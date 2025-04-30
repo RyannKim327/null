@@ -1,65 +1,50 @@
-type Graph = Map<number, number[]>;
+function lengthOfLIS(nums: number[]): number {
+  const n = nums.length;
+  if (n === 0) return 0;
 
-function tarjanSCC(graph: Graph): number[][] {
-    let index = 0;                         // To assign indices to nodes
-    const stack: number[] = [];            // Stack for current DFS path
-    const indices = new Map<number, number>();  // Index of each node
-    const lowLink = new Map<number, number>();  // Lowest index reachable
-    const onStack = new Set<number>();           // Nodes on stack
-    const sccs: number[][] = [];           // Result: list of SCCs
+  // dp[i] will hold the length of the LIS ending at index i
+  const dp = new Array(n).fill(1);
 
-    function strongConnect(v: number) {
-        indices.set(v, index);
-        lowLink.set(v, index);
-        index++;
-        stack.push(v);
-        onStack.add(v);
-
-        for (const w of graph.get(v) || []) {
-            if (!indices.has(w)) {
-                // Not yet visited, recurse
-                strongConnect(w);
-                lowLink.set(v, Math.min(lowLink.get(v)!, lowLink.get(w)!));
-            } else if (onStack.has(w)) {
-                // Node in stack -> update lowLink[v]
-                lowLink.set(v, Math.min(lowLink.get(v)!, indices.get(w)!));
-            }
-        }
-
-        // If v is root of SCC
-        if (lowLink.get(v) === indices.get(v)) {
-            const scc: number[] = [];
-            let w: number;
-            do {
-                w = stack.pop()!;
-                onStack.delete(w);
-                scc.push(w);
-            } while (w !== v);
-            sccs.push(scc);
-        }
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (nums[j] < nums[i]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+      }
     }
+  }
 
-    // Run DFS for each node
-    for (const v of graph.keys()) {
-        if (!indices.has(v)) {
-            strongConnect(v);
-        }
-    }
-
-    return sccs;
+  return Math.max(...dp);
 }
 
-// Usage example:
-const graph: Graph = new Map([
-    [0, [1]],
-    [1, [2]],
-    [2, [0, 3]],
-    [3, [4]],
-    [4, [5, 7]],
-    [5, [6]],
-    [6, [4]],
-    [7, []]
-]);
+// Example
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(lengthOfLIS(arr)); // Output: 4 (The LIS is [2,3,7,101])
+function lengthOfLIS(nums: number[]): number {
+  const tails: number[] = [];
 
-console.log(tarjanSCC(graph));
-// Output: strongly connected components like [[0,1,2], [3], [4,5,6], [7]]
+  for (const num of nums) {
+    let left = 0, right = tails.length;
+
+    // Binary search to find the insertion position
+    while (left < right) {
+      const mid = Math.floor((left + right) / 2);
+      if (tails[mid] < num) {
+        left = mid + 1;
+      } else {
+        right = mid;
+      }
+    }
+
+    if (left === tails.length) {
+      tails.push(num);
+    } else {
+      tails[left] = num;
+    }
+  }
+
+  return tails.length;
+}
+
+// Example
+const arr2 = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(lengthOfLIS(arr2)); // Output: 4
