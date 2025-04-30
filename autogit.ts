@@ -1,27 +1,20 @@
-function binarySearchRecursive(
-  arr: number[],
-  target: number,
-  left: number = 0,
-  right: number = arr.length - 1
-): number {
-  if (left > right) {
-    return -1; // Target not found
-  }
+function maxSubArray(nums: number[]): number {
+    let currentMax = nums[0];
+    let overallMax = nums[0];
 
-  const mid = Math.floor((left + right) / 2);
+    for (let i = 1; i < nums.length; i++) {
+        // Update the current maximum by including the current number
+        // or starting a new subarray with the current number
+        currentMax = Math.max(nums[i], currentMax + nums[i]);
 
-  if (arr[mid] === target) {
-    return mid; // Found the target
-  } else if (arr[mid] > target) {
-    // Search left half
-    return binarySearchRecursive(arr, target, left, mid - 1);
-  } else {
-    // Search right half
-    return binarySearchRecursive(arr, target, mid + 1, right);
-  }
+        // Update the overall maximum found so far
+        overallMax = Math.max(overallMax, currentMax);
+    }
+
+    return overallMax;
 }
-const sortedArray = [1, 3, 5, 7, 9, 11];
-const target = 7;
-const index = binarySearchRecursive(sortedArray, target);
 
-console.log(index); // Outputs: 3
+// Example usage:
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(array);
+console.log(result); // Output: 6 (the subarray [4, -1, 2, 1] has the maximum sum)
