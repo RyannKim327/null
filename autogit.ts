@@ -1,21 +1,20 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+// Define an array
+const myArray: number[] = [1, 2, 3, 4, 5];
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+// Reverse the array
+myArray.reverse();
+
+// Output the reversed array
+console.log(myArray); // Output: [5, 4, 3, 2, 1]
+function reverseArray<T>(arr: T[]): T[] {
+    const reversed: T[] = [];
+    for (let i = arr.length - 1; i >= 0; i--) {
+        reversed.push(arr[i]);
+    }
+    return reversed;
 }
-function maxDepth(root: TreeNode | null): number {
-  if (root === null) {
-    return 0; // An empty tree has depth 0
-  }
 
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
+const myArray: number[] = [1, 2, 3, 4, 5];
+const reversedArray = reverseArray(myArray);
 
-  return Math.max(leftDepth, rightDepth) + 1;
-}
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
