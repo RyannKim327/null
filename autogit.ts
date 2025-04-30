@@ -1,80 +1,51 @@
-type Graph<T> = Map<T, T[]>;
+// Type definition for the Graph
+type Graph = {
+    [key: string]: string[]; // Adjacency list representation
+};
 
-function bidirectionalSearch<T>(
-  graph: Graph<T>,
-  start: T,
-  goal: T
-): T[] | null {
-  if (start === goal) return [start];
-
-  // Queues for BFS from start and goal
-  const frontierStart: T[] = [start];
-  const frontierGoal: T[] = [goal];
-
-  // Visited maps to track from where we came
-  const visitedStart = new Map<T, T | null>();
-  const visitedGoal = new Map<T, T | null>();
-  visitedStart.set(start, null);
-  visitedGoal.set(goal, null);
-
-  // Helper to build path once meeting point is found
-  function buildPath(meetNode: T): T[] {
-    const pathStart: T[] = [];
-    let current: T | null = meetNode;
-    while (current !== null) {
-      pathStart.push(current);
-      current = visitedStart.get(current) || null;
-    }
-    pathStart.reverse();
-
-    const pathGoal: T[] = [];
-    current = visitedGoal.get(meetNode) || null;
-    while (current !== null) {
-      pathGoal.push(current);
-      current = visitedGoal.get(current) || null;
+// Breadth-Limited Search Function
+function breadthLimitedSearch(graph: Graph, startNode: string, targetNode: string, depthLimit: number): boolean {
+    if (depthLimit < 0) {
+        return false; // If depth limit is negative, return false
     }
 
-    return pathStart.concat(pathGoal);
-  }
+    const queue: { node: string; depth: number }[] = [{ node: startNode, depth: 0 }];
+    const visited = new Set<string>(); // To keep track of visited nodes
 
-  while (frontierStart.length > 0 && frontierGoal.length > 0) {
-    // Expand one step from start side
-    const currentStart = frontierStart.shift()!;
-    const neighborsStart = graph.get(currentStart) || [];
-    for (const neighbor of neighborsStart) {
-      if (!visitedStart.has(neighbor)) {
-        visitedStart.set(neighbor, currentStart);
-        frontierStart.push(neighbor);
-        if (visitedGoal.has(neighbor)) {
-          return buildPath(neighbor);
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Dequeue the front element
+
+        if (node === targetNode) {
+            return true; // Target found
         }
-      }
-    }
 
-    // Expand one step from goal side
-    const currentGoal = frontierGoal.shift()!;
-    const neighborsGoal = graph.get(currentGoal) || [];
-    for (const neighbor of neighborsGoal) {
-      if (!visitedGoal.has(neighbor)) {
-        visitedGoal.set(neighbor, currentGoal);
-        frontierGoal.push(neighbor);
-        if (visitedStart.has(neighbor)) {
-          return buildPath(neighbor);
+        if (depth < depthLimit) {
+            visited.add(node); // Mark the node as visited
+
+            for (const neighbor of graph[node] || []) {
+                if (!visited.has(neighbor)) {
+                    queue.push({ node: neighbor, depth: depth + 1 }); // Add neighbors to queue with incremented depth
+                }
+            }
         }
-      }
     }
-  }
 
-  // No connection found
-  return null;
+    return false; // Target not found within depth limit
 }
-const graph = new Map<string, string[]>([
-  ['A', ['B', 'C']],
-  ['B', ['A', 'D']],
-  ['C', ['A', 'D']],
-  ['D', ['B', 'C', 'E']],
-  ['E', ['D']],
-]);
 
-const path = bidirectionalSearch(graph, 'A', 'E');
-console.log(path); // Example output: ['A', 'B', 'D', 'E'] or ['A', 'C', 'D', 'E']
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+const startNode = 'A';
+const targetNode = 'E';
+const depthLimit = 2;
+
+const result = breadthLimitedSearch(graph, startNode, targetNode, depthLimit);
+console.log(result ? "Target found!" : "Target not found within depth limit.");
