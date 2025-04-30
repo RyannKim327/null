@@ -1,19 +1,15 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+const arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+const index = arr.indexOf(elementToRemove);
+if (index !== -1) {
+  arr.splice(index, 1);
 }
 
-function getListLength<T>(head: ListNode<T> | null): number {
-  let length = 0;
-  let current = head;
-  while (current !== null) {
-    length++;
-    current = current.next;
-  }
-  return length;
-}
+console.log(arr); // Output: [1, 2, 4, 5]
+const arr = [1, 3, 2, 3, 4];
+const elementToRemove = 3;
+
+const filteredArray = arr.filter(el => el !== elementToRemove);
+
+console.log(filteredArray); // Output: [1, 2, 4]
