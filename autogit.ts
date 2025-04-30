@@ -1,26 +1,41 @@
-function insertionSort(arr: number[]): number[] {
-    const n = arr.length;
+class Stack<T> {
+  private items: T[] = [];
 
-    // Start from the second element as the first element is already "sorted"
-    for (let i = 1; i < n; i++) {
-        const key = arr[i]; // The current element to be positioned
-        let j = i - 1;
+  // Add an element to the top of the stack
+  push(element: T): void {
+    this.items.push(element);
+  }
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
+  // Remove and return the top element of the stack
+  pop(): T | undefined {
+    return this.items.pop();
+  }
 
-        // Place the key in its correct location
-        arr[j + 1] = key;
-    }
+  // Peek at the top element without removing it
+  peek(): T | undefined {
+    return this.items[this.items.length - 1];
+  }
 
-    return arr;
+  // Check if the stack is empty
+  isEmpty(): boolean {
+    return this.items.length === 0;
+  }
+
+  // Get the stack’s size
+  size(): number {
+    return this.items.length;
+  }
+
+  // Optional: Clear the stack
+  clear(): void {
+    this.items = [];
+  }
 }
 
-// Example usage:
-const unsortedArray = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+// Usage example:
+const stack = new Stack<number>();
+stack.push(10);
+stack.push(20);
+console.log(stack.pop());  // Outputs: 20
+console.log(stack.peek()); // Outputs: 10
+console.log(stack.isEmpty()); // Outputs: false
