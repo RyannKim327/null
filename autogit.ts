@@ -1,14 +1,19 @@
-const numbers = [3, 5, 7, 2, 8];
-const max = Math.max(...numbers);
-console.log(max);  // 8
-const numbers = [3, 5, 7, 2, 8];
-let max = numbers[0];
-for (let i = 1; i < numbers.length; i++) {
-  if (numbers[i] > max) {
-    max = numbers[i];
+function bubbleInsertionSort(arr: number[]): number[] {
+  const result = [...arr];
+  
+  for (let i = 1; i < result.length; i++) {
+    // Do a backward bubble pass from i down to 1
+    for (let j = i; j > 0; j--) {
+      if (result[j] < result[j - 1]) {
+        // Swap adjacent elements if out of order
+        [result[j], result[j - 1]] = [result[j - 1], result[j]];
+      }
+    }
   }
+  
+  return result;
 }
-console.log(max);  // 8
-const numbers = [3, 5, 7, 2, 8];
-const max = numbers.reduce((a, b) => (a > b ? a : b));
-console.log(max);  // 8
+
+// Example usage:
+const randomNumbers = [5, 2, 9, 1, 5, 6];
+console.log(bubbleInsertionSort(randomNumbers)); // [1, 2, 5, 5, 6, 9]
