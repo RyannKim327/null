@@ -1,7 +1,23 @@
-const arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
-const arr = [1, 2, 3, 4, 5];
-const reversedArr = [...arr].reverse();
-console.log(arr);         // [1, 2, 3, 4, 5]
-console.log(reversedArr); // [5, 4, 3, 2, 1]
+class ListNode {
+  val: number;
+  next: ListNode | null;
+  
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+  if (!headA || !headB) return null;
+
+  let p1: ListNode | null = headA;
+  let p2: ListNode | null = headB;
+
+  while (p1 !== p2) {
+    p1 = p1 ? p1.next : headB;
+    p2 = p2 ? p2.next : headA;
+  }
+
+  return p1;  // Can be null (no intersection) or the intersection node
+}
