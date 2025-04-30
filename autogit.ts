@@ -1,50 +1,44 @@
-function createBadCharTable(pattern: string): number[] {
-    const badCharTable = Array(256).fill(pattern.length); // Assume ASCII
-    const patternLength = pattern.length;
+function longestCommonSubsequence(str1: string, str2: string): string {
+  const m = str1.length;
+  const n = str2.length;
 
-    for (let i = 0; i < patternLength - 1; i++) {
-        badCharTable[pattern.charCodeAt(i)] = patternLength - 1 - i;
+  // Create a 2D array (matrix) to store lengths of longest common subsequence
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+  // Fill the dp array
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
     }
+  }
 
-    return badCharTable;
-}
+  // The length of the longest common subsequence is in dp[m][n]
+  let lcsLength = dp[m][n];
+  let lcs = '';
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const matches: number[] = [];
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    if (patternLength === 0 || textLength === 0 || patternLength > textLength) {
-        return matches;
+  // Backtrack to find the actual LCS string
+  let i = m, j = n;
+  while (i > 0 && j > 0) {
+    if (str1[i - 1] === str2[j - 1]) {
+      lcs = str1[i - 1] + lcs; // Append character to the LCS
+      i--;
+      j--;
+    } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
     }
+  }
 
-    const badCharTable = createBadCharTable(pattern);
-    let i = 0; // Start from the beginning of the text
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Start comparing from the end of the pattern
-        while (j >= 0 && text.charAt(i + j) === pattern.charAt(j)) {
-            j--;
-        }
-
-        // If we found a match
-        if (j < 0) {
-            matches.push(i);
-            // Shift the pattern so that the next character in text aligns with the last character of pattern
-            i += (i + patternLength < textLength) ? patternLength - badCharTable[text.charCodeAt(i + patternLength)] : 1;
-        } else {
-            // Shift the pattern based on the bad character table
-            i += Math.max(1, j - badCharTable[text.charCodeAt(i + j)]);
-        }
-    }
-
-    return matches;
+  return lcs;
 }
 
 // Example usage
-const text = "ababcababcabcac";
-const pattern = "abc";
-const result = boyerMooreHorspool(text, pattern);
-console.log(`Pattern found at indices: ${result.join(", ")}`);
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+const result = longestCommonSubsequence(str1, str2);
+console.log("Longest Common Subsequence:", result); // Output: "GTAB"
