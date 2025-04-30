@@ -1,27 +1,48 @@
-function burrowsWheelerTransform(input: string): { transformed: string; index: number } {
-    const n = input.length;
+function rabinKarp(text: string, pattern: string): number {
+  const m = pattern.length;
+  const n = text.length;
+  if (m > n) return -1;
 
-    // Generate all rotations of the input string
-    const rotations: string[] = [];
-    for (let i = 0; i < n; i++) {
-        const rotation = input.slice(i) + input.slice(0, i);
-        rotations.push(rotation);
+  const base = 256; // Number of possible characters (extended ASCII)
+  const prime = 101; // A prime number to mod the hash values
+
+  // Calculate the hash value of the pattern and the first window of text
+  let patternHash = 0;
+  let textHash = 0;
+  let h = 1; // The value of base^(m-1) % prime
+
+  for (let i = 0; i < m - 1; i++) {
+    h = (h * base) % prime;
+  }
+
+  for (let i = 0; i < m; i++) {
+    patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
+    textHash = (base * textHash + text.charCodeAt(i)) % prime;
+  }
+
+  // Slide the pattern over text one by one
+  for (let i = 0; i <= n - m; i++) {
+    // Check the hash values of current window of text and pattern
+    if (patternHash === textHash) {
+      // If the hash values match, check the characters one by one
+      let j = 0;
+      for (; j < m; j++) {
+        if (text[i + j] !== pattern[j]) break;
+      }
+
+      if (j === m) return i; // Match found at index i
     }
 
-    // Sort rotations lexicographically
-    rotations.sort();
+    // Calculate hash value for next window of text: Remove leading char, add trailing char
+    if (i < n - m) {
+      textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
+      if (textHash < 0) textHash += prime;
+    }
+  }
 
-    // Find index of the original string in sorted rotations
-    const index = rotations.indexOf(input);
-
-    // Build the BWT result by taking the last character of each rotation
-    const transformed = rotations.map(rotation => rotation.charAt(n - 1)).join('');
-
-    return { transformed, index };
+  return -1; // No match found
 }
-const input = "banana";
-const result = burrowsWheelerTransform(input);
-console.log(result); 
-// { transformed: 'annb$aa' (if input includes the $ terminator), index: 3 }
-const inputWithTerminator = input + "$";
-const result = burrowsWheelerTransform(inputWithTerminator);
+const text = "hello world";
+const pattern = "world";
+const index = rabinKarp(text, pattern);
+console.log(index); // Output: 6
