@@ -1,41 +1,24 @@
-class Stack<T> {
-  private items: T[] = [];
+function findSecondLargest(arr: number[]): number | null {
+  if (arr.length < 2) return null; // Not enough elements
 
-  // Add an element to the top of the stack
-  push(element: T): void {
-    this.items.push(element);
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
+
+  for (const num of arr) {
+    if (num > largest) {
+      secondLargest = largest;
+      largest = num;
+    } else if (num > secondLargest && num < largest) {
+      secondLargest = num;
+    }
   }
 
-  // Remove and return the top element of the stack
-  pop(): T | undefined {
-    return this.items.pop();
-  }
-
-  // Peek at the top element without removing it
-  peek(): T | undefined {
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty(): boolean {
-    return this.items.length === 0;
-  }
-
-  // Get the stack’s size
-  size(): number {
-    return this.items.length;
-  }
-
-  // Optional: Clear the stack
-  clear(): void {
-    this.items = [];
-  }
+  return secondLargest === -Infinity ? null : secondLargest;
 }
-
-// Usage example:
-const stack = new Stack<number>();
-stack.push(10);
-stack.push(20);
-console.log(stack.pop());  // Outputs: 20
-console.log(stack.peek()); // Outputs: 10
-console.log(stack.isEmpty()); // Outputs: false
+console.log(findSecondLargest([10, 5, 8, 12, 12, 3])); // Output: 10
+console.log(findSecondLargest([5])); // Output: null
+console.log(findSecondLargest([7, 7, 7])); // Output: null
+function findSecondLargest(arr: number[]): number | null {
+  const uniqueSorted = Array.from(new Set(arr)).sort((a, b) => b - a);
+  return uniqueSorted.length >= 2 ? uniqueSorted[1] : null;
+}
