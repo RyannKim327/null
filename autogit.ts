@@ -1,9 +1,1 @@
-let str1 = "Hello, ";
-let str2 = "world!";
-let result = str1 + str2;  // "Hello, world!"
-let str1 = "Hello, ";
-let str2 = "world!";
-let result = `${str1}${str2}`;  // "Hello, world!"
-let str1 = "Hello, ";
-let str2 = "world!";
-let result = str1.concat(str2);  // "Hello, world!"
+// May error sa API
