@@ -1,15 +1,9 @@
-const arr = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const index = arr.indexOf(elementToRemove);
-if (index !== -1) {
-  arr.splice(index, 1);
-}
-
-console.log(arr); // Output: [1, 2, 4, 5]
-const arr = [1, 3, 2, 3, 4];
-const elementToRemove = 3;
-
-const filteredArray = arr.filter(el => el !== elementToRemove);
-
-console.log(filteredArray); // Output: [1, 2, 4]
+let str1 = "Hello, ";
+let str2 = "world!";
+let result = str1 + str2;  // "Hello, world!"
+let str1 = "Hello, ";
+let str2 = "world!";
+let result = `${str1}${str2}`;  // "Hello, world!"
+let str1 = "Hello, ";
+let str2 = "world!";
+let result = str1.concat(str2);  // "Hello, world!"
