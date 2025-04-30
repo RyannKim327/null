@@ -1,27 +1,39 @@
-import axios from 'axios';
+import * as readline from 'readline';
 
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
+// Create an interface for reading input from the console
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to ask a question and return a promise
+function askQuestion(question: string): Promise<string> {
+    return new Promise((resolve) => {
+        rl.question(question, (answer) => {
+            resolve(answer);
+        });
+    });
 }
 
-async function fetchUser(userId: number): Promise<User | null> {
-  try {
-    const response = await axios.get<User>(`https://jsonplaceholder.typicode.com/users/${userId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch user:', error);
-    return null;
-  }
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    const age = await askQuestion("What is your age? ");
+
+    console.log(`Hello, ${name}! You are ${age} years old.`);
+    
+    // Close the readline interface
+    rl.close();
 }
 
-(async () => {
-  const user = await fetchUser(1);
-  if (user) {
-    console.log(`User #${user.id}: ${user.name} (${user.email})`);
-  } else {
-    console.log('No user found.');
-  }
-})();
+// Run the main function
+main()
+    .then(() => {
+        console.log("Program has finished.");
+    })
+    .catch(error => {
+        console.error("An error occurred:", error);
+        rl.close();
+    });
+tsc inputExample.ts
+node inputExample.js
