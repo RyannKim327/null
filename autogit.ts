@@ -1,72 +1,39 @@
-// Define a Node class
-class Node<T> {
-  value: T;
-  next: Node<T> | null;
+function findMajorityElement(nums: number[]): number | null {
+    const counts = new Map<number, number>();
+    const majorityCount = Math.floor(nums.length / 2);
 
-  constructor(value: T) {
-    this.value = value;
-    this.next = null;
-  }
-}
-
-// Define the Queue class using Linked List
-class Queue<T> {
-  private head: Node<T> | null = null;
-  private tail: Node<T> | null = null;
-  private size: number = 0;
-
-  // Add an element to the end of the queue
-  enqueue(value: T): void {
-    const newNode = new Node(value);
-
-    if (!this.tail) {
-      // If the queue is empty, head and tail both point to the new node
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      // Attach new node after tail and update tail reference
-      this.tail.next = newNode;
-      this.tail = newNode;
+    for (const num of nums) {
+        counts.set(num, (counts.get(num) || 0) + 1);
+        if (counts.get(num)! > majorityCount) {
+            return num;
+        }
     }
-    this.size++;
-  }
-
-  // Remove and return the element from the front of the queue
-  dequeue(): T | undefined {
-    if (!this.head) return undefined;
-
-    const dequeuedValue = this.head.value;
-    this.head = this.head.next;
-
-    // If after dequeue the queue is empty, reset the tail to null
-    if (!this.head) {
-      this.tail = null;
-    }
-    this.size--;
-    return dequeuedValue;
-  }
-
-  // Peek at the front element without removing it
-  peek(): T | undefined {
-    return this.head?.value;
-  }
-
-  // Check if the queue is empty
-  isEmpty(): boolean {
-    return this.size === 0;
-  }
-
-  // Return the number of elements in the queue
-  getSize(): number {
-    return this.size;
-  }
+    return null;  // no majority element found
 }
-const queue = new Queue<number>();
+function findMajorityElement(nums: number[]): number | null {
+    let count = 0;
+    let candidate: number | null = null;
 
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
+    }
 
-console.log(queue.dequeue()); // 10
-console.log(queue.peek());    // 20
-console.log(queue.getSize()); // 2
+    // Optional verification step if your input might not have a majority element
+    if (candidate !== null) {
+        let occurrence = 0;
+        for (const num of nums) {
+            if (num === candidate) occurrence++;
+        }
+        if (occurrence > Math.floor(nums.length / 2)) {
+            return candidate;
+        }
+    }
+    return null;
+}
