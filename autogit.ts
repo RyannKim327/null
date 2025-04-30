@@ -1,39 +1,36 @@
-import * as readline from 'readline';
+type Graph = Map<string, string[]>;
 
-// Create an interface for reading input from the console
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+function bfs(graph: Graph, startNode: string): string[] {
+    const visited = new Set<string>();  // track visited nodes
+    const queue: string[] = [];         // nodes to visit, FIFO
+    const result: string[] = [];        // order of traversal
 
-// Function to ask a question and return a promise
-function askQuestion(question: string): Promise<string> {
-    return new Promise((resolve) => {
-        rl.question(question, (answer) => {
-            resolve(answer);
-        });
-    });
+    visited.add(startNode);
+    queue.push(startNode);
+
+    while (queue.length > 0) {
+        const current = queue.shift()!;
+        result.push(current);
+
+        const neighbors = graph.get(current) || [];
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
+            }
+        }
+    }
+
+    return result;
 }
+const graph: Graph = new Map([
+    ['A', ['B', 'C']],
+    ['B', ['D', 'E']],
+    ['C', ['F']],
+    ['D', []],
+    ['E', ['F']],
+    ['F', []]
+]);
 
-// Main function to run the program
-async function main() {
-    const name = await askQuestion("What is your name? ");
-    const age = await askQuestion("What is your age? ");
-
-    console.log(`Hello, ${name}! You are ${age} years old.`);
-    
-    // Close the readline interface
-    rl.close();
-}
-
-// Run the main function
-main()
-    .then(() => {
-        console.log("Program has finished.");
-    })
-    .catch(error => {
-        console.error("An error occurred:", error);
-        rl.close();
-    });
-tsc inputExample.ts
-node inputExample.js
+const traversalOrder = bfs(graph, 'A');
+console.log(traversalOrder); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
