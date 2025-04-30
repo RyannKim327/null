@@ -1,36 +1,22 @@
-type Graph = Map<string, string[]>;
+function insertionSort(arr: number[]): number[] {
+    // Traverse through 1 to arr.length
+    for (let i = 1; i < arr.length; i++) {
+        // Store the current element value
+        let current = arr[i];
+        let j = i - 1;
 
-function bfs(graph: Graph, startNode: string): string[] {
-    const visited = new Set<string>();  // track visited nodes
-    const queue: string[] = [];         // nodes to visit, FIFO
-    const result: string[] = [];        // order of traversal
-
-    visited.add(startNode);
-    queue.push(startNode);
-
-    while (queue.length > 0) {
-        const current = queue.shift()!;
-        result.push(current);
-
-        const neighbors = graph.get(current) || [];
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push(neighbor);
-            }
+        // Move elements of arr[0...i-1], that are greater than current,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
         }
+        // Place the current element in its correct position
+        arr[j + 1] = current;
     }
-
-    return result;
+    return arr;
 }
-const graph: Graph = new Map([
-    ['A', ['B', 'C']],
-    ['B', ['D', 'E']],
-    ['C', ['F']],
-    ['D', []],
-    ['E', ['F']],
-    ['F', []]
-]);
 
-const traversalOrder = bfs(graph, 'A');
-console.log(traversalOrder); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+// Example usage:
+const array = [5, 2, 4, 6, 1, 3];
+console.log(insertionSort(array)); // Output: [1, 2, 3, 4, 5, 6]
