@@ -1,29 +1,27 @@
-import axios from 'axios';
-
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
+// TypeScript async function to simulate an asynchronous task
+async function fetchDataAsync(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    // Simulate network or async operation delay (e.g., 2 seconds)
+    setTimeout(() => {
+      // Simulate success response
+      resolve("Data received from async task");
+      
+      // Uncomment to simulate failure
+      // reject(new Error("Failed to fetch data"));
+    }, 2000);
+  });
 }
 
-async function fetchUsers(): Promise<User[]> {
+// Example usage with async/await in an Android context (React Native or NativeScript)
+async function runAsyncTask() {
   try {
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    return response.data;
+    console.log("Starting async task...");
+    const result = await fetchDataAsync();
+    console.log("Async task completed successfully:", result);
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Axios error:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-    return [];
+    console.error("Async task failed:", error);
   }
 }
 
-(async () => {
-  const users = await fetchUsers();
-  users.forEach(user => {
-    console.log(`${user.name} (${user.username}) - ${user.email}`);
-  });
-})();
+// Invoke the function (e.g., from a button press or component lifecycle)
+runAsyncTask();
