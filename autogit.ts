@@ -1,15 +1,10 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+function areAnagrams(str1: string, str2: string): boolean {
+  // Normalize both strings: lowercase and remove non-letter characters (optional)
+  const normalize = (str: string) =>
+    str.toLowerCase().replace(/[^a-z0-9]/g, '').split('').sort().join('');
+  
+  return normalize(str1) === normalize(str2);
 }
-function sumOfNodes(root: TreeNode | null): number {
-  if (root === null) return 0;
-  return root.val + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
+console.log(areAnagrams("Listen", "Silent")); // true
+console.log(areAnagrams("Hello", "Olelh"));  // true
+console.log(areAnagrams("Test", "Taste"));   // false
