@@ -1,35 +1,57 @@
-// Simulate a network connection task like Android AsyncTask in TypeScript
+class SuffixTreeNode {
+  children: Map<string, SuffixTreeNode>;
+  isEndOfSubstring: boolean;
 
-class AsyncConnector {
-  // Simulate the background work of connecting asynchronously
-  async doInBackground(url: string): Promise<string> {
-    console.log(`Starting connection to ${url}...`);
-
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    // Simulate a successful connection response
-    return `Connected to ${url}`;
-  }
-
-  // Called before background work starts (like onPreExecute)
-  onPreExecute() {
-    console.log("Initializing connection task...");
-  }
-
-  // Called after background work finishes (like onPostExecute)
-  onPostExecute(result: string) {
-    console.log(`Result: ${result}`);
-  }
-
-  // Run the async task
-  async execute(url: string) {
-    this.onPreExecute();
-    const result = await this.doInBackground(url);
-    this.onPostExecute(result);
+  constructor() {
+    this.children = new Map<string, SuffixTreeNode>();
+    this.isEndOfSubstring = false;
   }
 }
+class SuffixTree {
+  root: SuffixTreeNode;
 
-// Usage
-const connector = new AsyncConnector();
-connector.execute("https://example.com");
+  constructor() {
+    this.root = new SuffixTreeNode();
+  }
+
+  // Function to insert suffixes into the suffix tree
+  insertSuffixes(text: string) {
+    const n = text.length;
+    for (let i = 0; i < n; i++) {
+      const suffix = text.substring(i);
+      this.insert(suffix);
+    }
+  }
+
+  // Helper function to insert a single suffix into the tree
+  insert(suffix: string) {
+    let node = this.root;
+    for (const char of suffix) {
+      if (!node.children.has(char)) {
+        node.children.set(char, new SuffixTreeNode());
+      }
+      node = node.children.get(char)!;
+    }
+    node.isEndOfSubstring = true; // Mark the end of a valid substring
+  }
+
+  // Function to search for a substring in the suffix tree
+  search(pattern: string): boolean {
+    let node = this.root;
+    for (const char of pattern) {
+      if (!node.children.has(char)) {
+        return false; // Character not found, pattern doesn't exist
+      }
+      node = node.children.get(char)!;
+    }
+    return true; // The pattern exists
+  }
+}
+const suffixTree = new SuffixTree();
+const text = "banana";
+suffixTree.insertSuffixes(text);
+
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("ana"));  // true
+console.log(suffixTree.search("ba"));   // true
+console.log(suffixTree.search("xyz"));  // false
