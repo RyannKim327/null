@@ -1,66 +1,76 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class TarjanSCC {
+    private index: number;
+    private stack: number[];
+    private indices: number[];
+    private lowLinks: number[];
+    private onStack: boolean[];
+    private result: number[][];
 
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
+    constructor(private graph: number[][]) {
+        this.index = 0;
+        this.stack = [];
+        this.indices = new Array(graph.length).fill(-1);
+        this.lowLinks = new Array(graph.length).fill(-1);
+        this.onStack = new Array(graph.length).fill(false);
+        this.result = [];
+    }
+
+    public findSCCs(): number[][] {
+        for (let v = 0; v < this.graph.length; v++) {
+            if (this.indices[v] === -1) {
+                this.strongconnect(v);
+            }
+        }
+        return this.result;
+    }
+
+    private strongconnect(v: number): void {
+        // Set the depth index for v to the smallest unused index
+        this.indices[v] = this.index;
+        this.lowLinks[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
+
+        // Consider successors of v
+        for (let w of this.graph[v]) {
+            if (this.indices[w] === -1) {
+                // Successor w has not yet been visited; recurse on it
+                this.strongconnect(w);
+                this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
+            } else if (this.onStack[w]) {
+                // Successor w is in stack and hence in the current SCC
+                this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
+            }
+        }
+
+        // If v is a root node, pop the stack and generate an SCC
+        if (this.lowLinks[v] === this.indices[v]) {
+            const scc: number[] = [];
+            let w: number;
+
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                scc.push(w);
+            } while (w !== v);
+
+            // Add the current strongly connected component to the list of results
+            this.result.push(scc);
+        }
     }
 }
 
-class Trie {
-    private root: TrieNode;
+// Example usage:
+const graph = [
+    [1],    // 0 -> 1
+    [2],    // 1 -> 2
+    [0],    // 2 -> 0 (SCC {0,1,2})
+    [3],    // 3 -> 4
+    [4],    // 4 -> 5
+    [3],    // 5 -> 4 (SCC {3,4,5})
+];
 
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            // If the character is not yet in the current node's children, add it
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            // Move to the child node
-            currentNode = currentNode.children.get(char)!;
-        }
-        // Mark the end of the word
-        currentNode.isEndOfWord = true;
-    }
-
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find a node in the Trie that represents the end of the word
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null; // character not found
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return currentNode;
-    }
-}
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("app");
-
-console.log(trie.search("app")); // true
-console.log(trie.search("apple")); // true
-console.log(trie.search("apricot")); // false
-console.log(trie.startsWith("ap")); // true
-console.log(trie.startsWith("apr")); // false
+const tarjan = new TarjanSCC(graph);
+const sccs = tarjan.findSCCs();
+console.log(sccs);
