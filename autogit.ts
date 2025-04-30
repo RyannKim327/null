@@ -1,36 +1,16 @@
-type Graph = { [key: string]: string[] };
+const str = "Hello, world!";
+const substring = "world";
 
-function bfs(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const queue: string[] = [];
-  const traversalOrder: string[] = [];
-
-  visited.add(startNode);
-  queue.push(startNode);
-
-  while (queue.length > 0) {
-    const node = queue.shift()!;
-    traversalOrder.push(node);
-
-    for (const neighbor of graph[node] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
-    }
-  }
-
-  return traversalOrder;
+if (str.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
 }
-
-// Example usage:
-const myGraph = {
-  A: ["B", "C"],
-  B: ["D", "E"],
-  C: ["F"],
-  D: [],
-  E: ["F"],
-  F: []
-};
-
-console.log(bfs(myGraph, "A")); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+if (str.indexOf(substring) !== -1) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
+}
+if (str.search(substring) !== -1) {
+  console.log("Substring found!");
+}
