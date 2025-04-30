@@ -1,13 +1,9 @@
-const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-function validateEmail(email: string): boolean {
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailPattern.test(email);
+function countWordOccurrences(text: string, word: string): number {
+  // Create a regex to match the word with word boundaries, case-insensitive
+  const regex = new RegExp(`\\b${word}\\b`, 'gi');
+  const matches = text.match(regex);
+  return matches ? matches.length : 0;
 }
-
-// Example usage:
-const email = "example@example.com";
-if (validateEmail(email)) {
-    console.log("Valid email address");
-} else {
-    console.log("Invalid email address");
-}
+const text = "Hello world! The world is wide and the world is beautiful.";
+const word = "world";
+console.log(countWordOccurrences(text, word)); // Output: 3
