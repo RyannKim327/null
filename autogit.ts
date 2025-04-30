@@ -1,14 +1,10 @@
-function firstRepeatedChar(str: string): string | null {
-  const seen = new Set<string>();
-  for (const char of str) {
-    if (seen.has(char)) {
-      return char;
-    }
-    seen.add(char);
-  }
-  return null; // no repeated character
-}
+function isPalindrome(s: string): boolean {
+  // Normalize the string: remove non-alphanumeric chars and convert to lowercase
+  const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-// Example usage:
-console.log(firstRepeatedChar("swiss")); // Output: "s"
-console.log(firstRepeatedChar("abcdef")); // Output: null
+  // Check if the cleaned string reads the same forwards and backwards
+  const reversed = cleaned.split('').reverse().join('');
+  return cleaned === reversed;
+}
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car"));                     // false
