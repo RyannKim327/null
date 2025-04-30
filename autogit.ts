@@ -1,67 +1,74 @@
 class PriorityQueue<T> {
   private heap: T[] = [];
-  private compare: (a: T, b: T) => boolean;
+  private comparator: (a: T, b: T) => number;
 
-  constructor(compareFn: (a: T, b: T) => boolean) {
-    this.compare = compareFn;
+  constructor(comparator: (a: T, b: T) => number) {
+    this.comparator = comparator;
   }
 
-  private parent(index: number): number {
+  private parentIndex(index: number): number {
     return Math.floor((index - 1) / 2);
   }
 
-  private leftChild(index: number): number {
-    return 2 * index + 1;
+  private leftChildIndex(index: number): number {
+    return index * 2 + 1;
   }
 
-  private rightChild(index: number): number {
-    return 2 * index + 2;
+  private rightChildIndex(index: number): number {
+    return index * 2 + 2;
   }
 
   private swap(i: number, j: number): void {
     [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
   }
 
-  private siftUp(index: number): void {
-    let parent = this.parent(index);
-    while (index > 0 && this.compare(this.heap[index], this.heap[parent])) {
-      this.swap(index, parent);
-      index = parent;
-      parent = this.parent(index);
+  private siftUp(): void {
+    let nodeIndex = this.heap.length - 1;
+
+    while (nodeIndex > 0) {
+      const parent = this.parentIndex(nodeIndex);
+      if (this.comparator(this.heap[nodeIndex], this.heap[parent]) >= 0) break;
+
+      this.swap(nodeIndex, parent);
+      nodeIndex = parent;
     }
   }
 
-  private siftDown(index: number): void {
-    let left = this.leftChild(index);
-    let right = this.rightChild(index);
-    let smallest = index;
+  private siftDown(): void {
+    let nodeIndex = 0;
+    const length = this.heap.length;
 
-    if (left < this.heap.length && this.compare(this.heap[left], this.heap[smallest])) {
-      smallest = left;
-    }
-    if (right < this.heap.length && this.compare(this.heap[right], this.heap[smallest])) {
-      smallest = right;
-    }
+    while (true) {
+      const left = this.leftChildIndex(nodeIndex);
+      const right = this.rightChildIndex(nodeIndex);
+      let smallest = nodeIndex;
 
-    if (smallest !== index) {
-      this.swap(index, smallest);
-      this.siftDown(smallest);
+      if (left < length && this.comparator(this.heap[left], this.heap[smallest]) < 0) {
+        smallest = left;
+      }
+      if (right < length && this.comparator(this.heap[right], this.heap[smallest]) < 0) {
+        smallest = right;
+      }
+
+      if (smallest === nodeIndex) break;
+
+      this.swap(nodeIndex, smallest);
+      nodeIndex = smallest;
     }
   }
 
-  enqueue(item: T): void {
+  insert(item: T): void {
     this.heap.push(item);
-    this.siftUp(this.heap.length - 1);
+    this.siftUp();
   }
 
-  dequeue(): T | undefined {
+  poll(): T | undefined {
     if (this.heap.length === 0) return undefined;
-
     const root = this.heap[0];
-    const end = this.heap.pop()!;
-    if (this.heap.length > 0) {
+    const end = this.heap.pop();
+    if (this.heap.length > 0 && end !== undefined) {
       this.heap[0] = end;
-      this.siftDown(0);
+      this.siftDown();
     }
     return root;
   }
@@ -78,15 +85,16 @@ class PriorityQueue<T> {
     return this.heap.length === 0;
   }
 }
-const minPQ = new PriorityQueue<number>((a, b) => a < b);
+// For a min priority queue of numbers:
+const pq = new PriorityQueue<number>((a, b) => a - b);
 
-minPQ.enqueue(5);
-minPQ.enqueue(3);
-minPQ.enqueue(6);
-minPQ.enqueue(1);
+pq.insert(5);
+pq.insert(3);
+pq.insert(8);
 
-while (!minPQ.isEmpty()) {
-  console.log(minPQ.dequeue());
-}
-// Output: 1, 3, 5, 6
-const maxPQ = new PriorityQueue<number>((a, b) => a > b);
+console.log(pq.peek()); // 3 (smallest number)
+console.log(pq.poll()); // 3
+console.log(pq.poll()); // 5
+console.log(pq.size()); // 1
+type Task = { name: string; priority: number };
+const taskQueue = new PriorityQueue<Task>((a, b) => a.priority - b.priority);
