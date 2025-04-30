@@ -1,25 +1,25 @@
-function findMaxValue(arr: number[]): number | undefined {
-    if (arr.length === 0) return undefined; // Handle empty array
-    return Math.max(...arr);
-}
-
-// Example usage
-const numbers = [1, 5, 3, 9, 2];
-const maxNumber = findMaxValue(numbers);
-console.log(`The maximum value is: ${maxNumber}`);
-function findMaxValue(arr: number[]): number | undefined {
-    if (arr.length === 0) return undefined; // Handle empty array
-
-    let maxValue = arr[0]; // Start with the first element
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > maxValue) {
-            maxValue = arr[i]; // Update maxValue if a larger number is found
-        }
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
-    return maxValue;
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
 }
 
-// Example usage
-const numbers = [1, 5, 3, 9, 2];
-const maxNumber = findMaxValue(numbers);
-console.log(`The maximum value is: ${maxNumber}`);
+// Example usage:
+console.log(factorialIterative(5)); // Output: 120
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
+    }
+    if (n === 0 || n === 1) {
+        return 1; // Base case
+    }
+    return n * factorialRecursive(n - 1); // Recursive case
+}
+
+// Example usage:
+console.log(factorialRecursive(5)); // Output: 120
