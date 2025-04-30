@@ -1,48 +1,41 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+function isPalindrome(s: string): boolean {
+  let left = 0;
+  let right = s.length - 1;
 
-const AsyncDataFetcher: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState<any>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // Simulate connecting via an async task (e.g., fetching data)
-  const connectAsync = async () => {
-    try {
-      // Just an example URL, replace with your Android server endpoint
-      const response = await fetch('https://jsonplaceholder.typicode.com/todos/1');
-      if (!response.ok) throw new Error('Network response was not ok');
-      const jsonData = await response.json();
-      setData(jsonData);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
+  while (left < right) {
+    // If characters at left and right don’t match, it's not a palindrome
+    if (s[left] !== s[right]) {
+      return false;
     }
-  };
-
-  useEffect(() => {
-    connectAsync();
-  }, []);
-
-  if (loading) {
-    return <ActivityIndicator size="large" />;
+    left++;
+    right--;
   }
 
-  if (error) {
-    return (
-      <View>
-        <Text>Error: {error}</Text>
-      </View>
-    );
+  return true;
+}
+function isValidPalindrome(s: string): boolean {
+  let left = 0;
+  let right = s.length - 1;
+
+  while (left < right) {
+    // Skip non-alphanumeric characters on the left
+    while (left < right && !isAlphaNumeric(s[left])) {
+      left++;
+    }
+    // Skip non-alphanumeric characters on the right
+    while (left < right && !isAlphaNumeric(s[right])) {
+      right--;
+    }
+    // Case-insensitive comparison
+    if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+      return false;
+    }
+    left++;
+    right--;
   }
+  return true;
+}
 
-  return (
-    <View>
-      <Text>Data fetched:</Text>
-      <Text>{JSON.stringify(data, null, 2)}</Text>
-    </View>
-  );
-};
-
-export default AsyncDataFetcher;
+function isAlphaNumeric(c: string): boolean {
+  return /^[a-z0-9]$/i.test(c);
+}
