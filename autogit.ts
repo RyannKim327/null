@@ -1,10 +1,12 @@
-function isPalindrome(s: string): boolean {
-  // Normalize the string: remove non-alphanumeric chars and convert to lowercase
-  const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-  // Check if the cleaned string reads the same forwards and backwards
-  const reversed = cleaned.split('').reverse().join('');
-  return cleaned === reversed;
-}
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car"));                     // false
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
+
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+const numbersDescending: number[] = [5, 3, 8, 1, 2];
+
+// Sort the array in descending order
+numbersDescending.sort((a, b) => b - a);
+
+console.log(numbersDescending); // Output: [8, 5, 3, 2, 1]
