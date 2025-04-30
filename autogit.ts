@@ -1,17 +1,22 @@
-function reverseWords(input: string): string {
-    // Step 1: Split the string into an array of words
-    const wordsArray = input.split(' ');
+function firstNonRepeatingCharacter(s: string): string | null {
+    const charCount: { [key: string]: number } = {};
 
-    // Step 2: Reverse the array of words
-    const reversedArray = wordsArray.reverse();
+    // Count occurrences of each character
+    for (let char of s) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
 
-    // Step 3: Join the array back into a string
-    const reversedString = reversedArray.join(' ');
+    // Find the first non-repeating character
+    for (let char of s) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
 
-    return reversedString;
+    return null; // Return null if there is no non-repeating character
 }
 
 // Example usage
-const input = "Hello world from TypeScript";
-const result = reverseWords(input);
-console.log(result); // Output: "TypeScript from world Hello"
+console.log(firstNonRepeatingCharacter("swiss")); // Output: "w"
+console.log(firstNonRepeatingCharacter("repeattr")); // Output: "e"
+console.log(firstNonRepeatingCharacter("aabbcc")); // Output: null
