@@ -1,60 +1,45 @@
-function rabinKarp(text: string, pattern: string): number[] {
-  const result: number[] = [];
+mkdir ts-api-example
+cd ts-api-example
+npm init -y
+npm install typescript ts-node @types/node --save-dev
+npx tsc --init
+// index.ts
 
-  const m = pattern.length;
-  const n = text.length;
-
-  if (m > n) return result; // pattern longer than text, no matches
-
-  const base = 256; // number of possible characters (extended ASCII)
-  const prime = 101; // a prime number for modulo to reduce collisions
-
-  let patternHash = 0;
-  let textHash = 0;
-  let h = 1;
-
-  // The value of h would be "base^(m-1) % prime"
-  for (let i = 0; i < m - 1; i++) {
-    h = (h * base) % prime;
-  }
-
-  // Calculate the hash value of pattern and first window of text
-  for (let i = 0; i < m; i++) {
-    patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
-    textHash = (base * textHash + text.charCodeAt(i)) % prime;
-  }
-
-  // Slide the pattern over text one by one
-  for (let i = 0; i <= n - m; i++) {
-    // Check the hash values of current window of text and pattern
-    if (patternHash === textHash) {
-      // Check for characters one by one to avoid spurious hit
-      let match = true;
-      for (let j = 0; j < m; j++) {
-        if (text.charAt(i + j) !== pattern.charAt(j)) {
-          match = false;
-          break;
-        }
-      }
-      if (match) result.push(i);
-    }
-
-    // Calculate hash value for next window of text:
-    // Remove leading digit, add trailing digit
-    if (i < n - m) {
-      textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
-
-      // We might get negative value of textHash, convert it to positive
-      if (textHash < 0) {
-        textHash += prime;
-      }
-    }
-  }
-
-  return result;
+// Define a User interface to type the data we expect from the API
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
-const text = "abracadabra";
-const pattern = "abra";
 
-const occurrences = rabinKarp(text, pattern);
-console.log(occurrences); // Output: [0, 7]
+// Function to fetch users from the JSONPlaceholder API
+async function fetchUsers(): Promise<User[]> {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/users');
+    if (!response.ok) {
+      throw new Error('Network response was not ok ' + response.statusText);
+    }
+    const users: User[] = await response.json();
+    return users;
+  } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+    return [];
+  }
+}
+
+// Function to display the users in the console
+async function displayUsers(): Promise<void> {
+  const users = await fetchUsers();
+  if (users.length > 0) {
+    users.forEach(user => {
+      console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+    });
+  } else {
+    console.log('No users found');
+  }
+}
+
+// Execute the displayUsers function
+displayUsers();
+npx ts-node index.ts
