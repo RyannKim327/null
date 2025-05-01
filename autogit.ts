@@ -1,21 +1,8 @@
-function findFirstRepeatedCharacter(str: string): string | null {
-    const seenCharacters = new Set<string>();
-
-    for (const char of str) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenCharacters.add(char); // Add character to the set
-    }
-
-    return null; // Return null if no repeated character is found
+function decimalToBinary(decimal: number): string {
+  return decimal.toString(2);
 }
 
-// Example usage:
-const inputString = "abcdabc";
-const repeatedCharacter = findFirstRepeatedCharacter(inputString);
-if (repeatedCharacter) {
-    console.log(`The first repeated character is: ${repeatedCharacter}`);
-} else {
-    console.log("No repeated characters found.");
-}
+// Usage:
+const num = 42;
+const binary = decimalToBinary(num);
+console.log(binary);  // Output: "101010"
