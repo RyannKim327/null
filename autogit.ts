@@ -1,20 +1,25 @@
-const decimalNumber = 42;
-const binaryString = decimalNumber.toString(2);
-console.log(binaryString);  // Outputs: "101010"
-function decimalToBinary(decimal: number): string {
-    return decimal.toString(2);
-}
+function quicksort(arr: number[]): number[] {
+  if (arr.length <= 1) return arr;
 
-console.log(decimalToBinary(42)); // "101010"
-function decimalToBinaryManual(decimal: number): string {
-    if (decimal === 0) return '0';
-    let binary = '';
-    let num = decimal;
-    while (num > 0) {
-        binary = (num % 2) + binary;
-        num = Math.floor(num / 2);
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const less: number[] = [];
+  const equal: number[] = [];
+  const greater: number[] = [];
+
+  for (const num of arr) {
+    if (num < pivot) {
+      less.push(num);
+    } else if (num > pivot) {
+      greater.push(num);
+    } else {
+      equal.push(num);
     }
-    return binary;
+  }
+
+  return [...quicksort(less), ...equal, ...quicksort(greater)];
 }
 
-console.log(decimalToBinaryManual(42)); // "101010"
+// Example usage:
+const unsorted = [3, 6, 8, 10, 1, 2, 1];
+console.log(quicksort(unsorted));
+// Output: [1, 1, 2, 3, 6, 8, 10]
