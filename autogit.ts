@@ -1,18 +1,10 @@
-const str = "Hello, TypeScript!";
-const substr = "Type";
+npm install node-cron
+npm install --save-dev @types/node-cron
+import cron from "node-cron";
 
-if (str.includes(substr)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
-}
-if (str.indexOf(substr) !== -1) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
-}
-if (str.search(/Type/) !== -1) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
-}
+cron.schedule("* * * * *", () => {
+  const now = new Date();
+  console.log(`Current time: ${now.toISOString()}`);
+});
+
+console.log("Cron job started, logging time every minute.");
