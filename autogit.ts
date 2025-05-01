@@ -1,35 +1,36 @@
-function bfs(graph: Record<string, string[]>, startNode: string): string[] {
-  const visited = new Set<string>();
-  const queue: string[] = [];
-  const order: string[] = [];
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-  // Start with the initial node
-  visited.add(startNode);
-  queue.push(startNode);
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
 
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    order.push(current);
+function findNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
+  if (!head || n <= 0) return null;
 
-    for (const neighbor of graph[current] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
-    }
+  let fast: ListNode<T> | null = head;
+  let slow: ListNode<T> | null = head;
+
+  // Move fast pointer n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (!fast) return null; // n is larger than the length of the list
+    fast = fast.next;
   }
 
-  return order;
+  // Move both pointers until fast reaches the end
+  while (fast) {
+    fast = fast.next;
+    slow = slow!.next;
+  }
+
+  return slow;
 }
 
 // Example usage:
-const graph = {
-  A: ["B", "C"],
-  B: ["D", "E"],
-  C: ["F"],
-  D: [],
-  E: ["F"],
-  F: []
-};
+const list = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))));
 
-console.log(bfs(graph, "A")); // Output: ["A", "B", "C", "D", "E", "F"]
+const nthNode = findNthFromEnd(list, 2);
+console.log(nthNode ? nthNode.value : "Not found"); // Output: 4
