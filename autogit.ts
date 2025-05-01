@@ -1,55 +1,30 @@
-function lengthOfLIS(nums: number[]): number {
-    const n = nums.length;
-    if (n === 0) return 0;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    const dp = new Array(n).fill(1);
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first element of the unsorted part
+        let minIndex = i;
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
+        // Iterate through the unsorted part of the array
+        for (let j = i + 1; j < n; j++) {
+            // Update the minIndex if a smaller element is found
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
         }
-    }
 
-    return Math.max(...dp);
-}
-
-// Example:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(arr)); // Output: 4
-function findLIS(nums: number[]): number[] {
-    const n = nums.length;
-    if (n === 0) return [];
-
-    const dp = new Array(n).fill(1);
-    const prev = new Array(n).fill(-1);
-
-    let maxLength = 1;
-    let maxIndex = 0;
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j] && dp[j] + 1 > dp[i]) {
-                dp[i] = dp[j] + 1;
-                prev[i] = j;
-            }
-        }
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
-            maxIndex = i;
+        // If minIndex is not the position of the current element, swap them
+        if (minIndex !== i) {
+            const temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
         }
     }
 
-    const lis = [];
-    for (let i = maxIndex; i >= 0; i = prev[i]) {
-        lis.push(nums[i]);
-        if (prev[i] === -1) break;
-    }
-    lis.reverse();
-    return lis;
+    return arr;
 }
 
-// Example:
-const arr2 = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(findLIS(arr2)); // Output: [2, 3, 7, 101]
+// Example usage:
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
