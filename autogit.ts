@@ -1,26 +1,46 @@
 class ListNode {
-  val: any;
+  val: number;
   next: ListNode | null;
 
-  constructor(val: any) {
+  constructor(val: number, next: ListNode | null = null) {
     this.val = val;
-    this.next = null;
+    this.next = next;
   }
 }
-function hasCycle(head: ListNode | null): boolean {
-  if (!head) return false;
 
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head;
+function getLength(head: ListNode | null): number {
+  let length = 0;
+  while (head) {
+    length++;
+    head = head.next;
+  }
+  return length;
+}
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow!.next;          // move slow pointer by 1 step
-    fast = fast.next.next;      // move fast pointer by 2 steps
+function getIntersectionNode(
+  headA: ListNode | null,
+  headB: ListNode | null
+): ListNode | null {
+  let lenA = getLength(headA);
+  let lenB = getLength(headB);
 
-    if (slow === fast) {
-      return true;  // cycle detected
-    }
+  // Align starting points
+  while (lenA > lenB) {
+    headA = headA!.next;
+    lenA--;
+  }
+  while (lenB > lenA) {
+    headB = headB!.next;
+    lenB--;
   }
 
-  return false;  // no cycle found
+  // Move both pointers and check for intersection
+  while (headA && headB) {
+    if (headA === headB) {
+      return headA; // Intersection found
+    }
+    headA = headA.next;
+    headB = headB.next;
+  }
+  return null; // No intersection
 }
