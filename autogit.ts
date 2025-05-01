@@ -1,52 +1,50 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function buildBadCharTable(pattern: string): Record<string, number> {
+    const badCharTable: Record<string, number> = {};
+    
+    for (let i = 0; i < pattern.length - 1; i++) {
+        badCharTable[pattern[i]] = pattern.length - 1 - i;
     }
+
+    // Default case: shift by the length of pattern
+    badCharTable['*'] = pattern.length; // use '*' as a default character
+
+    return badCharTable;
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        return null; // Edge case: empty list or invalid n
-    }
+function boyerMooreHorspool(haystack: string, needle: string): number {
+    const m = needle.length;
+    const n = haystack.length;
 
-    let firstPointer: ListNode | null = head;
-    let secondPointer: ListNode | null = head;
+    if (m === 0) return 0; // Immediate return for empty needle
+    if (n === 0 || m > n) return -1; // If haystack is empty or needle is longer
 
-    // Move firstPointer n nodes ahead
-    for (let i = 0; i < n; i++) {
-        if (firstPointer === null) {
-            return null; // n is larger than the length of the list
+    const badCharTable = buildBadCharTable(needle);
+    
+    let i = 0; // Position in haystack
+
+    while (i <= n - m) {
+        let j = m - 1; // Position in needle
+
+        while (j >= 0 && haystack[i + j] === needle[j]) {
+            j--; // Compare from the end of the needle
         }
-        firstPointer = firstPointer.next;
+
+        if (j < 0) {
+            // Match found
+            return i;
+        } else {
+            // Character not matched; compute the shift
+            const badCharShift = badCharTable[haystack[i + j]] || badCharTable['*'];
+            i += badCharShift; // Shift the haystack index
+        }
     }
 
-    // Move both pointers until firstPointer reaches the end
-    while (firstPointer !== null) {
-        firstPointer = firstPointer.next;
-        secondPointer = secondPointer.next;
-    }
-
-    // Now secondPointer points to the nth node from the end
-    return secondPointer;
+    return -1; // No match found
 }
 
-// Example usage:
+// Example usage
+const haystack = "ababcabcabababd";
+const needle = "ababd";
 
-// Create Linked List: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-// Find the 2nd node from the end
-const nthNodeFromEnd = findNthFromEnd(head, 2);
-if (nthNodeFromEnd) {
-    console.log(`The nth node from the end is: ${nthNodeFromEnd.value}`);
-} else {
-    console.log("Node not found.");
-}
+const index = boyerMooreHorspool(haystack, needle);
+console.log(index); // Output: 10
