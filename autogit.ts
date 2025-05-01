@@ -1,67 +1,55 @@
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null = null;
-  right: TreeNode<T> | null = null;
+function lengthOfLIS(nums: number[]): number {
+    const n = nums.length;
+    if (n === 0) return 0;
 
-  constructor(value: T) {
-    this.value = value;
-  }
+    const dp = new Array(n).fill(1);
+
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+
+    return Math.max(...dp);
 }
 
-class BinarySearchTree<T> {
-  root: TreeNode<T> | null = null;
+// Example:
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(lengthOfLIS(arr)); // Output: 4
+function findLIS(nums: number[]): number[] {
+    const n = nums.length;
+    if (n === 0) return [];
 
-  insert(value: T): void {
-    const newNode = new TreeNode(value);
+    const dp = new Array(n).fill(1);
+    const prev = new Array(n).fill(-1);
 
-    if (!this.root) {
-      this.root = newNode;
-      return;
-    }
+    let maxLength = 1;
+    let maxIndex = 0;
 
-    let current = this.root;
-    while (true) {
-      if (value < current.value) {
-        if (!current.left) {
-          current.left = newNode;
-          break;
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j] && dp[j] + 1 > dp[i]) {
+                dp[i] = dp[j] + 1;
+                prev[i] = j;
+            }
         }
-        current = current.left;
-      } else {
-        if (!current.right) {
-          current.right = newNode;
-          break;
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+            maxIndex = i;
         }
-        current = current.right;
-      }
     }
-  }
 
-  contains(value: T): boolean {
-    let current = this.root;
-    while (current) {
-      if (value === current.value) return true;
-      current = value < current.value ? current.left : current.right;
+    const lis = [];
+    for (let i = maxIndex; i >= 0; i = prev[i]) {
+        lis.push(nums[i]);
+        if (prev[i] === -1) break;
     }
-    return false;
-  }
-
-  // In-order traversal to print values in ascending order
-  inOrderTraversal(node: TreeNode<T> | null = this.root, visit: (value: T) => void): void {
-    if (!node) return;
-    this.inOrderTraversal(node.left, visit);
-    visit(node.value);
-    this.inOrderTraversal(node.right, visit);
-  }
+    lis.reverse();
+    return lis;
 }
-const bst = new BinarySearchTree<number>();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(7);
 
-console.log(bst.contains(7)); // true
-console.log(bst.contains(3)); // false
-
-bst.inOrderTraversal(bst.root, console.log); 
-// Outputs: 5, 7, 10, 15
+// Example:
+const arr2 = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(findLIS(arr2)); // Output: [2, 3, 7, 101]
