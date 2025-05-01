@@ -1,68 +1,50 @@
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null = null;
-  right: TreeNode<T> | null = null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-  constructor(value: T) {
-    this.value = value;
-  }
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-class BinarySearchTree<T> {
-  root: TreeNode<T> | null = null;
+class LinkedList<T> {
+    head: Node<T> | null;
 
-  // Helper function to compare values
-  private compare(a: T, b: T): number {
-    if (a < b) return -1;
-    else if (a > b) return 1;
-    else return 0;
-  }
-
-  insert(value: T): void {
-    const newNode = new TreeNode(value);
-    if (!this.root) {
-      this.root = newNode;
-      return;
+    constructor() {
+        this.head = null;
     }
-    this.insertNode(this.root, newNode);
-  }
 
-  private insertNode(node: TreeNode<T>, newNode: TreeNode<T>): void {
-    if (this.compare(newNode.value, node.value) < 0) {
-      // Go left
-      if (node.left === null) node.left = newNode;
-      else this.insertNode(node.left, newNode);
-    } else {
-      // Go right
-      if (node.right === null) node.right = newNode;
-      else this.insertNode(node.right, newNode);
+    // Method to add a new node at the end of the list
+    add(value: T): void {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
     }
-  }
 
-  search(value: T): boolean {
-    return this.searchNode(this.root, value);
-  }
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
 
-  private searchNode(node: TreeNode<T> | null, value: T): boolean {
-    if (!node) return false;
-    const comp = this.compare(value, node.value);
-    if (comp === 0) return true;
-    else if (comp < 0) return this.searchNode(node.left, value);
-    else return this.searchNode(node.right, value);
-  }
+        while (current) {
+            count++;
+            current = current.next;
+        }
 
-  // In-order traversal to get sorted values
-  inorder(): T[] {
-    const result: T[] = [];
-    this.inorderTraversal(this.root, result);
-    return result;
-  }
-
-  private inorderTraversal(node: TreeNode<T> | null, result: T[]): void {
-    if (node !== null) {
-      this.inorderTraversal(node.left, result);
-      result.push(node.value);
-      this.inorderTraversal(node.right, result);
+        return count;
     }
-  }
 }
+const list = new LinkedList<number>();
+list.add(1);
+list.add(2);
+list.add(3);
+
+console.log("Length of linked list:", list.length()); // Output: Length of linked list: 3
