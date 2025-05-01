@@ -1,27 +1,35 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+function isPalindrome(s: string): boolean {
+  let left = 0;
+  let right = s.length - 1;
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first unsorted element
-        let minIndex = i;
-
-        // Find the index of the minimum element in the unsorted portion of the array
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-
-        // Swap the found minimum element with the first unsorted element
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-        }
+  while (left < right) {
+    if (s[left] !== s[right]) {
+      return false;
     }
-    
-    return arr;
+    left++;
+    right--;
+  }
+
+  return true;
+}
+function isValidPalindrome(s: string): boolean {
+  let left = 0;
+  let right = s.length - 1;
+
+  while (left < right) {
+    while (left < right && !isAlphaNumeric(s[left])) left++;
+    while (left < right && !isAlphaNumeric(s[right])) right--;
+
+    if (left < right && s[left].toLowerCase() !== s[right].toLowerCase()) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+
+  return true;
 }
 
-// Example usage:
-const arr = [64, 25, 12, 22, 11];
-const sortedArr = selectionSort(arr);
-console.log("Sorted array:", sortedArr);
+function isAlphaNumeric(char: string): boolean {
+  return /^[a-z0-9]$/i.test(char);
+}
