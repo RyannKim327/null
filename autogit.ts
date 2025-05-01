@@ -1,21 +1,36 @@
-function insertionSort(arr: number[]): number[] {
-    for (let i = 1; i < arr.length; i++) {
-        let key = arr[i];
-        let j = i - 1;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-        // Move elements of arr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Probing the position with the formula
+        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found, return its index
         }
-        arr[j + 1] = key; // Insert the key at its correct position
+
+        // If target is larger, we search in the right sub-array
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } 
+        // If target is smaller, we search in the left sub-array
+        else {
+            high = pos - 1;
+        }
     }
-    return arr;
+
+    return -1; // If the target is not found, return -1
 }
 
-// Example usage:
-const array = [5, 2, 9, 1, 5, 6];
-console.log("Unsorted Array:", array);
-const sortedArray = insertionSort(array);
-console.log("Sorted Array:", sortedArray);
+// Example usage
+const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const target = 70;
+
+const index = interpolationSearch(arr, target);
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found in the array.");
+}
