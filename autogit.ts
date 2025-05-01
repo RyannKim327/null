@@ -1,162 +1,67 @@
-enum Color {
-    RED = 'RED',
-    BLACK = 'BLACK'
-}
+type Edge = {
+    from: number;
+    to: number;
+    weight: number;
+};
 
-class Node<T> {
-    public color: Color;
-    public key: T;
-    public left: Node<T> | null;
-    public right: Node<T> | null;
-    public parent: Node<T> | null;
+class Graph {
+    edges: Edge[];
+    numVertices: number;
 
-    constructor(key: T) {
-        this.key = key;
-        this.color = Color.RED; // New nodes are always red
-        this.left = null;
-        this.right = null;
-        this.parent = null;
-    }
-}
-
-class RedBlackTree<T> {
-    private root: Node<T> | null = null;
-
-    private rotateLeft(node: Node<T>) {
-        const rightChild = node.right;
-        node.right = rightChild?.left || null;
-
-        if (rightChild?.left) {
-            rightChild.left.parent = node;
-        }
-
-        rightChild!.parent = node.parent;
-
-        if (!node.parent) {
-            this.root = rightChild!;
-        } else if (node === node.parent.left) {
-            node.parent.left = rightChild!;
-        } else {
-            node.parent.right = rightChild!;
-        }
-
-        rightChild!.left = node;
-        node.parent = rightChild;
+    constructor(numVertices: number) {
+        this.numVertices = numVertices;
+        this.edges = [];
     }
 
-    private rotateRight(node: Node<T>) {
-        const leftChild = node.left;
-        node.left = leftChild?.right || null;
-
-        if (leftChild?.right) {
-            leftChild.right.parent = node;
-        }
-
-        leftChild!.parent = node.parent;
-
-        if (!node.parent) {
-            this.root = leftChild!;
-        } else if (node === node.parent.right) {
-            node.parent.right = leftChild!;
-        } else {
-            node.parent.left = leftChild!;
-        }
-
-        leftChild!.right = node;
-        node.parent = leftChild;
+    addEdge(from: number, to: number, weight: number) {
+        this.edges.push({ from, to, weight });
     }
 
-    private fixViolations(node: Node<T>) {
-        while (node !== this.root && node.parent!.color === Color.RED) {
-            if (node.parent === node.parent!.parent!.left) {
-                const uncle = node.parent!.parent!.right;
+    bellmanFord(source: number): number[] | null {
+        // Step 1: Initialize distances from source to all vertices as infinite
+        const distances: number[] = new Array(this.numVertices).fill(Infinity);
+        distances[source] = 0;
 
-                if (uncle && uncle.color === Color.RED) {
-                    node.parent!.color = Color.BLACK;
-                    uncle.color = Color.BLACK;
-                    node.parent!.parent!.color = Color.RED;
-                    node = node.parent!.parent!;
-                } else {
-                    if (node === node.parent!.right) {
-                        this.rotateLeft(node.parent!);
-                        node = node.left!;
-                    }
-                    node.parent!.color = Color.BLACK;
-                    node.parent!.parent!.color = Color.RED;
-                    this.rotateRight(node.parent!.parent!);
-                }
-            } else {
-                const uncle = node.parent!.parent!.left;
-
-                if (uncle && uncle.color === Color.RED) {
-                    node.parent!.color = Color.BLACK;
-                    uncle.color = Color.BLACK;
-                    node.parent!.parent!.color = Color.RED;
-                    node = node.parent!.parent!;
-                } else {
-                    if (node === node.parent!.left) {
-                        this.rotateRight(node.parent!);
-                        node = node.right!;
-                    }
-                    node.parent!.color = Color.BLACK;
-                    node.parent!.parent!.color = Color.RED;
-                    this.rotateLeft(node.parent!.parent!);
+        // Step 2: Relax edges repeatedly
+        for (let i = 0; i < this.numVertices - 1; i++) {
+            for (const edge of this.edges) {
+                const { from, to, weight } = edge;
+                if (distances[from] !== Infinity && distances[from] + weight < distances[to]) {
+                    distances[to] = distances[from] + weight;
                 }
             }
         }
-        this.root!.color = Color.BLACK; // Ensure the root is always black
-    }
 
-    public insert(key: T) {
-        const newNode = new Node<T>(key);
-        let parentNode: Node<T> | null = null;
-        let currentNode: Node<T> | null = this.root;
-
-        // Insert the node like in a regular binary search tree
-        while (currentNode !== null) {
-            parentNode = currentNode;
-            if (newNode.key < currentNode.key) {
-                currentNode = currentNode.left;
-            } else {
-                currentNode = currentNode.right;
+        // Step 3: Check for negative-weight cycles
+        for (const edge of this.edges) {
+            const { from, to, weight } = edge;
+            if (distances[from] !== Infinity && distances[from] + weight < distances[to]) {
+                // If we can still relax, then we have a negative weight cycle
+                return null; // Indicating that there's a negative weight cycle
             }
         }
 
-        newNode.parent = parentNode;
-
-        if (!parentNode) {
-            this.root = newNode; // Tree was empty
-        } else if (newNode.key < parentNode.key) {
-            parentNode.left = newNode;
-        } else {
-            parentNode.right = newNode;
-        }
-
-        // Fix violations
-        this.fixViolations(newNode);
-    }
-
-    // Additional methods (search, delete, etc.) would be implemented here.
-    
-    public inorderTraversal(node: Node<T> | null = this.root): void {
-        if (node !== null) {
-            this.inorderTraversal(node.left);
-            console.log(node.key, node.color);
-            this.inorderTraversal(node.right);
-        }
+        return distances;
     }
 }
 
-// Example of using the RedBlackTree
-const rbt = new RedBlackTree<number>();
-rbt.insert(7);
-rbt.insert(3);
-rbt.insert(18);
-rbt.insert(10);
-rbt.insert(22);
-rbt.insert(8);
-rbt.insert(11);
-rbt.insert(26);
+// Example usage:
+const g = new Graph(5);
+g.addEdge(0, 1, -1);
+g.addEdge(0, 2, 4);
+g.addEdge(1, 2, 3);
+g.addEdge(1, 3, 2);
+g.addEdge(1, 4, 2);
+g.addEdge(3, 2, 5);
+g.addEdge(3, 1, 1);
+g.addEdge(4, 3, -3);
 
-console.log("Inorder Traversal of the Red-Black Tree:");
-rbt.inorderTraversal();
+const distances = g.bellmanFord(0);
+if (distances) {
+    console.log("Vertex Distance from Source");
+    for (let i = 0; i < distances.length; i++) {
+        console.log(`Vertex ${i}: ${distances[i]}`);
+    }
+} else {
+    console.log("Graph contains a negative weight cycle");
+}
