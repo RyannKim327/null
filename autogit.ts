@@ -1,29 +1,22 @@
-function bubbleSort(arr: number[]): number[] {
-  const n = arr.length;
-  // Create a copy of the array to avoid mutating the original
-  let sortedArr = [...arr];
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-  for (let i = 0; i < n - 1; i++) {
-    // Flag to check if any swaps happened; if not, array is sorted
-    let swapped = false;
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
+function reverseLinkedList<T>(head: ListNode<T> | null): ListNode<T> | null {
+  let prev: ListNode<T> | null = null;
+  let current = head;
 
-    // Last i elements are already sorted
-    for (let j = 0; j < n - i - 1; j++) {
-      if (sortedArr[j] > sortedArr[j + 1]) {
-        // Swap adjacent elements if they are in wrong order
-        [sortedArr[j], sortedArr[j + 1]] = [sortedArr[j + 1], sortedArr[j]];
-        swapped = true;
-      }
-    }
-
-    // If no swaps occurred in this pass, the array is sorted
-    if (!swapped) break;
+  while (current !== null) {
+    const nextNode = current.next;  // Save next node
+    current.next = prev;             // Reverse pointer
+    prev = current;                  // Move prev forward
+    current = nextNode;              // Move current forward
   }
 
-  return sortedArr;
+  return prev;  // New head of the reversed list
 }
-
-// Example usage:
-const numbers = [5, 3, 8, 4, 2];
-const sorted = bubbleSort(numbers);
-console.log(sorted);  // Output: [2, 3, 4, 5, 8]
