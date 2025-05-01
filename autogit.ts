@@ -1,27 +1,23 @@
-function largestPrimeFactor(n: number): number {
-  let largestFactor = -1;
+function selectionSort(arr: number[]): number[] {
+  // Make a copy if you want to avoid mutating the original array
+  const array = [...arr];
+  const n = array.length;
 
-  // Divide out all factor 2's
-  while (n % 2 === 0) {
-    largestFactor = 2;
-    n /= 2;
-  }
+  for (let i = 0; i < n - 1; i++) {
+    let minIndex = i;
 
-  // Now n must be odd, start checking from 3 upwards
-  let factor = 3;
-  const maxFactor = Math.sqrt(n);
-  while (factor <= maxFactor) {
-    while (n % factor === 0) {
-      largestFactor = factor;
-      n /= factor;
+    // Find the index of the minimum element in the remaining unsorted array
+    for (let j = i + 1; j < n; j++) {
+      if (array[j] < array[minIndex]) {
+        minIndex = j;
+      }
     }
-    factor += 2;
+
+    // Swap the found minimum item with the first unsorted item
+    if (minIndex !== i) {
+      [array[i], array[minIndex]] = [array[minIndex], array[i]];
+    }
   }
 
-  // If n is still > 2 then n itself is prime and largest factor
-  if (n > 2) largestFactor = n;
-
-  return largestFactor;
+  return array;
 }
-console.log(largestPrimeFactor(13195)); // 29
-console.log(largestPrimeFactor(600851475143)); // 6857
