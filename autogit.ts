@@ -1,36 +1,21 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+function isPalindrome(s: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and convert to lower case
+    const normalizedString = s.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
+    let left = 0;
+    let right = normalizedString.length - 1;
 
-function findNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
-  if (!head || n <= 0) return null;
+    while (left < right) {
+        if (normalizedString[left] !== normalizedString[right]) {
+            return false; // Not a palindrome
+        }
+        left++;
+        right--;
+    }
 
-  let fast: ListNode<T> | null = head;
-  let slow: ListNode<T> | null = head;
-
-  // Move fast pointer n steps ahead
-  for (let i = 0; i < n; i++) {
-    if (!fast) return null; // n is larger than the length of the list
-    fast = fast.next;
-  }
-
-  // Move both pointers until fast reaches the end
-  while (fast) {
-    fast = fast.next;
-    slow = slow!.next;
-  }
-
-  return slow;
+    return true; // Is a palindrome
 }
 
 // Example usage:
-const list = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))));
-
-const nthNode = findNthFromEnd(list, 2);
-console.log(nthNode ? nthNode.value : "Not found"); // Output: 4
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
