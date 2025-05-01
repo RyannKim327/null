@@ -1,23 +1,33 @@
-// Create an array
-let myArray: number[] = [1, 2, 3, 4, 5];
+function interpolationSearch(arr: number[], target: number): number {
+  let low = 0;
+  let high = arr.length - 1;
 
-// Log the original array
-console.log("Original array:", myArray);
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    // To avoid division by zero when arr[high] == arr[low]
+    if (arr[high] === arr[low]) {
+      if (arr[low] === target) return low;
+      else break;
+    }
 
-// Reverse the array
-myArray.reverse();
+    // Estimate the position using interpolation formula
+    const pos = low + Math.floor(
+      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+    );
 
-// Log the reversed array
-console.log("Reversed array:", myArray);
-// Create an array
-let originalArray: number[] = [1, 2, 3, 4, 5];
+    if (arr[pos] === target) {
+      return pos;
+    }
 
-// Log the original array
-console.log("Original array:", originalArray);
+    if (arr[pos] < target) {
+      low = pos + 1; // Search in the right sub-array
+    } else {
+      high = pos - 1; // Search in the left sub-array
+    }
+  }
 
-// Create a new reversed array without modifying the original
-let reversedArray: number[] = [...originalArray].reverse();
-
-// Log both arrays
-console.log("Reversed array:", reversedArray);
-console.log("After reversing, original array:", originalArray);
+  // Target not found
+  return -1;
+}
+const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+console.log(interpolationSearch(arr, 70)); // Output: 6
+console.log(interpolationSearch(arr, 25)); // Output: -1
