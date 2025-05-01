@@ -1,15 +1,26 @@
-const arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // [5, 4, 3, 2, 1]
-const arr = [1, 2, 3, 4, 5];
-const reversedArr = [...arr].reverse();
-console.log(reversedArr); // [5, 4, 3, 2, 1]
-console.log(arr); // [1, 2, 3, 4, 5] (original untouched)
-const arr = [1, 2, 3, 4, 5];
-const reversedArr: number[] = [];
+class ListNode {
+  val: any;
+  next: ListNode | null;
 
-for (let i = arr.length - 1; i >= 0; i--) {
-  reversedArr.push(arr[i]);
+  constructor(val: any) {
+    this.val = val;
+    this.next = null;
+  }
 }
+function hasCycle(head: ListNode | null): boolean {
+  if (!head) return false;
 
-console.log(reversedArr); // [5, 4, 3, 2, 1]
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;          // move slow pointer by 1 step
+    fast = fast.next.next;      // move fast pointer by 2 steps
+
+    if (slow === fast) {
+      return true;  // cycle detected
+    }
+  }
+
+  return false;  // no cycle found
+}
