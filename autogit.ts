@@ -1,30 +1,12 @@
-// Define the shape of the data we expect from the API
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
+function isPrime(num: number): boolean {
+  if (num <= 1) return false; // 0 and 1 are not prime numbers
+  if (num <= 3) return true;  // 2 and 3 are prime numbers
 
-// Fetch users from a public API
-async function fetchUsers(): Promise<User[]> {
-  const response = await fetch('https://jsonplaceholder.typicode.com/users');
-  
-  if (!response.ok) {
-    throw new Error(`Network response was not ok: ${response.statusText}`);
+  if (num % 2 === 0 || num % 3 === 0) return false; // eliminate multiples of 2 and 3 quickly
+
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
   }
 
-  const users: User[] = await response.json();
-  return users;
+  return true;
 }
-
-// Example usage
-fetchUsers()
-  .then(users => {
-    users.forEach(user => {
-      console.log(`${user.name} (${user.username}) - ${user.email}`);
-    });
-  })
-  .catch(error => {
-    console.error('Fetching users failed:', error);
-  });
