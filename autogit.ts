@@ -1,55 +1,63 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
-    constructor(val: number, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
+
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
     }
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true;
+class Trie {
+    private root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+    // Insert a word into the trie
+    insert(word: string): void {
+        let currentNode = this.root;
 
-    while (fast && fast.next) {
-        slow = slow!.next; // Move slow by one and fast by two
-        fast = fast.next.next;
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let curr: ListNode | null = slow; // Start from the middle
-
-    while (curr) {
-        const nextTemp = curr.next; // Store the next node
-        curr.next = prev; // Reverse the link
-        prev = curr; // Move prev pointer forward
-        curr = nextTemp; // Move to next node
-    }
-
-    // Step 3: Compare the two halves
-    let firstHalf: ListNode | null = head;
-    let secondHalf: ListNode | null = prev; // This is the head of the reversed second half
-
-    while (secondHalf) { // Check only till the end of the reversed half
-        if (firstHalf!.val !== secondHalf.val) {
-            return false;
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
         }
-        firstHalf = firstHalf!.next; // Move forward in the first half
-        secondHalf = secondHalf.next; // Move forward in the reversed second half
+        currentNode.isEndOfWord = true;
     }
 
-    return true; // If we got through the loop, it's a palindrome.
+    // Search for a word in the trie
+    search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if there is any word in the trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null;
+    }
+
+    // Helper function to find a node for the given word/prefix
+    private findNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return null;
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        return currentNode;
+    }
 }
 
 // Example usage:
-const list = new ListNode(1, new ListNode(2, new ListNode(2, new ListNode(1))));
-console.log(isPalindrome(list)); // Output: true
-
-const list2 = new ListNode(1, new ListNode(2));
-console.log(isPalindrome(list2)); // Output: false
+const trie = new Trie();
+trie.insert('hello');
+trie.insert('world');
+console.log(trie.search('hello')); // true
+console.log(trie.search('hell')); // false
+console.log(trie.startsWith('wo')); // true
+console.log(trie.startsWith('war')); // false
