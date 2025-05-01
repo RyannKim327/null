@@ -1,20 +1,28 @@
-function insertionSort(arr: number[]): number[] {
-  // Make a copy to avoid mutating the original array
-  const sortedArr = [...arr];
+// Define the shape of the data we're expecting from the API
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 
-  for (let i = 1; i < sortedArr.length; i++) {
-    const current = sortedArr[i];
-    let j = i - 1;
-
-    // Shift elements that are greater than current to the right
-    while (j >= 0 && sortedArr[j] > current) {
-      sortedArr[j + 1] = sortedArr[j];
-      j--;
-    }
-
-    // Insert the current element at the correct position
-    sortedArr[j + 1] = current;
+// Async function to fetch posts from JSONPlaceholder API
+async function fetchPosts(): Promise<Post[]> {
+  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+  
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  return sortedArr;
+  const data: Post[] = await response.json();
+  return data;
 }
+
+// Run the function and log the first post's title
+fetchPosts()
+  .then(posts => {
+    console.log('First post title:', posts[0].title);
+  })
+  .catch(error => {
+    console.error('Error fetching posts:', error);
+  });
