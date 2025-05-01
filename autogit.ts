@@ -1,37 +1,15 @@
-// Define the binary tree node type
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+const arr = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+const original = [1, 2, 3, 4, 5];
+const reversed = [...original].reverse();
+console.log(original); // [1, 2, 3, 4, 5]
+console.log(reversed); // [5, 4, 3, 2, 1]
+const arr = [1, 2, 3, 4, 5];
+const reversed: number[] = [];
 
-    constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
+for (let i = arr.length - 1; i >= 0; i--) {
+  reversed.push(arr[i]);
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
-    }
-
-    // If both left and right children are null, this is a leaf
-    if (!root.left && !root.right) {
-        return 1;
-    }
-
-    // Otherwise, sum the count of leaf nodes in left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-
-// Example usage:
-const tree = new TreeNode(1,
-    new TreeNode(2,
-        new TreeNode(4),
-        new TreeNode(5)
-    ),
-    new TreeNode(3)
-);
-
-console.log(countLeafNodes(tree)); // Output: 3 (nodes with values 4, 5, and 3)
+console.log(reversed); // [5, 4, 3, 2, 1]
