@@ -1,46 +1,42 @@
-type Candidate = {
-    state: string; // The current state representation
-    score: number; // Score of the current state
-};
+interface State {
+    value: string;  // example placeholder for your state value
+    score: number;  // score for this state (for selecting the best ones)
+    // add any other relevant properties you need
+}
+function generateNextStates(currentState: State): State[] {
+    // Logic to generate next states based on the current state
+    // This is problem-specific and should be implemented accordingly
 
-function beamSearch(initialState: string, maxSteps: number, beamWidth: number): Candidate[] {
-    let candidates: Candidate[] = [{ state: initialState, score: 0 }];
+    const nextStates: State[] = [];
+    // For example purposes, let's assume we add some dummy states
+    nextStates.push({ value: currentState.value + 'A', score: currentState.score + Math.random() });
+    nextStates.push({ value: currentState.value + 'B', score: currentState.score + Math.random() });
 
-    for (let step = 0; step < maxSteps; step++) {
-        const nextCandidates: Candidate[] = [];
+    return nextStates;
+}
+function beamSearch(initialState: State, beamWidth: number, maxIterations: number): State | null {
+    let beam: State[] = [initialState];
 
-        // Generate next states from the current candidates
-        for (const candidate of candidates) {
-            const newStates = generateNextStates(candidate.state); // Your state generation function
-            for (const state of newStates) {
-                const score = scoreCandidate(state); // Your scoring function
-                nextCandidates.push({ state, score });
-            }
+    for (let i = 0; i < maxIterations; i++) {
+        let newBeam: State[] = [];
+
+        // Generate next states for each state in the current beam
+        for (const state of beam) {
+            const nextStates = generateNextStates(state);
+            newBeam.push(...nextStates);
         }
 
-        // Sort and select the top `beamWidth` candidates
-        nextCandidates.sort((a, b) => b.score - a.score); // Sort descending by score
-        candidates = nextCandidates.slice(0, beamWidth); // Keep only the top `beamWidth` candidates
+        // Sort new candidates by score and keep the best `beamWidth` states
+        newBeam.sort((a, b) => b.score - a.score);
+        beam = newBeam.slice(0, beamWidth);
     }
 
-    return candidates; // Return the final candidates after the search
+    // Return the best state found in the final beam
+    return beam.length > 0 ? beam[0] : null;
 }
-
-// Example functions you need to implement:
-function generateNextStates(state: string): string[] {
-    // Implement your own logic to generate new states from the current state
-    return []; // Replace with actual logic
-}
-
-function scoreCandidate(state: string): number {
-    // Implement your own scoring logic for the candidates
-    return Math.random(); // Replace with actual scoring logic
-}
-
-// Usage
-const initialState = "start";
-const maxSteps = 5;
+const initialState: State = { value: '', score: 0 };
 const beamWidth = 3;
+const maxIterations = 10;
 
-const bestCandidates = beamSearch(initialState, maxSteps, beamWidth);
-console.log(bestCandidates);
+const bestState = beamSearch(initialState, beamWidth, maxIterations);
+console.log(bestState);
