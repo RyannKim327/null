@@ -1,15 +1,21 @@
-const arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
-const original = [1, 2, 3, 4, 5];
-const reversed = [...original].reverse();
-console.log(original); // [1, 2, 3, 4, 5]
-console.log(reversed); // [5, 4, 3, 2, 1]
-const arr = [1, 2, 3, 4, 5];
-const reversed: number[] = [];
+function burrowsWheelerTransform(input: string): string {
+  const length = input.length;
+  const rotations: string[] = [];
 
-for (let i = arr.length - 1; i >= 0; i--) {
-  reversed.push(arr[i]);
+  // Generate all rotations of the input string
+  for (let i = 0; i < length; i++) {
+    const rotation = input.slice(i) + input.slice(0, i);
+    rotations.push(rotation);
+  }
+
+  // Sort rotations lexicographically
+  rotations.sort();
+
+  // Build the BWT result by taking the last char of each rotation
+  const lastColumn = rotations.map(rotation => rotation.charAt(length - 1)).join('');
+
+  return lastColumn;
 }
-
-console.log(reversed); // [5, 4, 3, 2, 1]
+const input = "banana$";
+const bwtResult = burrowsWheelerTransform(input);
+console.log(bwtResult); // Outputs: "annb$aa"
