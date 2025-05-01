@@ -1,36 +1,35 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+function bfs(graph: Record<string, string[]>, startNode: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [];
+  const order: string[] = [];
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Probing the position with the formula
-        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+  // Start with the initial node
+  visited.add(startNode);
+  queue.push(startNode);
 
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos; // Target found, return its index
-        }
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    order.push(current);
 
-        // If target is larger, we search in the right sub-array
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } 
-        // If target is smaller, we search in the left sub-array
-        else {
-            high = pos - 1;
-        }
+    for (const neighbor of graph[current] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
     }
+  }
 
-    return -1; // If the target is not found, return -1
+  return order;
 }
 
-// Example usage
-const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
+// Example usage:
+const graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
 
-const index = interpolationSearch(arr, target);
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log("Element not found in the array.");
-}
+console.log(bfs(graph, "A")); // Output: ["A", "B", "C", "D", "E", "F"]
