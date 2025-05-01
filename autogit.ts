@@ -1,24 +1,20 @@
-let str = "Hello, world!";
-let substring = "world";
+function insertionSort(arr: number[]): number[] {
+  // Make a copy to avoid mutating the original array
+  const sortedArr = [...arr];
 
-if (str.includes(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
-}
-let str = "Hello, world!";
-let substring = "world";
+  for (let i = 1; i < sortedArr.length; i++) {
+    const current = sortedArr[i];
+    let j = i - 1;
 
-if (str.indexOf(substring) !== -1) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
-}
-let str = "Hello, world!";
-let regex = /world/;
+    // Shift elements that are greater than current to the right
+    while (j >= 0 && sortedArr[j] > current) {
+      sortedArr[j + 1] = sortedArr[j];
+      j--;
+    }
 
-if (regex.test(str)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
+    // Insert the current element at the correct position
+    sortedArr[j + 1] = current;
+  }
+
+  return sortedArr;
 }
