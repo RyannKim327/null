@@ -1,45 +1,36 @@
-type Graph = Record<string, string[]>;
+// Example async function to connect to an Android backend API
+async function fetchAndroidData(): Promise<any> {
+  try {
+    const response = await fetch('http://192.168.1.100:8080/api/data', {
+      method: 'GET', // Or POST, PUT, etc.
+      headers: {
+        'Content-Type': 'application/json',
+        // Add auth tokens or other headers if needed
+      },
+    });
 
-function depthLimitedSearch(
-  graph: Graph,
-  start: string,
-  goal: string,
-  limit: number
-): string[] | null {
-  // Stack holds tuples: [node, path-so-far, depth]
-  const stack: Array<[string, string[], number]> = [[start, [start], 0]];
-  const visited = new Set<string>();
-
-  while (stack.length > 0) {
-    const [node, path, depth] = stack.pop()!;
-
-    if (node === goal) {
-      return path;
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
     }
 
-    if (depth < limit) {
-      // Mark as visited at this depth context
-      visited.add(node);
-
-      const neighbors = graph[node] || [];
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          stack.push([neighbor, [...path, neighbor], depth + 1]);
-        }
-      }
-    }
+    const data = await response.json();
+    // Process data received from Android backend
+    return data;
+  } catch (error) {
+    console.error('Failed to fetch data from Android device:', error);
+    throw error;
   }
-
-  return null; // goal not found within limit
 }
-const graph = {
-  A: ["B", "C"],
-  B: ["D", "E"],
-  C: ["F"],
-  D: [],
-  E: ["F"],
-  F: []
-};
 
-const result = depthLimitedSearch(graph, "A", "F", 2);
-console.log(result); // Could print something like ['A', 'C', 'F']
+// Usage example inside an async React component or function
+async function runAsyncTask() {
+  try {
+    const result = await fetchAndroidData();
+    console.log('Received data:', result);
+  } catch (e) {
+    console.log('Error during async connection:', e);
+  }
+}
+
+// Run the example task
+runAsyncTask();
