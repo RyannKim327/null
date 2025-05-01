@@ -1,25 +1,30 @@
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
+function findMaxValue(arr: number[]): number | null {
+    // Check if the array is empty
+    if (arr.length === 0) {
+        return null; // or you could throw an error
     }
-    if (n === 0 || n === 1) {
-        return 1; // Base case
-    }
-    return n * factorialRecursive(n - 1); // Recursive case
+    return Math.max(...arr);
 }
 
-// Example usage
-console.log(factorialRecursive(5)); // Output: 120
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
+// Example usage:
+const numbers = [3, 5, 7, 2, 8, -1, 0];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Output: 8
+function findMaxValue(arr: number[]): number | null {
+    if (arr.length === 0) {
+        return null; // or throw an error
     }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
+
+    let max = arr[0];
+    for (const num of arr) {
+        if (num > max) {
+            max = num;
+        }
     }
-    return result;
+    return max;
 }
 
-// Example usage
-console.log(factorialIterative(5)); // Output: 120
+// Example usage:
+const numbers = [3, 5, 7, 2, 8, -1, 0];
+const maxValue = findMaxValue(numbers);
+console.log(maxValue); // Output: 8
