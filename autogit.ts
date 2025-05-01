@@ -1,25 +1,29 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+async function fetchUser(userId: number): Promise<User | null> {
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+    if (!response.ok) {
+      console.error('Network response was not ok');
+      return null;
+    }
+    const data: User = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Fetch error:', error);
+    return null;
   }
 }
-function sumOfNodes(root: TreeNode | null): number {
-  if (root === null) return 0;
 
-  return root.val + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
-const tree = new TreeNode(1,
-  new TreeNode(2,
-    new TreeNode(4),
-    new TreeNode(5)
-  ),
-  new TreeNode(3)
-);
-
-console.log(sumOfNodes(tree)); // Output: 15
+fetchUser(1).then(user => {
+  if (user) {
+    console.log(`User name: ${user.name}, email: ${user.email}`);
+  } else {
+    console.log('User not found');
+  }
+});
