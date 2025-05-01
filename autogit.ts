@@ -1,16 +1,21 @@
-const numbers = [3, 5, 1, 8, 2];
-const max = Math.max(...numbers);
-console.log(max); // Output: 8
-const numbers = [3, 5, 1, 8, 2];
-const max = numbers.reduce((prev, current) => (current > prev ? current : prev), numbers[0]);
-console.log(max); // Output: 8
-const numbers = [3, 5, 1, 8, 2];
-let max = numbers[0];
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-for (let i = 1; i < numbers.length; i++) {
-  if (numbers[i] > max) {
-    max = numbers[i];
-  }
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+
+        if (arr[mid] === target) {
+            return mid;  // Found the target, return its index
+        } else if (arr[mid] < target) {
+            left = mid + 1;  // Search in the right half
+        } else {
+            right = mid - 1;  // Search in the left half
+        }
+    }
+
+    return -1;  // Target not found
 }
-
-console.log(max); // Output: 8
+const numbers = [1, 3, 5, 7, 9, 11];
+const result = binarySearch(numbers, 7);  // Returns 3
+console.log(result);
