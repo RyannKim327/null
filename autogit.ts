@@ -1,26 +1,38 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+function topologicalSort(graph: Map<string, string[]>): string[] {
+  const visited = new Set<string>();
+  const stack: string[] = [];
+  const tempMark = new Set<string>();
 
-    // Divide out factor 2 completely
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n = n / 2;
+  function visit(node: string) {
+    if (tempMark.has(node)) {
+      throw new Error('Graph has a cycle, so topological sort is not possible');
     }
 
-    // Check for odd factors from 3 up to sqrt(n)
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n = n / i;
-        }
-    }
+    if (!visited.has(node)) {
+      tempMark.add(node);
 
-    // If n is still greater than 2, then n itself is a prime factor
-    if (n > 2) {
-        largestFactor = n;
-    }
+      const neighbors = graph.get(node) || [];
+      for (const neighbor of neighbors) {
+        visit(neighbor);
+      }
 
-    return largestFactor;
+      tempMark.delete(node);
+      visited.add(node);
+      stack.push(node);
+    }
+  }
+
+  for (const node of graph.keys()) {
+    if (!visited.has(node)) {
+      visit(node);
+    }
+  }
+
+  return stack.reverse();
 }
-console.log(largestPrimeFactor(13195)); // Output: 29
-console.log(largestPrimeFactor(600851475143)); // Output: the largest prime factor
+const graph = new Map<string, string[]>();
+graph.set('A', ['B', 'C']);
+graph.set('B', ['C']);
+graph.set('C', []);
+const sortedOrder = topologicalSort(graph);
+console.log(sortedOrder); // Output: ['A', 'B', 'C']
