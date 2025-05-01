@@ -1,48 +1,55 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+class ListNode {
+  val: number;
+  next: ListNode | null;
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
+function isPalindrome(head: ListNode | null): boolean {
+  if (!head || !head.next) return true;
 
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+  // Find middle (slow will be at middle)
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
+
+  while (fast && fast.next) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  // Reverse second half starting from slow
+  let secondHalf: ListNode | null = reverseList(slow);
+
+  // Compare first half and reversed second half
+  let firstHalf: ListNode | null = head;
+  let secondHalfCopy: ListNode | null = secondHalf; // to optionally restore list later
+
+  while (secondHalf !== null) {
+    if (firstHalf!.val !== secondHalf.val) {
+      // Optional: restore list before returning
+      reverseList(secondHalfCopy);
+      return false;
     }
+    firstHalf = firstHalf!.next;
+    secondHalf = secondHalf.next;
+  }
 
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // swap
-
-        // Call max heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
+  // Optional: restore list
+  reverseList(secondHalfCopy);
+  return true;
 }
 
-function heapify(arr: number[], n: number, i: number) {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
+function reverseList(head: ListNode | null): ListNode | null {
+  let prev: ListNode | null = null;
+  let curr: ListNode | null = head;
 
-    // If left child exists and is greater than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    // If right child exists and is greater than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // swap
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
+  while (curr) {
+    let nextTemp = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = nextTemp;
+  }
+  
+  return prev;
 }
-
-// Example usage
-const arr = [12, 11, 13, 5, 6, 7];
-const sortedArr = heapSort(arr);
-console.log("Sorted array is", sortedArr);
