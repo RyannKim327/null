@@ -1,18 +1,20 @@
-function longestCommonPrefix(strs: string[]): string {
-  if (strs.length === 0) return "";
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-  // Start with the first string as the prefix
-  let prefix = strs[0];
-
-  for (let i = 1; i < strs.length; i++) {
-    // Compare prefix with the next string and shorten it as needed
-    while (!strs[i].startsWith(prefix)) {
-      prefix = prefix.slice(0, prefix.length - 1);
-      if (prefix === "") return ""; // No common prefix
-    }
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
   }
-
-  return prefix;
 }
-console.log(longestCommonPrefix(["flower", "flow", "flight"])); // Output: "fl"
-console.log(longestCommonPrefix(["dog", "racecar", "car"]));    // Output: ""
+function reverseLinkedList<T>(head: ListNode<T> | null): ListNode<T> | null {
+  let prev: ListNode<T> | null = null;
+  let current = head;
+  while (current !== null) {
+    const nextNode = current.next;  // keep track of the next node
+    current.next = prev;             // reverse the link
+    prev = current;                  // move prev forward
+    current = nextNode;              // move current forward
+  }
+  return prev;  // prev will be the new head after the loop ends
+}
