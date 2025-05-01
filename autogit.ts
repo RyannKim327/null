@@ -1,33 +1,21 @@
-function interpolationSearch(arr: number[], target: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+function findFirstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    // To avoid division by zero when arr[high] == arr[low]
-    if (arr[high] === arr[low]) {
-      if (arr[low] === target) return low;
-      else break;
+    for (const char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // Return the first repeated character
+        }
+        seenCharacters.add(char); // Add character to the set
     }
 
-    // Estimate the position using interpolation formula
-    const pos = low + Math.floor(
-      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
-
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    if (arr[pos] < target) {
-      low = pos + 1; // Search in the right sub-array
-    } else {
-      high = pos - 1; // Search in the left sub-array
-    }
-  }
-
-  // Target not found
-  return -1;
+    return null; // Return null if no repeated character is found
 }
-const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90];
-console.log(interpolationSearch(arr, 70)); // Output: 6
-console.log(interpolationSearch(arr, 25)); // Output: -1
+
+// Example usage:
+const inputString = "abcdabc";
+const repeatedCharacter = findFirstRepeatedCharacter(inputString);
+if (repeatedCharacter) {
+    console.log(`The first repeated character is: ${repeatedCharacter}`);
+} else {
+    console.log("No repeated characters found.");
+}
