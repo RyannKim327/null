@@ -1,112 +1,30 @@
-class BinaryHeap<T> {
-    private heap: T[];
-    private compare: (a: T, b: T) => number;
+function longestCommonSubstring(s1: string, s2: string): string {
+  const len1 = s1.length;
+  const len2 = s2.length;
+  // dp[i][j] will hold length of longest common suffix of
+  // s1[0..i-1] and s2[0..j-1]
+  const dp: number[][] = Array.from({ length: len1 + 1 }, () =>
+    Array(len2 + 1).fill(0)
+  );
 
-    constructor(compare: (a: T, b: T) => number) {
-        this.heap = [];
-        this.compare = compare;
-    }
+  let maxLength = 0;
+  let endIndex = 0; // To track end index of the longest substring in s1
 
-    insert(item: T): void {
-        this.heap.push(item);
-        this.bubbleUp();
-    }
-
-    extract(): T | undefined {
-        if (this.heap.length === 0) return undefined;
-        const root = this.heap[0];
-        const last = this.heap.pop()!;
-        if (this.heap.length > 0) {
-            this.heap[0] = last;
-            this.bubbleDown();
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      if (s1[i - 1] === s2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i; // end index in s1
         }
-        return root;
+      }
     }
+  }
 
-    private bubbleUp(): void {
-        let index = this.heap.length - 1;
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            if (this.compare(this.heap[index], this.heap[parentIndex]) >= 0) break;
-            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-            index = parentIndex;
-        }
-    }
-
-    private bubbleDown(): void {
-        let index = 0;
-        const length = this.heap.length;
-        const element = this.heap[0];
-
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild: T, rightChild: T;
-            let swap: number | null = null;
-
-            if (leftChildIndex < length) {
-                leftChild = this.heap[leftChildIndex];
-                if (this.compare(leftChild, element) < 0) {
-                    swap = leftChildIndex;
-                }
-            }
-            if (rightChildIndex < length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swap === null && this.compare(rightChild, element) < 0) ||
-                    (swap !== null && this.compare(rightChild, leftChild) < 0)
-                ) {
-                    swap = rightChildIndex;
-                }
-            }
-            if (swap === null) break;
-            [this.heap[index], this.heap[swap]] = [this.heap[swap], this.heap[index]];
-            index = swap;
-        }
-    }
-
-    isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-
-    peek(): T | undefined {
-        return this.heap[0];
-    }
+  return s1.substring(endIndex - maxLength, endIndex);
 }
-class PriorityQueue<T> {
-    private heap: BinaryHeap<T>;
+const str1 = "xabxac";
+const str2 = "abcabxabcd";
 
-    constructor(compare: (a: T, b: T) => number) {
-        this.heap = new BinaryHeap(compare);
-    }
-
-    enqueue(item: T): void {
-        this.heap.insert(item);
-    }
-
-    dequeue(): T | undefined {
-        return this.heap.extract();
-    }
-
-    peek(): T | undefined {
-        return this.heap.peek();
-    }
-
-    isEmpty(): boolean {
-        return this.heap.isEmpty();
-    }
-}
-// Example: Priority queue for numbers (min-heap)
-const minHeapCompare = (a: number, b: number) => a - b;
-
-const pq = new PriorityQueue<number>(minHeapCompare);
-
-pq.enqueue(5);
-pq.enqueue(2);
-pq.enqueue(8);
-pq.enqueue(1);
-
-console.log(pq.dequeue()); // 1
-console.log(pq.peek());    // 2
-console.log(pq.dequeue()); // 2
-console.log(pq.isEmpty()); // false
+console.log(longestCommonSubstring(str1, str2));  // Output: "abxa"
