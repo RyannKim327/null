@@ -1,24 +1,27 @@
-function insertionSort(arr: number[]): number[] {
-    // Create a copy of the array to avoid mutating the original
-    const sortedArr = arr.slice();
+// Import fetch if you're running this in Node environment (Node 18+ has fetch natively)
+import fetch from 'node-fetch';
 
-    for (let i = 1; i < sortedArr.length; i++) {
-        let key = sortedArr[i];
-        let j = i - 1;
-
-        // Move elements of sortedArr[0..i-1], that are greater than key,
-        // to one position ahead of their current position
-        while (j >= 0 && sortedArr[j] > key) {
-            sortedArr[j + 1] = sortedArr[j];
-            j--;
-        }
-        sortedArr[j + 1] = key;
-    }
-
-    return sortedArr;
+// Define the Post type based on the API response structure
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
-// Example usage:
-const unsorted = [5, 2, 9, 1, 5, 6];
-const sorted = insertionSort(unsorted);
-console.log(sorted); // Output: [1, 2, 5, 5, 6, 9]
+async function getPosts(): Promise<void> {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const posts: Post[] = await response.json();
+    posts.forEach(post => {
+      console.log(`Post #${post.id}: ${post.title}`);
+    });
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+  }
+}
+
+getPosts();
