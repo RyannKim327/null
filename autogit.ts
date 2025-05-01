@@ -1,27 +1,46 @@
-function burrowsWheelerTransform(input: string): { transformed: string, originalIndex: number } {
-  const n = input.length;
+type Candidate = {
+    state: string; // The current state representation
+    score: number; // Score of the current state
+};
 
-  // Generate all rotations of the string
-  const rotations = [];
-  for (let i = 0; i < n; i++) {
-    const rotation = input.slice(i) + input.slice(0, i);
-    rotations.push(rotation);
-  }
+function beamSearch(initialState: string, maxSteps: number, beamWidth: number): Candidate[] {
+    let candidates: Candidate[] = [{ state: initialState, score: 0 }];
 
-  // Sort the rotations lexicographically
-  rotations.sort();
+    for (let step = 0; step < maxSteps; step++) {
+        const nextCandidates: Candidate[] = [];
 
-  // Find the index of the original string in the sorted rotations
-  const originalIndex = rotations.indexOf(input);
+        // Generate next states from the current candidates
+        for (const candidate of candidates) {
+            const newStates = generateNextStates(candidate.state); // Your state generation function
+            for (const state of newStates) {
+                const score = scoreCandidate(state); // Your scoring function
+                nextCandidates.push({ state, score });
+            }
+        }
 
-  // Construct the BWT by taking the last chars of each rotation
-  const transformed = rotations.map(str => str.charAt(n - 1)).join('');
+        // Sort and select the top `beamWidth` candidates
+        nextCandidates.sort((a, b) => b.score - a.score); // Sort descending by score
+        candidates = nextCandidates.slice(0, beamWidth); // Keep only the top `beamWidth` candidates
+    }
 
-  return { transformed, originalIndex };
+    return candidates; // Return the final candidates after the search
 }
-const input = "banana$";
-const { transformed, originalIndex } = burrowsWheelerTransform(input);
 
-console.log("Input:", input);
-console.log("BWT:", transformed);
-console.log("Original index:", originalIndex);
+// Example functions you need to implement:
+function generateNextStates(state: string): string[] {
+    // Implement your own logic to generate new states from the current state
+    return []; // Replace with actual logic
+}
+
+function scoreCandidate(state: string): number {
+    // Implement your own scoring logic for the candidates
+    return Math.random(); // Replace with actual scoring logic
+}
+
+// Usage
+const initialState = "start";
+const maxSteps = 5;
+const beamWidth = 3;
+
+const bestCandidates = beamSearch(initialState, maxSteps, beamWidth);
+console.log(bestCandidates);
