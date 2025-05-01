@@ -1,39 +1,67 @@
-function topologicalSort(graph: Map<string, string[]>): string[] {
-  const visited = new Set<string>();
-  const stack: string[] = [];
-  const tempMark = new Set<string>(); // For cycle detection
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null = null;
+  right: TreeNode<T> | null = null;
 
-  function visit(node: string) {
-    if (tempMark.has(node)) {
-      throw new Error("Graph is not a DAG - cycle detected");
-    }
-    if (!visited.has(node)) {
-      tempMark.add(node);
-      const neighbors = graph.get(node) || [];
-      for (const neighbor of neighbors) {
-        visit(neighbor);
-      }
-      tempMark.delete(node);
-      visited.add(node);
-      stack.push(node);
-    }
+  constructor(value: T) {
+    this.value = value;
   }
-
-  for (const node of graph.keys()) {
-    if (!visited.has(node)) {
-      visit(node);
-    }
-  }
-
-  return stack.reverse(); // reverse to get correct topological order
 }
-const graph = new Map<string, string[]>();
-graph.set("5", ["2", "0"]);
-graph.set("4", ["0", "1"]);
-graph.set("2", ["3"]);
-graph.set("3", ["1"]);
-graph.set("0", []);
-graph.set("1", []);
 
-const order = topologicalSort(graph);
-console.log(order); // Example output: [ '4', '5', '2', '3', '1', '0' ]
+class BinarySearchTree<T> {
+  root: TreeNode<T> | null = null;
+
+  insert(value: T): void {
+    const newNode = new TreeNode(value);
+
+    if (!this.root) {
+      this.root = newNode;
+      return;
+    }
+
+    let current = this.root;
+    while (true) {
+      if (value < current.value) {
+        if (!current.left) {
+          current.left = newNode;
+          break;
+        }
+        current = current.left;
+      } else {
+        if (!current.right) {
+          current.right = newNode;
+          break;
+        }
+        current = current.right;
+      }
+    }
+  }
+
+  contains(value: T): boolean {
+    let current = this.root;
+    while (current) {
+      if (value === current.value) return true;
+      current = value < current.value ? current.left : current.right;
+    }
+    return false;
+  }
+
+  // In-order traversal to print values in ascending order
+  inOrderTraversal(node: TreeNode<T> | null = this.root, visit: (value: T) => void): void {
+    if (!node) return;
+    this.inOrderTraversal(node.left, visit);
+    visit(node.value);
+    this.inOrderTraversal(node.right, visit);
+  }
+}
+const bst = new BinarySearchTree<number>();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(7);
+
+console.log(bst.contains(7)); // true
+console.log(bst.contains(3)); // false
+
+bst.inOrderTraversal(bst.root, console.log); 
+// Outputs: 5, 7, 10, 15
