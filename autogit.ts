@@ -1,26 +1,38 @@
-function selectionSort(arr: number[]): number[] {
-  const n = arr.length;
+class Stack<T> {
+  private items: T[] = [];
 
-  for (let i = 0; i < n - 1; i++) {
-    // Assume the current position is the minimum
-    let minIndex = i;
-
-    // Find the minimum element in the remaining unsorted part
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-
-    // Swap if a smaller element is found
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
+  // Add an element to the top of the stack
+  push(element: T): void {
+    this.items.push(element);
   }
 
-  return arr;
-}
+  // Remove and return the top element of the stack
+  pop(): T | undefined {
+    return this.items.pop();
+  }
 
-// Example usage:
-const array = [64, 25, 12, 22, 11];
-console.log(selectionSort(array));  // Output: [11, 12, 22, 25, 64]
+  // Peek at the top element without removing it
+  peek(): T | undefined {
+    return this.items[this.items.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty(): boolean {
+    return this.items.length === 0;
+  }
+
+  // Get the size of the stack
+  size(): number {
+    return this.items.length;
+  }
+}
+const stack = new Stack<number>();
+
+stack.push(10);
+stack.push(20);
+stack.push(30);
+
+console.log(stack.peek());  // 30
+console.log(stack.pop());   // 30
+console.log(stack.size());  // 2
+console.log(stack.isEmpty()); // false
