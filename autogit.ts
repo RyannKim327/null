@@ -1,29 +1,22 @@
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
+function firstNonRepeatingCharacter(s: string): string {
+    const charCount: { [key: string]: number } = {};
 
-async function fetchUser(userId: number): Promise<User | null> {
-  try {
-    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
-    if (!response.ok) {
-      console.error('Network response was not ok');
-      return null;
+    // Count occurrences of each character
+    for (const char of s) {
+        charCount[char] = (charCount[char] || 0) + 1;
     }
-    const data: User = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Fetch error:', error);
-    return null;
-  }
+
+    // Find the first character that occurs once
+    for (const char of s) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
+
+    return ''; // If no non-repeating character is found, return an empty string
 }
 
-fetchUser(1).then(user => {
-  if (user) {
-    console.log(`User name: ${user.name}, email: ${user.email}`);
-  } else {
-    console.log('User not found');
-  }
-});
+// Example usage:
+const input = "swiss";
+const result = firstNonRepeatingCharacter(input);
+console.log(result); // Output: "w"
