@@ -1,33 +1,20 @@
-function burrowsWheelerTransform(input: string): { transformed: string, originalIndex: number } {
-    // Generate all rotations of the input string
-    const rotations: string[] = [];
-    const len = input.length;
-
-    for (let i = 0; i < len; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
-    }
-
-    // Sort the rotations
-    rotations.sort();
-
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < len; i++) {
-        const rotation = rotations[i];
-        transformed += rotation[len - 1]; // Last character of each sorted rotation
-        if (rotation === input) {
-            originalIndex = i; // Save the index of the original string
-        }
-    }
-
-    return { transformed, originalIndex };
+const decimalNumber = 42;
+const binaryString = decimalNumber.toString(2);
+console.log(binaryString);  // Outputs: "101010"
+function decimalToBinary(decimal: number): string {
+    return decimal.toString(2);
 }
 
-// Example usage
-const inputString = "banana";
-const { transformed, originalIndex } = burrowsWheelerTransform(inputString);
+console.log(decimalToBinary(42)); // "101010"
+function decimalToBinaryManual(decimal: number): string {
+    if (decimal === 0) return '0';
+    let binary = '';
+    let num = decimal;
+    while (num > 0) {
+        binary = (num % 2) + binary;
+        num = Math.floor(num / 2);
+    }
+    return binary;
+}
 
-console.log("Transformed String:", transformed); // Output: "annb$aa"
-console.log("Original Index:", originalIndex);   // Index of the input in the sorted rotations
+console.log(decimalToBinaryManual(42)); // "101010"
