@@ -1,58 +1,60 @@
-type Graph<T> = {
-    [key: string]: T[]; // Adjacency list representation
-};
+function rabinKarp(text: string, pattern: string): number[] {
+  const result: number[] = [];
 
-function breadthLimitedSearch<T>(
-    graph: Graph<T>,
-    startNode: string,
-    depthLimit: number,
-    target: T
-): string | null {
-    const queue: Array<{ node: string; depth: number }> = []; // Queue to hold nodes to visit along with their depth
-    const visited: Set<string> = new Set(); // Set to keep track of visited nodes
+  const m = pattern.length;
+  const n = text.length;
 
-    queue.push({ node: startNode, depth: 0 }); // Start with the initial node
+  if (m > n) return result; // pattern longer than text, no matches
 
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node and depth
+  const base = 256; // number of possible characters (extended ASCII)
+  const prime = 101; // a prime number for modulo to reduce collisions
 
-        if (depth > depthLimit) {
-            continue; // Skip nodes that are beyond the depth limit
+  let patternHash = 0;
+  let textHash = 0;
+  let h = 1;
+
+  // The value of h would be "base^(m-1) % prime"
+  for (let i = 0; i < m - 1; i++) {
+    h = (h * base) % prime;
+  }
+
+  // Calculate the hash value of pattern and first window of text
+  for (let i = 0; i < m; i++) {
+    patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
+    textHash = (base * textHash + text.charCodeAt(i)) % prime;
+  }
+
+  // Slide the pattern over text one by one
+  for (let i = 0; i <= n - m; i++) {
+    // Check the hash values of current window of text and pattern
+    if (patternHash === textHash) {
+      // Check for characters one by one to avoid spurious hit
+      let match = true;
+      for (let j = 0; j < m; j++) {
+        if (text.charAt(i + j) !== pattern.charAt(j)) {
+          match = false;
+          break;
         }
-        
-        if (visited.has(node)) {
-            continue; // Skip nodes already visited
-        }
-
-        visited.add(node); // Mark the current node as visited
-
-        // Check if the current node is the target
-        if (node === target) {
-            return node; // Return the target node if found
-        }
-
-        // If not at the depth limit, enqueue the children
-        if (depth < depthLimit) {
-            const neighbors = graph[node]; // Get the neighbors of the current node
-            for (const neighbor of neighbors) {
-                queue.push({ node: neighbor, depth: depth + 1 }); // Add each neighbor to the queue
-            }
-        }
+      }
+      if (match) result.push(i);
     }
 
-    return null; // Return null if the target node is not found
+    // Calculate hash value for next window of text:
+    // Remove leading digit, add trailing digit
+    if (i < n - m) {
+      textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
+
+      // We might get negative value of textHash, convert it to positive
+      if (textHash < 0) {
+        textHash += prime;
+      }
+    }
+  }
+
+  return result;
 }
+const text = "abracadabra";
+const pattern = "abra";
 
-// Example Usage:
-
-const graph: Graph<string> = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: [],
-    F: []
-};
-
-const result = breadthLimitedSearch(graph, 'A', 2, 'E');
-console.log(result); // Output: 'E'
+const occurrences = rabinKarp(text, pattern);
+console.log(occurrences); // Output: [0, 7]
