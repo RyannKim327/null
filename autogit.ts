@@ -1,30 +1,22 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+function quicksort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: arrays with 0 or 1 element are already sorted
+  }
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted part
-        let minIndex = i;
+  const pivot = arr[arr.length - 1]; // Choosing the last element as pivot
+  const left: number[] = [];
+  const right: number[] = [];
 
-        // Iterate through the unsorted part of the array
-        for (let j = i + 1; j < n; j++) {
-            // Update the minIndex if a smaller element is found
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-
-        // If minIndex is not the position of the current element, swap them
-        if (minIndex !== i) {
-            const temp = arr[i];
-            arr[i] = arr[minIndex];
-            arr[minIndex] = temp;
-        }
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]); // Elements less than pivot
+    } else {
+      right.push(arr[i]); // Elements greater or equal to pivot
     }
+  }
 
-    return arr;
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
-
-// Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+const nums = [3, 6, 1, 8, 4, 5];
+const sorted = quicksort(nums);
+console.log(sorted); // Output: [1, 3, 4, 5, 6, 8]
