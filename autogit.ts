@@ -1,36 +1,24 @@
-// Example async function to connect to an Android backend API
-async function fetchAndroidData(): Promise<any> {
-  try {
-    const response = await fetch('http://192.168.1.100:8080/api/data', {
-      method: 'GET', // Or POST, PUT, etc.
-      headers: {
-        'Content-Type': 'application/json',
-        // Add auth tokens or other headers if needed
-      },
-    });
+function insertionSort(arr: number[]): number[] {
+    // Create a copy of the array to avoid mutating the original
+    const sortedArr = arr.slice();
 
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status}`);
+    for (let i = 1; i < sortedArr.length; i++) {
+        let key = sortedArr[i];
+        let j = i - 1;
+
+        // Move elements of sortedArr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && sortedArr[j] > key) {
+            sortedArr[j + 1] = sortedArr[j];
+            j--;
+        }
+        sortedArr[j + 1] = key;
     }
 
-    const data = await response.json();
-    // Process data received from Android backend
-    return data;
-  } catch (error) {
-    console.error('Failed to fetch data from Android device:', error);
-    throw error;
-  }
+    return sortedArr;
 }
 
-// Usage example inside an async React component or function
-async function runAsyncTask() {
-  try {
-    const result = await fetchAndroidData();
-    console.log('Received data:', result);
-  } catch (e) {
-    console.log('Error during async connection:', e);
-  }
-}
-
-// Run the example task
-runAsyncTask();
+// Example usage:
+const unsorted = [5, 2, 9, 1, 5, 6];
+const sorted = insertionSort(unsorted);
+console.log(sorted); // Output: [1, 2, 5, 5, 6, 9]
