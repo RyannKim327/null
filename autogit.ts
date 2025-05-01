@@ -1,23 +1,29 @@
-function factorial(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers");
-    }
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * factorial(n - 1);
-}
+function burrowsWheelerTransform(input: string): { transformed: string; index: number } {
+    const length = input.length;
+    const rotations: string[] = [];
 
-console.log(factorial(5)); // Outputs 120
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers");
+    // Generate all rotations of the input string
+    for (let i = 0; i < length; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
     }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
 
-console.log(factorialIterative(5)); // Outputs 120
+    // Sort all rotations lexicographically
+    rotations.sort();
+
+    // The transformed string is the concatenation of the last characters of each rotation
+    let transformed = '';
+    let index = -1;
+    for (let i = 0; i < length; i++) {
+        transformed += rotations[i].charAt(length - 1);
+        if (rotations[i] === input) {
+            index = i;
+        }
+    }
+
+    return { transformed, index };
+}
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log(`Transformed: ${transformed}`); // Should output: "annb$aa" normally but no $ here
+console.log(`Index of original string in sorted rotations: ${index}`);
+const inputWithEOF = input + '$';
