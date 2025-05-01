@@ -1,67 +1,46 @@
-type Edge = {
-    from: number;
-    to: number;
-    weight: number;
-};
-
-class Graph {
-    edges: Edge[];
-    numVertices: number;
-
-    constructor(numVertices: number) {
-        this.numVertices = numVertices;
-        this.edges = [];
-    }
-
-    addEdge(from: number, to: number, weight: number) {
-        this.edges.push({ from, to, weight });
-    }
-
-    bellmanFord(source: number): number[] | null {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.numVertices).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax edges repeatedly
-        for (let i = 0; i < this.numVertices - 1; i++) {
-            for (const edge of this.edges) {
-                const { from, to, weight } = edge;
-                if (distances[from] !== Infinity && distances[from] + weight < distances[to]) {
-                    distances[to] = distances[from] + weight;
-                }
-            }
-        }
-
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            const { from, to, weight } = edge;
-            if (distances[from] !== Infinity && distances[from] + weight < distances[to]) {
-                // If we can still relax, then we have a negative weight cycle
-                return null; // Indicating that there's a negative weight cycle
-            }
-        }
-
-        return distances;
-    }
+function getMax(arr: number[]): number {
+  return Math.max(...arr);
 }
 
-// Example usage:
-const g = new Graph(5);
-g.addEdge(0, 1, -1);
-g.addEdge(0, 2, 4);
-g.addEdge(1, 2, 3);
-g.addEdge(1, 3, 2);
-g.addEdge(1, 4, 2);
-g.addEdge(3, 2, 5);
-g.addEdge(3, 1, 1);
-g.addEdge(4, 3, -3);
+function countingSort(arr: number[], exp: number): number[] {
+  const output = new Array(arr.length).fill(0);
+  const count = new Array(10).fill(0);
 
-const distances = g.bellmanFord(0);
-if (distances) {
-    console.log("Vertex Distance from Source");
-    for (let i = 0; i < distances.length; i++) {
-        console.log(`Vertex ${i}: ${distances[i]}`);
-    }
-} else {
-    console.log("Graph contains a negative weight cycle");
+  // Count occurrences of each digit in the current place (exp)
+  for (let i = 0; i < arr.length; i++) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    count[digit]++;
+  }
+
+  // Update counts to positions
+  for (let i = 1; i < 10; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Build the output array backwards to maintain stability
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    output[count[digit] - 1] = arr[i];
+    count[digit]--;
+  }
+
+  return output;
 }
+
+function radixSort(arr: number[]): number[] {
+  const max = getMax(arr);
+
+  let exp = 1;
+  let sortedArr = [...arr]; // copy to avoid mutating input
+
+  while (Math.floor(max / exp) > 0) {
+    sortedArr = countingSort(sortedArr, exp);
+    exp *= 10;
+  }
+
+  return sortedArr;
+}
+
+// Example usage
+const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(numbers));
