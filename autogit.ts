@@ -1,10 +1,21 @@
-npm install node-cron
-npm install --save-dev @types/node-cron
-import cron from "node-cron";
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
 
-cron.schedule("* * * * *", () => {
-  const now = new Date();
-  console.log(`Current time: ${now.toISOString()}`);
-});
+async function fetchUser(userId: number): Promise<void> {
+  try {
+    const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const user: User = await response.json();
+    console.log(`User's name is: ${user.name}`);
+  } catch (error) {
+    console.error('Failed to fetch user:', error);
+  }
+}
 
-console.log("Cron job started, logging time every minute.");
+fetchUser(1);
