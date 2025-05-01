@@ -1,26 +1,45 @@
-function findSecondLargest(arr: number[]): number | null {
-  if (arr.length < 2) return null; // Not enough elements
+type Graph = Record<string, string[]>;
 
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+function depthLimitedSearch(
+  graph: Graph,
+  start: string,
+  goal: string,
+  limit: number
+): string[] | null {
+  // Stack holds tuples: [node, path-so-far, depth]
+  const stack: Array<[string, string[], number]> = [[start, [start], 0]];
+  const visited = new Set<string>();
 
-  for (const num of arr) {
-    if (num > largest) {
-      secondLargest = largest;
-      largest = num;
-    } else if (num > secondLargest && num < largest) {
-      secondLargest = num;
+  while (stack.length > 0) {
+    const [node, path, depth] = stack.pop()!;
+
+    if (node === goal) {
+      return path;
+    }
+
+    if (depth < limit) {
+      // Mark as visited at this depth context
+      visited.add(node);
+
+      const neighbors = graph[node] || [];
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          stack.push([neighbor, [...path, neighbor], depth + 1]);
+        }
+      }
     }
   }
 
-  return secondLargest === -Infinity ? null : secondLargest;
+  return null; // goal not found within limit
 }
+const graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
 
-// Example usage:
-console.log(findSecondLargest([10, 5, 8, 12, 3]));  // Output: 10
-function findSecondLargest(arr: number[]): number | null {
-  const uniqueSorted = [...new Set(arr)].sort((a, b) => b - a);
-  return uniqueSorted.length > 1 ? uniqueSorted[1] : null;
-}
-
-console.log(findSecondLargest([10, 5, 8, 12, 3]));  // Output: 10
+const result = depthLimitedSearch(graph, "A", "F", 2);
+console.log(result); // Could print something like ['A', 'C', 'F']
