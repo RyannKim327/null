@@ -1,46 +1,59 @@
-function getMax(arr: number[]): number {
-  return Math.max(...arr);
+function createBadCharacterTable(pattern: string): { [char: string]: number } {
+    const table: { [char: string]: number } = {};
+    const patternLength = pattern.length;
+
+    // Initialize the table with pattern length
+    for (let i = 0; i < 256; i++) {
+        table[String.fromCharCode(i)] = patternLength;
+    }
+
+    // Update the table with the actual distances
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
+    }
+
+    return table;
 }
 
-function countingSort(arr: number[], exp: number): number[] {
-  const output = new Array(arr.length).fill(0);
-  const count = new Array(10).fill(0);
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
 
-  // Count occurrences of each digit in the current place (exp)
-  for (let i = 0; i < arr.length; i++) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    count[digit]++;
-  }
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
+    }
 
-  // Update counts to positions
-  for (let i = 1; i < 10; i++) {
-    count[i] += count[i - 1];
-  }
+    const badCharTable = createBadCharacterTable(pattern);
+    let index = 0;
 
-  // Build the output array backwards to maintain stability
-  for (let i = arr.length - 1; i >= 0; i--) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    output[count[digit] - 1] = arr[i];
-    count[digit]--;
-  }
+    while (index <= textLength - patternLength) {
+        let j = patternLength - 1;
 
-  return output;
-}
+        // Start comparing from the end of the pattern
+        while (j >= 0 && text[index + j] === pattern[j]) {
+            j--;
+        }
 
-function radixSort(arr: number[]): number[] {
-  const max = getMax(arr);
+        // If j is less than zero, it means the pattern was found
+        if (j < 0) {
+            return index; // Return the starting index of the found pattern
+        } else {
+            // Shift the pattern based on the last character mismatched
+            const shift = badCharTable[text[index + j]];
+            index += shift; // Move the index based on the bad character table
+        }
+    }
 
-  let exp = 1;
-  let sortedArr = [...arr]; // copy to avoid mutating input
-
-  while (Math.floor(max / exp) > 0) {
-    sortedArr = countingSort(sortedArr, exp);
-    exp *= 10;
-  }
-
-  return sortedArr;
+    return -1; // Pattern not found
 }
 
 // Example usage
-const numbers = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(numbers));
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = boyerMooreHorspool(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found.");
+}
