@@ -1,7 +1,23 @@
-let numbers = [1, 2, 3, 4, 5];
-numbers.reverse();
-console.log(numbers); // Output: [5, 4, 3, 2, 1]
-let numbers = [1, 2, 3, 4, 5];
-let reversedNumbers = numbers.slice().reverse();
-console.log(numbers);         // Output: [1, 2, 3, 4, 5]
-console.log(reversedNumbers); // Output: [5, 4, 3, 2, 1]
+// Create an array
+let myArray: number[] = [1, 2, 3, 4, 5];
+
+// Log the original array
+console.log("Original array:", myArray);
+
+// Reverse the array
+myArray.reverse();
+
+// Log the reversed array
+console.log("Reversed array:", myArray);
+// Create an array
+let originalArray: number[] = [1, 2, 3, 4, 5];
+
+// Log the original array
+console.log("Original array:", originalArray);
+
+// Create a new reversed array without modifying the original
+let reversedArray: number[] = [...originalArray].reverse();
+
+// Log both arrays
+console.log("Reversed array:", reversedArray);
+console.log("After reversing, original array:", originalArray);
