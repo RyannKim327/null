@@ -1,46 +1,68 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null = null;
+  right: TreeNode<T> | null = null;
 
-  constructor(val: number, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
+  constructor(value: T) {
+    this.value = value;
   }
 }
 
-function getLength(head: ListNode | null): number {
-  let length = 0;
-  while (head) {
-    length++;
-    head = head.next;
-  }
-  return length;
-}
+class BinarySearchTree<T> {
+  root: TreeNode<T> | null = null;
 
-function getIntersectionNode(
-  headA: ListNode | null,
-  headB: ListNode | null
-): ListNode | null {
-  let lenA = getLength(headA);
-  let lenB = getLength(headB);
-
-  // Align starting points
-  while (lenA > lenB) {
-    headA = headA!.next;
-    lenA--;
-  }
-  while (lenB > lenA) {
-    headB = headB!.next;
-    lenB--;
+  // Helper function to compare values
+  private compare(a: T, b: T): number {
+    if (a < b) return -1;
+    else if (a > b) return 1;
+    else return 0;
   }
 
-  // Move both pointers and check for intersection
-  while (headA && headB) {
-    if (headA === headB) {
-      return headA; // Intersection found
+  insert(value: T): void {
+    const newNode = new TreeNode(value);
+    if (!this.root) {
+      this.root = newNode;
+      return;
     }
-    headA = headA.next;
-    headB = headB.next;
+    this.insertNode(this.root, newNode);
   }
-  return null; // No intersection
+
+  private insertNode(node: TreeNode<T>, newNode: TreeNode<T>): void {
+    if (this.compare(newNode.value, node.value) < 0) {
+      // Go left
+      if (node.left === null) node.left = newNode;
+      else this.insertNode(node.left, newNode);
+    } else {
+      // Go right
+      if (node.right === null) node.right = newNode;
+      else this.insertNode(node.right, newNode);
+    }
+  }
+
+  search(value: T): boolean {
+    return this.searchNode(this.root, value);
+  }
+
+  private searchNode(node: TreeNode<T> | null, value: T): boolean {
+    if (!node) return false;
+    const comp = this.compare(value, node.value);
+    if (comp === 0) return true;
+    else if (comp < 0) return this.searchNode(node.left, value);
+    else return this.searchNode(node.right, value);
+  }
+
+  // In-order traversal to get sorted values
+  inorder(): T[] {
+    const result: T[] = [];
+    this.inorderTraversal(this.root, result);
+    return result;
+  }
+
+  private inorderTraversal(node: TreeNode<T> | null, result: T[]): void {
+    if (node !== null) {
+      this.inorderTraversal(node.left, result);
+      result.push(node.value);
+      this.inorderTraversal(node.right, result);
+    }
+  }
 }
