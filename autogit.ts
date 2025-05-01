@@ -1,16 +1,15 @@
-function reverseString(input: string): string {
-    return input.split('').reverse().join('');
+function isPalindrome(str: string): boolean {
+  // Normalize the string: remove non-alphanumeric characters and convert to lowercase
+  const normalized = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+  
+  // Reverse the normalized string
+  const reversed = normalized.split('').reverse().join('');
+  
+  // Check if the normalized string is the same as its reverse
+  return normalized === reversed;
 }
 
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-
-console.log(reversedString); // Output: !dlroW ,olleH
-function reverseString(input: string): string {
-    return Array.from(input).reverse().join('');
-}
-
-const originalString = "Hello, 🌍!";
-const reversedString = reverseString(originalString);
-
-console.log(reversedString); // Output: !🌍 ,olleH
+// Example usage:
+console.log(isPalindrome("Racecar"));     // true
+console.log(isPalindrome("Hello"));       // false
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
