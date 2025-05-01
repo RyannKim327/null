@@ -1,62 +1,27 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the minimum is the first unsorted element
+        let minIndex = i;
 
-class LinkedList {
-    head: ListNode | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Function to add a new node to the list
-    add(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+        // Find the index of the minimum element in the unsorted portion of the array
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
         }
 
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
+        // Swap the found minimum element with the first unsorted element
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         }
-        current.next = newNode;
     }
-
-    // Function to find the middle node
-    findMiddle(): ListNode | null {
-        let slow = this.head;
-        let fast = this.head;
-
-        if (!this.head) {
-            return null; // If the list is empty
-        }
-
-        while (fast && fast.next) {
-            slow = slow!.next;      // Move slow by 1
-            fast = fast.next.next;  // Move fast by 2
-        }
-
-        return slow;  // Slow is now at the middle element
-    }
+    
+    return arr;
 }
 
 // Example usage:
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
-list.add(5);
-
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
-}
+const arr = [64, 25, 12, 22, 11];
+const sortedArr = selectionSort(arr);
+console.log("Sorted array:", sortedArr);
