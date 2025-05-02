@@ -1,51 +1,34 @@
-function buildLPS(pattern: string): number[] {
-    const lps = Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    return lps;
+// Importing necessary typings for fetch
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-function kmpSearch(text: string, pattern: string): number[] {
-    const lps = buildLPS(pattern);
-    const result: number[] = [];
+async function fetchPosts(): Promise<Post[]> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
 
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-            if (j === pattern.length) {
-                result.push(i - j);
-                j = lps[j - 1];
-            }
-        } else {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
+        // Check if the response is okay (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
         }
+
+        // Parse the JSON data from the response
+        const posts: Post[] = await response.json();
+        return posts;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        return [];
     }
-    return result;
 }
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log(matches); // Output: [10]
+
+// Example usage
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched Posts:', posts);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
