@@ -1,68 +1,44 @@
-type Graph = Map<number, number[]>;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-function topologicalSort(edges: [number, number][]): number[] | null {
-  // Build adjacency list
-  const graph: Graph = new Map();
-  for (const [u, v] of edges) {
-    if (!graph.has(u)) graph.set(u, []);
-    if (!graph.has(v)) graph.set(v, []);
-    graph.get(u)!.push(v);
-  }
-
-  const visited = new Map<number, boolean>(); // true = visited, false = visiting (for cycle detection)
-  const result: number[] = [];
-
-  function dfs(node: number): boolean {
-    if (visited.get(node) === false) {
-      // Found a cycle
-      return false;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    if (visited.get(node) === true) {
-      // Already visited this node fully
-      return true;
-    }
-
-    // Mark as visiting
-    visited.set(node, false);
-
-    for (const neighbor of graph.get(node)!) {
-      if (!dfs(neighbor)) {
-        return false;
-      }
-    }
-
-    // Mark as visited
-    visited.set(node, true);
-    result.push(node);
-    return true;
-  }
-
-  for (const node of graph.keys()) {
-    if (!visited.has(node)) {
-      if (!dfs(node)) {
-        return null; // Cycle detected; no valid topological ordering
-      }
-    }
-  }
-
-  // Reverse because we add nodes after visiting neighbors
-  return result.reverse();
 }
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
 
-// Example usage:
-const edges = [
-  [5, 2],
-  [5, 0],
-  [4, 0],
-  [4, 1],
-  [2, 3],
-  [3, 1],
-];
+    // Helper function to compute depth and update the diameter
+    function depth(node: TreeNode | null): number {
+        if (node === null) {
+            return 0; // Base case: depth of null node is 0
+        }
 
-const sorted = topologicalSort(edges);
-if (sorted) {
-  console.log("Topological order:", sorted);
-} else {
-  console.log("Graph has a cycle, no valid topological sort.");
+        // Recursively get the depth of the left and right subtree
+        const leftDepth = depth(node.left);
+        const rightDepth = depth(node.right);
+
+        // Update the diameter if the path through the current node is larger
+        diameter = Math.max(diameter, leftDepth + rightDepth);
+
+        // Return the height of the current node
+        return Math.max(leftDepth, rightDepth) + 1;
+    }
+
+    depth(root); // Start the depth-first search
+    return diameter; // Return the maximum diameter found
 }
+// Create a test binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+// Calculate diameter
+const result = diameterOfBinaryTree(root);
+console.log("Diameter of the binary tree:", result); // Output: 3
