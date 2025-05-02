@@ -1,47 +1,23 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) {
-        return null;
-    }
+    // Find the shortest string
+    let shortest = strs.reduce((a, b) => a.length <= b.length ? a : b);
 
-    let pointerA: ListNode | null = headA;
-    let pointerB: ListNode | null = headB;
-
-    // Traverse both lists until they meet or both reach the end
-    while (pointerA !== pointerB) {
-        pointerA = pointerA ? pointerA.next : headB;  // Switch to the other list or null
-        pointerB = pointerB ? pointerB.next : headA;  // Switch to the other list or null
+    for (let i = 0; i < shortest.length; i++) {
+        const char = shortest[i];
+        for (let str of strs) {
+            if (str[i] !== char) {
+                // Mismatch found, return prefix up to this point
+                return shortest.substring(0, i);
+            }
+        }
     }
 
-    // Either they met at intersection or both are null
-    return pointerA; 
+    // If no mismatch, the entire shortest string is the prefix
+    return shortest;
 }
-// Create two intersecting linked lists
-const common = new ListNode(8);
-common.next = new ListNode(4);
-common.next.next = new ListNode(5);
 
-const listA = new ListNode(4);
-listA.next = new ListNode(1);
-listA.next.next = common;
-
-const listB = new ListNode(5);
-listB.next = new ListNode(0);
-listB.next.next = new ListNode(1);
-listB.next.next.next = common;
-
-// Find intersection
-const intersectionNode = getIntersectionNode(listA, listB);
-if (intersectionNode) {
-    console.log("Intersection at node with value:", intersectionNode.value);  // Output: Intersection at node with value: 8
-} else {
-    console.log("No intersection.");
-}
+// Example usage:
+const input = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(input));  // Output: "fl"
