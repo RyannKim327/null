@@ -1,58 +1,66 @@
 class Node<T> {
-  value: T;
+  data: T;
   next: Node<T> | null = null;
 
-  constructor(value: T) {
-    this.value = value;
+  constructor(data: T) {
+    this.data = data;
   }
 }
-
 class Queue<T> {
   private head: Node<T> | null = null;
   private tail: Node<T> | null = null;
-  private length: number = 0;
+  private length = 0;
 
-  enqueue(value: T): void {
-    const newNode = new Node(value);
-    if (!this.tail) {
-      // Empty queue
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
+  // Add item to the tail
+  enqueue(data: T): void {
+    const newNode = new Node(data);
+    if (this.tail) {
       this.tail.next = newNode;
-      this.tail = newNode;
     }
+    this.tail = newNode;
+
+    if (!this.head) {
+      this.head = newNode;
+    }
+
     this.length++;
   }
 
+  // Remove item from the head
   dequeue(): T | null {
-    if (!this.head) return null; // Empty queue
-    const dequeuedValue = this.head.value;
+    if (!this.head) return null;
+
+    const removedData = this.head.data;
     this.head = this.head.next;
     if (!this.head) {
-      // Queue is now empty, reset tail as well
-      this.tail = null;
+      this.tail = null; // queue is empty
     }
     this.length--;
-    return dequeuedValue;
+    return removedData;
   }
 
+  // Peek at the front item without removing
   peek(): T | null {
-    return this.head ? this.head.value : null;
+    return this.head ? this.head.data : null;
   }
 
-  size(): number {
-    return this.length;
-  }
-
+  // Check if queue is empty
   isEmpty(): boolean {
     return this.length === 0;
   }
+
+  // Get queue size
+  size(): number {
+    return this.length;
+  }
 }
 const queue = new Queue<number>();
+
 queue.enqueue(10);
 queue.enqueue(20);
+queue.enqueue(30);
+
 console.log(queue.dequeue()); // 10
 console.log(queue.peek());    // 20
-console.log(queue.size());    // 1
+console.log(queue.size());    // 2
 console.log(queue.isEmpty()); // false
