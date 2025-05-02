@@ -1,39 +1,26 @@
-// HTML structure
-const appContainer = document.createElement('div');
-document.body.appendChild(appContainer);
+class ListNode {
+  value: any;
+  next: ListNode | null;
 
-// Create a text input and a button
-const input = document.createElement('input');
-input.type = 'text';
-input.placeholder = 'Type something...';
+  constructor(value: any, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
 
-const button = document.createElement('button');
-button.textContent = 'Submit';
+function getLinkedListLength(head: ListNode | null): number {
+  let length = 0;
+  let current = head;
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
+  return length;
+}
 
-// Create a paragraph to display the output
-const output = document.createElement('p');
+// Example usage:
+const node3 = new ListNode(3);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
 
-// Append elements to the app container
-appContainer.appendChild(input);
-appContainer.appendChild(button);
-appContainer.appendChild(output);
-
-// Add an event listener for the button
-button.addEventListener('click', () => {
-    const userInput: string = input.value; // Get the value from the input
-    output.textContent = `You entered: ${userInput}`; // Display the input in the output paragraph
-    input.value = ''; // Clear input field
-});
-
-// For a complete HTML document, the below could be in a script tag in an HTML file
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeScript Input Example</title>
-</head>
-<body>
-    <script src="path_to_your_compiled_javascript.js"></script>
-</body>
-</html>
+console.log(getLinkedListLength(node1)); // Output: 3
