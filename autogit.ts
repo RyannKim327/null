@@ -1,57 +1,29 @@
-class TrieNode {
-  children: Map<string, TrieNode>;
-  isEndOfWord: boolean;
+function isSorted(arr: number[]): boolean {
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < arr[i - 1]) return false;
+  }
+  return true;
+}
 
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
+function randomShuffle(arr: number[]): void {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 }
 
-class Trie {
-  root: TrieNode;
-
-  constructor() {
-    this.root = new TrieNode();
+function randomSort(arr: number[]): number[] {
+  const arrayCopy = [...arr];
+  let attempts = 0;
+  while (!isSorted(arrayCopy)) {
+    randomShuffle(arrayCopy);
+    attempts++;
   }
-
-  insert(word: string): void {
-    let current = this.root;
-    for (const char of word) {
-      if (!current.children.has(char)) {
-        current.children.set(char, new TrieNode());
-      }
-      current = current.children.get(char)!;
-    }
-    current.isEndOfWord = true;
-  }
-
-  search(word: string): boolean {
-    let current = this.root;
-    for (const char of word) {
-      if (!current.children.has(char)) {
-        return false;
-      }
-      current = current.children.get(char)!;
-    }
-    return current.isEndOfWord;
-  }
-
-  startsWith(prefix: string): boolean {
-    let current = this.root;
-    for (const char of prefix) {
-      if (!current.children.has(char)) {
-        return false;
-      }
-      current = current.children.get(char)!;
-    }
-    return true;
-  }
+  console.log(`Sorted after ${attempts} shuffles`);
+  return arrayCopy;
 }
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("helium");
-console.log(trie.search("hello"));    // true
-console.log(trie.search("helix"));    // false
-console.log(trie.startsWith("hel"));  // true
-console.log(trie.startsWith("hez"));  // false
+
+// Example usage
+const unsorted = [3, 1, 4, 2];
+const sorted = randomSort(unsorted);
+console.log(sorted);
