@@ -1,23 +1,35 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: arrays with 0 or 1 element are already sorted
+  }
 
-numbers.sort((a, b) => a - b);
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+  return merge(mergeSort(left), mergeSort(right));
+}
 
-numbers.sort((a, b) => b - a);
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0;
+  let j = 0;
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
-const ascendingSort = (arr: number[]): number[] => {
-    return arr.sort((a, b) => a - b);
-};
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
 
-const descendingSort = (arr: number[]): number[] => {
-    return arr.sort((a, b) => b - a);
-};
+  // Add remaining elements from left or right
+  return result.concat(left.slice(i)).concat(right.slice(j));
+}
 
-const numbers: number[] = [5, 3, 8, 1, 2];
-
-console.log("Original:", numbers);
-console.log("Ascending:", ascendingSort([...numbers])); // Use spread operator to keep original array unchanged
-console.log("Descending:", descendingSort([...numbers])); // Use spread operator to keep original array unchanged
+// Example usage:
+const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray);
