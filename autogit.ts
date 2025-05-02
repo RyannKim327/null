@@ -1,44 +1,72 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class TarjanSCC {
+  private graph: Map<number, number[]>;  // adjacency list
+  private index: number = 0;              // index counter
+  private indices: Map<number, number>;  // node -> index
+  private lowLinks: Map<number, number>; // node -> low-link
+  private stack: number[] = [];
+  private onStack: Set<number> = new Set();
+  private sccs: number[][] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+  constructor(graph: Map<number, number[]>) {
+    this.graph = graph;
+    this.indices = new Map();
+    this.lowLinks = new Map();
+  }
+
+  public run(): number[][] {
+    for (const node of this.graph.keys()) {
+      if (!this.indices.has(node)) {
+        this.strongConnect(node);
+      }
     }
-}
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
+    return this.sccs;
+  }
 
-    // Helper function to compute depth and update the diameter
-    function depth(node: TreeNode | null): number {
-        if (node === null) {
-            return 0; // Base case: depth of null node is 0
+  private strongConnect(node: number) {
+    this.indices.set(node, this.index);
+    this.lowLinks.set(node, this.index);
+    this.index++;
+    this.stack.push(node);
+    this.onStack.add(node);
+
+    // Process all neighbors
+    const neighbors = this.graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      if (!this.indices.has(neighbor)) {
+        // Neighbor not visited; recurse
+        this.strongConnect(neighbor);
+        this.lowLinks.set(node, Math.min(this.lowLinks.get(node)!, this.lowLinks.get(neighbor)!));
+      } else if (this.onStack.has(neighbor)) {
+        // Neighbor in stack, update low-link
+        this.lowLinks.set(node, Math.min(this.lowLinks.get(node)!, this.indices.get(neighbor)!));
+      }
+    }
+
+    // If node is a root node, pop stack and generate an SCC
+    if (this.lowLinks.get(node) === this.indices.get(node)) {
+      const scc: number[] = [];
+      let w: number | undefined;
+      do {
+        w = this.stack.pop();
+        if (w !== undefined) {
+          this.onStack.delete(w);
+          scc.push(w);
         }
-
-        // Recursively get the depth of the left and right subtree
-        const leftDepth = depth(node.left);
-        const rightDepth = depth(node.right);
-
-        // Update the diameter if the path through the current node is larger
-        diameter = Math.max(diameter, leftDepth + rightDepth);
-
-        // Return the height of the current node
-        return Math.max(leftDepth, rightDepth) + 1;
+      } while (w !== node && w !== undefined);
+      this.sccs.push(scc);
     }
-
-    depth(root); // Start the depth-first search
-    return diameter; // Return the maximum diameter found
+  }
 }
-// Create a test binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const graph = new Map<number, number[]>([
+  [1, [2]],
+  [2, [3, 4]],
+  [3, [1]],
+  [4, [5]],
+  [5, [4]],
+]);
 
-// Calculate diameter
-const result = diameterOfBinaryTree(root);
-console.log("Diameter of the binary tree:", result); // Output: 3
+const tarjan = new TarjanSCC(graph);
+const sccs = tarjan.run();
+
+console.log(sccs);
+// Example output (order may vary): [[3,2,1], [5,4]]
