@@ -1,18 +1,19 @@
-function countChar(str: string, charToCount: string): number {
-  let count = 0;
-  for (const char of str) {
-    if (char === charToCount) {
-      count++;
-    }
+import * as readline from 'readline';
+
+// Create interface for reading input from stdin
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+rl.question('Enter a number: ', (answer) => {
+  const num = Number(answer);
+
+  if (isNaN(num)) {
+    console.log('That is not a valid number!');
+  } else {
+    console.log(`The square of ${num} is ${num * num}.`);
   }
-  return count;
-}
 
-// Example:
-console.log(countChar("hello world", "l")); // Output: 3
-function countChar(str: string, charToCount: string): number {
-  return str.split(charToCount).length - 1;
-}
-
-// Example:
-console.log(countChar("hello world", "l")); // Output: 3
+  rl.close();
+});
