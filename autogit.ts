@@ -1,48 +1,57 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
     }
 }
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
+class Trie {
+    root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    // Get the depth of the left and right subtrees and add 1 for the current node
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-function maxDepthIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: the depth of an empty tree is 0
-    }
-
-    let depth = 0;
-    const queue: Array<TreeNode | null> = [root];
-
-    while (queue.length > 0) {
-        let levelSize = queue.length;
-        
-        // Process all nodes at the current depth level
-        for (let i = 0; i < levelSize; i++) {
-            const node = queue.shift(); // Dequeue the front node
-
-            // Enqueue child nodes
-            if (node?.left) queue.push(node.left);
-            if (node?.right) queue.push(node.right);
+    insert(word: string): void {
+        let currentNode = this.root;
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!;
         }
-
-        depth++; // Increase depth after processing all nodes at the current level
+        currentNode.isEndOfWord = true;
     }
 
-    return depth;
+    search(word: string): boolean {
+        let currentNode = this.root;
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return false;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return currentNode.isEndOfWord;
+    }
+
+    startsWith(prefix: string): boolean {
+        let currentNode = this.root;
+        for (const char of prefix) {
+            if (!currentNode.children.has(char)) {
+                return false;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return true;
+    }
 }
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // true
+console.log(trie.search("app"));     // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app"));     // true
