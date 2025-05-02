@@ -1,20 +1,42 @@
-function maxSubArray(nums: number[]): number {
-    // Initialize currentSum and maxSum
-    let currentSum = nums[0];
-    let maxSum = nums[0];
+class ListNode {
+  val: number;
+  next: ListNode | null;
 
-    // Loop through the array starting from the second element
-    for (let i = 1; i < nums.length; i++) {
-        // Update currentSum to be the maximum of the current number itself or the current number plus the previous currentSum
-        currentSum = Math.max(nums[i], currentSum + nums[i]);
-        
-        // Update maxSum to be the maximum of itself or the currentSum
-        maxSum = Math.max(maxSum, currentSum);
-    }
-
-    return maxSum;
+  constructor(val: number) {
+    this.val = val;
+    this.next = null;
+  }
 }
 
-// Example usage:
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubArray(array)); // Output: 6 (subarray is [4, -1, 2, 1])
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+  if (!headA || !headB) return null;
+
+  let p1: ListNode | null = headA;
+  let p2: ListNode | null = headB;
+
+  while (p1 !== p2) {
+    p1 = p1 ? p1.next : headB;
+    p2 = p2 ? p2.next : headA;
+  }
+
+  return p1;  // Can be the intersection node or null if no intersection
+}
+// Creating an example intersection:
+// List A: 1 -> 3 -> 5 \
+//                         7 -> 9
+// List B:      2 -> 6  /
+
+const intersect = new ListNode(7);
+intersect.next = new ListNode(9);
+
+const listA = new ListNode(1);
+listA.next = new ListNode(3);
+listA.next.next = new ListNode(5);
+listA.next.next.next = intersect;
+
+const listB = new ListNode(2);
+listB.next = new ListNode(6);
+listB.next.next = intersect;
+
+const node = getIntersectionNode(listA, listB);
+console.log(node?.val);  // Output: 7
