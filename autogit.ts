@@ -1,25 +1,58 @@
-function findSecondLargest(arr: number[]): number | undefined {
-  if (arr.length < 2) return undefined;
+class Node<T> {
+  value: T;
+  next: Node<T> | null = null;
 
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+  constructor(value: T) {
+    this.value = value;
+  }
+}
+class Queue<T> {
+  private head: Node<T> | null = null;
+  private tail: Node<T> | null = null;
+  private length = 0;
 
-  for (const num of arr) {
-    if (num > largest) {
-      secondLargest = largest;
-      largest = num;
-    } else if (num > secondLargest && num < largest) {
-      secondLargest = num;
+  enqueue(value: T): void {
+    const newNode = new Node(value);
+    if (this.tail) {
+      this.tail.next = newNode;
     }
+    this.tail = newNode;
+
+    if (!this.head) {
+      this.head = newNode;
+    }
+
+    this.length++;
   }
 
-  return secondLargest === -Infinity ? undefined : secondLargest;
-}
+  dequeue(): T | null {
+    if (!this.head) return null;
 
-// Example use:
-const nums = [3, 1, 4, 1, 5, 9, 2];
-console.log(findSecondLargest(nums)); // Outputs: 5
-function findSecondLargestSort(arr: number[]): number | undefined {
-  const uniqueSorted = Array.from(new Set(arr)).sort((a, b) => b - a);
-  return uniqueSorted.length >= 2 ? uniqueSorted[1] : undefined;
+    const value = this.head.value;
+    this.head = this.head.next;
+    if (!this.head) {
+      this.tail = null; // Queue is empty now
+    }
+    this.length--;
+    return value;
+  }
+
+  peek(): T | null {
+    return this.head ? this.head.value : null;
+  }
+
+  isEmpty(): boolean {
+    return this.length === 0;
+  }
+
+  size(): number {
+    return this.length;
+  }
 }
+const queue = new Queue<number>();
+queue.enqueue(5);
+queue.enqueue(10);
+console.log(queue.peek());  // 5
+console.log(queue.dequeue()); // 5
+console.log(queue.size());    // 1
+console.log(queue.isEmpty()); // false
