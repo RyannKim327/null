@@ -1,29 +1,92 @@
-function shellSort(arr: number[]): number[] {
-  let n = arr.length;
+class Graph {
+    private adjList: Map<string, string[]>;
 
-  // Start with a big gap, then reduce the gap
-  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    // Do a gapped insertion sort for this gap size.
-    // The first gap elements arr[0..gap-1] are already in gapped order
-    for (let i = gap; i < n; i++) {
-      // Save arr[i] and make a hole at position i
-      let temp = arr[i];
-      let j = i;
-
-      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      // Put temp (the original arr[i]) in its correct location
-      arr[j] = temp;
+    constructor() {
+        this.adjList = new Map();
     }
-  }
 
-  return arr;
+    addVertex(vertex: string) {
+        this.adjList.set(vertex, []);
+    }
+
+    addEdge(vertex1: string, vertex2: string) {
+        this.adjList.get(vertex1)?.push(vertex2);
+        this.adjList.get(vertex2)?.push(vertex1); // for undirected graph
+    }
+
+    dfsRecursive(start: string, visited: Set<string> = new Set()): void {
+        if (visited.has(start)) {
+            return;
+        }
+        
+        console.log(start); // visit the node
+        visited.add(start); // mark the node as visited
+
+        const neighbors = this.adjList.get(start);
+        if (neighbors) {
+            for (const neighbor of neighbors) {
+                this.dfsRecursive(neighbor, visited);
+            }
+        }
+    }
 }
 
-// Example usage:
-const myArray = [23, 12, 1, 8, 34, 54, 2, 3];
-console.log(shellSort(myArray));
+// Example Usage:
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+
+graph.dfsRecursive("A"); // Output could be A B D C or similar
+class Graph {
+    private adjList: Map<string, string[]>;
+
+    constructor() {
+        this.adjList = new Map();
+    }
+
+    addVertex(vertex: string) {
+        this.adjList.set(vertex, []);
+    }
+
+    addEdge(vertex1: string, vertex2: string) {
+        this.adjList.get(vertex1)?.push(vertex2);
+        this.adjList.get(vertex2)?.push(vertex1); // for undirected graph
+    }
+
+    dfsIterative(start: string): void {
+        const stack: string[] = [start];
+        const visited: Set<string> = new Set();
+
+        while (stack.length > 0) {
+            const vertex = stack.pop()!;
+            if (!visited.has(vertex)) {
+                console.log(vertex); // visit the node
+                visited.add(vertex);
+
+                const neighbors = this.adjList.get(vertex);
+                if (neighbors) {
+                    for (const neighbor of neighbors) {
+                        stack.push(neighbor);
+                    }
+                }
+            }
+        }
+    }
+}
+
+// Example Usage:
+const graph = new Graph();
+graph.addVertex("A");
+graph.addVertex("B");
+graph.addVertex("C");
+graph.addVertex("D");
+graph.addEdge("A", "B");
+graph.addEdge("A", "C");
+graph.addEdge("B", "D");
+
+graph.dfsIterative("A"); // Output could be A C B D or similar
