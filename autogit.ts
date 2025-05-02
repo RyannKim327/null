@@ -1,41 +1,41 @@
-function merge(left: number[], right: number[]): number[] {
-    const merged: number[] = [];
-    let i = 0, j = 0;
+function kthSmallest(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;
+  const sorted = [...arr].sort((a, b) => a - b);
+  return sorted[k - 1];
+}
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+  const pivotValue = arr[pivotIndex];
+  [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]]; // Move pivot to end
+  let storeIndex = left;
 
-    while (i < left.length && j < right.length) {
-        if (left[i] <= right[j]) {
-            merged.push(left[i++]);
-        } else {
-            merged.push(right[j++]);
-        }
+  for (let i = left; i < right; i++) {
+    if (arr[i] < pivotValue) {
+      [arr[i], arr[storeIndex]] = [arr[storeIndex], arr[i]];
+      storeIndex++;
     }
-
-    // Append remaining elements
-    return merged.concat(left.slice(i)).concat(right.slice(j));
+  }
+  [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]]; // Move pivot to final place
+  return storeIndex;
 }
 
-function mergeSortIterative(arr: number[]): number[] {
-    let width = 1;
-    const n = arr.length;
-    let result = arr.slice(); // make a copy to avoid mutating input
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+  if (left === right) return arr[left];
 
-    while (width < n) {
-        const mergedArr: number[] = [];
+  let pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
+  pivotIndex = partition(arr, left, right, pivotIndex);
 
-        for (let i = 0; i < n; i += 2 * width) {
-            const left = result.slice(i, i + width);
-            const right = result.slice(i + width, i + 2 * width);
-            mergedArr.push(...merge(left, right));
-        }
-
-        result = mergedArr;
-        width *= 2;
-    }
-
-    return result;
+  if (k === pivotIndex) {
+    return arr[k];
+  } else if (k < pivotIndex) {
+    return quickSelect(arr, left, pivotIndex - 1, k);
+  } else {
+    return quickSelect(arr, pivotIndex + 1, right, k);
+  }
 }
 
-// Example usage:
-const unsorted = [38, 27, 43, 3, 9, 82, 10];
-const sorted = mergeSortIterative(unsorted);
-console.log(sorted); // [3, 9, 10, 27, 38, 43, 82]
+function kthSmallestQuickSelect(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;
+  // Create a copy of the array as quickSelect modifies it in-place
+  const copyArr = [...arr];
+  return quickSelect(copyArr, 0, copyArr.length - 1, k - 1);
+}
