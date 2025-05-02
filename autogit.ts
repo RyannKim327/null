@@ -1,45 +1,54 @@
-function radixSort(arr: number[]): number[] {
-  if (arr.length === 0) return [];
+type Node<T> = {
+  value: T;
+  children: Node<T>[];
+};
 
-  // Find the maximum number to know the number of digits
-  const maxNum = Math.max(...arr);
-  let exp = 1; // Exponent: 1, 10, 100, ...
+// Depth-limited search function:
+// - node: current node to explore
+// - goal: value to find (or a function to decide goal)
+// - limit: maximum depth to explore
+// - currentDepth: internal parameter to track depth (default 0)
+function depthLimitedSearch<T>(
+  node: Node<T>,
+  goal: T | ((value: T) => boolean),
+  limit: number,
+  currentDepth = 0
+): Node<T> | null {
+  // Check if current node meets the goal condition
+  const isGoal = typeof goal === 'function' ? goal(node.value) : node.value === goal;
+  if (isGoal) return node;
 
-  while (Math.floor(maxNum / exp) > 0) {
-    arr = countingSortByDigit(arr, exp);
-    exp *= 10;
+  if (currentDepth >= limit) {
+    return null; // reached depth limit, stop exploring this path
   }
 
-  return arr;
+  for (const child of node.children) {
+    const result = depthLimitedSearch(child, goal, limit, currentDepth + 1);
+    if (result !== null) {
+      return result; // early return on finding the goal
+    }
+  }
+
+  return null; // goal not found in this branch
 }
+       A
+      / \
+     B   C
+    /   / \
+   D   E   F
+const tree: Node<string> = {
+  value: 'A',
+  children: [
+    { value: 'B', children: [{ value: 'D', children: [] }] },
+    { value: 'C', children: [{ value: 'E', children: [] }, { value: 'F', children: [] }] }
+  ]
+};
 
-function countingSortByDigit(arr: number[], exp: number): number[] {
-  const output = new Array(arr.length);
-  const count = new Array(10).fill(0);
+// Search for node with value 'E' with a depth limit of 2
+const found = depthLimitedSearch(tree, 'E', 2);
 
-  // Store count of occurrences in count[]
-  for (let i = 0; i < arr.length; i++) {
-    const digit = Math.floor((arr[i] / exp) % 10);
-    count[digit]++;
-  }
+console.log(found?.value); // Output: 'E'
 
-  // Change count[i] so that count[i] now contains actual
-  // position of this digit in output[]
-  for (let i = 1; i < 10; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Build the output array, iterating from right to left to maintain stability
-  for (let i = arr.length - 1; i >= 0; i--) {
-    const digit = Math.floor((arr[i] / exp) % 10);
-    output[count[digit] - 1] = arr[i];
-    count[digit]--;
-  }
-
-  return output;
-}
-
-// Example usage:
-const unsorted = [170, 45, 75, 90, 802, 24, 2, 66];
-const sorted = radixSort(unsorted);
-console.log(sorted); // [2, 24, 45, 66, 75, 90, 170, 802]
+// Search for 'E' with a depth limit of 1 (should fail)
+const notFound = depthLimitedSearch(tree, 'E', 1);
+console.log(notFound); // null
