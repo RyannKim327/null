@@ -1,27 +1,25 @@
-function isPalindrome(s: string): boolean {
-  let left = 0;
-  let right = s.length - 1;
+const str: string = "Hello, TypeScript!";
+const substring: string = "TypeScript";
 
-  while (left < right) {
-    // Skip non-alphanumeric characters on the left
-    while (left < right && !isAlphaNumeric(s[left])) {
-      left++;
-    }
-    // Skip non-alphanumeric characters on the right
-    while (left < right && !isAlphaNumeric(s[right])) {
-      right--;
-    }
-
-    // Compare characters case-insensitively
-    if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-      return false;
-    }
-    left++;
-    right--;
-  }
-  return true;
+if (str.includes(substring)) {
+    console.log(`The string contains: "${substring}"`);
+} else {
+    console.log(`The string does not contain: "${substring}"`);
 }
+const str: string = "Hello, TypeScript!";
+const substring: string = "TypeScript";
 
-function isAlphaNumeric(char: string): boolean {
-  return /^[a-z0-9]$/i.test(char);
+if (str.indexOf(substring) !== -1) {
+    console.log(`The string contains: "${substring}"`);
+} else {
+    console.log(`The string does not contain: "${substring}"`);
+}
+const str: string = "Hello, TypeScript!";
+const substring: string = "TypeScript";
+const regex = new RegExp(substring);
+
+if (regex.test(str)) {
+    console.log(`The string contains: "${substring}"`);
+} else {
+    console.log(`The string does not contain: "${substring}"`);
 }
