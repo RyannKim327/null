@@ -1,13 +1,20 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: convert to lowercase and remove spaces
-    const normalize = (str: string) => str.toLowerCase().replace(/\s+/g, '').split('').sort().join('');
-    
-    // Compare normalized versions of both strings
-    return normalize(str1) === normalize(str2);
+function maxSubArray(nums: number[]): number {
+    // Initialize currentSum and maxSum
+    let currentSum = nums[0];
+    let maxSum = nums[0];
+
+    // Loop through the array starting from the second element
+    for (let i = 1; i < nums.length; i++) {
+        // Update currentSum to be the maximum of the current number itself or the current number plus the previous currentSum
+        currentSum = Math.max(nums[i], currentSum + nums[i]);
+        
+        // Update maxSum to be the maximum of itself or the currentSum
+        maxSum = Math.max(maxSum, currentSum);
+    }
+
+    return maxSum;
 }
 
 // Example usage:
-const string1 = "listen";
-const string2 = "silent";
-
-console.log(areAnagrams(string1, string2)); // Output: true
+const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubArray(array)); // Output: 6 (subarray is [4, -1, 2, 1])
