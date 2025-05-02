@@ -1,34 +1,99 @@
-function interpolationSearch(arr: number[], target: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+// Define a node class
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null = null;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) return low;
-      return -1;
-    }
+  constructor(value: T) {
+    this.value = value;
+  }
+}
 
-    // Estimate the position
-    const pos = low + Math.floor(
-      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
+// Define the linked list class
+class LinkedList<T> {
+  private head: ListNode<T> | null = null;
+  private size: number = 0;
 
-    // Check for out of bounds (just in case)
-    if (pos < low || pos > high) return -1;
-
-    if (arr[pos] === target) return pos;
-    if (arr[pos] < target) {
-      low = pos + 1;
+  // Add a node at the end of the list
+  append(value: T): void {
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
     } else {
-      high = pos - 1;
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
     }
+    this.size++;
   }
 
-  return -1; // Element not found
+  // Add a node at the beginning
+  prepend(value: T): void {
+    const newNode = new ListNode(value);
+    newNode.next = this.head;
+    this.head = newNode;
+    this.size++;
+  }
+
+  // Remove the first node with the specified value
+  remove(value: T): boolean {
+    if (!this.head) return false;
+
+    if (this.head.value === value) {
+      this.head = this.head.next;
+      this.size--;
+      return true;
+    }
+
+    let current = this.head;
+    while (current.next && current.next.value !== value) {
+      current = current.next;
+    }
+
+    if (current.next && current.next.value === value) {
+      current.next = current.next.next;
+      this.size--;
+      return true;
+    }
+
+    return false;
+  }
+
+  // Find a node by value
+  find(value: T): ListNode<T> | null {
+    let current = this.head;
+    while (current) {
+      if (current.value === value) return current;
+      current = current.next;
+    }
+    return null;
+  }
+
+  // Convert the list to an array for easier visualization
+  toArray(): T[] {
+    const elements: T[] = [];
+    let current = this.head;
+    while (current) {
+      elements.push(current.value);
+      current = current.next;
+    }
+    return elements;
+  }
+
+  // Get the size of the list
+  getSize(): number {
+    return this.size;
+  }
 }
 
 // Example usage:
-const array = [10, 12, 13, 16, 18, 19, 20, 21, 22, 23, 24, 33, 35, 42, 47];
-const target = 22;
-const result = interpolationSearch(array, target);
-console.log(result); // Output: 8
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.prepend(5);
+console.log(list.toArray()); // [5, 10, 20]
+console.log(list.find(10)); // ListNode { value: 10, next: ListNode { ... } }
+list.remove(10);
+console.log(list.toArray()); // [5, 20]
+console.log(list.getSize()); // 2
