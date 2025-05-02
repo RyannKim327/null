@@ -1,107 +1,106 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class MinHeap {
+  private heap: number[] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+  // Helper function to get the index of the parent
+  private parent(index: number): number {
+    return Math.floor((index - 1) / 2);
+  }
+
+  // Helper function to get the index of the left child
+  private leftChild(index: number): number {
+    return 2 * index + 1;
+  }
+
+  // Helper function to get the index of the right child
+  private rightChild(index: number): number {
+    return 2 * index + 2;
+  }
+
+  // Swap two elements in the heap
+  private swap(i: number, j: number): void {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+  }
+
+  // Insert a new value to the heap
+  public insert(value: number): void {
+    this.heap.push(value);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  // Move the element at index up to maintain the heap property
+  private bubbleUp(index: number): void {
+    while (index > 0) {
+      const parentIndex = this.parent(index);
+      if (this.heap[index] < this.heap[parentIndex]) {
+        this.swap(index, parentIndex);
+        index = parentIndex;
+      } else {
+        break;
+      }
     }
+  }
+
+  // Extract the minimum value from the heap
+  public extractMin(): number | null {
+    if (this.heap.length === 0) {
+      return null; // No elements to extract
+    }
+    if (this.heap.length === 1) {
+      return this.heap.pop()!; // Only one element
+    }
+
+    const min = this.heap[0];
+    this.heap[0] = this.heap.pop()!; // Replace root with the last element
+    this.bubbleDown(0);
+    return min;
+  }
+
+  // Move the element at index down to maintain the heap property
+  private bubbleDown(index: number): void {
+    const length = this.heap.length;
+    let smallest = index;
+
+    const leftIndex = this.leftChild(index);
+    if (leftIndex < length && this.heap[leftIndex] < this.heap[smallest]) {
+      smallest = leftIndex;
+    }
+
+    const rightIndex = this.rightChild(index);
+    if (rightIndex < length && this.heap[rightIndex] < this.heap[smallest]) {
+      smallest = rightIndex;
+    }
+
+    if (smallest !== index) {
+      this.swap(index, smallest);
+      this.bubbleDown(smallest);
+    }
+  }
+
+  // Get the minimum value without extracting it
+  public peek(): number | null {
+    return this.heap.length ? this.heap[0] : null;
+  }
+
+  // Check if the heap is empty
+  public isEmpty(): boolean {
+    return this.heap.length === 0;
+  }
+
+  // Get the size of the heap
+  public size(): number {
+    return this.heap.length;
+  }
 }
-class BinarySearchTree {
-    root: TreeNode | null;
 
-    constructor() {
-        this.root = null;
-    }
+// Example usage:
 
-    // Method to insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
+const pq = new MinHeap();
+pq.insert(5);
+pq.insert(3);
+pq.insert(8);
+pq.insert(1);
 
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            // Insert in the left subtree
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            // Insert in the right subtree
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Method to search for a value
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: TreeNode | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value found
-        }
-    }
-
-    // In-order traversal (left, root, right)
-    inOrderTraversal(node: TreeNode | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrderTraversal(node.left, callback);
-            callback(node.value);
-            this.inOrderTraversal(node.right, callback);
-        }
-    }
-
-    // Pre-order traversal (root, left, right)
-    preOrderTraversal(node: TreeNode | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            callback(node.value);
-            this.preOrderTraversal(node.left, callback);
-            this.preOrderTraversal(node.right, callback);
-        }
-    }
-
-    // Post-order traversal (left, right, root)
-    postOrderTraversal(node: TreeNode | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.postOrderTraversal(node.left, callback);
-            this.postOrderTraversal(node.right, callback);
-            callback(node.value);
-        }
-    }
-}
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
-
-// Search for a value
-console.log(bst.search(7)); // true
-console.log(bst.search(20)); // false
-
-// In-order traversal
-console.log("In-Order Traversal:");
-bst.inOrderTraversal(bst.root, (value) => console.log(value)); // 3, 5, 7, 10, 12, 15, 18
+console.log(pq.extractMin()); // Outputs: 1
+console.log(pq.peek()); // Outputs: 3
+console.log(pq.size()); // Outputs: 3
+console.log(pq.isEmpty()); // Outputs: false
