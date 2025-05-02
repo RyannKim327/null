@@ -1,25 +1,40 @@
-const mainString = "Hello, TypeScript!";
-const substring = "TypeScript";
+type Graph = {
+  [key: string]: string[];
+};
 
-if (mainString.includes(substring)) {
-    console.log(`The string contains the substring: "${substring}"`);
-} else {
-    console.log(`The string does not contain the substring: "${substring}"`);
-}
-const mainString = "Hello, TypeScript!";
-const substring = "TypeScript";
+function bfs(graph: Graph, startNode: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [];
+  const result: string[] = [];
 
-if (mainString.indexOf(substring) !== -1) {
-    console.log(`The string contains the substring: "${substring}"`);
-} else {
-    console.log(`The string does not contain the substring: "${substring}"`);
-}
-const mainString = "Hello, TypeScript!";
-const substring = "TypeScript";
-const regex = new RegExp(substring);
+  // Start by enqueueing the startNode and marking it visited
+  queue.push(startNode);
+  visited.add(startNode);
 
-if (regex.test(mainString)) {
-    console.log(`The string contains the substring: "${substring}"`);
-} else {
-    console.log(`The string does not contain the substring: "${substring}"`);
+  while (queue.length > 0) {
+    const currentNode = queue.shift()!;
+    result.push(currentNode);
+
+    // Explore neighboring nodes
+    for (const neighbor of graph[currentNode] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return result;
 }
+
+// Example usage:
+const graph: Graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
+
+console.log(bfs(graph, "A")); // Outputs: ["A", "B", "C", "D", "E", "F"]
