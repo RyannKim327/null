@@ -1,34 +1,29 @@
-const graph: Record<string, string[]> = {
-  A: ['B', 'C'],
-  B: ['A', 'D', 'E'],
-  C: ['A', 'F'],
-  D: ['B'],
-  E: ['B', 'F'],
-  F: ['C', 'E'],
-};
-function bfs(graph: Record<string, string[]>, start: string): string[] {
-  const visited: Set<string> = new Set();
-  const queue: string[] = [];
-  const result: string[] = [];
+function shellSort(arr: number[]): number[] {
+  let n = arr.length;
 
-  visited.add(start);
-  queue.push(start);
+  // Start with a big gap, then reduce the gap
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    // Do a gapped insertion sort for this gap size.
+    // The first gap elements arr[0..gap-1] are already in gapped order
+    for (let i = gap; i < n; i++) {
+      // Save arr[i] and make a hole at position i
+      let temp = arr[i];
+      let j = i;
 
-  while (queue.length > 0) {
-    const node = queue.shift()!; // Remove from front of queue
-    result.push(node);
-
-    for (const neighbor of graph[node] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
+      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
       }
+
+      // Put temp (the original arr[i]) in its correct location
+      arr[j] = temp;
     }
   }
 
-  return result;
+  return arr;
 }
 
-// Usage:
-const traversalOrder = bfs(graph, 'A');
-console.log(traversalOrder); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+// Example usage:
+const myArray = [23, 12, 1, 8, 34, 54, 2, 3];
+console.log(shellSort(myArray));
