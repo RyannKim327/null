@@ -1,44 +1,21 @@
-// Define the structure for a tree node
-class TreeNode {
-  value: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function quicksort(arr: number[]): number[] {
+  if (arr.length <= 1) return arr;
 
-  constructor(value: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
-  }
-}
+  const pivot = arr[arr.length - 1]; // Take the last element as pivot
+  const left: number[] = [];
+  const right: number[] = [];
 
-// Recursive function to count leaf nodes
-function countLeaves(node: TreeNode | null): number {
-  if (!node) {
-    return 0;
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
   }
-  
-  // If both left and right are null, it's a leaf node
-  if (!node.left && !node.right) {
-    return 1;
-  }
-  
-  // Otherwise, recurse for left and right subtrees
-  return countLeaves(node.left) + countLeaves(node.right);
+
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
 // Example usage:
-
-// Create a tree:
-//       1
-//      / \
-//     2   3
-//        / \
-//       4   5
-
-const tree = new TreeNode(
-  1,
-  new TreeNode(2),
-  new TreeNode(3, new TreeNode(4), new TreeNode(5))
-);
-
-console.log(countLeaves(tree)); // Output: 3 (nodes 2, 4, 5 are leaves)
+const numbers = [3, 6, 1, 7, 2, 8, 4];
+console.log(quicksort(numbers));  // Output: [1, 2, 3, 4, 6, 7, 8]
