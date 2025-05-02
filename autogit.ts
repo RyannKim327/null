@@ -1,43 +1,47 @@
 class ListNode {
-  value: any;
-  next: ListNode | null;
+    value: number;
+    next: ListNode | null;
 
-  constructor(value: any, next: ListNode | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) {
+        return null;
+    }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-  if (!head || n <= 0) return null;
+    let pointerA: ListNode | null = headA;
+    let pointerB: ListNode | null = headB;
 
-  let first: ListNode | null = head;
-  let second: ListNode | null = head;
+    // Traverse both lists until they meet or both reach the end
+    while (pointerA !== pointerB) {
+        pointerA = pointerA ? pointerA.next : headB;  // Switch to the other list or null
+        pointerB = pointerB ? pointerB.next : headA;  // Switch to the other list or null
+    }
 
-  // Move first n steps ahead
-  for (let i = 0; i < n; i++) {
-    if (!first) return null; // n is larger than the length of the list
-    first = first.next;
-  }
-
-  // Move first to the end, maintaining the gap
-  while (first) {
-    first = first.next;
-    second = second!.next;
-  }
-
-  return second;
+    // Either they met at intersection or both are null
+    return pointerA; 
 }
-// Creating a simple linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1,
-  new ListNode(2,
-    new ListNode(3,
-      new ListNode(4,
-        new ListNode(5)
-      )
-    )
-  )
-);
+// Create two intersecting linked lists
+const common = new ListNode(8);
+common.next = new ListNode(4);
+common.next.next = new ListNode(5);
 
-const nthNode = findNthFromEnd(head, 2);
-console.log(nthNode?.value); // Output: 4
+const listA = new ListNode(4);
+listA.next = new ListNode(1);
+listA.next.next = common;
+
+const listB = new ListNode(5);
+listB.next = new ListNode(0);
+listB.next.next = new ListNode(1);
+listB.next.next.next = common;
+
+// Find intersection
+const intersectionNode = getIntersectionNode(listA, listB);
+if (intersectionNode) {
+    console.log("Intersection at node with value:", intersectionNode.value);  // Output: Intersection at node with value: 8
+} else {
+    console.log("No intersection.");
+}
