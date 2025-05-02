@@ -1,75 +1,107 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode> = new Map();
-    start: number = -1;
-    end: number = -1;
-    suffixLink: SuffixTreeNode | null = null;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(start?: number, end?: number) {
-        if (start !== undefined) this.start = start;
-        if (end !== undefined) this.end = end;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
+class BinarySearchTree {
+    root: TreeNode | null;
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
-
-    constructor(text: string) {
-        this.text = text;
-        this.root = new SuffixTreeNode();
-        this.buildSuffixTree();
+    constructor() {
+        this.root = null;
     }
 
-    buildSuffixTree(): void {
-        const n = this.text.length;
-        for (let i = 0; i < n; i++) {
-            this.addSuffix(i);
+    // Method to insert a new value into the BST
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
     }
 
-    addSuffix(startIndex: number): void {
-        let currentNode = this.root;
-        let j = startIndex;
-        while (j < this.text.length) {
-            const currentChar = this.text[j];
-            if (currentNode.children.has(currentChar)) {
-                currentNode = currentNode.children.get(currentChar)!;
-                j++;
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            // Insert in the left subtree
+            if (node.left === null) {
+                node.left = newNode;
             } else {
-                const newNode = new SuffixTreeNode(startIndex, this.text.length);
-                currentNode.children.set(currentChar, newNode);
-                return;
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            // Insert in the right subtree
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
     }
 
-    contains(substring: string): boolean {
-        let currentNode = this.root;
-        let i = 0;
-        while (i < substring.length) {
-            const currentChar = substring[i];
-            if (!currentNode.children.has(currentChar)) {
-                return false;  // char not found, substring not present
-            }
-            currentNode = currentNode.children.get(currentChar)!;
-            i++;
-        }
-        return true; // substring exists
+    // Method to search for a value
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
     }
 
-    // Optional: To print the tree structure for debugging
-    print(node: SuffixTreeNode = this.root, prefix: string = ''): void {
-        for (const [char, child] of node.children) {
-            const edgeLabel = this.text.slice(child.start, child.end);
-            console.log(prefix + edgeLabel);
-            this.print(child, prefix + edgeLabel);
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // value found
+        }
+    }
+
+    // In-order traversal (left, root, right)
+    inOrderTraversal(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrderTraversal(node.left, callback);
+            callback(node.value);
+            this.inOrderTraversal(node.right, callback);
+        }
+    }
+
+    // Pre-order traversal (root, left, right)
+    preOrderTraversal(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            callback(node.value);
+            this.preOrderTraversal(node.left, callback);
+            this.preOrderTraversal(node.right, callback);
+        }
+    }
+
+    // Post-order traversal (left, right, root)
+    postOrderTraversal(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.postOrderTraversal(node.left, callback);
+            this.postOrderTraversal(node.right, callback);
+            callback(node.value);
         }
     }
 }
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(18);
 
-// Usage example
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-suffixTree.print(); // print the tree paths
-console.log(suffixTree.contains("ana")); // true
-console.log(suffixTree.contains("mango")); // false
+// Search for a value
+console.log(bst.search(7)); // true
+console.log(bst.search(20)); // false
+
+// In-order traversal
+console.log("In-Order Traversal:");
+bst.inOrderTraversal(bst.root, (value) => console.log(value)); // 3, 5, 7, 10, 12, 15, 18
