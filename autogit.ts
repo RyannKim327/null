@@ -1,26 +1,25 @@
-class ListNode {
-  value: any;
-  next: ListNode | null;
+const mainString = "Hello, TypeScript!";
+const substring = "TypeScript";
 
-  constructor(value: any, next: ListNode | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+if (mainString.includes(substring)) {
+    console.log(`The string contains the substring: "${substring}"`);
+} else {
+    console.log(`The string does not contain the substring: "${substring}"`);
 }
+const mainString = "Hello, TypeScript!";
+const substring = "TypeScript";
 
-function getLinkedListLength(head: ListNode | null): number {
-  let length = 0;
-  let current = head;
-  while (current !== null) {
-    length++;
-    current = current.next;
-  }
-  return length;
+if (mainString.indexOf(substring) !== -1) {
+    console.log(`The string contains the substring: "${substring}"`);
+} else {
+    console.log(`The string does not contain the substring: "${substring}"`);
 }
+const mainString = "Hello, TypeScript!";
+const substring = "TypeScript";
+const regex = new RegExp(substring);
 
-// Example usage:
-const node3 = new ListNode(3);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
-
-console.log(getLinkedListLength(node1)); // Output: 3
+if (regex.test(mainString)) {
+    console.log(`The string contains the substring: "${substring}"`);
+} else {
+    console.log(`The string does not contain the substring: "${substring}"`);
+}
