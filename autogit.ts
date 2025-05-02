@@ -1,21 +1,34 @@
-function insertionSort(arr: number[]): number[] {
-    // Iterate through the array from the second element
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i]; // The current element to be inserted
-        let j = i - 1;
+const graph: Record<string, string[]> = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E'],
+};
+function bfs(graph: Record<string, string[]>, start: string): string[] {
+  const visited: Set<string> = new Set();
+  const queue: string[] = [];
+  const result: string[] = [];
 
-        // Move elements of arr[0..i-1], that are greater than key, to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        // Place key in its correct position
-        arr[j + 1] = key;
+  visited.add(start);
+  queue.push(start);
+
+  while (queue.length > 0) {
+    const node = queue.shift()!; // Remove from front of queue
+    result.push(node);
+
+    for (const neighbor of graph[node] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
     }
-    return arr;
+  }
+
+  return result;
 }
 
-// Example usage
-const unsortedArray = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+// Usage:
+const traversalOrder = bfs(graph, 'A');
+console.log(traversalOrder); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
