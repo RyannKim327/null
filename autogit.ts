@@ -1,55 +1,64 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1;
+// Define a candidate type for readability
+type Candidate<T> = {
+  sequence: T[];  // The partial solution sequence
+  score: number;  // The score of this candidate (higher is better)
+};
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+// An example function type to expand a candidate to next possibilities
+type ExpandFunc<T> = (sequence: T[]) => Array<{ next: T; score: number }>;
+
+/**
+ * Beam Search function
+ * @param initialCandidates - initial candidates to start with (often a single start)
+ * @param expand - function to expand a candidate sequence to next states with scores
+ * @param beamWidth - the size of the beam to keep at each step
+ * @param maxSteps - maximum length of sequences to generate
+ */
+function beamSearch<T>(
+  initialCandidates: Candidate<T>[],
+  expand: ExpandFunc<T>,
+  beamWidth: number,
+  maxSteps: number
+): Candidate<T>[] {
+  let beam = initialCandidates;
+
+  for (let step = 0; step < maxSteps; step++) {
+    let allCandidates: Candidate<T>[] = [];
+
+    for (const candidate of beam) {
+      const expansions = expand(candidate.sequence);
+      for (const { next, score } of expansions) {
+        allCandidates.push({
+          sequence: [...candidate.sequence, next],
+          score: candidate.score + score, // aggregate score, customize as needed
+        });
+      }
     }
 
-    return lps;
+    // Sort candidates by score descending and keep top beamWidth
+    allCandidates.sort((a, b) => b.score - a.score);
+    beam = allCandidates.slice(0, beamWidth);
+
+    // Optional: stopping criteria if all candidates end early
+    if (beam.length === 0) break;
+  }
+
+  return beam;
 }
+// A function that expands sequences by adding letters, with some dummy scores
+const expandLetters: ExpandFunc<string> = (sequence) => {
+  const letters = ['a', 'b', 'c'];
+  return letters.map((letter) => ({
+    next: letter,
+    score: Math.random(), // Just a random score for demo; replace with your logic
+  }));
+};
 
-function KMP(searchText: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for searchText
-    let j = 0; // index for pattern
+// Start with empty sequence with score 0
+const initialCandidates: Candidate<string>[] = [{ sequence: [], score: 0 }];
 
-    while (i < searchText.length) {
-        if (pattern[j] === searchText[i]) {
-            i++;
-            j++;
-        }
+const results = beamSearch(initialCandidates, expandLetters, 3, 5);
 
-        if (j === pattern.length) {
-            result.push(i - j); // Match found
-            j = lps[j - 1]; // Continue to search for the next match
-        } else if (i < searchText.length && pattern[j] !== searchText[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result; // Return the starting indices of found matches
+for (const res of results) {
+  console.log(`Sequence: ${res.sequence.join('')} - Score: ${res.score.toFixed(3)}`);
 }
-
-// Example Usage
-const searchText = "ababcababcabc";
-const pattern = "abc";
-const matches = KMP(searchText, pattern);
-console.log("Pattern found at indices:", matches);
