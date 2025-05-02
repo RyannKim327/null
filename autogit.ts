@@ -1,92 +1,52 @@
-class Graph {
-    private adjList: Map<string, string[]>;
+type Graph = Map<string, Map<string, number>>;
 
-    constructor() {
-        this.adjList = new Map();
+function dijkstra(graph: Graph, start: string): Map<string, number> {
+  const distances = new Map<string, number>();
+  const visited = new Set<string>();
+  const pq: Array<{ node: string; dist: number }> = [];
+
+  // Initialize distances
+  for (const node of graph.keys()) {
+    distances.set(node, Infinity);
+  }
+  distances.set(start, 0);
+
+  // Simple priority queue push function (not optimal but fine for basic use)
+  function enqueue(node: string, dist: number) {
+    pq.push({ node, dist });
+    pq.sort((a, b) => a.dist - b.dist);
+  }
+
+  enqueue(start, 0);
+
+  while (pq.length > 0) {
+    const { node: currentNode, dist: currentDist } = pq.shift()!;
+
+    if (visited.has(currentNode)) continue;
+    visited.add(currentNode);
+
+    const neighbors = graph.get(currentNode);
+    if (!neighbors) continue;
+
+    for (const [neighbor, weight] of neighbors) {
+      if (visited.has(neighbor)) continue;
+
+      const newDist = currentDist + weight;
+      if (newDist < (distances.get(neighbor) ?? Infinity)) {
+        distances.set(neighbor, newDist);
+        enqueue(neighbor, newDist);
+      }
     }
+  }
 
-    addVertex(vertex: string) {
-        this.adjList.set(vertex, []);
-    }
-
-    addEdge(vertex1: string, vertex2: string) {
-        this.adjList.get(vertex1)?.push(vertex2);
-        this.adjList.get(vertex2)?.push(vertex1); // for undirected graph
-    }
-
-    dfsRecursive(start: string, visited: Set<string> = new Set()): void {
-        if (visited.has(start)) {
-            return;
-        }
-        
-        console.log(start); // visit the node
-        visited.add(start); // mark the node as visited
-
-        const neighbors = this.adjList.get(start);
-        if (neighbors) {
-            for (const neighbor of neighbors) {
-                this.dfsRecursive(neighbor, visited);
-            }
-        }
-    }
+  return distances;
 }
+const graph: Graph = new Map([
+  ["A", new Map([["B", 1], ["C", 4]])],
+  ["B", new Map([["A", 1], ["C", 2], ["D", 5]])],
+  ["C", new Map([["A", 4], ["B", 2], ["D", 1]])],
+  ["D", new Map([["B", 5], ["C", 1]])]
+]);
 
-// Example Usage:
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-
-graph.dfsRecursive("A"); // Output could be A B D C or similar
-class Graph {
-    private adjList: Map<string, string[]>;
-
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addVertex(vertex: string) {
-        this.adjList.set(vertex, []);
-    }
-
-    addEdge(vertex1: string, vertex2: string) {
-        this.adjList.get(vertex1)?.push(vertex2);
-        this.adjList.get(vertex2)?.push(vertex1); // for undirected graph
-    }
-
-    dfsIterative(start: string): void {
-        const stack: string[] = [start];
-        const visited: Set<string> = new Set();
-
-        while (stack.length > 0) {
-            const vertex = stack.pop()!;
-            if (!visited.has(vertex)) {
-                console.log(vertex); // visit the node
-                visited.add(vertex);
-
-                const neighbors = this.adjList.get(vertex);
-                if (neighbors) {
-                    for (const neighbor of neighbors) {
-                        stack.push(neighbor);
-                    }
-                }
-            }
-        }
-    }
-}
-
-// Example Usage:
-const graph = new Graph();
-graph.addVertex("A");
-graph.addVertex("B");
-graph.addVertex("C");
-graph.addVertex("D");
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-
-graph.dfsIterative("A"); // Output could be A C B D or similar
+const distances = dijkstra(graph, "A");
+console.log(distances);  // Map { 'A' => 0, 'B' => 1, 'C' => 3, 'D' => 4 }
