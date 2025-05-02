@@ -1,11 +1,22 @@
-function maxSubArray(nums: number[]): number {
-  let maxEndingHere = nums[0];
-  let maxSoFar = nums[0];
+const arr = [1, 2, 3, 4, 3];
+const valueToRemove = 3;
 
-  for (let i = 1; i < nums.length; i++) {
-    maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
-  }
-
-  return maxSoFar;
+const index = arr.indexOf(valueToRemove);
+if (index !== -1) {
+  arr.splice(index, 1);
 }
+
+console.log(arr); // [1, 2, 4, 3]
+const arr = [1, 2, 3, 4, 3];
+const valueToRemove = 3;
+
+const filteredArr = arr.filter(item => item !== valueToRemove);
+console.log(filteredArr); // [1, 2, 4]
+const arr = ['a', 'b', 'c', 'd'];
+const indexToRemove = 2;
+
+if (indexToRemove > -1 && indexToRemove < arr.length) {
+  arr.splice(indexToRemove, 1);
+}
+
+console.log(arr); // ['a', 'b', 'd']
