@@ -1,24 +1,51 @@
-// Define the shape of a Post object
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
+function buildLPS(pattern: string): number[] {
+    const lps = Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-async function fetchPosts(): Promise<void> {
-  try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-    const posts: Post[] = await response.json();
-    posts.forEach(post => {
-      console.log(`Post #${post.id}: ${post.title}`);
-    });
-  } catch (error) {
-    console.error('Failed to fetch posts:', error);
-  }
+    return lps;
 }
 
-fetchPosts();
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = buildLPS(pattern);
+    const result: number[] = [];
+
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+            if (j === pattern.length) {
+                result.push(i - j);
+                j = lps[j - 1];
+            }
+        } else {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+    return result;
+}
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = kmpSearch(text, pattern);
+console.log(matches); // Output: [10]
