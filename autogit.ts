@@ -1,57 +1,84 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+// Define a node class
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null = null;
+  right: TreeNode<T> | null = null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+  constructor(value: T) {
+    this.value = value;
+  }
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or single element is a palindrome
+// Define the BST class
+class BinarySearchTree<T> {
+  root: TreeNode<T> | null = null;
+
+  // A comparator function to allow custom ordering (optional)
+  private compare: (a: T, b: T) => number;
+
+  constructor(compareFn?: (a: T, b: T) => number) {
+    this.compare = compareFn || ((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  }
+
+  // Insert a new value into the BST
+  insert(value: T): void {
+    const newNode = new TreeNode(value);
+
+    if (!this.root) {
+      this.root = newNode;
+      return;
     }
 
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
-
-    while (current) {
-        let nextTemp = current.next; // Store the next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to this node
-        current = nextTemp; // Move to the next node
-    }
-
-    // Step 3: Compare the two halves
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // `prev` is now the head of the reversed second half
-
-    while (right) {
-        if (left.value !== right.value) {
-            return false; // Not a palindrome
+    let current = this.root;
+    while (true) {
+      if (this.compare(value, current.value) < 0) {
+        // Go left
+        if (current.left === null) {
+          current.left = newNode;
+          break;
         }
-        left = left.next;
-        right = right.next;
+        current = current.left;
+      } else {
+        // Go right
+        if (current.right === null) {
+          current.right = newNode;
+          break;
+        }
+        current = current.right;
+      }
     }
+  }
 
-    return true; // It's a palindrome
+  // Search for a value in the BST - returns true if found, false otherwise
+  contains(value: T): boolean {
+    let current = this.root;
+    while (current) {
+      const cmp = this.compare(value, current.value);
+      if (cmp === 0) return true;
+      current = cmp < 0 ? current.left : current.right;
+    }
+    return false;
+  }
+
+  // In-order traversal: left -> node -> right
+  inOrderTraversal(callback: (value: T) => void): void {
+    function traverse(node: TreeNode<T> | null) {
+      if (!node) return;
+      traverse(node.left);
+      callback(node.value);
+      traverse(node.right);
+    }
+    traverse(this.root);
+  }
 }
+const bst = new BinarySearchTree<number>();
 
-// Example Usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(8);
 
-console.log(isPalindrome(head)); // Output: true
+console.log(bst.contains(8)); // true
+console.log(bst.contains(42)); // false
+
+bst.inOrderTraversal((value) => console.log(value)); // 5 8 10 15
