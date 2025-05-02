@@ -1,40 +1,42 @@
-type Graph = {
-  [key: string]: string[];
-};
+function boyerMooreHorspool(text: string, pattern: string): number {
+  const m = pattern.length;
+  const n = text.length;
 
-function bfs(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const queue: string[] = [];
-  const result: string[] = [];
+  if (m === 0) return 0; // empty pattern matches at start
+  if (m > n) return -1; // pattern longer than text can’t match
 
-  // Start by enqueueing the startNode and marking it visited
-  queue.push(startNode);
-  visited.add(startNode);
-
-  while (queue.length > 0) {
-    const currentNode = queue.shift()!;
-    result.push(currentNode);
-
-    // Explore neighboring nodes
-    for (const neighbor of graph[currentNode] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
-    }
+  // Build the bad character shift table
+  const shiftTable: { [key: string]: number } = {};
+  for (let i = 0; i < m - 1; i++) {
+    shiftTable[pattern[i]] = m - 1 - i;
   }
 
-  return result;
+  // Default shift for chars not in pattern
+  const defaultShift = m;
+
+  let index = 0;
+  while (index <= n - m) {
+    let j = m - 1;
+
+    // Match from right to left
+    while (j >= 0 && pattern[j] === text[index + j]) {
+      j--;
+    }
+
+    if (j < 0) {
+      return index; // match found
+    }
+
+    // Shift pattern using bad character rule
+    const badChar = text[index + m - 1];
+    index += shiftTable[badChar] ?? defaultShift;
+  }
+
+  return -1; // no match found
 }
+const text = 'Here is a simple example';
+const pattern = 'simple';
 
-// Example usage:
-const graph: Graph = {
-  A: ["B", "C"],
-  B: ["D", "E"],
-  C: ["F"],
-  D: [],
-  E: ["F"],
-  F: []
-};
+const result = boyerMooreHorspool(text, pattern);
 
-console.log(bfs(graph, "A")); // Outputs: ["A", "B", "C", "D", "E", "F"]
+console.log(result); // 10
