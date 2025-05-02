@@ -1,12 +1,9 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false; // 0 and 1 are not prime numbers
-  if (num <= 3) return true;  // 2 and 3 are prime numbers
-
-  if (num % 2 === 0 || num % 3 === 0) return false; // eliminate multiples of 2 and 3 quickly
-
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) return false;
-  }
-
-  return true;
-}
+const numbers: number[] = [3, 7, 2, 9, 5];
+const max = Math.max(...numbers);
+console.log(max);  // Output: 9
+const numbers: number[] = [];
+const max = numbers.length > 0 ? Math.max(...numbers) : undefined;
+console.log(max);  // Output: undefined
+const numbers: number[] = [3, 7, 2, 9, 5];
+const max = numbers.reduce((a, b) => (a > b ? a : b), -Infinity);
+console.log(max);  // Output: 9
