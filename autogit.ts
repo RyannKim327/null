@@ -1,29 +1,41 @@
-function isSorted(arr: number[]): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < arr[i - 1]) return false;
-  }
-  return true;
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
 }
 
-function randomShuffle(arr: number[]): void {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let diameter = 0;
 
-function randomSort(arr: number[]): number[] {
-  const arrayCopy = [...arr];
-  let attempts = 0;
-  while (!isSorted(arrayCopy)) {
-    randomShuffle(arrayCopy);
-    attempts++;
-  }
-  console.log(`Sorted after ${attempts} shuffles`);
-  return arrayCopy;
-}
+    function height(node: TreeNode | null): number {
+        if (!node) return 0;
 
-// Example usage
-const unsorted = [3, 1, 4, 2];
-const sorted = randomSort(unsorted);
-console.log(sorted);
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
+
+        // Update diameter at this node
+        diameter = Math.max(diameter, leftHeight + rightHeight);
+
+        // Height of node is max height of one subtree + 1
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    height(root);
+    return diameter;
+}
+const root = new TreeNode(1);
+root.left = new TreeNode(2, new TreeNode(4), new TreeNode(5));
+root.right = new TreeNode(3);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
+        1
+       / \
+      2   3
+     / \
+    4   5
