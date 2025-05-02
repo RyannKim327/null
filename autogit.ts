@@ -1,10 +1,11 @@
-function isPrime(num: number): boolean {
-  if (num < 2) return false;  // 0 and 1 are not prime
-  const sqrt = Math.sqrt(num);
-  for (let i = 2; i <= sqrt; i++) {
-    if (num % i === 0) return false;
+function maxSubArray(nums: number[]): number {
+  let maxSoFar = nums[0];
+  let currentMax = nums[0];
+
+  for (let i = 1; i < nums.length; i++) {
+    currentMax = Math.max(nums[i], currentMax + nums[i]);
+    maxSoFar = Math.max(maxSoFar, currentMax);
   }
-  return true;
+
+  return maxSoFar;
 }
-console.log(isPrime(7));  // true  
-console.log(isPrime(10)); // false  
