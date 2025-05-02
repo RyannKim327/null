@@ -1,25 +1,18 @@
-const str: string = "Hello, TypeScript!";
-const substring: string = "TypeScript";
-
-if (str.includes(substring)) {
-    console.log(`The string contains: "${substring}"`);
-} else {
-    console.log(`The string does not contain: "${substring}"`);
+function countChar(str: string, charToCount: string): number {
+  let count = 0;
+  for (const char of str) {
+    if (char === charToCount) {
+      count++;
+    }
+  }
+  return count;
 }
-const str: string = "Hello, TypeScript!";
-const substring: string = "TypeScript";
 
-if (str.indexOf(substring) !== -1) {
-    console.log(`The string contains: "${substring}"`);
-} else {
-    console.log(`The string does not contain: "${substring}"`);
+// Example:
+console.log(countChar("hello world", "l")); // Output: 3
+function countChar(str: string, charToCount: string): number {
+  return str.split(charToCount).length - 1;
 }
-const str: string = "Hello, TypeScript!";
-const substring: string = "TypeScript";
-const regex = new RegExp(substring);
 
-if (regex.test(str)) {
-    console.log(`The string contains: "${substring}"`);
-} else {
-    console.log(`The string does not contain: "${substring}"`);
-}
+// Example:
+console.log(countChar("hello world", "l")); // Output: 3
