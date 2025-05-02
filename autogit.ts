@@ -1,7 +1,8 @@
-function removeVowels(str: string): string {
-  return str.replace(/[aeiouAEIOU]/g, '');
+function removeVowels(input: string): string {
+    return input.replace(/[aeiouAEIOU]/g, '');
 }
 
-const input = "Hello, TypeScript!";
-const result = removeVowels(input);
-console.log(result);  // Output: "Hll, TypScrpt!"
+// Example usage:
+const originalString = "Hello World!";
+const stringWithoutVowels = removeVowels(originalString);
+console.log(stringWithoutVowels); // "Hll Wrld!"
