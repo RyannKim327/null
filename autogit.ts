@@ -1,77 +1,54 @@
-class PriorityQueue<T> {
-  private heap: Array<{ element: T; priority: number }> = [];
-
-  constructor() {}
-
-  private swap(i: number, j: number) {
-    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
-  }
-
-  private bubbleUp(index: number) {
-    while (index > 0) {
-      const parentIndex = Math.floor((index - 1) / 2);
-      if (this.heap[index].priority >= this.heap[parentIndex].priority) break;
-      this.swap(index, parentIndex);
-      index = parentIndex;
+function mergeSort<T>(array: T[]): T[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (array.length <= 1) {
+        return array;
     }
-  }
 
-  private bubbleDown(index: number) {
-    const length = this.heap.length;
-    while (true) {
-      const left = 2 * index + 1;
-      const right = 2 * index + 2;
-      let smallest = index;
+    // Split the array into two halves
+    const mid = Math.floor(array.length / 2);
+    const left = array.slice(0, mid);
+    const right = array.slice(mid);
 
-      if (
-        left < length &&
-        this.heap[left].priority < this.heap[smallest].priority
-      ) {
-        smallest = left;
-      }
-      if (
-        right < length &&
-        this.heap[right].priority < this.heap[smallest].priority
-      ) {
-        smallest = right;
-      }
-      if (smallest === index) break;
-      this.swap(index, smallest);
-      index = smallest;
-    }
-  }
+    // Recursively sort both halves
+    const sortedLeft = mergeSort(left);
+    const sortedRight = mergeSort(right);
 
-  enqueue(element: T, priority: number) {
-    this.heap.push({ element, priority });
-    this.bubbleUp(this.heap.length - 1);
-  }
-
-  dequeue(): T | undefined {
-    if (this.heap.length === 0) return undefined;
-    const min = this.heap[0].element;
-    const end = this.heap.pop();
-    if (this.heap.length > 0 && end) {
-      this.heap[0] = end;
-      this.bubbleDown(0);
-    }
-    return min;
-  }
-
-  peek(): T | undefined {
-    return this.heap[0]?.element;
-  }
-
-  size(): number {
-    return this.heap.length;
-  }
+    // Merge the sorted halves
+    return merge(sortedLeft, sortedRight);
 }
 
-// Example usage:
-const pq = new PriorityQueue<string>();
-pq.enqueue("low priority", 5);
-pq.enqueue("high priority", 1);
-pq.enqueue("medium priority", 3);
+function merge<T>(left: T[], right: T[]): T[] {
+    const result: T[] = [];
+    let i = 0; // Pointer for the left array
+    let j = 0; // Pointer for the right array
 
-console.log(pq.dequeue()); // "high priority"
-console.log(pq.dequeue()); // "medium priority"
-console.log(pq.dequeue()); // "low priority"
+    // Merge the two arrays while there are elements in both
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
+        } else {
+            result.push(right[j]);
+            j++;
+        }
+    }
+
+    // If there are remaining elements in the left array, add them
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
+    }
+
+    return result;
+}
+
+// Example usage
+const numbers = [38, 27, 43, 3, 9, 82, 10];
+const sortedNumbers = mergeSort(numbers);
+console.log(sortedNumbers); // Output: [3, 9, 10, 27, 38, 43, 82]
