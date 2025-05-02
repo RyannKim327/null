@@ -1,42 +1,56 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
-
-  constructor(val: number) {
-    this.val = val;
-    this.next = null;
-  }
+// Define an interface for the user data we expect from the API
+interface User {
+    gender: string;
+    name: {
+        title: string;
+        first: string;
+        last: string;
+    };
+    email: string;
+    phone: string;
+    location: {
+        street: {
+            number: number;
+            name: string;
+        };
+        city: string;
+        state: string;
+        country: string;
+        postcode: string;
+    };
+    picture: {
+        large: string;
+        medium: string;
+        thumbnail: string;
+    };
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-  if (!headA || !headB) return null;
+// Function to fetch random user data
+async function fetchRandomUser(): Promise<void> {
+    const apiUrl = "https://randomuser.me/api/";
 
-  let p1: ListNode | null = headA;
-  let p2: ListNode | null = headB;
+    try {
+        const response = await fetch(apiUrl);
 
-  while (p1 !== p2) {
-    p1 = p1 ? p1.next : headB;
-    p2 = p2 ? p2.next : headA;
-  }
+        // Check if the response is ok (status 200)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-  return p1;  // Can be the intersection node or null if no intersection
+        const data = await response.json();
+        const user: User = data.results[0];
+
+        console.log("User Information:");
+        console.log(`Name: ${user.name.title} ${user.name.first} ${user.name.last}`);
+        console.log(`Gender: ${user.gender}`);
+        console.log(`Email: ${user.email}`);
+        console.log(`Phone: ${user.phone}`);
+        console.log(`Location: ${user.location.street.number} ${user.location.street.name}, ${user.location.city}, ${user.location.state}, ${user.location.country} ${user.location.postcode}`);
+        console.log(`Picture: ${user.picture.large}`);
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+    }
 }
-// Creating an example intersection:
-// List A: 1 -> 3 -> 5 \
-//                         7 -> 9
-// List B:      2 -> 6  /
 
-const intersect = new ListNode(7);
-intersect.next = new ListNode(9);
-
-const listA = new ListNode(1);
-listA.next = new ListNode(3);
-listA.next.next = new ListNode(5);
-listA.next.next.next = intersect;
-
-const listB = new ListNode(2);
-listB.next = new ListNode(6);
-listB.next.next = intersect;
-
-const node = getIntersectionNode(listA, listB);
-console.log(node?.val);  // Output: 7
+// Call the function to fetch and display random user
+fetchRandomUser();
