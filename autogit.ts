@@ -1,21 +1,45 @@
-function quicksort(arr: number[]): number[] {
-  if (arr.length <= 1) return arr;
+function radixSort(arr: number[]): number[] {
+  if (arr.length === 0) return [];
 
-  const pivot = arr[arr.length - 1]; // Take the last element as pivot
-  const left: number[] = [];
-  const right: number[] = [];
+  // Find the maximum number to know the number of digits
+  const maxNum = Math.max(...arr);
+  let exp = 1; // Exponent: 1, 10, 100, ...
 
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
-    }
+  while (Math.floor(maxNum / exp) > 0) {
+    arr = countingSortByDigit(arr, exp);
+    exp *= 10;
   }
 
-  return [...quicksort(left), pivot, ...quicksort(right)];
+  return arr;
+}
+
+function countingSortByDigit(arr: number[], exp: number): number[] {
+  const output = new Array(arr.length);
+  const count = new Array(10).fill(0);
+
+  // Store count of occurrences in count[]
+  for (let i = 0; i < arr.length; i++) {
+    const digit = Math.floor((arr[i] / exp) % 10);
+    count[digit]++;
+  }
+
+  // Change count[i] so that count[i] now contains actual
+  // position of this digit in output[]
+  for (let i = 1; i < 10; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Build the output array, iterating from right to left to maintain stability
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const digit = Math.floor((arr[i] / exp) % 10);
+    output[count[digit] - 1] = arr[i];
+    count[digit]--;
+  }
+
+  return output;
 }
 
 // Example usage:
-const numbers = [3, 6, 1, 7, 2, 8, 4];
-console.log(quicksort(numbers));  // Output: [1, 2, 3, 4, 6, 7, 8]
+const unsorted = [170, 45, 75, 90, 802, 24, 2, 66];
+const sorted = radixSort(unsorted);
+console.log(sorted); // [2, 24, 45, 66, 75, 90, 170, 802]
