@@ -1,46 +1,27 @@
-type Graph = { [node: string]: string[] };
+function isPalindrome(s: string): boolean {
+  let left = 0;
+  let right = s.length - 1;
 
-function depthLimitedSearchIterative(
-  graph: Graph,
-  start: string,
-  goal: string,
-  limit: number
-): string[] | null {
-  type StackItem = { node: string; depth: number; path: string[] };
-
-  const stack: StackItem[] = [{ node: start, depth: 0, path: [start] }];
-  const visited = new Set<string>();
-
-  while (stack.length > 0) {
-    const { node, depth, path } = stack.pop()!;
-
-    if (node === goal) {
-      return path; // Found the goal, return path
+  while (left < right) {
+    // Skip non-alphanumeric characters on the left
+    while (left < right && !isAlphaNumeric(s[left])) {
+      left++;
+    }
+    // Skip non-alphanumeric characters on the right
+    while (left < right && !isAlphaNumeric(s[right])) {
+      right--;
     }
 
-    if (depth < limit) {
-      visited.add(node);
-      const neighbors = graph[node] || [];
-
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          stack.push({ node: neighbor, depth: depth + 1, path: [...path, neighbor] });
-        }
-      }
+    // Compare characters case-insensitively
+    if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+      return false;
     }
+    left++;
+    right--;
   }
-
-  // Not found within depth limit
-  return null;
+  return true;
 }
-const graph = {
-  A: ["B", "C"],
-  B: ["D", "E"],
-  C: ["F"],
-  D: [],
-  E: ["F"],
-  F: [],
-};
 
-const result = depthLimitedSearchIterative(graph, "A", "F", 2);
-console.log(result); // Might print something like [ 'A', 'C', 'F' ] or [ 'A', 'B', 'E', 'F' ] depending on structure (depth limit is 2)
+function isAlphaNumeric(char: string): boolean {
+  return /^[a-z0-9]$/i.test(char);
+}
