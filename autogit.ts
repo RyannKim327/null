@@ -1,22 +1,15 @@
-const arr = [1, 2, 3, 4, 3];
-const valueToRemove = 3;
+// Create an array
+let myArray: number[] = [1, 2, 3, 4, 5];
 
-const index = arr.indexOf(valueToRemove);
-if (index !== -1) {
-  arr.splice(index, 1);
-}
+// Reverse the order of the array
+myArray.reverse();
 
-console.log(arr); // [1, 2, 4, 3]
-const arr = [1, 2, 3, 4, 3];
-const valueToRemove = 3;
+console.log(myArray); // Output: [5, 4, 3, 2, 1]
+// Create an array
+let myArray: number[] = [1, 2, 3, 4, 5];
 
-const filteredArr = arr.filter(item => item !== valueToRemove);
-console.log(filteredArr); // [1, 2, 4]
-const arr = ['a', 'b', 'c', 'd'];
-const indexToRemove = 2;
+// Create a reversed copy of the array
+let reversedArray: number[] = myArray.slice().reverse();
 
-if (indexToRemove > -1 && indexToRemove < arr.length) {
-  arr.splice(indexToRemove, 1);
-}
-
-console.log(arr); // ['a', 'b', 'd']
+console.log(myArray);       // Output: [1, 2, 3, 4, 5]
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
