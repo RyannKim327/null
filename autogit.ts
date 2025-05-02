@@ -1,52 +1,29 @@
-type Graph = Map<string, Map<string, number>>;
+function largestPrimeFactor(n: number): number {
+  let number = n;
+  let largestFactor = -1;
 
-function dijkstra(graph: Graph, start: string): Map<string, number> {
-  const distances = new Map<string, number>();
-  const visited = new Set<string>();
-  const pq: Array<{ node: string; dist: number }> = [];
-
-  // Initialize distances
-  for (const node of graph.keys()) {
-    distances.set(node, Infinity);
-  }
-  distances.set(start, 0);
-
-  // Simple priority queue push function (not optimal but fine for basic use)
-  function enqueue(node: string, dist: number) {
-    pq.push({ node, dist });
-    pq.sort((a, b) => a.dist - b.dist);
+  // Divide out all the 2s first
+  while (number % 2 === 0) {
+    largestFactor = 2;
+    number /= 2;
   }
 
-  enqueue(start, 0);
-
-  while (pq.length > 0) {
-    const { node: currentNode, dist: currentDist } = pq.shift()!;
-
-    if (visited.has(currentNode)) continue;
-    visited.add(currentNode);
-
-    const neighbors = graph.get(currentNode);
-    if (!neighbors) continue;
-
-    for (const [neighbor, weight] of neighbors) {
-      if (visited.has(neighbor)) continue;
-
-      const newDist = currentDist + weight;
-      if (newDist < (distances.get(neighbor) ?? Infinity)) {
-        distances.set(neighbor, newDist);
-        enqueue(neighbor, newDist);
-      }
+  // Now check odd numbers from 3 up to sqrt(number)
+  for (let i = 3; i <= Math.sqrt(number); i += 2) {
+    while (number % i === 0) {
+      largestFactor = i;
+      number /= i;
     }
   }
 
-  return distances;
-}
-const graph: Graph = new Map([
-  ["A", new Map([["B", 1], ["C", 4]])],
-  ["B", new Map([["A", 1], ["C", 2], ["D", 5]])],
-  ["C", new Map([["A", 4], ["B", 2], ["D", 1]])],
-  ["D", new Map([["B", 5], ["C", 1]])]
-]);
+  // If number is still greater than 2, it means number itself is prime
+  if (number > 2) {
+    largestFactor = number;
+  }
 
-const distances = dijkstra(graph, "A");
-console.log(distances);  // Map { 'A' => 0, 'B' => 1, 'C' => 3, 'D' => 4 }
+  return largestFactor;
+}
+
+// Example usage:
+console.log(largestPrimeFactor(13195)); // Output: 29
+console.log(largestPrimeFactor(600851475143)); // Output: 6857
