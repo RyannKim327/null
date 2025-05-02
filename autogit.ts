@@ -1,64 +1,110 @@
-// Define a candidate type for readability
-type Candidate<T> = {
-  sequence: T[];  // The partial solution sequence
-  score: number;  // The score of this candidate (higher is better)
-};
+class BTreeNode<T> {
+  keys: T[] = [];
+  children: BTreeNode<T>[] = [];
+  leaf: boolean;
 
-// An example function type to expand a candidate to next possibilities
-type ExpandFunc<T> = (sequence: T[]) => Array<{ next: T; score: number }>;
+  constructor(leaf: boolean) {
+    this.leaf = leaf;
+  }
+}
+class BTree<T> {
+  root: BTreeNode<T>;
+  t: number; // minimum degree
+  compare: (a: T, b: T) => number;
 
-/**
- * Beam Search function
- * @param initialCandidates - initial candidates to start with (often a single start)
- * @param expand - function to expand a candidate sequence to next states with scores
- * @param beamWidth - the size of the beam to keep at each step
- * @param maxSteps - maximum length of sequences to generate
- */
-function beamSearch<T>(
-  initialCandidates: Candidate<T>[],
-  expand: ExpandFunc<T>,
-  beamWidth: number,
-  maxSteps: number
-): Candidate<T>[] {
-  let beam = initialCandidates;
-
-  for (let step = 0; step < maxSteps; step++) {
-    let allCandidates: Candidate<T>[] = [];
-
-    for (const candidate of beam) {
-      const expansions = expand(candidate.sequence);
-      for (const { next, score } of expansions) {
-        allCandidates.push({
-          sequence: [...candidate.sequence, next],
-          score: candidate.score + score, // aggregate score, customize as needed
-        });
-      }
-    }
-
-    // Sort candidates by score descending and keep top beamWidth
-    allCandidates.sort((a, b) => b.score - a.score);
-    beam = allCandidates.slice(0, beamWidth);
-
-    // Optional: stopping criteria if all candidates end early
-    if (beam.length === 0) break;
+  constructor(t: number, compareFn: (a: T, b: T) => number) {
+    this.t = t;
+    this.root = new BTreeNode<T>(true);
+    this.compare = compareFn;
+  }
+}
+search(node: BTreeNode<T>, key: T): BTreeNode<T> | null {
+  let i = 0;
+  while (i < node.keys.length && this.compare(key, node.keys[i]) > 0) {
+    i++;
   }
 
-  return beam;
+  if (i < node.keys.length && this.compare(key, node.keys[i]) === 0) {
+    return node; // Found key in this node
+  }
+
+  if (node.leaf) {
+    return null; // Not found
+  }
+
+  return this.search(node.children[i], key);
 }
-// A function that expands sequences by adding letters, with some dummy scores
-const expandLetters: ExpandFunc<string> = (sequence) => {
-  const letters = ['a', 'b', 'c'];
-  return letters.map((letter) => ({
-    next: letter,
-    score: Math.random(), // Just a random score for demo; replace with your logic
-  }));
-};
+splitChild(parent: BTreeNode<T>, i: number) {
+  const t = this.t;
+  const y = parent.children[i];
+  const z = new BTreeNode<T>(y.leaf);
 
-// Start with empty sequence with score 0
-const initialCandidates: Candidate<string>[] = [{ sequence: [], score: 0 }];
+  // z takes t - 1 keys from y
+  z.keys = y.keys.splice(t);
+  
+  // If y is not leaf, move second half children to z
+  if (!y.leaf) {
+    z.children = y.children.splice(t);
+  }
 
-const results = beamSearch(initialCandidates, expandLetters, 3, 5);
+  // Insert z after y in parent's children
+  parent.children.splice(i + 1, 0, z);
 
-for (const res of results) {
-  console.log(`Sequence: ${res.sequence.join('')} - Score: ${res.score.toFixed(3)}`);
+  // Move middle key from y to parent
+  const midKey = y.keys.splice(t - 1, 1)[0];
+  parent.keys.splice(i, 0, midKey);
 }
+insert(key: T) {
+  const root = this.root;
+
+  if (root.keys.length === 2 * this.t - 1) {
+    const newRoot = new BTreeNode<T>(false);
+    newRoot.children.push(root);
+    this.splitChild(newRoot, 0);
+    this.root = newRoot;
+    this.insertNonFull(newRoot, key);
+  } else {
+    this.insertNonFull(root, key);
+  }
+}
+
+insertNonFull(node: BTreeNode<T>, key: T) {
+  let i = node.keys.length - 1;
+
+  if (node.leaf) {
+    // Insert key into the correct position in node.keys
+    node.keys.push(key);  // Add dummy key to extend array
+    while (i >= 0 && this.compare(key, node.keys[i]) < 0) {
+      node.keys[i + 1] = node.keys[i];
+      i--;
+    }
+    node.keys[i + 1] = key;
+  } else {
+    while (i >= 0 && this.compare(key, node.keys[i]) < 0) {
+      i--;
+    }
+    i++;
+
+    if (node.children[i].keys.length === 2 * this.t - 1) {
+      this.splitChild(node, i);
+
+      if (this.compare(key, node.keys[i]) > 0) {
+        i++;
+      }
+    }
+    this.insertNonFull(node.children[i], key);
+  }
+}
+// Comparator for numbers
+function numberCompare(a: number, b: number): number {
+  return a - b;
+}
+
+const btree = new BTree<number>(3, numberCompare);
+
+// Insert multiple keys
+[10, 20, 5, 6, 12, 30, 7, 17].forEach(key => btree.insert(key));
+
+// Search
+const node = btree.search(btree.root, 6);
+console.log(node ? "Found key 6" : "Key 6 not found");
