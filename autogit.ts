@@ -1,15 +1,10 @@
-function factorial(n: number): number {
-  if (n <= 1) return 1;
-  return n * factorial(n - 1);
-}
+function isPalindrome(str: string): boolean {
+  // Normalize the string: remove non-alphanumeric chars and lowercase
+  const cleaned = str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-console.log(factorial(5)); // Output: 120
-function factorial(n: number): number {
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
+  // Check if cleaned string equals its reverse
+  return cleaned === cleaned.split('').reverse().join('');
 }
-
-console.log(factorial(5)); // Output: 120
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
