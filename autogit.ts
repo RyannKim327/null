@@ -1,35 +1,21 @@
-type Node = string; // or number, or any type representing your nodes
-type Graph = Map<Node, Node[]>;
+function bubbleSort(arr: number[]): number[] {
+  const n = arr.length;
+  // Make a copy to avoid mutating the original array
+  const sortedArr = [...arr];
 
-function depthLimitedSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node,
-  limit: number
-): boolean {
-  function recursiveDLS(node: Node, depth: number): boolean {
-    if (node === goal) return true;
-    if (depth === 0) return false;
-
-    const neighbors = graph.get(node) ?? [];
-    for (const neighbor of neighbors) {
-      if (recursiveDLS(neighbor, depth - 1)) return true;
+  for (let i = 0; i < n - 1; i++) {
+    // Each pass bubbles the largest element to the end
+    for (let j = 0; j < n - 1 - i; j++) {
+      if (sortedArr[j] > sortedArr[j + 1]) {
+        // Swap elements
+        const temp = sortedArr[j];
+        sortedArr[j] = sortedArr[j + 1];
+        sortedArr[j + 1] = temp;
+      }
     }
-    return false;
   }
 
-  return recursiveDLS(start, limit);
+  return sortedArr;
 }
-
-// Example usage:
-const graph: Graph = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['D', 'E']],
-  ['C', ['F']],
-  ['D', []],
-  ['E', ['F']],
-  ['F', []],
-]);
-
-console.log(depthLimitedSearch(graph, 'A', 'F', 2)); // true
-console.log(depthLimitedSearch(graph, 'A', 'F', 1)); // false (limit too shallow)
+const arr = [5, 3, 8, 4, 2];
+console.log(bubbleSort(arr));  // Output: [2, 3, 4, 5, 8]
