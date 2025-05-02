@@ -1,67 +1,32 @@
-class RabinKarp {
-    private static readonly d: number = 256; // Number of characters in the input alphabet
-    private static readonly q: number = 101; // A prime number
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) return arr;
 
-    static search(text: string, pattern: string): number {
-        const m: number = pattern.length;
-        const n: number = text.length;
-        const patternHash: number = this.hash(pattern, m);
-        const textHash: number = this.hash(text, m);
-        const h: number = this.precomputeHashBase(m);
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
 
-        for (let i: number = 0; i <= n - m; i++) {
-            // Check the hash values
-            if (patternHash === textHash) {
-                // Check characters one by one
-                let found: boolean = true;
-                for (let j: number = 0; j < m; j++) {
-                    if (text[i + j] !== pattern[j]) {
-                        found = false;
-                        break;
-                    }
-                }
-                if (found) {
-                    return i; // Match found at index i
-                }
-            }
-
-            // Compute the hash of the next window
-            if (i < n - m) {
-                textHash = (this.d * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % this.q;
-                // We might get a negative value for textHash, convert it to positive
-                if (textHash < 0) {
-                    textHash = textHash + this.q;
-                }
-            }
-        }
-
-        return -1; // No match found
-    }
-
-    private static hash(str: string, length: number): number {
-        let hash: number = 0;
-        for (let i: number = 0; i < length; i++) {
-            hash = (this.d * hash + str.charCodeAt(i)) % this.q;
-        }
-        return hash;
-    }
-
-    private static precomputeHashBase(length: number): number {
-        let h: number = 1;
-        for (let i: number = 0; i < length - 1; i++) {
-            h = (h * this.d) % this.q;
-        }
-        return h;
-    }
+  return merge(left, right);
 }
 
-// Example usage
-const text = "ABCCDDAEFG";
-const pattern = "CDD";
-const result = RabinKarp.search(text, pattern);
+function merge(left: number[], right: number[]): number[] {
+  let result: number[] = [];
+  let i = 0, j = 0;
 
-if (result !== -1) {
-    console.log(`Pattern found at index ${result}`);
-} else {
-    console.log("Pattern not found");
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+
+  // Append remaining elements (if any)
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
+
+// Example usage:
+const unsortedArray = [34, 7, 23, 32, 5, 62];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray); // [5, 7, 23, 32, 34, 62]
