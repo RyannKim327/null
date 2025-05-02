@@ -1,27 +1,39 @@
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null;
-  right: TreeNode<T> | null;
+// HTML structure
+const appContainer = document.createElement('div');
+document.body.appendChild(appContainer);
 
-  constructor(value: T, left: TreeNode<T> | null = null, right: TreeNode<T> | null = null) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
-  }
-}
+// Create a text input and a button
+const input = document.createElement('input');
+input.type = 'text';
+input.placeholder = 'Type something...';
 
-function countLeafNodes<T>(root: TreeNode<T> | null): number {
-  if (root === null) return 0;
+const button = document.createElement('button');
+button.textContent = 'Submit';
 
-  // If both children are null, it's a leaf node
-  if (root.left === null && root.right === null) return 1;
+// Create a paragraph to display the output
+const output = document.createElement('p');
 
-  // Recursively count leaf nodes in left and right subtree
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-const tree = new TreeNode(1,
-  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-  new TreeNode(3)
-);
+// Append elements to the app container
+appContainer.appendChild(input);
+appContainer.appendChild(button);
+appContainer.appendChild(output);
 
-console.log(countLeafNodes(tree)); // Output: 3 (nodes 4, 5, and 3 are leaves)
+// Add an event listener for the button
+button.addEventListener('click', () => {
+    const userInput: string = input.value; // Get the value from the input
+    output.textContent = `You entered: ${userInput}`; // Display the input in the output paragraph
+    input.value = ''; // Clear input field
+});
+
+// For a complete HTML document, the below could be in a script tag in an HTML file
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript Input Example</title>
+</head>
+<body>
+    <script src="path_to_your_compiled_javascript.js"></script>
+</body>
+</html>
