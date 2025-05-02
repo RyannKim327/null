@@ -1,54 +1,27 @@
-function mergeSort<T>(array: T[]): T[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (array.length <= 1) {
-        return array;
-    }
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null;
+  right: TreeNode<T> | null;
 
-    // Split the array into two halves
-    const mid = Math.floor(array.length / 2);
-    const left = array.slice(0, mid);
-    const right = array.slice(mid);
-
-    // Recursively sort both halves
-    const sortedLeft = mergeSort(left);
-    const sortedRight = mergeSort(right);
-
-    // Merge the sorted halves
-    return merge(sortedLeft, sortedRight);
+  constructor(value: T, left: TreeNode<T> | null = null, right: TreeNode<T> | null = null) {
+    this.value = value;
+    this.left = left;
+    this.right = right;
+  }
 }
 
-function merge<T>(left: T[], right: T[]): T[] {
-    const result: T[] = [];
-    let i = 0; // Pointer for the left array
-    let j = 0; // Pointer for the right array
+function countLeafNodes<T>(root: TreeNode<T> | null): number {
+  if (root === null) return 0;
 
-    // Merge the two arrays while there are elements in both
-    while (i < left.length && j < right.length) {
-        if (left[i] < right[j]) {
-            result.push(left[i]);
-            i++;
-        } else {
-            result.push(right[j]);
-            j++;
-        }
-    }
+  // If both children are null, it's a leaf node
+  if (root.left === null && root.right === null) return 1;
 
-    // If there are remaining elements in the left array, add them
-    while (i < left.length) {
-        result.push(left[i]);
-        i++;
-    }
-
-    // If there are remaining elements in the right array, add them
-    while (j < right.length) {
-        result.push(right[j]);
-        j++;
-    }
-
-    return result;
+  // Recursively count leaf nodes in left and right subtree
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
+const tree = new TreeNode(1,
+  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
+  new TreeNode(3)
+);
 
-// Example usage
-const numbers = [38, 27, 43, 3, 9, 82, 10];
-const sortedNumbers = mergeSort(numbers);
-console.log(sortedNumbers); // Output: [3, 9, 10, 27, 38, 43, 82]
+console.log(countLeafNodes(tree)); // Output: 3 (nodes 4, 5, and 3 are leaves)
