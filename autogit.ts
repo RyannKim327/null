@@ -1,48 +1,78 @@
-function merge(arr: number[], left: number, mid: number, right: number): void {
-  const n1 = mid - left + 1;
-  const n2 = right - mid;
+class Graph {
+    private adjList: Map<number, number[]>;
+    private index: number;
+    private stack: number[];
+    private indices: number[];
+    private lowLink: number[];
+    private onStack: boolean[];
+    private sccs: number[][];
 
-  const leftArr = new Array(n1);
-  const rightArr = new Array(n2);
-
-  for (let i = 0; i < n1; i++) leftArr[i] = arr[left + i];
-  for (let j = 0; j < n2; j++) rightArr[j] = arr[mid + 1 + j];
-
-  let i = 0, j = 0, k = left;
-
-  while (i < n1 && j < n2) {
-    if (leftArr[i] <= rightArr[j]) {
-      arr[k++] = leftArr[i++];
-    } else {
-      arr[k++] = rightArr[j++];
+    constructor(vertices: number) {
+        this.adjList = new Map();
+        for (let i = 0; i < vertices; i++) {
+            this.adjList.set(i, []);
+        }
+        this.index = 0;
+        this.stack = [];
+        this.indices = new Array(vertices).fill(-1);
+        this.lowLink = new Array(vertices).fill(-1);
+        this.onStack = new Array(vertices).fill(false);
+        this.sccs = [];
     }
-  }
 
-  // Copy any remaining elements
-  while (i < n1) arr[k++] = leftArr[i++];
-  while (j < n2) arr[k++] = rightArr[j++];
+    addEdge(u: number, v: number): void {
+        this.adjList.get(u)?.push(v);
+    }
+
+    strongConnect(v: number): void {
+        this.indices[v] = this.index;
+        this.lowLink[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
+
+        const neighbors = this.adjList.get(v) || [];
+        for (const w of neighbors) {
+            if (this.indices[w] === -1) {
+                // Successor w has not yet been visited; recurse on it
+                this.strongConnect(w);
+                this.lowLink[v] = Math.min(this.lowLink[v], this.lowLink[w]);
+            } else if (this.onStack[w]) {
+                // Successor w is in stack and hence in the current SCC
+                this.lowLink[v] = Math.min(this.lowLink[v], this.indices[w]);
+            }
+        }
+
+        // If v is a root node, pop the stack and generate an SCC
+        if (this.lowLink[v] === this.indices[v]) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                scc.push(w);
+            } while (w !== v);
+            this.sccs.push(scc);
+        }
+    }
+
+    findSCCs(): number[][] {
+        for (let i = 0; i < this.adjList.size; i++) {
+            if (this.indices[i] === -1) {
+                this.strongConnect(i);
+            }
+        }
+        return this.sccs;
+    }
 }
 
-function mergeSortIterative(arr: number[]): void {
-  const n = arr.length;
+// Usage Example
+const graph = new Graph(5);
+graph.addEdge(0, 1);
+graph.addEdge(1, 2);
+graph.addEdge(2, 0);
+graph.addEdge(1, 3);
+graph.addEdge(3, 4);
 
-  // For current size of subarrays to merge: 1, 2, 4, 8, ...
-  for (let currSize = 1; currSize <= n - 1; currSize = 2 * currSize) {
-    // Pick starting point of left subarray to merge
-    for (let leftStart = 0; leftStart < n - 1; leftStart += 2 * currSize) {
-      // Find ending point of left subarray
-      const mid = Math.min(leftStart + currSize - 1, n - 1);
-      
-      // Find ending point of right subarray
-      const rightEnd = Math.min(leftStart + 2 * currSize - 1, n - 1);
-
-      // Merge subarrays arr[leftStart..mid] & arr[mid+1..rightEnd]
-      merge(arr, leftStart, mid, rightEnd);
-    }
-  }
-}
-
-// Usage example
-const arr = [38, 27, 43, 3, 9, 82, 10];
-mergeSortIterative(arr);
-console.log(arr);  // Sorted array
+const sccs = graph.findSCCs();
+console.log('Strongly Connected Components:', sccs);
