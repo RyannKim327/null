@@ -1,22 +1,41 @@
-function countChar(str: string, charToCount: string): number {
-    let count = 0;
-    for (const char of str) {
-        if (char === charToCount) {
-            count++;
+function isPalindrome(s: string): boolean {
+    let left = 0;
+    let right = s.length - 1;
+
+    while (left < right) {
+        if (s[left] !== s[right]) {
+            return false;
         }
+        left++;
+        right--;
     }
-    return count;
+
+    return true;
+}
+function isPalindromeIgnoreNonAlnum(s: string): boolean {
+    let left = 0;
+    let right = s.length - 1;
+
+    while (left < right) {
+        while (left < right && !isAlphanumeric(s[left])) left++;
+        while (left < right && !isAlphanumeric(s[right])) right--;
+
+        if (left < right && s[left].toLowerCase() !== s[right].toLowerCase()) {
+            return false;
+        }
+
+        left++;
+        right--;
+    }
+
+    return true;
 }
 
-// Example:
-console.log(countChar("hello world", "l")); // Output: 3
-function countChar(str: string, charToCount: string): number {
-    return str.split(charToCount).length - 1;
+function isAlphanumeric(ch: string): boolean {
+    const code = ch.charCodeAt(0);
+    return (
+        (code >= 48 && code <= 57) ||    // 0-9
+        (code >= 65 && code <= 90) ||    // A-Z
+        (code >= 97 && code <= 122)      // a-z
+    );
 }
-
-console.log(countChar("hello world", "l")); // Output: 3
-function countChar(str: string, charToCount: string): number {
-    return Array.from(str).filter(c => c === charToCount).length;
-}
-
-console.log(countChar("hello world", "l")); // Output: 3
