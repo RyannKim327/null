@@ -1,41 +1,35 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
+type Node = string; // or number, or any type representing your nodes
+type Graph = Map<Node, Node[]>;
 
-    while (left < right) {
-        if (s[left] !== s[right]) {
-            return false;
-        }
-        left++;
-        right--;
+function depthLimitedSearch(
+  graph: Graph,
+  start: Node,
+  goal: Node,
+  limit: number
+): boolean {
+  function recursiveDLS(node: Node, depth: number): boolean {
+    if (node === goal) return true;
+    if (depth === 0) return false;
+
+    const neighbors = graph.get(node) ?? [];
+    for (const neighbor of neighbors) {
+      if (recursiveDLS(neighbor, depth - 1)) return true;
     }
+    return false;
+  }
 
-    return true;
-}
-function isPalindromeIgnoreNonAlnum(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
-
-    while (left < right) {
-        while (left < right && !isAlphanumeric(s[left])) left++;
-        while (left < right && !isAlphanumeric(s[right])) right--;
-
-        if (left < right && s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false;
-        }
-
-        left++;
-        right--;
-    }
-
-    return true;
+  return recursiveDLS(start, limit);
 }
 
-function isAlphanumeric(ch: string): boolean {
-    const code = ch.charCodeAt(0);
-    return (
-        (code >= 48 && code <= 57) ||    // 0-9
-        (code >= 65 && code <= 90) ||    // A-Z
-        (code >= 97 && code <= 122)      // a-z
-    );
-}
+// Example usage:
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D', 'E']],
+  ['C', ['F']],
+  ['D', []],
+  ['E', ['F']],
+  ['F', []],
+]);
+
+console.log(depthLimitedSearch(graph, 'A', 'F', 2)); // true
+console.log(depthLimitedSearch(graph, 'A', 'F', 1)); // false (limit too shallow)
