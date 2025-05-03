@@ -1,11 +1,29 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  const normalize = (str: string) =>
-    str.toLowerCase().replace(/[^a-z0-9]/g, '').split('').sort().join('');
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-  return normalize(str1) === normalize(str2);
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
+        
+        // Last i elements are already sorted
+        for (let j = 0; j < n - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap arr[j] and arr[j + 1]
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
+        }
+        
+        // If no elements were swapped, the array is sorted
+        if (!swapped) {
+            break;
+        }
+    }
+    
+    return arr;
 }
 
 // Example usage:
-console.log(areAnagrams("Listen", "Silent")); // true
-console.log(areAnagrams("Hello", "Olelh"));   // true
-console.log(areAnagrams("Test", "Taste"));    // false
+const arr = [5, 2, 9, 1, 5, 6];
+const sortedArr = bubbleSort(arr);
+console.log(sortedArr); // Output: [1, 2, 5, 5, 6, 9]
