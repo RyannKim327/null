@@ -1,16 +1,19 @@
-function firstRepeatedChar(str: string): string | null {
-  const seen = new Set<string>();
+function longestCommonPrefix(strs: string[]): string {
+  if (strs.length === 0) return "";
 
-  for (const char of str) {
-    if (seen.has(char)) {
-      return char;  // first repeated character found
+  // Start assuming the whole first string is the prefix
+  let prefix = strs[0];
+
+  for (let i = 1; i < strs.length; i++) {
+    // Compare the current prefix with the next string,
+    // and trim the prefix in case of mismatch.
+    while (strs[i].indexOf(prefix) !== 0) {
+      prefix = prefix.slice(0, prefix.length - 1);
+      if (prefix === "") return "";
     }
-    seen.add(char);
   }
 
-  return null;  // no repeated character found
+  return prefix;
 }
-
-// Example usage:
-console.log(firstRepeatedChar("interview"));  // Output: "i"
-console.log(firstRepeatedChar("abcdef"));     // Output: null
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Outputs: "fl"
