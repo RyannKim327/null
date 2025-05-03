@@ -1,28 +1,33 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: if the array is empty or has one element, it's already sorted
-    if (arr.length <= 1) {
-        return arr;
+function maxSubArray(nums: number[]): number {
+    let maxSoFar = nums[0];
+    let maxEndingHere = nums[0];
+
+    for (let i = 1; i < nums.length; i++) {
+        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
+        maxSoFar = Math.max(maxSoFar, maxEndingHere);
     }
 
-    // Choose a pivot element. Here, we'll choose the last element as the pivot.
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];  // Elements less than the pivot
-    const right: number[] = []; // Elements greater than the pivot
+    return maxSoFar;
+}
+function maxSubArrayWithIndices(nums: number[]): { maxSum: number, subarray: number[] } {
+    let maxSoFar = nums[0];
+    let maxEndingHere = nums[0];
+    let start = 0, end = 0, s = 0;
 
-    // Partition the array into two sub-arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]); // Push to left if it's less than the pivot
+    for (let i = 1; i < nums.length; i++) {
+        if (nums[i] > maxEndingHere + nums[i]) {
+            maxEndingHere = nums[i];
+            s = i;
         } else {
-            right.push(arr[i]); // Otherwise, push to right
+            maxEndingHere += nums[i];
+        }
+
+        if (maxEndingHere > maxSoFar) {
+            maxSoFar = maxEndingHere;
+            start = s;
+            end = i;
         }
     }
 
-    // Recursively apply quicksort to the left and right sub-arrays
-    return [...quicksort(left), pivot, ...quicksort(right)];
+    return { maxSum: maxSoFar, subarray: nums.slice(start, end + 1) };
 }
-
-// Example usage:
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
