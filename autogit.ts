@@ -1,82 +1,85 @@
-type Graph = Map<string, string[]>;  // Map from node to list of adjacent nodes
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-  if (start === goal) return [start];
-
-  // Forwards and backwards frontiers
-  let frontierStart = new Set([start]);
-  let frontierGoal = new Set([goal]);
-
-  // Visited nodes with parent information to reconstruct path
-  const parentsStart = new Map<string, string | null>();
-  const parentsGoal = new Map<string, string | null>();
-
-  parentsStart.set(start, null);
-  parentsGoal.set(goal, null);
-
-  // Helper function to reconstruct path once meeting point found
-  function reconstructPath(meetingNode: string): string[] {
-    const pathStart: string[] = [];
-    let node: string | null = meetingNode;
-    while (node !== null) {
-      pathStart.push(node);
-      node = parentsStart.get(node) ?? null;
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
-    pathStart.reverse();
-
-    const pathGoal: string[] = [];
-    node = parentsGoal.get(meetingNode) ?? null;
-    while (node !== null) {
-      pathGoal.push(node);
-      node = parentsGoal.get(node) ?? null;
-    }
-
-    return pathStart.concat(pathGoal);
-  }
-
-  while (frontierStart.size > 0 && frontierGoal.size > 0) {
-    // Expand from start side
-    const nextFrontierStart = new Set<string>();
-    for (const current of frontierStart) {
-      for (const neighbor of graph.get(current) || []) {
-        if (!parentsStart.has(neighbor)) {
-          parentsStart.set(neighbor, current);
-          nextFrontierStart.add(neighbor);
-          if (parentsGoal.has(neighbor)) {
-            return reconstructPath(neighbor);
-          }
-        }
-      }
-    }
-    frontierStart = nextFrontierStart;
-
-    // Expand from goal side
-    const nextFrontierGoal = new Set<string>();
-    for (const current of frontierGoal) {
-      for (const neighbor of graph.get(current) || []) {
-        if (!parentsGoal.has(neighbor)) {
-          parentsGoal.set(neighbor, current);
-          nextFrontierGoal.add(neighbor);
-          if (parentsStart.has(neighbor)) {
-            return reconstructPath(neighbor);
-          }
-        }
-      }
-    }
-    frontierGoal = nextFrontierGoal;
-  }
-
-  // No path found
-  return null;
 }
-const graph: Graph = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['A', 'D']],
-  ['C', ['A', 'E']],
-  ['D', ['B', 'F']],
-  ['E', ['C', 'F']],
-  ['F', ['D', 'E']],
-]);
+class LinkedList<T> {
+    private head: Node<T> | null = null;
 
-console.log(biDirectionalSearch(graph, 'A', 'F')); 
-// Output: ['A', 'B', 'D', 'F'] or ['A', 'C', 'E', 'F'] depending on search order
+    // Add a new element to the end of the list
+    add(value: T): void {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Remove an element by value
+    remove(value: T): boolean {
+        if (!this.head) {
+            return false;
+        }
+
+        // If the head needs to be removed
+        if (this.head.value === value) {
+            this.head = this.head.next;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.value === value) {
+                current.next = current.next.next;
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    // Search for an element by value
+    search(value: T): boolean {
+        let current = this.head;
+        while (current) {
+            if (current.value === value) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    // Print list values
+    printList(): void {
+        let current = this.head;
+        let result = [];
+        while (current) {
+            result.push(current.value);
+            current = current.next;
+        }
+        console.log(result.join(' -> '));
+    }
+}
+const linkedList = new LinkedList<number>();
+
+linkedList.add(10);
+linkedList.add(20);
+linkedList.add(30);
+
+linkedList.printList(); // Output: 10 -> 20 -> 30
+
+linkedList.remove(20);
+linkedList.printList(); // Output: 10 -> 30
+
+console.log(linkedList.search(30)); // Output: true
+console.log(linkedList.search(20)); // Output: false
