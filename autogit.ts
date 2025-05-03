@@ -1,29 +1,32 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+function burrowsWheelerTransform(input: string): { transformed: string, originalIndex: number } {
+    // Step 1: Generate all rotations of the input string
+    const rotations: string[] = [];
+    const length = input.length;
 
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
-        
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap arr[j] and arr[j + 1]
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
-        }
-        
-        // If no elements were swapped, the array is sorted
-        if (!swapped) {
-            break;
+    for (let i = 0; i < length; i++) {
+        const rotated = input.slice(i) + input.slice(0, i);
+        rotations.push(rotated);
+    }
+
+    // Step 2: Sort the rotations
+    rotations.sort();
+
+    // Step 3: Build BWT result and remember the index of the original string
+    let bwtResult = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < length; i++) {
+        const rotation = rotations[i];
+        bwtResult += rotation[length - 1]; // Take the last character of each sorted rotation
+        if (rotation === input) {
+            originalIndex = i; // Store the index of the original input
         }
     }
-    
-    return arr;
+
+    return { transformed: bwtResult, originalIndex };
 }
 
 // Example usage:
-const arr = [5, 2, 9, 1, 5, 6];
-const sortedArr = bubbleSort(arr);
-console.log(sortedArr); // Output: [1, 2, 5, 5, 6, 9]
+const input = "banana";
+const result = burrowsWheelerTransform(input);
+console.log(`BWT Result: ${result.transformed}, Original Index: ${result.originalIndex}`);
