@@ -1,27 +1,70 @@
-function longestCommonSubstring(s1: string, s2: string): string {
-    const len1 = s1.length;
-    const len2 = s2.length;
-    // DP table where dp[i][j] represents length of longest common suffix of s1[i-1] and s2[j-1]
-    const dp: number[][] = Array.from({ length: len1 + 1 }, () => Array(len2 + 1).fill(0));
+class ListNode {
+    value: number;
+    next: ListNode | null;
+    
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-    let maxLength = 0;
-    let maxEndIndexS1 = 0;
+// A function to check if the linked list is a palindrome
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head) return true;
 
-    for (let i = 1; i <= len1; i++) {
-        for (let j = 1; j <= len2; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    maxEndIndexS1 = i - 1;  // store the ending index of substring in s1
-                }
-            }
-        }
+    // Step 1: Find the middle of the linked list
+    let slow = head;
+    let fast = head;
+
+    // Use the fast and slow pointer technique
+    while (fast && fast.next) {
+        slow = slow.next!;
+        fast = fast.next.next!;
     }
 
-    // Extract the longest common substring from s1 using the max length and index
-    return s1.slice(maxEndIndexS1 - maxLength + 1, maxEndIndexS1 + 1);
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current = slow;
+
+    while (current) {
+        const nextTemp = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextTemp;
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left = head;
+    let right = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left.next!;
+        right = right.next;
+    }
+
+    // Step 4: (Optional) Restore the original linked list
+    // We reverse the second half again to restore the original list
+    current = prev;
+    prev = null;
+
+    while (current) {
+        const nextTemp = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextTemp;
+    }
+    
+    return true; // It is a palindrome
 }
-const s1 = "abcdefg";
-const s2 = "xyzabcde";
-console.log(longestCommonSubstring(s1, s2));  // Output: "abcde"
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(2);
+head.next.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Should output true
