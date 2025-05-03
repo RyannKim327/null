@@ -1,67 +1,40 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function longestCommonSubsequence(text1: string, text2: string): string {
+    const m = text1.length;
+    const n = text2.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+    // dp[i][j] will store length of LCS of text1[0..i-1] and text2[0..j-1]
+    const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
 
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current !== null) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (headA === null || headB === null) {
-        return null;
-    }
-
-    const lenA = getLength(headA);
-    const lenB = getLength(headB);
-
-    let currentA = headA;
-    let currentB = headB;
-
-    // Advance the pointer for the longer list
-    if (lenA > lenB) {
-        for (let i = 0; i < lenA - lenB; i++) {
-            currentA = currentA.next;
-        }
-    } else {
-        for (let i = 0; i < lenB - lenA; i++) {
-            currentB = currentB.next;
+    // Build the dp table in bottom-up manner
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (text1[i - 1] === text2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
     }
 
-    // Traverse both lists and find the intersection
-    while (currentA !== null && currentB !== null) {
-        if (currentA === currentB) {
-            return currentA; // Intersection found
+    // Reconstruct the LCS string from the dp table
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (text1[i - 1] === text2[j - 1]) {
+            lcs = text1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
         }
-        currentA = currentA.next;
-        currentB = currentB.next;
     }
 
-    return null; // No intersection found
+    return lcs;
 }
 
-// Example Usage
-const intersectNode = new ListNode(8);
-const listA = new ListNode(4);
-listA.next = new ListNode(1);
-listA.next.next = intersectNode;
-
-const listB = new ListNode(5);
-listB.next = new ListNode(0);
-listB.next.next = new ListNode(1);
-listB.next.next.next = intersectNode;
-
-const intersection = getIntersectionNode(listA, listB);
-console.log(intersection ? intersection.value : 'No intersection'); // Output: 8
+// Example usage:
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
