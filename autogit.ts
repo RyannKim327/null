@@ -1,19 +1,13 @@
-function insertionSort(arr: number[]): number[] {
-  // Make a copy of the array to avoid mutating the original
-  const result = [...arr];
-
-  for (let i = 1; i < result.length; i++) {
-    let key = result[i];
-    let j = i - 1;
-
-    // Move elements of result[0..i-1], that are greater than key,
-    // to one position ahead of their current position
-    while (j >= 0 && result[j] > key) {
-      result[j + 1] = result[j];
-      j--;
+function isSortedAscending(arr: number[]): boolean {
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < arr[i - 1]) {
+      return false;
     }
-    result[j + 1] = key;
   }
-
-  return result;
+  return true;
+}
+console.log(isSortedAscending([1, 2, 3, 4]));  // true
+console.log(isSortedAscending([1, 3, 2, 4]));  // false
+function isSortedAscending(arr: number[]): boolean {
+  return arr.every((val, i, a) => i === 0 || a[i - 1] <= val);
 }
