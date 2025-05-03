@@ -1,33 +1,45 @@
-function maxSubArray(nums: number[]): number {
-    let maxSoFar = nums[0];
-    let maxEndingHere = nums[0];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    for (let i = 1; i < nums.length; i++) {
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return maxSoFar;
 }
-function maxSubArrayWithIndices(nums: number[]): { maxSum: number, subarray: number[] } {
-    let maxSoFar = nums[0];
-    let maxEndingHere = nums[0];
-    let start = 0, end = 0, s = 0;
 
-    for (let i = 1; i < nums.length; i++) {
-        if (nums[i] > maxEndingHere + nums[i]) {
-            maxEndingHere = nums[i];
-            s = i;
-        } else {
-            maxEndingHere += nums[i];
-        }
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    let first: ListNode | null = head;
+    let second: ListNode | null = head;
 
-        if (maxEndingHere > maxSoFar) {
-            maxSoFar = maxEndingHere;
-            start = s;
-            end = i;
+    // Move first pointer n nodes ahead
+    for (let i = 0; i < n; i++) {
+        if (first === null) {
+            return null; // n is larger than the length of the list
         }
+        first = first.next;
     }
 
-    return { maxSum: maxSoFar, subarray: nums.slice(start, end + 1) };
+    // Move both pointers until first reaches the end
+    while (first !== null) {
+        first = first.next;
+        second = second.next;
+    }
+
+    // second now points to the nth node from the end
+    return second;
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const nthNodeFromEnd = findNthFromEnd(head, 2);
+if (nthNodeFromEnd) {
+    console.log(nthNodeFromEnd.value); // Output: 4
+} else {
+    console.log("Node not found");
 }
