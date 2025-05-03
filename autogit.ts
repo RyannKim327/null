@@ -1,90 +1,115 @@
-class Node<T> {
-  data: T;
-  next: Node<T> | null = null;
+class Graph {
+    private adjList: Map<number, number[]>; // Adjacency list representation
 
-  constructor(data: T) {
-    this.data = data;
-  }
+    constructor() {
+        this.adjList = new Map();
+    }
+
+    addEdge(u: number, v: number) {
+        if (!this.adjList.has(u)) {
+            this.adjList.set(u, []);
+        }
+        this.adjList.get(u)!.push(v);
+    }
+
+    topologicalSortDFS(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
+
+        const dfs = (node: number) => {
+            visited.add(node);
+            const neighbors = this.adjList.get(node) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(node); // Push the current node on the stack at the end of recursion
+        };
+
+        for (const node of this.adjList.keys()) {
+            if (!visited.has(node)) {
+                dfs(node);
+            }
+        }
+
+        return stack.reverse(); // Reverse the stack to get the topological order
+    }
 }
-class LinkedList<T> {
-  head: Node<T> | null = null;
 
-  // Insert at the end
-  append(data: T): void {
-    const newNode = new Node(data);
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
 
-    if (!this.head) {
-      this.head = newNode;
-      return;
+const order = graph.topologicalSortDFS();
+console.log('Topological Sort Order (DFS):', order);
+class Graph {
+    private adjList: Map<number, number[]>; // Adjacency list representation
+    private inDegree: Map<number, number>; // In-degree of each vertex
+
+    constructor() {
+        this.adjList = new Map();
+        this.inDegree = new Map();
     }
 
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
-
-  // Insert at the beginning
-  prepend(data: T): void {
-    const newNode = new Node(data);
-    newNode.next = this.head;
-    this.head = newNode;
-  }
-
-  // Find node by data (returns first match)
-  find(data: T): Node<T> | null {
-    let current = this.head;
-    while (current) {
-      if (current.data === data) {
-        return current;
-      }
-      current = current.next;
-    }
-    return null;
-  }
-
-  // Delete node by data (first occurrence)
-  delete(data: T): void {
-    if (!this.head) return;
-
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      return;
+    addEdge(u: number, v: number) {
+        if (!this.adjList.has(u)) {
+            this.adjList.set(u, []);
+        }
+        this.adjList.get(u)!.push(v);
+        this.inDegree.set(v, (this.inDegree.get(v) || 0) + 1);
+        // Ensure that the nodes with no incoming edges are also in inDegree map
+        if (!this.inDegree.has(u)) {
+            this.inDegree.set(u, 0);
+        }
     }
 
-    let current = this.head;
-    while (current.next && current.next.data !== data) {
-      current = current.next;
+    topologicalSortKahn(): number[] {
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        // Find all vertices with in-degree 0
+        for (const [node, degree] of this.inDegree.entries()) {
+            if (degree === 0) {
+                queue.push(node);
+            }
+        }
+
+        while (queue.length > 0) {
+            const current = queue.shift()!;
+            result.push(current);
+
+            const neighbors = this.adjList.get(current) || [];
+            for (const neighbor of neighbors) {
+                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
+                if (this.inDegree.get(neighbor) === 0) {
+                    queue.push(neighbor);
+                }
+            }
+        }
+
+        // Check if there's a cycle (i.e., if result length is not equal to the number of nodes)
+        if (result.length !== this.inDegree.size) {
+            throw new Error("Graph has a cycle; topological sort not possible.");
+        }
+
+        return result;
     }
-
-    if (current.next && current.next.data === data) {
-      current.next = current.next.next;
-    }
-  }
-
-  // Convert list to array (useful for debugging or display)
-  toArray(): T[] {
-    const elements: T[] = [];
-    let current = this.head;
-
-    while (current) {
-      elements.push(current.data);
-      current = current.next;
-    }
-
-    return elements;
-  }
 }
-const list = new LinkedList<number>();
 
-list.append(1);
-list.append(2);
-list.prepend(0);
-console.log(list.toArray());  // [0, 1, 2]
+// Example usage:
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
 
-list.delete(1);
-console.log(list.toArray());  // [0, 2]
-
-const node = list.find(2);
-console.log(node?.data);      // 2
+const order = graph.topologicalSortKahn();
+console.log('Topological Sort Order (Kahn):', order);
