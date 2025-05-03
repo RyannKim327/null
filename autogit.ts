@@ -1,32 +1,99 @@
-function interpolationSearch(arr: number[], key: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+class PriorityQueue<T> {
+  private heap: T[] = [];
+  private comparator: (a: T, b: T) => boolean;
 
-  while (low <= high && key >= arr[low] && key <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === key) return low;
-      return -1;
-    }
+  constructor(comparator?: (a: T, b: T) => boolean) {
+    // Default comparator for min-heap
+    this.comparator = comparator || ((a, b) => a < b);
+  }
 
-    // Estimate the position with interpolation formula
-    const pos = low + Math.floor(
-      ((key - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
+  private swap(i: number, j: number): void {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+  }
 
-    if (arr[pos] === key) return pos;
+  private parent(index: number): number {
+    return Math.floor((index - 1) / 2);
+  }
 
-    if (arr[pos] < key) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
+  private leftChild(index: number): number {
+    return 2 * index + 1;
+  }
+
+  private rightChild(index: number): number {
+    return 2 * index + 2;
+  }
+
+  private siftUp(index: number): void {
+    let parentIndex = this.parent(index);
+    while (
+      index > 0 &&
+      this.comparator(this.heap[index], this.heap[parentIndex])
+    ) {
+      this.swap(index, parentIndex);
+      index = parentIndex;
+      parentIndex = this.parent(index);
     }
   }
 
-  return -1; // not found
+  private siftDown(index: number): void {
+    let left = this.leftChild(index);
+    let right = this.rightChild(index);
+    let smallest = index;
+
+    if (
+      left < this.heap.length &&
+      this.comparator(this.heap[left], this.heap[smallest])
+    ) {
+      smallest = left;
+    }
+
+    if (
+      right < this.heap.length &&
+      this.comparator(this.heap[right], this.heap[smallest])
+    ) {
+      smallest = right;
+    }
+
+    if (smallest !== index) {
+      this.swap(index, smallest);
+      this.siftDown(smallest);
+    }
+  }
+
+  public enqueue(item: T): void {
+    this.heap.push(item);
+    this.siftUp(this.heap.length - 1);
+  }
+
+  public dequeue(): T | undefined {
+    if (this.heap.length === 0) return undefined;
+    const item = this.heap[0];
+    const last = this.heap.pop()!;
+    if (this.heap.length > 0) {
+      this.heap[0] = last;
+      this.siftDown(0);
+    }
+    return item;
+  }
+
+  public peek(): T | undefined {
+    return this.heap[0];
+  }
+
+  public size(): number {
+    return this.heap.length;
+  }
+
+  public isEmpty(): boolean {
+    return this.heap.length === 0;
+  }
 }
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
+const pq = new PriorityQueue<number>(); // Min heap by default
+pq.enqueue(5);
+pq.enqueue(3);
+pq.enqueue(6);
+pq.enqueue(1);
 
-const index = interpolationSearch(sortedArray, target);
-
-console.log(index); // Output: 6
+console.log(pq.dequeue()); // 1 (smallest)
+console.log(pq.dequeue()); // 3
+console.log(pq.peek());    // 5
