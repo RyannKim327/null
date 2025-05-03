@@ -1,74 +1,59 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, ActivityIndicator } from 'react-native';
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let len = 0; // Length of the previous longest prefix suffix
+    let i = 1;
 
-const App: React.FC = () => {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchData = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-      
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      
-      const result = await response.json();
-      setData(result);
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                // Don't match lps[0..lps[len-1]] characters, they will match anyway
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-  };
+    return lps;
+}
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+function KMPSearch(text: string, pattern: string): number {
+    const m = pattern.length;
+    const n = text.length;
+    const lps = computeLPSArray(pattern);
 
-  return (
-    <View style={styles.container}>
-      {loading && <ActivityIndicator size="large" color="#0000ff" />}
-      {error && <Text style={styles.error}>{error}</Text>}
-      {data && (
-        <View>
-          {data.slice(0, 5).map((post: any) => (
-            <View key={post.id} style={styles.card}>
-              <Text style={styles.title}>{post.title}</Text>
-              <Text>{post.body}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-      <Button title="Fetch Data Again" onPress={fetchData} />
-    </View>
-  );
-};
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  card: {
-    marginVertical: 8,
-    padding: 10,
-    backgroundColor: '#f9f9f9',
-    borderRadius: 5,
-    borderWidth: 1,
-    borderColor: '#ddd',
-  },
-  title: {
-    fontWeight: 'bold',
-  },
-  error: {
-    color: 'red',
-  },
-});
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
 
-export default App;
+        if (j === m) {
+            // Pattern found at index (i - j)
+            return i - j; // Return the index of the first occurrence
+            j = lps[j - 1]; // Reset j using lps
+        } else if (i < n && pattern[j] !== text[i]) {
+            // Mismatch after j matches
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return -1; // Pattern not found
+}
+
+// Example usage:
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const index = KMPSearch(text, pattern);
+console.log(`Pattern found at index: ${index}`);
