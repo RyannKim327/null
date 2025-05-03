@@ -1,27 +1,30 @@
-function findMajorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
+function largestPrimeFactor(num: number): number {
+    let largestFactor = -1;
 
-    // Phase 1: Find a candidate for majority element
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
+    // Divide out the factor 2 as long as it divides num
+    while (num % 2 === 0) {
+        largestFactor = 2;
+        num /= 2;
     }
 
-    // Phase 2: Verify the candidate
-    if (candidate !== null) {
-        let occurrences = 0;
-        for (const num of nums) {
-            if (num === candidate) {
-                occurrences++;
-            }
+    // Check for odd factors from 3 upwards
+    let factor = 3;
+    while (factor * factor <= num) {
+        while (num % factor === 0) {
+            largestFactor = factor;
+            num /= factor;
         }
-        if (occurrences > Math.floor(nums.length / 2)) {
-            return candidate;
-        }
+        factor += 2; // Only odd numbers
     }
 
-    return null;  // No majority element found
+    // If num is still > 2, then it is prime itself and largest
+    if (num > 2) {
+        largestFactor = num;
+    }
+
+    return largestFactor;
 }
+
+// Example usage:
+console.log(largestPrimeFactor(13195));  // Output: 29
+console.log(largestPrimeFactor(600851475143)); // Output: 6857
