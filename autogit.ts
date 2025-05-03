@@ -1,99 +1,98 @@
 class PriorityQueue<T> {
-  private heap: T[] = [];
+  private heap: T[];
   private comparator: (a: T, b: T) => boolean;
 
   constructor(comparator?: (a: T, b: T) => boolean) {
-    // Default comparator for min-heap
+    this.heap = [];
+    // Default comparator: min-heap (a < b)
     this.comparator = comparator || ((a, b) => a < b);
   }
 
-  private swap(i: number, j: number): void {
-    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
-  }
-
-  private parent(index: number): number {
-    return Math.floor((index - 1) / 2);
-  }
-
-  private leftChild(index: number): number {
-    return 2 * index + 1;
-  }
-
-  private rightChild(index: number): number {
-    return 2 * index + 2;
-  }
-
-  private siftUp(index: number): void {
-    let parentIndex = this.parent(index);
-    while (
-      index > 0 &&
-      this.comparator(this.heap[index], this.heap[parentIndex])
-    ) {
-      this.swap(index, parentIndex);
-      index = parentIndex;
-      parentIndex = this.parent(index);
-    }
-  }
-
-  private siftDown(index: number): void {
-    let left = this.leftChild(index);
-    let right = this.rightChild(index);
-    let smallest = index;
-
-    if (
-      left < this.heap.length &&
-      this.comparator(this.heap[left], this.heap[smallest])
-    ) {
-      smallest = left;
-    }
-
-    if (
-      right < this.heap.length &&
-      this.comparator(this.heap[right], this.heap[smallest])
-    ) {
-      smallest = right;
-    }
-
-    if (smallest !== index) {
-      this.swap(index, smallest);
-      this.siftDown(smallest);
-    }
-  }
-
-  public enqueue(item: T): void {
-    this.heap.push(item);
-    this.siftUp(this.heap.length - 1);
-  }
-
-  public dequeue(): T | undefined {
-    if (this.heap.length === 0) return undefined;
-    const item = this.heap[0];
-    const last = this.heap.pop()!;
-    if (this.heap.length > 0) {
-      this.heap[0] = last;
-      this.siftDown(0);
-    }
-    return item;
-  }
-
-  public peek(): T | undefined {
-    return this.heap[0];
-  }
-
-  public size(): number {
+  size(): number {
     return this.heap.length;
   }
 
-  public isEmpty(): boolean {
+  isEmpty(): boolean {
     return this.heap.length === 0;
   }
-}
-const pq = new PriorityQueue<number>(); // Min heap by default
-pq.enqueue(5);
-pq.enqueue(3);
-pq.enqueue(6);
-pq.enqueue(1);
 
-console.log(pq.dequeue()); // 1 (smallest)
-console.log(pq.dequeue()); // 3
-console.log(pq.peek());    // 5
+  peek(): T | undefined {
+    return this.heap[0];
+  }
+
+  push(value: T): void {
+    this.heap.push(value);
+    this.bubbleUp();
+  }
+
+  pop(): T | undefined {
+    if (this.isEmpty()) return undefined;
+    const top = this.heap[0];
+    const last = this.heap.pop()!;
+    if (!this.isEmpty()) {
+      this.heap[0] = last;
+      this.bubbleDown();
+    }
+    return top;
+  }
+
+  private bubbleUp(): void {
+    let index = this.heap.length - 1;
+    const element = this.heap[index];
+
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      const parent = this.heap[parentIndex];
+      if (this.comparator(element, parent)) {
+        this.heap[index] = parent;
+        index = parentIndex;
+      } else {
+        break;
+      }
+    }
+    this.heap[index] = element;
+  }
+
+  private bubbleDown(): void {
+    let index = 0;
+    const length = this.heap.length;
+    const element = this.heap[0];
+
+    while (true) {
+      let leftChildIndex = 2 * index + 1;
+      let rightChildIndex = 2 * index + 2;
+      let swapIndex: number | null = null;
+
+      if (
+        leftChildIndex < length &&
+        this.comparator(this.heap[leftChildIndex], element)
+      ) {
+        swapIndex = leftChildIndex;
+      }
+
+      if (
+        rightChildIndex < length &&
+        this.comparator(this.heap[rightChildIndex], swapIndex === null ? element : this.heap[leftChildIndex])
+      ) {
+        swapIndex = rightChildIndex;
+      }
+
+      if (swapIndex === null) break;
+
+      this.heap[index] = this.heap[swapIndex];
+      index = swapIndex;
+    }
+
+    this.heap[index] = element;
+  }
+}
+const pq = new PriorityQueue<number>();
+
+pq.push(5);
+pq.push(3);
+pq.push(10);
+pq.push(1);
+
+while (!pq.isEmpty()) {
+  console.log(pq.pop()); // Outputs: 1, 3, 5, 10 in order, smallest first
+}
