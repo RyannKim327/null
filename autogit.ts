@@ -1,115 +1,64 @@
-class Graph {
-    private adjList: Map<number, number[]>; // Adjacency list representation
+class Node<T> {
+    public value: T;
+    public next: Node<T> | null;
 
-    constructor() {
-        this.adjList = new Map();
-    }
-
-    addEdge(u: number, v: number) {
-        if (!this.adjList.has(u)) {
-            this.adjList.set(u, []);
-        }
-        this.adjList.get(u)!.push(v);
-    }
-
-    topologicalSortDFS(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-
-        const dfs = (node: number) => {
-            visited.add(node);
-            const neighbors = this.adjList.get(node) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    dfs(neighbor);
-                }
-            }
-            stack.push(node); // Push the current node on the stack at the end of recursion
-        };
-
-        for (const node of this.adjList.keys()) {
-            if (!visited.has(node)) {
-                dfs(node);
-            }
-        }
-
-        return stack.reverse(); // Reverse the stack to get the topological order
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
 }
+class Queue<T> {
+    private front: Node<T> | null = null;
+    private back: Node<T> | null = null;
+    private length: number = 0;
 
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const order = graph.topologicalSortDFS();
-console.log('Topological Sort Order (DFS):', order);
-class Graph {
-    private adjList: Map<number, number[]>; // Adjacency list representation
-    private inDegree: Map<number, number>; // In-degree of each vertex
-
-    constructor() {
-        this.adjList = new Map();
-        this.inDegree = new Map();
+    // Enqueue method to add an element to the back of the queue
+    public enqueue(value: T): void {
+        const newNode = new Node<T>(value);
+        if (this.back) {
+            this.back.next = newNode; // Link the old back node to the new node
+        }
+        this.back = newNode; // Update back to the new node
+        if (this.front === null) {
+            this.front = newNode; // If the queue was empty, front is also the new node
+        }
+        this.length++;
     }
 
-    addEdge(u: number, v: number) {
-        if (!this.adjList.has(u)) {
-            this.adjList.set(u, []);
+    // Dequeue method to remove an element from the front of the queue
+    public dequeue(): T | null {
+        if (this.front === null) {
+            return null; // If the queue is empty, return null
         }
-        this.adjList.get(u)!.push(v);
-        this.inDegree.set(v, (this.inDegree.get(v) || 0) + 1);
-        // Ensure that the nodes with no incoming edges are also in inDegree map
-        if (!this.inDegree.has(u)) {
-            this.inDegree.set(u, 0);
+        const dequeuedValue = this.front.value;
+        this.front = this.front.next; // Move front to the next node
+        if (this.front === null) {
+            this.back = null; // If the queue became empty, set back to null
         }
+        this.length--;
+        return dequeuedValue; // Return the value of the dequeued node
     }
 
-    topologicalSortKahn(): number[] {
-        const queue: number[] = [];
-        const result: number[] = [];
+    // Method to get the value of the front item without removing it
+    public peek(): T | null {
+        return this.front ? this.front.value : null;
+    }
 
-        // Find all vertices with in-degree 0
-        for (const [node, degree] of this.inDegree.entries()) {
-            if (degree === 0) {
-                queue.push(node);
-            }
-        }
+    // Method to check if the queue is empty
+    public isEmpty(): boolean {
+        return this.length === 0;
+    }
 
-        while (queue.length > 0) {
-            const current = queue.shift()!;
-            result.push(current);
-
-            const neighbors = this.adjList.get(current) || [];
-            for (const neighbor of neighbors) {
-                this.inDegree.set(neighbor, this.inDegree.get(neighbor)! - 1);
-                if (this.inDegree.get(neighbor) === 0) {
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        // Check if there's a cycle (i.e., if result length is not equal to the number of nodes)
-        if (result.length !== this.inDegree.size) {
-            throw new Error("Graph has a cycle; topological sort not possible.");
-        }
-
-        return result;
+    // Method to get the current size of the queue
+    public size(): number {
+        return this.length;
     }
 }
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-const order = graph.topologicalSortKahn();
-console.log('Topological Sort Order (Kahn):', order);
+const queue = new Queue<number>();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek()); // Output: 2
+console.log(queue.size()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
