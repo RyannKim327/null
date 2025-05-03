@@ -1,15 +1,16 @@
-function getRandomInt(min: number, max: number): number {
-    // Ensure the minimum and maximum values are inclusive
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function countOccurrences(text: string, word: string): number {
+    // Create a regular expression to match the word
+    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+    
+    // Match the word and get the results
+    const matches = text.match(regex);
+    
+    // Return the number of occurrences
+    return matches ? matches.length : 0;
 }
 
 // Example usage:
-const randomNum = getRandomInt(1, 10);
-console.log(randomNum); // This will log a random integer between 1 and 10 (inclusive)
-function getRandomFloat(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
-}
-
-// Example usage:
-const randomFloat = getRandomFloat(1, 10);
-console.log(randomFloat); // This will log a random float between 1 and 10
+const myString = "Hello world, hello universe. Hello everyone!";
+const wordToCount = "hello";
+const count = countOccurrences(myString, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${count} times.`); // Output: The word "hello" occurs 3 times.
