@@ -1,11 +1,18 @@
-function reverseWords(str: string): string {
-  return str.split(' ').reverse().join(' ');
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
 }
 
-// Example:
-const original = "Hello world this is TypeScript";
-const reversed = reverseWords(original);
-console.log(reversed); // "TypeScript is this world Hello"
-function reverseWords(str: string): string {
-  return str.trim().split(/\s+/).reverse().join(' ');
+function maxDepth(root: TreeNode | null): number {
+  if (root === null) return 0;
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+  return Math.max(leftDepth, rightDepth) + 1;
 }
