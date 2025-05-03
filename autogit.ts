@@ -1,85 +1,67 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: T) {
+    constructor(value: number) {
         this.value = value;
-        this.next = null;
+        this.left = null;
+        this.right = null;
     }
 }
-class LinkedList<T> {
-    private head: Node<T> | null = null;
 
-    // Add a new element to the end of the list
-    add(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
     }
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+    return Math.max(leftDepth, rightDepth) + 1;
+}
 
-    // Remove an element by value
-    remove(value: T): boolean {
-        if (!this.head) {
-            return false;
-        }
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
 
-        // If the head needs to be removed
-        if (this.head.value === value) {
-            this.head = this.head.next;
-            return true;
-        }
+console.log(maxDepth(root)); // Output: 3
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-        let current = this.head;
-        while (current.next) {
-            if (current.next.value === value) {
-                current.next = current.next.next;
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Search for an element by value
-    search(value: T): boolean {
-        let current = this.head;
-        while (current) {
-            if (current.value === value) {
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Print list values
-    printList(): void {
-        let current = this.head;
-        let result = [];
-        while (current) {
-            result.push(current.value);
-            current = current.next;
-        }
-        console.log(result.join(' -> '));
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
-const linkedList = new LinkedList<number>();
 
-linkedList.add(10);
-linkedList.add(20);
-linkedList.add(30);
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
 
-linkedList.printList(); // Output: 10 -> 20 -> 30
+    const queue: { node: TreeNode | null, depth: number }[] = [{ node: root, depth: 1 }];
+    let maxDepth = 0;
 
-linkedList.remove(20);
-linkedList.printList(); // Output: 10 -> 30
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!;
+        if (node) {
+            maxDepth = Math.max(maxDepth, depth);
+            queue.push({ node: node.left, depth: depth + 1 });
+            queue.push({ node: node.right, depth: depth + 1 });
+        }
+    }
 
-console.log(linkedList.search(30)); // Output: true
-console.log(linkedList.search(20)); // Output: false
+    return maxDepth;
+}
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+
+console.log(maxDepth(root)); // Output: 3
