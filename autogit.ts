@@ -1,39 +1,36 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function isPalindrome(s: string): boolean {
+  let left = 0;
+  let right = s.length - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+  while (left < right) {
+    if (s[left] !== s[right]) {
+      return false;
     }
+    left++;
+    right--;
+  }
+  return true;
+}
+function isValidPalindrome(s: string): boolean {
+  let left = 0;
+  let right = s.length - 1;
+
+  while (left < right) {
+    // Move left pointer to next alphanumeric
+    while (left < right && !isAlphaNumeric(s[left])) left++;
+
+    // Move right pointer to previous alphanumeric
+    while (left < right && !isAlphaNumeric(s[right])) right--;
+
+    if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+      return false;
+    }
+    left++;
+    right--;
+  }
+  return true;
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
-
-    // If both left and right children are null, it's a leaf node
-    if (root.left === null && root.right === null) {
-        return 1;
-    }
-
-    // Recursively count leaf nodes in the left and right subtrees
-    return countLeafNodes(root.left) + countLeafNodes(root.right);
+function isAlphaNumeric(c: string): boolean {
+  return /^[a-z0-9]$/i.test(c);
 }
-
-// Example usage:
-
-// Create a sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-// Count leaf nodes
-const numberOfLeafNodes = countLeafNodes(root);
-console.log("Number of leaf nodes:", numberOfLeafNodes);  // Output: 3 (nodes 4, 5, and 3)
