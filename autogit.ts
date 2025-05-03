@@ -1,24 +1,36 @@
-function insertionSort(arr: number[]): number[] {
-    // Start from the second element (index 1) as the first element is already sorted
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i];  // The current element to be compared
-        let j = i - 1;  // The index of the last element in the sorted portion
-        
-        // Move elements of arr[0..i-1], that are greater than key, to one position ahead
-        // of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
-        
-        // Place the key at after the last moved element
-        arr[j + 1] = key;
-    }
-    
-    return arr;  // Return the sorted array
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
 }
 
-// Example usage:
-const unsortedArray: number[] = [5, 2, 9, 1, 5, 6];
-const sortedArray: number[] = insertionSort(unsortedArray);
-console.log(sortedArray);  // Output: [1, 2, 5, 5, 6, 9]
+function diameterOfBinaryTree(root: TreeNode | null): number {
+  let diameter = 0;
+  
+  function height(node: TreeNode | null): number {
+    if (!node) return 0;
+    
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
+    
+    // The diameter at this node will be the sum of left and right subtree heights
+    diameter = Math.max(diameter, leftHeight + rightHeight);
+    
+    // Height of this node is max height of its subtrees + 1
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+  
+  height(root);
+  return diameter;
+}
+const root = new TreeNode(1, 
+                new TreeNode(2, new TreeNode(4), new TreeNode(5)),
+                new TreeNode(3)
+            );
+
+console.log(diameterOfBinaryTree(root));  // Output: 3
