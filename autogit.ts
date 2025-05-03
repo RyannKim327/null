@@ -1,14 +1,10 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const uniqueArray = [...new Set(array)];
-const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
-const array = [
-  { id: 1, name: 'Alice' },
-  { id: 2, name: 'Bob' },
-  { id: 1, name: 'Alice' }
-];
+function calculateMean(numbers: number[]): number {
+  if (numbers.length === 0) return 0; // handle empty list
+  const sum = numbers.reduce((acc, val) => acc + val, 0);
+  return sum / numbers.length;
+}
 
-const uniqueArray = array.filter((obj, index, self) =>
-  index === self.findIndex(t => t.id === obj.id)
-);
+// Example usage:
+const nums = [10, 20, 30, 40];
+const mean = calculateMean(nums);
+console.log(mean);  // Output: 25
