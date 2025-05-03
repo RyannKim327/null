@@ -1,13 +1,19 @@
-function isSortedAscending(arr: number[]): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < arr[i - 1]) {
-      return false;
-    }
-  }
-  return true;
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(value => arr2.includes(value));
 }
-console.log(isSortedAscending([1, 2, 3, 4]));  // true
-console.log(isSortedAscending([1, 3, 2, 4]));  // false
-function isSortedAscending(arr: number[]): boolean {
-  return arr.every((val, i, a) => i === 0 || a[i - 1] <= val);
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const set = new Set(arr1);
+    return arr2.filter(value => set.has(value));
 }
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
