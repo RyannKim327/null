@@ -1,10 +1,8 @@
-npm install node-cron
-npm install --save-dev @types/node-cron
-import cron from 'node-cron';
-
-// Schedule a task to run every minute
-cron.schedule('* * * * *', () => {
-  console.log('Running task at', new Date().toLocaleString());
-});
-
-console.log('Cron job scheduled to run every minute');
+function validateEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  return emailRegex.test(email);
+}
+function validateEmailStrict(email: string): boolean {
+  const strictEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return strictEmailRegex.test(email);
+}
