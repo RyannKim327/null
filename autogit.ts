@@ -1,43 +1,75 @@
-function radixSort(arr: number[]): number[] {
-  if (arr.length === 0) return arr;
+type Edge = {
+  from: number;
+  to: number;
+  weight: number;
+};
 
-  // Find the maximum number to know the number of digits
-  const maxNum = Math.max(...arr);
-  let exp = 1; // Exponent: 1, 10, 100, etc.
+function bellmanFord(
+  verticesCount: number,
+  edges: Edge[],
+  source: number
+): { distances: number[]; predecessors: (number | null)[] | null } {
+  // Initialize distances with Infinity, except source = 0
+  const distances = Array(verticesCount).fill(Infinity);
+  const predecessors = Array(verticesCount).fill(null);
+  distances[source] = 0;
 
-  while (Math.floor(maxNum / exp) > 0) {
-    arr = countingSortByDigit(arr, exp);
-    exp *= 10;
+  // Relax edges repeatedly
+  for (let i = 0; i < verticesCount - 1; i++) {
+    let updated = false;
+    for (const edge of edges) {
+      if (
+        distances[edge.from] !== Infinity &&
+        distances[edge.from] + edge.weight < distances[edge.to]
+      ) {
+        distances[edge.to] = distances[edge.from] + edge.weight;
+        predecessors[edge.to] = edge.from;
+        updated = true;
+      }
+    }
+    // Early stop if no update in this iteration
+    if (!updated) break;
   }
 
-  return arr;
+  // Check for negative-weight cycles
+  for (const edge of edges) {
+    if (
+      distances[edge.from] !== Infinity &&
+      distances[edge.from] + edge.weight < distances[edge.to]
+    ) {
+      // Negative cycle detected; no solution exists
+      return { distances, predecessors: null };
+    }
+  }
+
+  return { distances, predecessors };
 }
 
-function countingSortByDigit(arr: number[], exp: number): number[] {
-  const output: number[] = new Array(arr.length);
-  const count = new Array(10).fill(0);
+// Example usage
+const edges: Edge[] = [
+  { from: 0, to: 1, weight: 5 },
+  { from: 0, to: 2, weight: 4 },
+  { from: 1, to: 3, weight: 3 },
+  { from: 2, to: 1, weight: 6 },
+  { from: 3, to: 2, weight: -2 },
+];
 
-  // Store count of occurrences in count[]
-  for (let i = 0; i < arr.length; i++) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    count[digit]++;
+const { distances, predecessors } = bellmanFord(4, edges, 0);
+
+console.log("Distances:", distances); 
+// Distances array: shortest distance from source to each vertex
+
+if (predecessors) {
+  // Function to reconstruct path from source to target
+  function getPath(target: number): number[] {
+    const path: number[] = [];
+    for (let at = target; at !== null; at = predecessors[at]) {
+      path.push(at);
+    }
+    return path.reverse();
   }
 
-  // Change count[i] so that count[i] contains actual position of this digit in output[]
-  for (let i = 1; i < 10; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Build the output array
-  // Iterate backwards for stability
-  for (let i = arr.length - 1; i >= 0; i--) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    output[count[digit] - 1] = arr[i];
-    count[digit]--;
-  }
-
-  return output;
+  console.log("Path to vertex 3:", getPath(3));
+} else {
+  console.log("Negative weight cycle detected. No solution.");
 }
-const nums = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(nums)); 
-// Output: [2, 24, 45, 66, 75, 90, 170, 802]
