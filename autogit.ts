@@ -1,21 +1,15 @@
-function countChar(str: string, charToCount: string): number {
-    let count = 0;
-    for (let char of str) {
-        if (char === charToCount) {
-            count++;
+function isArraySortedAscending(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // Found an element greater than the next one
         }
     }
-    return count;
+    return true; // No elements were out of order
 }
 
-console.log(countChar("hello world", "l")); // Output: 3
-function countChar(str: string, charToCount: string): number {
-    return str.split(charToCount).length - 1;
-}
+// Example usage:
+const numbers1 = [1, 2, 3, 4, 5];
+const numbers2 = [1, 3, 2, 4, 5];
 
-console.log(countChar("hello world", "l")); // Output: 3
-function countChar(str: string, charToCount: string): number {
-    return [...str].reduce((acc, char) => char === charToCount ? acc + 1 : acc, 0);
-}
-
-console.log(countChar("hello world", "l")); // Output: 3
+console.log(isArraySortedAscending(numbers1)); // Output: true
+console.log(isArraySortedAscending(numbers2)); // Output: false
