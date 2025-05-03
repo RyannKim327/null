@@ -1,87 +1,122 @@
-function buildBadCharTable(pattern: string): number[] {
-  const table = new Array(256).fill(-1);
-  for (let i = 0; i < pattern.length; i++) {
-    table[pattern.charCodeAt(i)] = i;
+class BTreeNode {
+  keys: number[];
+  children: BTreeNode[];
+  isLeaf: boolean;
+  t: number;
+
+  constructor(t: number, isLeaf: boolean) {
+    this.t = t;
+    this.isLeaf = isLeaf;
+    this.keys = [];
+    this.children = [];
   }
-  return table;
 }
 
-function buildGoodSuffixTable(pattern: string): number[] {
-  const m = pattern.length;
-  const goodSuffix = new Array(m).fill(0);
-  const suffixes = new Array(m).fill(0);
+class BTree {
+  root: BTreeNode;
+  t: number; // Minimum degree
 
-  // Step 1: Compute suffixes array
-  suffixes[m - 1] = m;
-  let g = m - 1;
-  let f = 0;
-  for (let i = m - 2; i >= 0; i--) {
-    if (i > g && suffixes[i + m - 1 - f] < i - g) {
-      suffixes[i] = suffixes[i + m - 1 - f];
+  constructor(t: number) {
+    this.root = new BTreeNode(t, true);
+    this.t = t;
+  }
+
+  // Method to search a key in the B-tree
+  search(key: number, node: BTreeNode | null = this.root): BTreeNode | null {
+    if (node === null) return null;
+
+    let i = 0;
+    while (i < node.keys.length && key > node.keys[i]) {
+      i++;
+    }
+
+    if (i < node.keys.length && key === node.keys[i]) {
+      return node; // Key found
+    }
+
+    if (node.isLeaf) {
+      return null; // Not found in this leaf
+    }
+
+    // Go down to the child that may contain the key
+    return this.search(key, node.children[i]);
+  }
+
+  // Method to insert a new key
+  insert(key: number) {
+    const root = this.root;
+
+    if (root.keys.length === 2 * this.t - 1) {
+      // Root is full. Create a new root
+      const newNode = new BTreeNode(this.t, false);
+      newNode.children.push(root);
+      this.splitChild(newNode, 0);
+      this.insertNonFull(newNode, key);
+      this.root = newNode;
     } else {
-      if (i < g) g = i;
-      f = i;
-      while (g >= 0 && pattern[g] === pattern[g + m - 1 - f]) {
-        g--;
-      }
-      suffixes[i] = f - g;
+      this.insertNonFull(root, key);
     }
   }
 
-  // Step 2: Compute good suffix table
-  for (let i = 0; i < m; i++) {
-    goodSuffix[i] = m;
-  }
-  let j = 0;
-  for (let i = m - 1; i >= -1; i--) {
-    if (i === -1 || suffixes[i] === i + 1) {
-      for (; j < m - 1 - i; j++) {
-        if (goodSuffix[j] === m) {
-          goodSuffix[j] = m - 1 - i;
+  // Helper method to insert a key in a non-full node
+  private insertNonFull(node: BTreeNode, key: number) {
+    let i = node.keys.length - 1;
+
+    if (node.isLeaf) {
+      // Insert the new key into the node
+      node.keys.push(0); // make space for the new key
+      while (i >= 0 && key < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i]; // Shift key to the right
+        i--;
+      }
+      node.keys[i + 1] = key; // Insert the new key
+    } else {
+      // Locate the child that is going to have the new key
+      while (i >= 0 && key < node.keys[i]) {
+        i--;
+      }
+      i++;
+
+      // Check if the found child is full
+      if (node.children[i].keys.length === 2 * this.t - 1) {
+        // Split the full child
+        this.splitChild(node, i);
+        // After splitting, determine which of the two children to recurse down to
+        if (key > node.keys[i]) {
+          i++;
         }
       }
+      this.insertNonFull(node.children[i], key);
     }
   }
-  for (let i = 0; i <= m - 2; i++) {
-    goodSuffix[m - 1 - suffixes[i]] = m - 1 - i;
+
+  // Method to split the full child
+  private splitChild(parent: BTreeNode, index: number) {
+    const fullChild = parent.children[index];
+    const newChild = new BTreeNode(this.t, fullChild.isLeaf);
+
+    // Move half of the keys to the new child
+    parent.keys.splice(index, 0, fullChild.keys[this.t - 1]);
+    parent.children.splice(index + 1, 0, newChild);
+
+    // Move the keys
+    newChild.keys = fullChild.keys.splice(this.t - 1);
+
+    // Move children if fullChild is not a leaf
+    if (!fullChild.isLeaf) {
+      newChild.children = fullChild.children.splice(this.t);
+    }
   }
-  return goodSuffix;
 }
 
-function boyerMoore(text: string, pattern: string): number[] {
-  if (pattern.length === 0) return [];
+// Example Usage
+const bTree = new BTree(3);
+bTree.insert(10);
+bTree.insert(20);
+bTree.insert(5);
+bTree.insert(1);
+bTree.insert(30);
+bTree.insert(15);
 
-  const badCharTable = buildBadCharTable(pattern);
-  const goodSuffixTable = buildGoodSuffixTable(pattern);
-  const results: number[] = [];
-
-  let s = 0; // shift of the pattern with respect to text
-  const n = text.length;
-  const m = pattern.length;
-
-  while (s <= n - m) {
-    let j = m - 1;
-
-    while (j >= 0 && pattern[j] === text[s + j]) {
-      j--;
-    }
-
-    if (j < 0) {
-      // pattern found at shift s
-      results.push(s);
-      s += goodSuffixTable[0]; // Shift pattern by good suffix rule
-    } else {
-      const badCharShift = j - badCharTable[text.charCodeAt(s + j)];
-      const goodSuffixShift = goodSuffixTable[j];
-      s += Math.max(1, badCharShift, goodSuffixShift);
-    }
-  }
-
-  return results;
-}
-
-// Example:
-const text = "HERE IS A SIMPLE EXAMPLE";
-const pattern = "EXAMPLE";
-const matches = boyerMoore(text, pattern);
-console.log(matches);  // Output: [17]
+console.log(bTree.search(10)); // Expected output: BTreeNode containing key 10
+console.log(bTree.search(99)); // Expected output: null (not found)
