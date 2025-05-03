@@ -1,75 +1,28 @@
-class Node {
-    value: number;
-    next: Node | null;
+function largestPrimeFactor(n: number): number {
+  let largestFactor = -1;
+  
+  // Remove factors of 2
+  while (n % 2 === 0) {
+    largestFactor = 2;
+    n /= 2;
+  }
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+  // Check odd factors starting from 3
+  for (let i = 3; i <= Math.sqrt(n); i += 2) {
+    while (n % i === 0) {
+      largestFactor = i;
+      n /= i;
     }
-}
+  }
 
-class LinkedList {
-    head: Node | null;
+  // If n is not 1, then whatever remains is prime and larger than any factor found
+  if (n > 2) {
+    largestFactor = n;
+  }
 
-    constructor() {
-        this.head = null;
-    }
-
-    append(value: number) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to print the linked list
-    print() {
-        let current = this.head;
-        const values: number[] = [];
-        while (current) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(" -> "));
-    }
-
-    // Method to reverse the linked list
-    reverse() {
-        let previous: Node | null = null;
-        let current: Node | null = this.head;
-        let next: Node | null = null;
-
-        while (current) {
-            // Store the next node
-            next = current.next;  
-            // Reverse the current node's pointer
-            current.next = previous; 
-            // Move pointers one position forward
-            previous = current; 
-            current = next;  
-        }
-        // Update head to be the new front of the list
-        this.head = previous;
-    }
+  return largestFactor;
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-
-console.log("Original linked list:");
-list.print();
-
-list.reverse();
-
-console.log("Reversed linked list:");
-list.print();
+console.log(largestPrimeFactor(13195)); // Outputs: 29
+console.log(largestPrimeFactor(600851475143)); // Typically a classic large example
