@@ -1,32 +1,39 @@
 class TreeNode {
-    val: number;
+    value: number;
     left: TreeNode | null;
     right: TreeNode | null;
-    constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
-        this.val = val === undefined ? 0 : val;
-        this.left = left === undefined ? null : left;
-        this.right = right === undefined ? null : right;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let maxDiameter = 0;
-
-    function height(node: TreeNode | null): number {
-        if (!node) return 0;
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-        
-        // Update the diameter at this node
-        const localDiameter = leftHeight + rightHeight;
-        if (localDiameter > maxDiameter) {
-            maxDiameter = localDiameter;
-        }
-        
-        // Height of the node is max of left/right subtree heights + 1
-        return Math.max(leftHeight, rightHeight) + 1;
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    height(root);
-    return maxDiameter;
+    // If both left and right children are null, it's a leaf node
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+
+    // Recursively count leaf nodes in the left and right subtrees
+    return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
+
+// Example usage:
+
+// Create a sample binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+// Count leaf nodes
+const numberOfLeafNodes = countLeafNodes(root);
+console.log("Number of leaf nodes:", numberOfLeafNodes);  // Output: 3 (nodes 4, 5, and 3)
