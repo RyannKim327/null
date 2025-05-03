@@ -1,30 +1,63 @@
-function interpolationSearch(arr: number[], target: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+class Node<T> {
+  value: T;
+  next: Node<T> | null = null;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    // Avoid division by zero if the elements are all the same
-    if (arr[high] === arr[low]) {
-      if (arr[low] === target) return low;
-      else break;
-    }
+  constructor(value: T) {
+    this.value = value;
+  }
+}
+class Queue<T> {
+  private head: Node<T> | null = null;
+  private tail: Node<T> | null = null;
+  private size: number = 0;
 
-    // Estimate the position
-    const pos = low + Math.floor(
-      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
-
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    if (arr[pos] < target) {
-      low = pos + 1;
+  enqueue(value: T): void {
+    const newNode = new Node(value);
+    if (!this.tail) {
+      // Queue is empty
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      high = pos - 1;
+      // Append to tail and update tail pointer
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
+    this.size++;
   }
 
-  // Target not found
-  return -1;
+  dequeue(): T | null {
+    if (!this.head) {
+      return null; // Queue is empty
+    }
+    const dequeuedValue = this.head.value;
+    this.head = this.head.next;
+    if (!this.head) {
+      // If queue became empty, update tail as well
+      this.tail = null;
+    }
+    this.size--;
+    return dequeuedValue;
+  }
+
+  peek(): T | null {
+    return this.head ? this.head.value : null;
+  }
+
+  isEmpty(): boolean {
+    return this.size === 0;
+  }
+
+  getSize(): number {
+    return this.size;
+  }
 }
+const queue = new Queue<number>();
+
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.peek()); // 10
+console.log(queue.dequeue()); // 10
+console.log(queue.peek()); // 20
+console.log(queue.getSize()); // 2
