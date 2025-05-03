@@ -1,27 +1,44 @@
-function shellSort(arr: number[]): number[] {
-  let n = arr.length;
+type Graph = {
+    [key: string]: string[]; // The graph represented as an adjacency list
+};
 
-  // Start with a big gap, then reduce the gap
-  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    // Do a gapped insertion sort for this gap size.
-    for (let i = gap; i < n; i++) {
-      let temp = arr[i];
-      let j = i;
+function bfs(graph: Graph, startNode: string): string[] {
+    const visited: Set<string> = new Set(); // To track visited nodes
+    const queue: string[] = []; // Queue for BFS
+    const result: string[] = []; // To store the order of traversal
 
-      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
+    // Start with the start node
+    queue.push(startNode);
+    visited.add(startNode);
 
-      // Put temp (the original arr[i]) in its correct location
-      arr[j] = temp;
+    while (queue.length > 0) {
+        // Dequeue the front node
+        const currentNode = queue.shift()!;
+        result.push(currentNode); // Process the current node
+
+        // Get all its neighbors
+        const neighbors = graph[currentNode];
+
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor); // Mark the neighbor as visited
+                queue.push(neighbor); // Enqueue the neighbor
+            }
+        }
     }
-  }
-  
-  return arr;
+
+    return result; // Return the order of traversal
 }
 
-// Example use:
-const unsorted = [23, 12, 1, 8, 34, 54, 2, 3];
-console.log(shellSort(unsorted)); // Outputs sorted array
+// Example Usage
+const graph: Graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': []
+};
+
+const result = bfs(graph, 'A');
+console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
