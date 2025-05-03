@@ -1,27 +1,62 @@
-function bubbleSort(arr: number[]): number[] {
-  let n = arr.length;
-  let swapped: boolean;
+function kmpSearch(text: string, pattern: string): number {
+    const lps = buildLPS(pattern);
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-  // Repeat until no swaps are made
-  do {
-    swapped = false;
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
 
-    // Traverse the array
-    for (let i = 1; i < n; i++) {
-      if (arr[i - 1] > arr[i]) {
-        // Swap adjacent elements if they are in the wrong order
-        [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
-        swapped = true;
-      }
+        if (j === pattern.length) {
+            // Match found; return the starting index of the match
+            return i - j;
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            // Mismatch after j matches
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
-    // After each pass, the largest element settles at the end, so reduce n
-    n--;
-  } while (swapped);
 
-  return arr;
+    // If no match found, return -1
+    return -1;
+}
+
+function buildLPS(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let len = 0; // length of the previous longest prefix suffix
+    let i = 1; // index for pattern
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            // mismatch after len matches
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
 // Example usage:
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log(sortedArray);  // Output: [11, 12, 22, 25, 34, 64, 90]
+const text = "ababcabcabcabc";
+const pattern = "abc";
+const resultIndex = kmpSearch(text, pattern);
+
+if (resultIndex !== -1) {
+    console.log(`Pattern found at index: ${resultIndex}`);
+} else {
+    console.log("Pattern not found");
+}
