@@ -1,41 +1,28 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
-
-    while (left < right) {
-        if (s[left] !== s[right]) {
-            return false;
-        }
-        left++;
-        right--;
+function quicksort(arr: number[]): number[] {
+    // Base case: if the array is empty or has one element, it's already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return true;
-}
-function isAlphanumeric(c: string): boolean {
-    const code = c.charCodeAt(0);
-    return (
-        (code >= 48 && code <= 57) ||   // 0-9
-        (code >= 65 && code <= 90) ||   // A-Z
-        (code >= 97 && code <= 122)     // a-z
-    );
-}
+    // Choose a pivot element. Here, we'll choose the last element as the pivot.
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];  // Elements less than the pivot
+    const right: number[] = []; // Elements greater than the pivot
 
-function isPalindromeIgnoreCaseAndNonAlpha(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
-
-    while (left < right) {
-        while (left < right && !isAlphanumeric(s[left])) left++;
-        while (left < right && !isAlphanumeric(s[right])) right--;
-
-        if (left < right && s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false;
+    // Partition the array into two sub-arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]); // Push to left if it's less than the pivot
+        } else {
+            right.push(arr[i]); // Otherwise, push to right
         }
-
-        left++;
-        right--;
     }
 
-    return true;
+    // Recursively apply quicksort to the left and right sub-arrays
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
+
+// Example usage:
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
