@@ -1,57 +1,54 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    if (n < 2) return arr; // No need to sort if array has less than 2 elements
+npx react-native init MyApp --template react-native-template-typescript
+cd MyApp
+// App.tsx
 
-    // Create a temporary array to hold merged results
-    const temp: number[] = new Array(n);
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-    // Current size of the subarrays to merge
-    for (let size = 1; size < n; size *= 2) {
-        // Start merging from the beginning of the array
-        for (let left = 0; left < n; left += 2 * size) {
-            // Calculate the middle and right bounds of the current subarrays
-            const mid = Math.min(left + size, n);
-            const right = Math.min(left + 2 * size, n);
-
-            // Merge the two subarrays
-            merge(arr, temp, left, mid, right);
-        }
-
-        // Copy the merged result back to the original array
-        for (let i = 0; i < n; i++) {
-            arr[i] = temp[i];
-        }
-    }
-
-    return arr;
+interface DataItem {
+  id: number;
+  title: string;
 }
 
-function merge(arr: number[], temp: number[], left: number, mid: number, right: number) {
-    let i = left;   // Starting index for the left subarray
-    let j = mid;    // Starting index for the right subarray
-    let k = left;   // Starting index to be merged
+const App: React.FC = () => {
+  const [data, setData] = useState<DataItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-    // Merge both subarrays into temp[]
-    while (i < mid && j < right) {
-        if (arr[i] <= arr[j]) {
-            temp[k++] = arr[i++];
-        } else {
-            temp[k++] = arr[j++];
-        }
+  const fetchData = async () => {
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const result: DataItem[] = await response.json();
+      setData(result);
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // Copy the remaining elements of left subarray, if any
-    while (i < mid) {
-        temp[k++] = arr[i++];
-    }
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-    // Copy the remaining elements of right subarray, if any
-    while (j < right) {
-        temp[k++] = arr[j++];
-    }
-}
+  return (
+    <View style={{ padding: 20 }}>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : error ? (
+        <Text style={{ color: 'red' }}>{error}</Text>
+      ) : (
+        data.map(item => (
+          <Text key={item.id}>{item.title}</Text>
+        ))
+      )}
+      <Button title="Refresh" onPress={fetchData} />
+    </View>
+  );
+};
 
-// Example usage:
-const arr = [38, 27, 43, 3, 9, 82, 10];
-const sortedArr = mergeSort(arr);
-console.log(sortedArr); // Output: [3, 9, 10, 27, 38, 43, 82]
+export default App;
+npx react-native run-android
