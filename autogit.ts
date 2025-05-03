@@ -1,40 +1,67 @@
-function mergeSort(arr: number[]): number[] {
-  // Base case: arrays with 0 or 1 element are already sorted
-  if (arr.length <= 1) return arr;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-  // Split the array in half
-  const mid = Math.floor(arr.length / 2);
-  const left = arr.slice(0, mid);
-  const right = arr.slice(mid);
-
-  // Recursively sort both halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
-
-  // Merge them back together
-  return merge(sortedLeft, sortedRight);
-}
-
-function merge(left: number[], right: number[]): number[] {
-  const result: number[] = [];
-  let i = 0, j = 0;
-
-  // Merge while there are elements in both arrays
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-  }
-
-  // Add any leftovers (one of these will be empty)
-  return result.concat(left.slice(i)).concat(right.slice(j));
 }
 
-// Example usage:
-const unsortedArray = [5, 3, 8, 4, 2, 7, 1, 6];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray);
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current !== null) {
+        length++;
+        current = current.next;
+    }
+    return length;
+}
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (headA === null || headB === null) {
+        return null;
+    }
+
+    const lenA = getLength(headA);
+    const lenB = getLength(headB);
+
+    let currentA = headA;
+    let currentB = headB;
+
+    // Advance the pointer for the longer list
+    if (lenA > lenB) {
+        for (let i = 0; i < lenA - lenB; i++) {
+            currentA = currentA.next;
+        }
+    } else {
+        for (let i = 0; i < lenB - lenA; i++) {
+            currentB = currentB.next;
+        }
+    }
+
+    // Traverse both lists and find the intersection
+    while (currentA !== null && currentB !== null) {
+        if (currentA === currentB) {
+            return currentA; // Intersection found
+        }
+        currentA = currentA.next;
+        currentB = currentB.next;
+    }
+
+    return null; // No intersection found
+}
+
+// Example Usage
+const intersectNode = new ListNode(8);
+const listA = new ListNode(4);
+listA.next = new ListNode(1);
+listA.next.next = intersectNode;
+
+const listB = new ListNode(5);
+listB.next = new ListNode(0);
+listB.next.next = new ListNode(1);
+listB.next.next.next = intersectNode;
+
+const intersection = getIntersectionNode(listA, listB);
+console.log(intersection ? intersection.value : 'No intersection'); // Output: 8
