@@ -1,75 +1,112 @@
-type Edge = {
-  from: number;
-  to: number;
-  weight: number;
-};
+class SkipListNode<T> {
+    value: T;
+    forward: SkipListNode<T>[]; // Array of forward pointers to the next nodes at different levels
 
-function bellmanFord(
-  verticesCount: number,
-  edges: Edge[],
-  source: number
-): { distances: number[]; predecessors: (number | null)[] | null } {
-  // Initialize distances with Infinity, except source = 0
-  const distances = Array(verticesCount).fill(Infinity);
-  const predecessors = Array(verticesCount).fill(null);
-  distances[source] = 0;
-
-  // Relax edges repeatedly
-  for (let i = 0; i < verticesCount - 1; i++) {
-    let updated = false;
-    for (const edge of edges) {
-      if (
-        distances[edge.from] !== Infinity &&
-        distances[edge.from] + edge.weight < distances[edge.to]
-      ) {
-        distances[edge.to] = distances[edge.from] + edge.weight;
-        predecessors[edge.to] = edge.from;
-        updated = true;
-      }
+    constructor(value: T, level: number) {
+        this.value = value;
+        this.forward = new Array(level + 1).fill(null); // Initialize forward pointers
     }
-    // Early stop if no update in this iteration
-    if (!updated) break;
-  }
-
-  // Check for negative-weight cycles
-  for (const edge of edges) {
-    if (
-      distances[edge.from] !== Infinity &&
-      distances[edge.from] + edge.weight < distances[edge.to]
-    ) {
-      // Negative cycle detected; no solution exists
-      return { distances, predecessors: null };
-    }
-  }
-
-  return { distances, predecessors };
 }
+class SkipList<T> {
+    private MAX_LEVEL: number;
+    private P: number; // Probability of promoting a node to a higher level
+    private header: SkipListNode<T>;
+    private level: number;
 
-// Example usage
-const edges: Edge[] = [
-  { from: 0, to: 1, weight: 5 },
-  { from: 0, to: 2, weight: 4 },
-  { from: 1, to: 3, weight: 3 },
-  { from: 2, to: 1, weight: 6 },
-  { from: 3, to: 2, weight: -2 },
-];
-
-const { distances, predecessors } = bellmanFord(4, edges, 0);
-
-console.log("Distances:", distances); 
-// Distances array: shortest distance from source to each vertex
-
-if (predecessors) {
-  // Function to reconstruct path from source to target
-  function getPath(target: number): number[] {
-    const path: number[] = [];
-    for (let at = target; at !== null; at = predecessors[at]) {
-      path.push(at);
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.MAX_LEVEL = maxLevel;
+        this.P = p;
+        this.level = 0;
+        this.header = new SkipListNode<T>(null as any, this.MAX_LEVEL); // Sentinel header node
     }
-    return path.reverse();
-  }
 
-  console.log("Path to vertex 3:", getPath(3));
-} else {
-  console.log("Negative weight cycle detected. No solution.");
+    private randomLevel(): number {
+        let level = 0;
+        while (Math.random() < this.P && level < this.MAX_LEVEL) {
+            level++;
+        }
+        return level;
+    }
+
+    insert(value: T): void {
+        const update = new Array<SkipListNode<T>>(this.MAX_LEVEL + 1);
+        let current: SkipListNode<T> = this.header;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+            if (newLevel > this.level) {
+                for (let i = this.level + 1; i <= newLevel; i++) {
+                    update[i] = this.header;
+                }
+                this.level = newLevel;
+            }
+
+            const newNode = new SkipListNode(value, newLevel);
+            
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
+            }
+        }
+    }
+
+    search(value: T): boolean {
+        let current: SkipListNode<T> = this.header;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+
+        return current !== null && current.value === value;
+    }
+
+    delete(value: T): void {
+        const update = new Array<SkipListNode<T>>(this.MAX_LEVEL + 1);
+        let current: SkipListNode<T> = this.header;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            while (this.level > 0 && this.header.forward[this.level] === null) {
+                this.level--;
+            }
+        }
+    }
 }
+const skipList = new SkipList<number>();
+
+skipList.insert(10);
+skipList.insert(20);
+skipList.insert(30);
+
+console.log(skipList.search(20)); // true
+console.log(skipList.search(25)); // false
+
+skipList.delete(20);
+
+console.log(skipList.search(20)); // false
