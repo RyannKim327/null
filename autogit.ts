@@ -1,54 +1,32 @@
-npx react-native init MyApp --template react-native-template-typescript
-cd MyApp
-// App.tsx
-
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
-
-interface DataItem {
-  id: number;
-  title: string;
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+    constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+        this.val = val === undefined ? 0 : val;
+        this.left = left === undefined ? null : left;
+        this.right = right === undefined ? null : right;
+    }
 }
 
-const App: React.FC = () => {
-  const [data, setData] = useState<DataItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    let maxDiameter = 0;
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      const result: DataItem[] = await response.json();
-      setData(result);
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+    function height(node: TreeNode | null): number {
+        if (!node) return 0;
+        const leftHeight = height(node.left);
+        const rightHeight = height(node.right);
+        
+        // Update the diameter at this node
+        const localDiameter = leftHeight + rightHeight;
+        if (localDiameter > maxDiameter) {
+            maxDiameter = localDiameter;
+        }
+        
+        // Height of the node is max of left/right subtree heights + 1
+        return Math.max(leftHeight, rightHeight) + 1;
     }
-  };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  return (
-    <View style={{ padding: 20 }}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : error ? (
-        <Text style={{ color: 'red' }}>{error}</Text>
-      ) : (
-        data.map(item => (
-          <Text key={item.id}>{item.title}</Text>
-        ))
-      )}
-      <Button title="Refresh" onPress={fetchData} />
-    </View>
-  );
-};
-
-export default App;
-npx react-native run-android
+    height(root);
+    return maxDiameter;
+}
