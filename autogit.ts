@@ -1,27 +1,52 @@
-// Importing fetch for environments like Node.js (uncomment if needed)
-// import fetch from 'node-fetch';
+function buildLPS(pattern: string): number[] {
+  const lps = Array(pattern.length).fill(0);
+  let length = 0; // length of previous longest prefix suffix
+  let i = 1;
 
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[length]) {
+      length++;
+      lps[i] = length;
+      i++;
+    } else {
+      if (length !== 0) {
+        length = lps[length - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
+  }
+  return lps;
 }
 
-async function fetchPosts(): Promise<Post[]> {
-  const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-  if (!response.ok) {
-    throw new Error(`API error: ${response.status}`);
+function kmpSearch(text: string, pattern: string): number[] {
+  const lps = buildLPS(pattern);
+  const result: number[] = [];
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      result.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
   }
-  const posts: Post[] = await response.json();
-  return posts;
+  return result;
 }
 
-(async () => {
-  try {
-    const posts = await fetchPosts();
-    console.log('First post:', posts[0]);
-  } catch (err) {
-    console.error('Failed to fetch posts:', err);
-  }
-})();
+// Example usage:
+const text = "ababcabcabababd";
+const pattern = "ababd";
+console.log(kmpSearch(text, pattern)); // Output: [10]
