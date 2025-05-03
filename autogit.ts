@@ -1,44 +1,75 @@
-type Graph = {
-    [key: string]: string[]; // The graph represented as an adjacency list
-};
+class Node {
+    value: number;
+    next: Node | null;
 
-function bfs(graph: Graph, startNode: string): string[] {
-    const visited: Set<string> = new Set(); // To track visited nodes
-    const queue: string[] = []; // Queue for BFS
-    const result: string[] = []; // To store the order of traversal
-
-    // Start with the start node
-    queue.push(startNode);
-    visited.add(startNode);
-
-    while (queue.length > 0) {
-        // Dequeue the front node
-        const currentNode = queue.shift()!;
-        result.push(currentNode); // Process the current node
-
-        // Get all its neighbors
-        const neighbors = graph[currentNode];
-
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor); // Mark the neighbor as visited
-                queue.push(neighbor); // Enqueue the neighbor
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return result; // Return the order of traversal
 }
 
-// Example Usage
-const graph: Graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': []
-};
+class LinkedList {
+    head: Node | null;
 
-const result = bfs(graph, 'A');
-console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+    constructor() {
+        this.head = null;
+    }
+
+    append(value: number) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to print the linked list
+    print() {
+        let current = this.head;
+        const values: number[] = [];
+        while (current) {
+            values.push(current.value);
+            current = current.next;
+        }
+        console.log(values.join(" -> "));
+    }
+
+    // Method to reverse the linked list
+    reverse() {
+        let previous: Node | null = null;
+        let current: Node | null = this.head;
+        let next: Node | null = null;
+
+        while (current) {
+            // Store the next node
+            next = current.next;  
+            // Reverse the current node's pointer
+            current.next = previous; 
+            // Move pointers one position forward
+            previous = current; 
+            current = next;  
+        }
+        // Update head to be the new front of the list
+        this.head = previous;
+    }
+}
+
+// Example usage:
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+
+console.log("Original linked list:");
+list.print();
+
+list.reverse();
+
+console.log("Reversed linked list:");
+list.print();
