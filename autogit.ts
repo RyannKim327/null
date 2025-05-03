@@ -1,37 +1,28 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function shellSort(arr: number[]): void {
+  const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+  // Start with a big gap, then reduce the gap
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    // Do a gapped insertion sort for this gap size.
+    // The first gap elements arr[0..gap-1] are already in gapped order
+    // Keep adding one more element until the entire array is gap sorted
+    for (let i = gap; i < n; i++) {
+      // Save the current element and create a variable for shifting
+      const temp = arr[i];
+      let j = i;
+
+      // Shift earlier gap-sorted elements up until the correct
+      // location for arr[i] is found
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      // Put temp (the original arr[i]) in its correct location
+      arr[j] = temp;
     }
+  }
 }
-
-function countLeafNodes(node: TreeNode | null): number {
-    // If the node is null, it contributes 0 to the count of leaf nodes
-    if (node === null) {
-        return 0;
-    }
-
-    // If the node is a leaf node, return 1
-    if (node.left === null && node.right === null) {
-        return 1;
-    }
-
-    // Recursively count the leaf nodes in the left and right subtrees
-    return countLeafNodes(node.left) + countLeafNodes(node.right);
-}
-
-// Example usage:
-// Creating the binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`);
+const numbers = [23, 12, 1, 8, 34, 54, 2, 3];
+shellSort(numbers);
+console.log(numbers); // Output will be a sorted array
