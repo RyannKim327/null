@@ -1,25 +1,22 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) {
-        return '';
-    }
+function isPalindrome(s: string): boolean {
+    // Remove non-alphanumeric characters and convert to lowercase
+    const cleaned = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-    // Start with the first string as a potential prefix
-    let prefix = strs[0];
+    // Use two pointers to compare characters
+    let left = 0;
+    let right = cleaned.length - 1;
 
-    // Compare it with the other strings
-    for (let i = 1; i < strs.length; i++) {
-        while (strs[i].indexOf(prefix) !== 0) {
-            // Reduce the prefix length by one until it matches
-            prefix = prefix.substring(0, prefix.length - 1);
-            if (prefix === '') {
-                return '';
-            }
+    while (left < right) {
+        if (cleaned[left] !== cleaned[right]) {
+            return false; // Not a palindrome
         }
+        left++;
+        right--;
     }
 
-    return prefix;
+    return true; // Is a palindrome
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
