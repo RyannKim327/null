@@ -1,98 +1,58 @@
-class PriorityQueue<T> {
-  private heap: T[];
-  private comparator: (a: T, b: T) => boolean;
+function rabinKarp(text: string, pattern: string): number[] {
+    const d = 256; // Number of characters in the input alphabet
+    const q = 101; // A prime number
+    const m = pattern.length;
+    const n = text.length;
+    const result: number[] = [];
+    let p = 0; // hash value for pattern
+    let t = 0; // hash value for text
+    let h = 1;
 
-  constructor(comparator?: (a: T, b: T) => boolean) {
-    this.heap = [];
-    // Default comparator: min-heap (a < b)
-    this.comparator = comparator || ((a, b) => a < b);
-  }
-
-  size(): number {
-    return this.heap.length;
-  }
-
-  isEmpty(): boolean {
-    return this.heap.length === 0;
-  }
-
-  peek(): T | undefined {
-    return this.heap[0];
-  }
-
-  push(value: T): void {
-    this.heap.push(value);
-    this.bubbleUp();
-  }
-
-  pop(): T | undefined {
-    if (this.isEmpty()) return undefined;
-    const top = this.heap[0];
-    const last = this.heap.pop()!;
-    if (!this.isEmpty()) {
-      this.heap[0] = last;
-      this.bubbleDown();
-    }
-    return top;
-  }
-
-  private bubbleUp(): void {
-    let index = this.heap.length - 1;
-    const element = this.heap[index];
-
-    while (index > 0) {
-      const parentIndex = Math.floor((index - 1) / 2);
-      const parent = this.heap[parentIndex];
-      if (this.comparator(element, parent)) {
-        this.heap[index] = parent;
-        index = parentIndex;
-      } else {
-        break;
-      }
-    }
-    this.heap[index] = element;
-  }
-
-  private bubbleDown(): void {
-    let index = 0;
-    const length = this.heap.length;
-    const element = this.heap[0];
-
-    while (true) {
-      let leftChildIndex = 2 * index + 1;
-      let rightChildIndex = 2 * index + 2;
-      let swapIndex: number | null = null;
-
-      if (
-        leftChildIndex < length &&
-        this.comparator(this.heap[leftChildIndex], element)
-      ) {
-        swapIndex = leftChildIndex;
-      }
-
-      if (
-        rightChildIndex < length &&
-        this.comparator(this.heap[rightChildIndex], swapIndex === null ? element : this.heap[leftChildIndex])
-      ) {
-        swapIndex = rightChildIndex;
-      }
-
-      if (swapIndex === null) break;
-
-      this.heap[index] = this.heap[swapIndex];
-      index = swapIndex;
+    // The value of h would be "pow(d, m-1)%q"
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * d) % q;
     }
 
-    this.heap[index] = element;
-  }
+    // Calculate the hash value of pattern and first window of text
+    for (let i = 0; i < m; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % q;
+        t = (d * t + text.charCodeAt(i)) % q;
+    }
+
+    // Slide the pattern over text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check the hash values of current window of text and pattern
+        if (p === t) {
+            // Check for characters one by one
+            let match = true;
+            for (let j = 0; j < m; j++) {
+                if (text.charAt(i + j) !== pattern.charAt(j)) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                result.push(i);
+            }
+        }
+
+        // Calculate hash value for next window of text: 
+        // Remove leading digit, add trailing digit
+        if (i < n - m) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get negative value of t, convert it to positive
+            if (t < 0) {
+                t = t + q;
+            }
+        }
+    }
+
+    return result;
 }
-const pq = new PriorityQueue<number>();
 
-pq.push(5);
-pq.push(3);
-pq.push(10);
-pq.push(1);
-
-while (!pq.isEmpty()) {
-  console.log(pq.pop()); // Outputs: 1, 3, 5, 10 in order, smallest first
-}
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const positions = rabinKarp(text, pattern);
+console.log(positions); // Output: [10]
