@@ -1,72 +1,38 @@
-class Node<T> {
-  data: T;
-  next: Node<T> | null = null;
+function countOccurrences(text: string, word: string): number {
+    // Normalize the text and word by converting them to lower case
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-  constructor(data: T) {
-    this.data = data;
-  }
+    // Split the text into words based on spaces and filter out empty strings
+    const words = normalizedText.split(/\s+/);
+
+    // Count occurrences of the specified word
+    const count = words.filter(w => w === normalizedWord).length;
+
+    return count;
 }
-class LinkedList<T> {
-  head: Node<T> | null = null;
 
-  // Add a new node at the end
-  append(data: T): void {
-    const newNode = new Node(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
-
-  // Add a new node at the start
-  prepend(data: T): void {
-    const newNode = new Node(data);
-    newNode.next = this.head;
-    this.head = newNode;
-  }
-
-  // Remove the first node with the specified data
-  remove(data: T): void {
-    if (!this.head) return;
-
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next && current.next.data !== data) {
-      current = current.next;
-    }
-
-    if (current.next && current.next.data === data) {
-      current.next = current.next.next;
-    }
-  }
-
-  // Traverse and collect data in an array
-  toArray(): T[] {
-    const elements: T[] = [];
-    let current = this.head;
-
-    while (current) {
-      elements.push(current.data);
-      current = current.next;
-    }
-
-    return elements;
-  }
+// Example usage:
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const occurrences = countOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`); // Output: 2
+function countWordOccurrences(text: string, word: string): number {
+    // Normalize the text and word
+    const normalizedWord = word.toLowerCase();
+    
+    // Create a regex pattern to match whole words
+    const regex = new RegExp(`\\b${normalizedWord}\\b`, 'gi'); // 'g' for global and 'i' for case insensitive
+    
+    // Use match to find all matches and count them
+    const matches = text.match(regex);
+    
+    // Return the count of matches or 0 if there are none
+    return matches ? matches.length : 0;
 }
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.prepend(5);
-console.log(list.toArray()); // Output: [5, 10, 20]
 
-list.remove(10);
-console.log(list.toArray()); // Output: [5, 20]
+// Example usage:
+const text = "Hello world! This is a test. Hello again, world!";
+const wordToCount = "hello";
+const occurrences = countWordOccurrences(text, wordToCount);
+console.log(`The word "${wordToCount}" occurs ${occurrences} times.`); // Output: 2
