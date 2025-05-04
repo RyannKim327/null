@@ -1,43 +1,46 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class ListNode {
+  value: number;
+  next: ListNode | null;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Prevent division by zero if arr[high] == arr[low]
-        if (arr[high] === arr[low]) {
-            if (arr[low] === target) {
-                return low; // Target found
-            }
-            return -1; // Target not found
-        }
-
-        // Interpolation formula to estimate the position
-        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
-
-        // Check if the target value is at the computed position
-        if (arr[pos] === target) {
-            return pos; // Target found
-        }
-
-        // If the target is greater, ignore the left side
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } else {
-            // If the target is smaller, ignore the right side
-            high = pos - 1;
-        }
-    }
-
-    return -1; // Target not found
+  constructor(value: number) {
+    this.value = value;
+    this.next = null;
+  }
 }
 
-// Example usage:
-const data = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
-const index = interpolationSearch(data, target);
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+  let first: ListNode | null = head;
+  let second: ListNode | null = head;
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
+  // Move first pointer `n` nodes ahead
+  for (let i = 0; i < n; i++) {
+    if (first === null) {
+      return null; // n is greater than the length of the list
+    }
+    first = first.next;
+  }
+
+  // Move both pointers until first reaches the end
+  while (first !== null) {
+    first = first.next;
+    second = second.next;
+  }
+
+  // `second` now points to the nth node from the end
+  return second;
+}
+
+// Example usage
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const result = findNthFromEnd(head, n);
+if (result) {
+  console.log(`The ${n}th node from the end is ${result.value}`);
 } else {
-    console.log("Element not found");
+  console.log(`The linked list is shorter than ${n} nodes.`);
 }
