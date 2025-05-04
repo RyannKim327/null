@@ -1,11 +1,10 @@
-import * as readline from 'readline';
+function reverseWords(input: string): string {
+  return input.split(' ').reverse().join(' ');
+}
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-rl.question('What is your name? ', (answer: string) => {
-  console.log(`Hello, ${answer}! Welcome to TypeScript.`);
-  rl.close();
-});
+const original = "Hello world from TypeScript";
+const reversed = reverseWords(original);
+console.log(reversed);  // Output: "TypeScript from world Hello"
+function reverseWords(input: string): string {
+  return input.trim().split(/\s+/).reverse().join(' ');
+}
