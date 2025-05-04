@@ -1,52 +1,48 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Build a max heap.
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // One by one extract elements from the heap.
+    for (let i = n - 1; i > 0; i--) {
+        // Move current root to end.
+        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
+        // Call max heapify on the reduced heap.
+        heapify(arr, i, 0);
+    }
+
+    return arr;
+}
+
+function heapify(arr: number[], n: number, i: number) {
+    let largest = i; // Initialize largest as root.
+    const left = 2 * i + 1; // left = 2*i + 1
+    const right = 2 * i + 2; // right = 2*i + 2
+
+    // If left child is larger than root.
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    // If right child is larger than largest so far.
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    // If largest is not root.
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
+
+        // Recursively heapify the affected sub-tree.
+        heapify(arr, n, largest);
     }
 }
 
-class BinaryTree {
-    root: TreeNode | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    diameter(): number {
-        let maxDiameter = 0;
-
-        const calculateHeight = (node: TreeNode | null): number => {
-            if (node === null) {
-                return 0;
-            }
-
-            // Recursively find the height of the left and right subtrees
-            const leftHeight = calculateHeight(node.left);
-            const rightHeight = calculateHeight(node.right);
-
-            // Update the diameter if the path through this node is larger
-            maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
-
-            // Return the height of this subtree
-            return Math.max(leftHeight, rightHeight) + 1;
-        };
-
-        calculateHeight(this.root);
-        return maxDiameter;
-    }
-}
-
-// Usage example:
-const tree = new BinaryTree();
-tree.root = new TreeNode(1);
-tree.root.left = new TreeNode(2);
-tree.root.right = new TreeNode(3);
-tree.root.left.left = new TreeNode(4);
-tree.root.left.right = new TreeNode(5);
-
-console.log("Diameter of the binary tree:", tree.diameter()); // Should print the diameter
+// Example usage
+const arr = [3, 5, 1, 10, 2, 7];
+console.log('Original array:', arr);
+const sortedArray = heapSort(arr);
+console.log('Sorted array:', sortedArray);
