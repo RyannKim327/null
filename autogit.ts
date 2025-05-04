@@ -1,35 +1,30 @@
-function getStringLength(input: string): number {
-    let count = 0;
-    for (let i = 0; i < input.length; i++) {
-        count++;
+function largestPrimeFactor(n: number): number {
+  let largestFactor = -1;
+
+  // Remove all factors of 2
+  while (n % 2 === 0) {
+    largestFactor = 2;
+    n /= 2;
+  }
+
+  // Check odd factors from 3 upwards
+  let factor = 3;
+  while (factor * factor <= n) {
+    while (n % factor === 0) {
+      largestFactor = factor;
+      n /= factor;
     }
-    return count;
+    factor += 2;
+  }
+
+  // If n is still > 2, it is prime and largest factor
+  if (n > 2) {
+    largestFactor = n;
+  }
+
+  return largestFactor;
 }
 
 // Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(`The length of the string is: ${length}`); // Output: The length of the string is: 13
-function getStringLength(input: string): number {
-    let count = 0;
-    let index = 0;
-
-    while (true) {
-        try {
-            // Try to access the character at the current index
-            input.charAt(index);
-            count++;
-            index++;
-        } catch {
-            // If accessing the character fails, break the loop
-            break;
-        }
-    }
-
-    return count;
-}
-
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(`The length of the string is: ${length}`); // Output: The length of the string is: 13
+console.log(largestPrimeFactor(13195)); // Outputs: 29
+console.log(largestPrimeFactor(600851475143)); // For big input, largest prime factor
