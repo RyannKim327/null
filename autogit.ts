@@ -1,42 +1,39 @@
-function longestCommonSubsequence(s1: string, s2: string): string {
-    const m: number = s1.length;
-    const n: number = s2.length;
-    
-    // Create a 2D array to store lengths of longest common subsequence.
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-    
-    // Build the dp table
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (s1[i - 1] === s2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // Found a common character
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max of excluding either character
-            }
-        }
+function mergeSort(arr: number[]): number[] {
+    // Base case: arrays with fewer than 2 elements are already sorted
+    if (arr.length < 2) {
+        return arr;
     }
-    
-    // Now, let's construct the LCS string from the dp table
-    let lcs = '';
-    let i = m;
-    let j = n;
 
-    while (i > 0 && j > 0) {
-        if (s1[i - 1] === s2[j - 1]) {
-            lcs = s1[i - 1] + lcs; // If characters match, it's part of LCS
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move in the direction of the greater value
+    // Split the array into halves
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+
+    // Recursively sort both halves
+    return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left: number[], right: number[]): number[] {
+    const sortedArray: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Merge the left and right arrays in sorted order
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sortedArray.push(left[leftIndex]);
+            leftIndex++;
         } else {
-            j--;
+            sortedArray.push(right[rightIndex]);
+            rightIndex++;
         }
     }
-    
-    return lcs; // The longest common subsequence
+
+    // If there are remaining elements in left or right, push them to the sorted array
+    return sortedArray.concat(left.slice(leftIndex)).concat(right.slice(rightIndex));
 }
 
 // Example usage:
-const str1 = "ABCBDAB";
-const str2 = "BDCAB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "BCAB"
+const array = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(array);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
