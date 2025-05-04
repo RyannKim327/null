@@ -1,19 +1,42 @@
-function countOccurrences(text: string, word: string): number {
-    // Escape special characters in the word if necessary
-    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    
-    // Create a regular expression to find all occurrences of the word
-    const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
-    
-    // Match the regex against the text
-    const matches = text.match(regex);
-    
-    // Return the number of matches or 0 if no matches found
+function countCharacter(string: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < string.length; i++) {
+        if (string[i] === char) {
+            count++;
+        }
+    }
+    return count;
+}
+
+// Example usage:
+const text = "hello world";
+const character = "o";
+console.log(countCharacter(text, character)); // Output: 2
+function countCharacter(string: string, char: string): number {
+    return string.split(char).length - 1;
+}
+
+// Example usage:
+const text = "hello world";
+const character = "o";
+console.log(countCharacter(text, character)); // Output: 2
+function countCharacter(string: string, char: string): number {
+    const regex = new RegExp(char, "g");
+    const matches = string.match(regex);
     return matches ? matches.length : 0;
 }
 
 // Example usage:
-const text = "Hello world! The world is beautiful. Welcome to the world!";
-const word = "world";
-const count = countOccurrences(text, word);
-console.log(`The word "${word}" occurs ${count} times.`);
+const text = "hello world";
+const character = "o";
+console.log(countCharacter(text, character)); // Output: 2
+function countCharacter(string: string, char: string): number {
+    return [...string].reduce((count, currentChar) => {
+        return currentChar === char ? count + 1 : count;
+    }, 0);
+}
+
+// Example usage:
+const text = "hello world";
+const character = "o";
+console.log(countCharacter(text, character)); // Output: 2
