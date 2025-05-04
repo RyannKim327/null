@@ -1,28 +1,20 @@
-import axios from 'axios';
+// Import the necessary module
+import * as readline from 'readline';
 
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
-async function fetchUsers(): Promise<User[]> {
-  try {
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Axios error:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-    return [];
-  }
-}
-
-fetchUsers().then(users => {
-  users.forEach(user => {
-    console.log(`${user.name} (${user.username}) - ${user.email}`);
-  });
+// Create an interface for reading from stdin and writing to stdout
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
 });
+
+// Function to ask for user input
+function askForName() {
+    rl.question('Please enter your name: ', (name: string) => {
+        console.log(`Hello, ${name}! Nice to meet you.`);
+        // Close the readline interface
+        rl.close();
+    });
+}
+
+// Start the program by asking for the user's name
+askForName();
