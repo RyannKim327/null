@@ -1,13 +1,17 @@
-function calculateMean(numbers: number[]): number {
-  if (numbers.length === 0) {
-    throw new Error("Cannot calculate mean of an empty array.");
-  }
-  const sum = numbers.reduce((acc, val) => acc + val, 0);
-  const mean = sum / numbers.length;
-  return mean;
+function areAnagrams(str1: string, str2: string): boolean {
+  // Remove non-alphanumeric characters and make lowercase
+  const normalize = (str: string) =>
+    str
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '') 
+      .split('')
+      .sort()
+      .join('');
+  
+  return normalize(str1) === normalize(str2);
 }
 
 // Example usage:
-const nums = [10, 20, 30, 40];
-const mean = calculateMean(nums);
-console.log(mean); // Outputs: 25
+console.log(areAnagrams("Listen", "Silent")); // true
+console.log(areAnagrams("Hello", "Olelh"));   // true
+console.log(areAnagrams("Test", "Taste"));     // false
