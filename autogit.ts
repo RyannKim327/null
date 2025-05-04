@@ -1,29 +1,59 @@
-function largestPrimeFactor(n: number): number {
-  let number = n;
-  let largestFactor = -1;
+type Node<T> = {
+  state: T;
+  // you might want parent or other info here depending on your problem
+  // parent?: Node<T>;
+};
 
-  // Divide out all factors of 2
-  while (number % 2 === 0) {
-    largestFactor = 2;
-    number /= 2;
-  }
+type ExpandFunction<T> = (node: Node<T>) => Node<T>[];
 
-  // Check odd factors from 3 up to sqrt(number)
-  let factor = 3;
-  while (factor * factor <= number) {
-    while (number % factor === 0) {
-      largestFactor = factor;
-      number /= factor;
+// breadth-limited search
+function breadthLimitedSearch<T>(
+  start: T,
+  expand: ExpandFunction<T>,
+  goalTest: (state: T) => boolean,
+  maxDepth: number
+): Node<T> | null {
+  type QueueItem = { node: Node<T>; depth: number };
+  
+  const startNode: Node<T> = { state: start };
+  const queue: QueueItem[] = [{ node: startNode, depth: 0 }];
+
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift()!;
+
+    if (goalTest(node.state)) {
+      return node;
     }
-    factor += 2;
+
+    if (depth < maxDepth) {
+      const children = expand(node);
+      for (const child of children) {
+        queue.push({ node: child, depth: depth + 1 });
+      }
+    }
   }
 
-  // If number is still greater than 2, it is prime
-  if (number > 2) {
-    largestFactor = number;
-  }
-
-  return largestFactor;
+  return null; // not found within depth limit
 }
-console.log(largestPrimeFactor(13195)); // Outputs: 29
-console.log(largestPrimeFactor(600851475143)); // Outputs: 6857
+const graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
+
+const expand = (node: Node<string>) => {
+  const neighbors = graph[node.state] || [];
+  return neighbors.map(s => ({ state: s }));
+};
+
+const goalTest = (state: string) => state === 'F';
+
+const result = breadthLimitedSearch('A', expand, goalTest, 2);
+if (result) {
+  console.log('Found:', result.state);
+} else {
+  console.log('Not found within depth limit');
+}
