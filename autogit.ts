@@ -1,40 +1,50 @@
-type Graph = {
-    [key: string]: string[];
-};
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has one or no elements, it's already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-function breadthFirstSearch(graph: Graph, startNode: string): string[] {
-    const result: string[] = []; // To keep track of the nodes we've visited
-    const queue: string[] = [startNode]; // Our queue for BFS
-    const visited: Set<string> = new Set([startNode]); // Using a set to track visited nodes
+    // Split the array into two halves
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
 
-    while (queue.length > 0) {
-        const node = queue.shift()!; // Get the first node from the queue
-        result.push(node); // Visit the node
+    // Merge the sorted halves
+    return merge(left, right);
+}
 
-        // Get the neighbors of the current node
-        const neighbors = graph[node] || [];
-        
-        for (const neighbor of neighbors) {
-            // If we haven't visited this neighbor yet
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor); // Mark it as visited
-                queue.push(neighbor); // Add to the queue
-            }
+function merge(left: number[], right: number[]): number[] {
+    let sorted: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
+
+    // Merge the left and right arrays
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            sorted.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            sorted.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    return result;
+    // If there are remaining elements in the left array, add them
+    while (leftIndex < left.length) {
+        sorted.push(left[leftIndex]);
+        leftIndex++;
+    }
+
+    // If there are remaining elements in the right array, add them
+    while (rightIndex < right.length) {
+        sorted.push(right[rightIndex]);
+        rightIndex++;
+    }
+
+    return sorted;
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E']
-};
-
-const traversalOrder = breadthFirstSearch(graph, 'A');
-console.log(traversalOrder); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+// Example usage
+const arrayToSort = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(arrayToSort);
+console.log("Sorted array:", sortedArray);
