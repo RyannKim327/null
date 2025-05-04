@@ -1,49 +1,52 @@
-class Stack<T> {
-    private items: T[];
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor() {
-        this.items = [];
-    }
-
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
-    }
-
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the current size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
 
-// Example usage:
-const stack = new Stack<number>();
+class BinaryTree {
+    root: TreeNode | null;
 
-stack.push(1);
-stack.push(2);
-stack.push(3);
+    constructor() {
+        this.root = null;
+    }
 
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.isEmpty()); // Output: false
-console.log(stack.size());   // Output: 2
+    diameter(): number {
+        let maxDiameter = 0;
+
+        const calculateHeight = (node: TreeNode | null): number => {
+            if (node === null) {
+                return 0;
+            }
+
+            // Recursively find the height of the left and right subtrees
+            const leftHeight = calculateHeight(node.left);
+            const rightHeight = calculateHeight(node.right);
+
+            // Update the diameter if the path through this node is larger
+            maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+
+            // Return the height of this subtree
+            return Math.max(leftHeight, rightHeight) + 1;
+        };
+
+        calculateHeight(this.root);
+        return maxDiameter;
+    }
+}
+
+// Usage example:
+const tree = new BinaryTree();
+tree.root = new TreeNode(1);
+tree.root.left = new TreeNode(2);
+tree.root.right = new TreeNode(3);
+tree.root.left.left = new TreeNode(4);
+tree.root.left.right = new TreeNode(5);
+
+console.log("Diameter of the binary tree:", tree.diameter()); // Should print the diameter
