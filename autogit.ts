@@ -1,10 +1,15 @@
-function isSortedAscending(arr: number[]): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < arr[i - 1]) {
-      return false;
-    }
-  }
-  return true;
+const array = [1, 2, 3, 4, 2];
+const elementToRemove = 2;
+
+const index = array.indexOf(elementToRemove);
+if (index !== -1) {
+  array.splice(index, 1);
 }
-console.log(isSortedAscending([1, 2, 2, 3, 4])); // true
-console.log(isSortedAscending([1, 3, 2, 4]));    // false
+
+console.log(array); // Output: [1, 3, 4, 2]
+const array = [1, 2, 3, 4, 2];
+const elementToRemove = 2;
+
+const filteredArray = array.filter(item => item !== elementToRemove);
+
+console.log(filteredArray); // Output: [1, 3, 4]
