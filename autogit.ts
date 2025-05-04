@@ -1,32 +1,24 @@
-function reverseString(input: string): string {
-    return input.split('').reverse().join('');
-}
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-// Example usage:
-const original = "Hello, world!";
-const reversed = reverseString(original);
-console.log(reversed); // Output: "!dlrow ,olleH"
-function reverseString(input: string): string {
-    let reversed = '';
-    for (let i = input.length - 1; i >= 0; i--) {
-        reversed += input[i];
-    }
-    return reversed;
+if (str.includes(substring)) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
 }
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-// Example usage:
-const original = "Hello, world!";
-const reversed = reverseString(original);
-console.log(reversed); // Output: "!dlrow ,olleH"
-function reverseString(input: string): string {
-    if (input === "") {
-        return "";
-    } else {
-        return reverseString(input.substr(1)) + input.charAt(0);
-    }
+if (str.indexOf(substring) !== -1) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
 }
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-// Example usage:
-const original = "Hello, world!";
-const reversed = reverseString(original);
-console.log(reversed); // Output: "!dlrow ,olleH"
+if (str.search(substring) !== -1) {
+    console.log("Substring found!");
+} else {
+    console.log("Substring not found.");
+}
