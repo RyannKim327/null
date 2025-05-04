@@ -1,56 +1,40 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+type Graph = {
+    [key: string]: string[];
+};
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+function breadthFirstSearch(graph: Graph, startNode: string): string[] {
+    const result: string[] = []; // To keep track of the nodes we've visited
+    const queue: string[] = [startNode]; // Our queue for BFS
+    const visited: Set<string> = new Set([startNode]); // Using a set to track visited nodes
+
+    while (queue.length > 0) {
+        const node = queue.shift()!; // Get the first node from the queue
+        result.push(node); // Visit the node
+
+        // Get the neighbors of the current node
+        const neighbors = graph[node] || [];
+        
+        for (const neighbor of neighbors) {
+            // If we haven't visited this neighbor yet
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor); // Mark it as visited
+                queue.push(neighbor); // Add to the queue
+            }
+        }
     }
-}
 
-class BinaryTree {
-    root: TreeNode | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    // Function to calculate diameter
-    diameterOfBinaryTree(): number {
-        let maxDiameter = 0;
-
-        const height = (node: TreeNode | null): number => {
-            if (!node) return 0;
-
-            const leftHeight = height(node.left);
-            const rightHeight = height(node.right);
-
-            // Update the maximum diameter
-            maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
-
-            // Return the height of the current node
-            return Math.max(leftHeight, rightHeight) + 1;
-        };
-
-        height(this.root); // Start height calculation from the root
-        return maxDiameter; // The max diameter found
-    }
+    return result;
 }
 
 // Example usage:
-// Creating a binary tree: 
-//       1
-//      / \
-//     2   3
-//    / \
-//   4   5
-const tree = new BinaryTree();
-tree.root = new TreeNode(1);
-tree.root.left = new TreeNode(2);
-tree.root.right = new TreeNode(3);
-tree.root.left.left = new TreeNode(4);
-tree.root.left.right = new TreeNode(5);
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E']
+};
 
-console.log(tree.diameterOfBinaryTree()); // Output: 4 (which is the path 4 -> 2 -> 1 -> 3)
+const traversalOrder = breadthFirstSearch(graph, 'A');
+console.log(traversalOrder); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
