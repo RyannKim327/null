@@ -1,49 +1,59 @@
-function fibonacciSearch(arr: number[], target: number): number {
-  // Initialize fibonacci numbers
-  let fibMMm2 = 0; // (m-2)'th Fibonacci number
-  let fibMMm1 = 1; // (m-1)'th Fibonacci number
-  let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci number
+function kthSmallest(arr: number[], k: number): number | null {
+  if (k < 1 || k > arr.length) return null;
+  const sorted = [...arr].sort((a, b) => a - b);
+  return sorted[k - 1];
+}
+class MaxHeap {
+  heap: number[] = [];
 
-  // fibM is going to store the smallest Fibonacci number >= arr.length
-  while (fibM < arr.length) {
-    fibMMm2 = fibMMm1;
-    fibMMm1 = fibM;
-    fibM = fibMMm2 + fibMMm1;
-  }
+  // Methods: insert, extractMax, peek, size ...
+  // (Implementation omitted here for brevity)
+}
 
-  // Marks the eliminated range from front
-  let offset = -1;
+function kthSmallest(arr: number[], k: number): number | null {
+  if (k < 1 || k > arr.length) return null;
+  const maxHeap = new MaxHeap();
 
-  while (fibM > 1) {
-    // Check if fibMMm2 is a valid location
-    const i = Math.min(offset + fibMMm2, arr.length - 1);
-
-    if (arr[i] < target) {
-      // Move the Fibonacci sequence down by one step
-      fibM = fibMMm1;
-      fibMMm1 = fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-      offset = i;
-    } else if (arr[i] > target) {
-      // Move the Fibonacci sequence down by two steps
-      fibM = fibMMm2;
-      fibMMm1 = fibMMm1 - fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-    } else {
-      // element found. Return index
-      return i;
+  for (const num of arr) {
+    if (maxHeap.size() < k) {
+      maxHeap.insert(num);
+    } else if (num < maxHeap.peek()) {
+      maxHeap.extractMax();
+      maxHeap.insert(num);
     }
   }
 
-  // Compare the last element with target
-  if (fibMMm1 && arr[offset + 1] === target) {
-    return offset + 1;
-  }
-
-  // element not found. Return -1
-  return -1;
+  return maxHeap.peek();
 }
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const target = 85;
-const index = fibonacciSearch(arr, target);
-console.log(index);  // Outputs: 8
+function quickselect(arr: number[], left: number, right: number, k: number): number {
+  if (left === right) return arr[left];
+
+  const pivotIndex = partition(arr, left, right);
+
+  if (k === pivotIndex) {
+    return arr[k];
+  } else if (k < pivotIndex) {
+    return quickselect(arr, left, pivotIndex - 1, k);
+  } else {
+    return quickselect(arr, pivotIndex + 1, right, k);
+  }
+}
+
+function partition(arr: number[], left: number, right: number): number {
+  const pivot = arr[right];
+  let i = left;
+  for (let j = left; j < right; j++) {
+    if (arr[j] <= pivot) {
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      i++;
+    }
+  }
+  [arr[i], arr[right]] = [arr[right], arr[i]];
+  return i;
+}
+
+function kthSmallest(arr: number[], k: number): number | null {
+  if (k < 1 || k > arr.length) return null;
+  // note k-1 for zero-based index
+  return quickselect(arr.slice(), 0, arr.length - 1, k - 1);
+}
