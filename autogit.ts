@@ -1,30 +1,34 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Calculate the position using interpolation formula
-        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
 
-        if (arr[pos] === target) {
-            return pos; // Target found
-        } else if (arr[pos] < target) {
-            low = pos + 1; // Move the lower bound up
-        } else {
-            high = pos - 1; // Move the upper bound down
-        }
+  return merge(mergeSort(left), mergeSort(right));
+}
+
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0, j = 0;
+
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
     }
+  }
 
-    return -1; // Target not found
+  // Append any remaining elements from left or right
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
 
-// Example usage
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
-
-const index = interpolationSearch(sortedArray, target);
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found');
-}
+// Example usage:
+const unsorted = [38, 27, 43, 3, 9, 82, 10];
+const sorted = mergeSort(unsorted);
+console.log(sorted);  // Output: [3, 9, 10, 27, 38, 43, 82]
