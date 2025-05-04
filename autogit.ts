@@ -1,23 +1,15 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+function factorialRecursive(n: number): number {
+    if (n < 0) throw new Error("Factorial is not defined for negative numbers.");
+    if (n === 0 || n === 1) return 1;
+    return n * factorialRecursive(n - 1);
 }
-function countLeafNodes(node: TreeNode | null): number {
-  if (node === null) {
-    return 0; // no node here
-  }
-
-  if (node.left === null && node.right === null) {
-    return 1; // this node is a leaf
-  }
-
-  // recurse down left and right subtrees
-  return countLeafNodes(node.left) + countLeafNodes(node.right);
+function factorialIterative(n: number): number {
+    if (n < 0) throw new Error("Factorial is not defined for negative numbers.");
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
 }
+console.log(factorialRecursive(5)); // 120
+console.log(factorialIterative(5)); // 120
