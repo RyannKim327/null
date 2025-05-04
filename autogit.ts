@@ -1,40 +1,26 @@
-interface Node<T> {
-  value: T;
-  children: Node<T>[];
-}
+mkdir my-cron-app
+cd my-cron-app
+npm init -y
+npm install node-cron typescript @types/node ts-node
+import cron from 'node-cron';
 
-function depthLimitedSearch<T>(
-  node: Node<T>, 
-  target: T, 
-  limit: number
-): Node<T> | null {
+// Define a cron job that runs every minute
+const task = cron.schedule('* * * * *', () => {
+  const currentDateTime = new Date();
+  console.log(`Task is running every minute at: ${currentDateTime}`);
+});
 
-  function recursiveDLS(current: Node<T>, depth: number): Node<T> | null {
-    if(depth > limit) return null; // Limit reached, stop exploring deeper
+// Start the task
+task.start();
 
-    if(current.value === target) return current; // Found target
+// Optional: To stop the task after a certain condition, use task.stop()
+// Uncomment the following line to stop the task after 5 minutes
+// setTimeout(() => task.stop(), 5 * 60 * 1000);
 
-    for(let child of current.children) {
-      const result = recursiveDLS(child, depth + 1);
-      if(result !== null) return result;
-    }
-    return null; // Target not found at this branch
-  }
-
-  return recursiveDLS(node, 0);
-}
-
-// Example usage:
-const tree: Node<number> = {
-  value: 1,
-  children: [
-    { value: 2, children: [] },
-    { value: 3, children: [
-      { value: 4, children: [] },
-      { value: 5, children: [] }
-    ]}
-  ]
-};
-
-const foundNode = depthLimitedSearch(tree, 5, 2);
-console.log(foundNode); // Prints node with value 5 or null if not found within depth 2
+// Stop the task when the application is terminated
+process.on('SIGINT', () => {
+  task.stop();
+  console.log('Cron job stopped.');
+  process.exit();
+});
+npx ts-node cronJob.ts
