@@ -1,16 +1,14 @@
-const numbers = [3, 7, 2, 9, 5];
-const max = Math.max(...numbers);
-console.log(max); // 9
-const numbers = [3, 7, 2, 9, 5];
-let max = numbers[0];
-
-for (const num of numbers) {
-  if (num > max) {
-    max = num;
-  }
+function calculateMean(numbers: number[]): number {
+  const total = numbers.reduce((acc, curr) => acc + curr, 0);
+  return total / numbers.length;
 }
 
-console.log(max); // 9
-const numbers = [3, 7, 2, 9, 5];
-const max = numbers.reduce((a, b) => (a > b ? a : b));
-console.log(max); // 9
+// Example usage:
+const nums = [10, 20, 30, 40, 50];
+const mean = calculateMean(nums);
+console.log(mean); // Outputs: 30
+function calculateMean(numbers: number[]): number | null {
+  if (numbers.length === 0) return null;
+  const total = numbers.reduce((acc, curr) => acc + curr, 0);
+  return total / numbers.length;
+}
