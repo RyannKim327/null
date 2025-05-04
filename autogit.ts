@@ -1,74 +1,73 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
         this.next = null;
     }
 }
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
 
-    let currA: ListNode | null = headA;
-    let currB: ListNode | null = headB;
+class Queue<T> {
+    private front: Node<T> | null;
+    private rear: Node<T> | null;
+    private size: number;
 
-    // Calculate the lengths of both lists
-    let lengthA = 0;
-    let lengthB = 0;
-
-    while (currA) {
-        lengthA++;
-        currA = currA.next;
+    constructor() {
+        this.front = null;
+        this.rear = null;
+        this.size = 0;
     }
 
-    while (currB) {
-        lengthB++;
-        currB = currB.next;
-    }
-
-    // Reset pointers to the start of each list
-    currA = headA;
-    currB = headB;
-
-    // If one list is longer, advance its pointer by the length difference
-    const lengthDifference = Math.abs(lengthA - lengthB);
-    if (lengthA > lengthB) {
-        for (let i = 0; i < lengthDifference; i++) {
-            currA = currA?.next || null;
+    // Adds an element to the end of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.rear) {
+            this.rear.next = newNode; // Link the old rear to the new node
         }
-    } else {
-        for (let i = 0; i < lengthDifference; i++) {
-            currB = currB?.next || null;
+        this.rear = newNode; // Update rear to new node
+        if (this.front === null) {
+            this.front = newNode; // If the queue was empty, front is also the new node
         }
+        this.size++;
     }
 
-    // Move both pointers until they collide or reach the end
-    while (currA && currB) {
-        if (currA === currB) {
-            return currA; // Intersection found
+    // Removes an element from the front of the queue
+    dequeue(): T | null {
+        if (this.front === null) {
+            return null; // Queue is empty
         }
-        currA = currA.next;
-        currB = currB.next;
+        const dequeuedNode = this.front;
+        this.front = this.front.next; // Move front to the next node
+        if (this.front === null) {
+            this.rear = null; // If the queue is now empty, ensure rear is also null
+        }
+        this.size--;
+        return dequeuedNode.value;
     }
 
-    return null; // No intersection
+    // Peek at the front element without removing it
+    peek(): T | null {
+        return this.front ? this.front.value : null;
+    }
+
+    // Check if the queue is empty
+    isEmpty(): boolean {
+        return this.size === 0;
+    }
+
+    // Return the size of the queue
+    getSize(): number {
+        return this.size;
+    }
 }
-// Example usage
-const nodeA1 = new ListNode(1);
-const nodeA2 = new ListNode(2);
-const nodeB1 = new ListNode(3);
-const intersectionNode = new ListNode(4);
-const nodeB2 = new ListNode(5);
-const nodeB3 = new ListNode(6);
 
-nodeA1.next = nodeA2;
-nodeA2.next = intersectionNode;
-
-nodeB1.next = nodeB2;
-nodeB2.next = nodeB3;
-nodeB3.next = intersectionNode;
-
-// Find the intersection
-const intersection = getIntersectionNode(nodeA1, nodeB1);
-console.log(intersection?.value); // Should log 4 if the intersection is found
+// Example usage:
+const queue = new Queue<number>();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek()); // Output: 2
+console.log(queue.getSize()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
