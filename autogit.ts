@@ -1,115 +1,41 @@
-class Node<T> {
-  value: T;
-  forward: Node<T>[];
+function buildPrefixTable(pattern: string): number[] {
+    const prefixTable = new Array(pattern.length).fill(0);
+    let j = 0;  // length of previous longest prefix suffix
 
-  constructor(value: T, level: number) {
-    this.value = value;
-    this.forward = new Array(level + 1).fill(null);
-  }
+    for (let i = 1; i < pattern.length; i++) {
+        while (j > 0 && pattern[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
+        }
+        if (pattern[i] === pattern[j]) {
+            j++;
+            prefixTable[i] = j;
+        }
+    }
+    return prefixTable;
 }
 
-class SkipList<T> {
-  private head: Node<T>;
-  private maxLevel: number;
-  private probability: number;
-  private level: number;
+function kmpSearch(text: string, pattern: string): number[] {
+    const prefixTable = buildPrefixTable(pattern);
+    const result: number[] = [];
+    let j = 0; // index for pattern
 
-  constructor(maxLevel: number, probability: number) {
-    this.maxLevel = maxLevel;
-    this.probability = probability;
-    this.level = 0;
-    this.head = new Node<T>(null as unknown as T, maxLevel);
-  }
-
-  private randomLevel(): number {
-    let level = 0;
-    while (Math.random() < this.probability && level < this.maxLevel) {
-      level++;
-    }
-    return level;
-  }
-
-  insert(value: T): void {
-    const update = new Array<Node<T>>(this.maxLevel + 1);
-    let current: Node<T> = this.head;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.forward[0];
-
-    if (!current || current.value !== value) {
-      const newLevel = this.randomLevel();
-
-      if (newLevel > this.level) {
-        for (let i = this.level + 1; i <= newLevel; i++) {
-          update[i] = this.head;
+    for (let i = 0; i < text.length; i++) {
+        while (j > 0 && text[i] !== pattern[j]) {
+            j = prefixTable[j - 1];
         }
-        this.level = newLevel;
-      }
-
-      const newNode = new Node<T>(value, newLevel);
-      for (let i = 0; i <= newLevel; i++) {
-        newNode.forward[i] = update[i].forward[i];
-        update[i].forward[i] = newNode;
-      }
-    }
-  }
-
-  search(value: T): boolean {
-    let current: Node<T> = this.head;
-    
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-    }
-
-    current = current.forward[0];
-    return current && current.value === value;
-  }
-
-  delete(value: T): void {
-    const update = new Array<Node<T>>(this.maxLevel + 1);
-    let current: Node<T> = this.head;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (current.forward[i] && current.forward[i].value < value) {
-        current = current.forward[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.forward[0];
-
-    if (current && current.value === value) {
-      for (let i = 0; i <= this.level; i++) {
-        if (update[i].forward[i] !== current) {
-          break;
+        if (text[i] === pattern[j]) {
+            j++;
         }
-        update[i].forward[i] = current.forward[i];
-      }
-
-      while (this.level > 0 && this.head.forward[this.level] === null) {
-        this.level--;
-      }
+        if (j === pattern.length) {
+            result.push(i - j + 1);  // match found at this index
+            j = prefixTable[j - 1];
+        }
     }
-  }
+    return result;
 }
-const skipList = new SkipList<number>(4, 0.5);
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
 
-console.log(skipList.search(9)); // true
-console.log(skipList.search(4)); // false
-
-skipList.delete(3);
-console.log(skipList.search(3)); // false
+// Example use:
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = kmpSearch(text, pattern);
+console.log(matches);  // Output: [10]
