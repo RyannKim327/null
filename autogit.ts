@@ -1,24 +1,56 @@
-function validateEmail(email: string): boolean {
-    // Regular expression pattern for validating email addresses
-    const emailPattern: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Test the email against the pattern
-    return emailPattern.test(email);
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class BinaryTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    // Function to calculate diameter
+    diameterOfBinaryTree(): number {
+        let maxDiameter = 0;
+
+        const height = (node: TreeNode | null): number => {
+            if (!node) return 0;
+
+            const leftHeight = height(node.left);
+            const rightHeight = height(node.right);
+
+            // Update the maximum diameter
+            maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+
+            // Return the height of the current node
+            return Math.max(leftHeight, rightHeight) + 1;
+        };
+
+        height(this.root); // Start height calculation from the root
+        return maxDiameter; // The max diameter found
+    }
 }
 
 // Example usage:
-const email1 = "example@example.com";
-const email2 = "invalid-email@.com";
+// Creating a binary tree: 
+//       1
+//      / \
+//     2   3
+//    / \
+//   4   5
+const tree = new BinaryTree();
+tree.root = new TreeNode(1);
+tree.root.left = new TreeNode(2);
+tree.root.right = new TreeNode(3);
+tree.root.left.left = new TreeNode(4);
+tree.root.left.right = new TreeNode(5);
 
-console.log(validateEmail(email1)); // Output: true
-console.log(validateEmail(email2)); // Output: false
-npm install validator
-import validator from 'validator';
-
-const email = "example@example.com";
-
-if (validator.isEmail(email)) {
-    console.log("Valid email");
-} else {
-    console.log("Invalid email");
-}
+console.log(tree.diameterOfBinaryTree()); // Output: 4 (which is the path 4 -> 2 -> 1 -> 3)
