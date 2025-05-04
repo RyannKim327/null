@@ -1,32 +1,32 @@
-function interpolationSearch(arr: number[], target: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+// Definition of a binary tree node
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      if (arr[low] === target) return low;
-      return -1;
-    }
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
 
-    // Estimate the position using interpolation formula
-    const pos = low + Math.floor(
-      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
+function diameterOfBinaryTree(root: TreeNode | null): number {
+  let maxDiameter = 0;
 
-    if (arr[pos] === target) {
-      return pos;
-    }
+  function height(node: TreeNode | null): number {
+    if (!node) return 0;
 
-    if (arr[pos] < target) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
-    }
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
+
+    // Update maximum diameter
+    maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+
+    // Return height of current node
+    return 1 + Math.max(leftHeight, rightHeight);
   }
 
-  return -1; // Not found
+  height(root);
+  return maxDiameter;
 }
-const data = [10, 20, 30, 40, 50, 60, 70, 80, 90];
-const target = 70;
-const index = interpolationSearch(data, target);
-console.log(index); // Should print 6
