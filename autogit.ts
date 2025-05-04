@@ -1,46 +1,54 @@
-function buildShiftTable(pattern: string): Record<string, number> {
-  const table: Record<string, number> = {};
-  const m = pattern.length;
+type Graph = Map<string, string[]>;
 
-  // Default shift is the length of the pattern
-  for (let i = 0; i < m - 1; i++) {
-    table[pattern[i]] = m - 1 - i;
-  }
+/**
+ * Performs a breadth-limited search on a graph from start to goal,
+ * up to a specified depth limit.
+ * 
+ * @param graph - The graph represented as adjacency list
+ * @param start - Start node id
+ * @param goal - Goal node id
+ * @param depthLimit - Max depth to search
+ * @returns An array with the path from start to goal, or null if no path found within limit
+ */
+function breadthLimitedSearch(
+  graph: Graph, 
+  start: string, 
+  goal: string, 
+  depthLimit: number
+): string[] | null {
+  // Queue stores [nodeId, pathSoFar, depth]
+  const queue: Array<[string, string[], number]> = [[start, [start], 0]];
+  const visited = new Set<string>([start]);
 
-  return table;
-}
+  while (queue.length > 0) {
+    const [node, path, depth] = queue.shift()!;
 
-function boyerMooreHorspool(text: string, pattern: string): number {
-  const n = text.length;
-  const m = pattern.length;
-
-  if (m === 0) return 0; // empty pattern matches at start
-  if (m > n) return -1; // pattern longer than text can't match
-
-  const shiftTable = buildShiftTable(pattern);
-  let i = 0;
-
-  while (i <= n - m) {
-    let j = m - 1;
-
-    // Match pattern from right to left
-    while (j >= 0 && pattern[j] === text[i + j]) {
-      j--;
+    if (node === goal) {
+      return path;
+    }
+    if (depth >= depthLimit) {
+      // Don't go deeper than depthLimit
+      continue;
     }
 
-    if (j < 0) {
-      return i; // match found at index i
-    } else {
-      const shiftValue = shiftTable[text[i + m - 1]];
-      i += shiftValue !== undefined ? shiftValue : m;
+    for (const neighbor of graph.get(node) || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push([neighbor, [...path, neighbor], depth + 1]);
+      }
     }
   }
 
-  return -1; // no match found
+  return null; // No path found within depth limit
 }
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D']],
+  ['C', ['E']],
+  ['D', ['F']],
+  ['E', []],
+  ['F', []],
+]);
 
-// Example usage:
-const text = "here is a simple example";
-const pattern = "example";
-const index = boyerMooreHorspool(text, pattern);
-console.log(index);  // Output: 17
+console.log(breadthLimitedSearch(graph, 'A', 'F', 3)); // prints ['A', 'B', 'D', 'F']
+console.log(breadthLimitedSearch(graph, 'A', 'F', 2)); // prints null (limit too small)
