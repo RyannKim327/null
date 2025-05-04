@@ -1,14 +1,49 @@
-function isPalindrome(s: string): boolean {
-  // Normalize string: remove non-alphanumerics, convert to lowercase
-  const cleaned = s.replace(/[^a-z0-9]/gi, '').toLowerCase();
+class Stack<T> {
+    private items: T[];
 
-  // Reverse the cleaned string
-  const reversed = cleaned.split('').reverse().join('');
+    constructor() {
+        this.items = [];
+    }
 
-  // Check if reversed string is the same as the cleaned string
-  return cleaned === reversed;
+    // Push an item onto the stack
+    push(item: T): void {
+        this.items.push(item);
+    }
+
+    // Pop an item off the stack
+    pop(): T | undefined {
+        return this.items.pop();
+    }
+
+    // Peek at the top item of the stack without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
+    }
+
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Get the current size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clear the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+const stack = new Stack<number>();
+
+stack.push(1);
+stack.push(2);
+stack.push(3);
+
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.size());   // Output: 2
