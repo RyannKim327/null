@@ -1,42 +1,37 @@
-function kthSmallest_sort(arr: number[], k: number): number | undefined {
-  if (k < 1 || k > arr.length) return undefined; // invalid k
-  const sorted = [...arr].sort((a, b) => a - b);
-  return sorted[k - 1];
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        // Check if the estimated position holds the target
+        if (arr[pos] === target) {
+            return pos;
+        }
+        
+        // If target is greater, ignore left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } 
+        // If target is smaller, ignore right half
+        else {
+            high = pos - 1;
+        }
+    }
+
+    // Target not found
+    return -1;
 }
-function kthSmallest_quickselect(arr: number[], k: number): number | undefined {
-  if (k < 1 || k > arr.length) return undefined;
 
-  function quickselect(left: number, right: number, kSmallest: number): number {
-    if (left === right) return arr[left];
+// Example usage
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
 
-    // Choose a random pivot index
-    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
-    const pivotIndexNew = partition(left, right, pivotIndex);
-
-    if (kSmallest === pivotIndexNew) {
-      return arr[kSmallest];
-    } else if (kSmallest < pivotIndexNew) {
-      return quickselect(left, pivotIndexNew - 1, kSmallest);
-    } else {
-      return quickselect(pivotIndexNew + 1, right, kSmallest);
-    }
-  }
-
-  function partition(left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
-    for (let i = left; i < right; i++) {
-      if (arr[i] < pivotValue) {
-        [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-        storeIndex++;
-      }
-    }
-    // Move pivot to its final place
-    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
-    return storeIndex;
-  }
-
-  return quickselect(0, arr.length - 1, k - 1);
+const resultIndex = interpolationSearch(sortedArray, targetValue);
+if (resultIndex !== -1) {
+    console.log(`Element found at index: ${resultIndex}`);
+} else {
+    console.log('Element not found');
 }
