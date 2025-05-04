@@ -1,16 +1,32 @@
-import cron from 'node-cron';
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-  console.log('Running a task every minute:', new Date().toLocaleTimeString());
-});
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
 
-// Start the scheduled task
-task.start();
+function findMiddle<T>(head: ListNode<T> | null): ListNode<T> | null {
+  if (!head) return null;
 
-// Optional: stop the task after 5 minutes
-setTimeout(() => {
-  task.stop();
-  console.log('Task stopped');
-}, 5 * 60 * 1000);
-npm install node-cron
+  let slow: ListNode<T> | null = head;
+  let fast: ListNode<T> | null = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
+}
+// Create linked list: 1 -> 2 -> 3 -> 4 -> 5
+const node5 = new ListNode(5);
+const node4 = new ListNode(4, node5);
+const node3 = new ListNode(3, node4);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+
+const middleNode = findMiddle(node1);
+console.log(middleNode?.value);  // Output: 3
