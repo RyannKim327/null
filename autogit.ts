@@ -1,32 +1,9 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
-
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+const decimalNumber: number = 42;
+const binaryString: string = decimalNumber.toString(2);
+console.log(binaryString); // Output: "101010"
+function decimalToBinary(decimal: number): string {
+  return decimal.toString(2);
 }
 
-function findMiddle<T>(head: ListNode<T> | null): ListNode<T> | null {
-  if (!head) return null;
-
-  let slow: ListNode<T> | null = head;
-  let fast: ListNode<T> | null = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow!.next;
-    fast = fast.next.next;
-  }
-
-  return slow;
-}
-// Create linked list: 1 -> 2 -> 3 -> 4 -> 5
-const node5 = new ListNode(5);
-const node4 = new ListNode(4, node5);
-const node3 = new ListNode(3, node4);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
-
-const middleNode = findMiddle(node1);
-console.log(middleNode?.value);  // Output: 3
+console.log(decimalToBinary(10));  // Output: "1010"
+console.log(decimalToBinary(255)); // Output: "11111111"
