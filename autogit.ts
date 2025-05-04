@@ -1,14 +1,24 @@
-function getRandomNumberInRange(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+function validateEmail(email: string): boolean {
+    // Regular expression pattern for validating email addresses
+    const emailPattern: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    // Test the email against the pattern
+    return emailPattern.test(email);
 }
 
 // Example usage:
-const randomNumber = getRandomNumberInRange(1, 100);
-console.log(randomNumber); // This will log a random number between 1 and 100, inclusive.
-function getRandomFloatInRange(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
-}
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
 
-// Example usage:
-const randomFloat = getRandomFloatInRange(1.5, 5.5);
-console.log(randomFloat); // This will log a random floating-point number between 1.5 and 5.5.
+console.log(validateEmail(email1)); // Output: true
+console.log(validateEmail(email2)); // Output: false
+npm install validator
+import validator from 'validator';
+
+const email = "example@example.com";
+
+if (validator.isEmail(email)) {
+    console.log("Valid email");
+} else {
+    console.log("Invalid email");
+}
