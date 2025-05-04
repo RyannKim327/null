@@ -1,28 +1,36 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+// Define the structure of a tree node
+class TreeNode {
+  value: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-  constructor(value: T, next: ListNode<T> | null = null) {
+  constructor(value: number, left: TreeNode | null = null, right: TreeNode | null = null) {
     this.value = value;
-    this.next = next;
+    this.left = left;
+    this.right = right;
   }
 }
 
-function getLength<T>(head: ListNode<T> | null): number {
-  let length = 0;
-  let current = head;
-
-  while (current !== null) {
-    length++;
-    current = current.next;
+// Function to count leaf nodes
+function countLeafNodes(root: TreeNode | null): number {
+  if (!root) {
+    return 0;
+  }
+  
+  // A leaf node if both left and right are null
+  if (!root.left && !root.right) {
+    return 1;
   }
 
-  return length;
+  // Recursively count leaves in left and right subtree
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
 
 // Example usage:
-const node3 = new ListNode(3);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
 
-console.log(getLength(node1)); // Output: 3
+const tree = new TreeNode(1, 
+  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
+  new TreeNode(3)
+);
+
+console.log(countLeafNodes(tree)); // Output: 3
