@@ -1,23 +1,23 @@
-function insertionSort(arr: number[]): number[] {
-    // Make a copy to avoid mutating the original array if you want
-    let sortedArr = arr.slice();
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-    for (let i = 1; i < sortedArr.length; i++) {
-        const current = sortedArr[i];
-        let j = i - 1;
-
-        // Shift elements of the sorted segment that are greater than current to the right
-        while (j >= 0 && sortedArr[j] > current) {
-            sortedArr[j + 1] = sortedArr[j];
-            j--;
-        }
-
-        // Insert the current element into the correct position
-        sortedArr[j + 1] = current;
-    }
-
-    return sortedArr;
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
 }
-const unsorted = [5, 2, 9, 1, 5, 6];
-const sorted = insertionSort(unsorted);
-console.log(sorted); // Output: [1, 2, 5, 5, 6, 9]
+function countLeafNodes(node: TreeNode | null): number {
+  if (node === null) {
+    return 0; // no node here
+  }
+
+  if (node.left === null && node.right === null) {
+    return 1; // this node is a leaf
+  }
+
+  // recurse down left and right subtrees
+  return countLeafNodes(node.left) + countLeafNodes(node.right);
+}
