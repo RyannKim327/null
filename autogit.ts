@@ -1,34 +1,14 @@
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = originalArray.filter(item => item !== elementToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const index = originalArray.indexOf(elementToRemove);
-if (index !== -1) {
-    originalArray.splice(index, 1);
+function getRandomNumberInRange(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-console.log(originalArray); // Output: [1, 2, 4, 5]
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+// Example usage:
+const randomNumber = getRandomNumberInRange(1, 100);
+console.log(randomNumber); // This will log a random number between 1 and 100, inclusive.
+function getRandomFloatInRange(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+}
 
-const newArray = originalArray.reduce((acc, curr) => {
-    if (curr !== elementToRemove) {
-        acc.push(curr);
-    }
-    return acc;
-}, []);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray: number[] = [];
-originalArray.forEach(item => {
-    if (item !== elementToRemove) {
-        newArray.push(item);
-    }
-});
-console.log(newArray); // Output: [1, 2, 4, 5]
+// Example usage:
+const randomFloat = getRandomFloatInRange(1.5, 5.5);
+console.log(randomFloat); // This will log a random floating-point number between 1.5 and 5.5.
