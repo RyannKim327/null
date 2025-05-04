@@ -1,15 +1,13 @@
-const array = [1, 2, 3, 4, 2];
-const elementToRemove = 2;
-
-const index = array.indexOf(elementToRemove);
-if (index !== -1) {
-  array.splice(index, 1);
+function countChar(str: string, charToCount: string): number {
+  return str.split('').filter(char => char === charToCount).length;
 }
 
-console.log(array); // Output: [1, 3, 4, 2]
-const array = [1, 2, 3, 4, 2];
-const elementToRemove = 2;
-
-const filteredArray = array.filter(item => item !== elementToRemove);
-
-console.log(filteredArray); // Output: [1, 3, 4]
+// Example:
+const text = "hello world";
+const count = countChar(text, 'l');
+console.log(count); // Output: 3
+function countCharIgnoreCase(str: string, charToCount: string): number {
+  const lowerStr = str.toLowerCase();
+  const lowerChar = charToCount.toLowerCase();
+  return lowerStr.split('').filter(char => char === lowerChar).length;
+}
