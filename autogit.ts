@@ -1,46 +1,47 @@
-class ListNode {
-  value: number;
-  next: ListNode | null;
+type Graph = Map<number, number[]>; // Adjacency list representation
 
-  constructor(value: number) {
-    this.value = value;
-    this.next = null;
-  }
-}
+function topologicalSort(graph: Graph): number[] {
+  const visited = new Set<number>();
+  const tempMark = new Set<number>();
+  const result: number[] = [];
+  let hasCycle = false;
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-  let first: ListNode | null = head;
-  let second: ListNode | null = head;
-
-  // Move first pointer `n` nodes ahead
-  for (let i = 0; i < n; i++) {
-    if (first === null) {
-      return null; // n is greater than the length of the list
+  function visit(node: number) {
+    if (tempMark.has(node)) {
+      hasCycle = true; // cycle detected
+      return;
     }
-    first = first.next;
+    if (!visited.has(node)) {
+      tempMark.add(node);
+      const neighbors = graph.get(node) ?? [];
+      for (const neighbor of neighbors) {
+        visit(neighbor);
+      }
+      tempMark.delete(node);
+      visited.add(node);
+      result.push(node);
+    }
   }
 
-  // Move both pointers until first reaches the end
-  while (first !== null) {
-    first = first.next;
-    second = second.next;
+  for (const node of graph.keys()) {
+    if (!visited.has(node)) {
+      visit(node);
+      if (hasCycle) {
+        throw new Error("Graph has at least one cycle, topological sort not possible");
+      }
+    }
   }
 
-  // `second` now points to the nth node from the end
-  return second;
+  return result.reverse(); // reverse to get the correct order
 }
+const graph: Graph = new Map([
+  [5, [2, 0]],
+  [4, [0, 1]],
+  [2, [3]],
+  [3, [1]],
+  [0, []],
+  [1, []],
+]);
 
-// Example usage
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-  console.log(`The ${n}th node from the end is ${result.value}`);
-} else {
-  console.log(`The linked list is shorter than ${n} nodes.`);
-}
+const sorted = topologicalSort(graph);
+console.log(sorted); // Example output: [4, 5, 2, 3, 1, 0]
