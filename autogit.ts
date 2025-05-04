@@ -1,42 +1,27 @@
-function countCharacter(string: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < string.length; i++) {
-        if (string[i] === char) {
-            count++;
-        }
+function shellSort(arr: number[]): number[] {
+  const n = arr.length;
+  // Start with a big gap, then reduce it
+  let gap = Math.floor(n / 2);
+
+  // Gap starts at n/2 and halves each iteration
+  while (gap > 0) {
+    // Do a gapped insertion sort for this gap size
+    for (let i = gap; i < n; i++) {
+      const temp = arr[i];
+      let j = i;
+
+      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      // Put temp (the original arr[i]) in its correct location
+      arr[j] = temp;
     }
-    return count;
-}
 
-// Example usage:
-const text = "hello world";
-const character = "o";
-console.log(countCharacter(text, character)); // Output: 2
-function countCharacter(string: string, char: string): number {
-    return string.split(char).length - 1;
-}
+    gap = Math.floor(gap / 2);
+  }
 
-// Example usage:
-const text = "hello world";
-const character = "o";
-console.log(countCharacter(text, character)); // Output: 2
-function countCharacter(string: string, char: string): number {
-    const regex = new RegExp(char, "g");
-    const matches = string.match(regex);
-    return matches ? matches.length : 0;
+  return arr;
 }
-
-// Example usage:
-const text = "hello world";
-const character = "o";
-console.log(countCharacter(text, character)); // Output: 2
-function countCharacter(string: string, char: string): number {
-    return [...string].reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
-}
-
-// Example usage:
-const text = "hello world";
-const character = "o";
-console.log(countCharacter(text, character)); // Output: 2
