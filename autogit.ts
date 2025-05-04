@@ -1,13 +1,35 @@
-function countChar(str: string, charToCount: string): number {
-  return str.split('').filter(char => char === charToCount).length;
+function getStringLength(input: string): number {
+    let count = 0;
+    for (let i = 0; i < input.length; i++) {
+        count++;
+    }
+    return count;
 }
 
-// Example:
-const text = "hello world";
-const count = countChar(text, 'l');
-console.log(count); // Output: 3
-function countCharIgnoreCase(str: string, charToCount: string): number {
-  const lowerStr = str.toLowerCase();
-  const lowerChar = charToCount.toLowerCase();
-  return lowerStr.split('').filter(char => char === lowerChar).length;
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`); // Output: The length of the string is: 13
+function getStringLength(input: string): number {
+    let count = 0;
+    let index = 0;
+
+    while (true) {
+        try {
+            // Try to access the character at the current index
+            input.charAt(index);
+            count++;
+            index++;
+        } catch {
+            // If accessing the character fails, break the loop
+            break;
+        }
+    }
+
+    return count;
 }
+
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`); // Output: The length of the string is: 13
