@@ -1,36 +1,32 @@
-// Define the structure of a tree node
-class TreeNode {
-  value: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function interpolationSearch(arr: number[], target: number): number {
+  let low = 0;
+  let high = arr.length - 1;
 
-  constructor(value: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.value = value;
-    this.left = left;
-    this.right = right;
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    if (low === high) {
+      if (arr[low] === target) return low;
+      return -1;
+    }
+
+    // Estimate the position using interpolation formula
+    const pos = low + Math.floor(
+      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+    );
+
+    if (arr[pos] === target) {
+      return pos;
+    }
+
+    if (arr[pos] < target) {
+      low = pos + 1;
+    } else {
+      high = pos - 1;
+    }
   }
+
+  return -1; // Not found
 }
-
-// Function to count leaf nodes
-function countLeafNodes(root: TreeNode | null): number {
-  if (!root) {
-    return 0;
-  }
-  
-  // A leaf node if both left and right are null
-  if (!root.left && !root.right) {
-    return 1;
-  }
-
-  // Recursively count leaves in left and right subtree
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-
-// Example usage:
-
-const tree = new TreeNode(1, 
-  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-  new TreeNode(3)
-);
-
-console.log(countLeafNodes(tree)); // Output: 3
+const data = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+const target = 70;
+const index = interpolationSearch(data, target);
+console.log(index); // Should print 6
