@@ -1,41 +1,43 @@
-function buildPrefixTable(pattern: string): number[] {
-    const prefixTable = new Array(pattern.length).fill(0);
-    let j = 0;  // length of previous longest prefix suffix
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    for (let i = 1; i < pattern.length; i++) {
-        while (j > 0 && pattern[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Prevent division by zero if arr[high] == arr[low]
+        if (arr[high] === arr[low]) {
+            if (arr[low] === target) {
+                return low; // Target found
+            }
+            return -1; // Target not found
         }
-        if (pattern[i] === pattern[j]) {
-            j++;
-            prefixTable[i] = j;
+
+        // Interpolation formula to estimate the position
+        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+
+        // Check if the target value is at the computed position
+        if (arr[pos] === target) {
+            return pos; // Target found
+        }
+
+        // If the target is greater, ignore the left side
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else {
+            // If the target is smaller, ignore the right side
+            high = pos - 1;
         }
     }
-    return prefixTable;
+
+    return -1; // Target not found
 }
 
-function kmpSearch(text: string, pattern: string): number[] {
-    const prefixTable = buildPrefixTable(pattern);
-    const result: number[] = [];
-    let j = 0; // index for pattern
+// Example usage:
+const data = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const target = 70;
+const index = interpolationSearch(data, target);
 
-    for (let i = 0; i < text.length; i++) {
-        while (j > 0 && text[i] !== pattern[j]) {
-            j = prefixTable[j - 1];
-        }
-        if (text[i] === pattern[j]) {
-            j++;
-        }
-        if (j === pattern.length) {
-            result.push(i - j + 1);  // match found at this index
-            j = prefixTable[j - 1];
-        }
-    }
-    return result;
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found");
 }
-
-// Example use:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log(matches);  // Output: [10]
