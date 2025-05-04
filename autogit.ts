@@ -1,26 +1,28 @@
-mkdir my-cron-app
-cd my-cron-app
-npm init -y
-npm install node-cron typescript @types/node ts-node
-import cron from 'node-cron';
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-// Define a cron job that runs every minute
-const task = cron.schedule('* * * * *', () => {
-  const currentDateTime = new Date();
-  console.log(`Task is running every minute at: ${currentDateTime}`);
-});
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
 
-// Start the task
-task.start();
+function getLength<T>(head: ListNode<T> | null): number {
+  let length = 0;
+  let current = head;
 
-// Optional: To stop the task after a certain condition, use task.stop()
-// Uncomment the following line to stop the task after 5 minutes
-// setTimeout(() => task.stop(), 5 * 60 * 1000);
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
 
-// Stop the task when the application is terminated
-process.on('SIGINT', () => {
-  task.stop();
-  console.log('Cron job stopped.');
-  process.exit();
-});
-npx ts-node cronJob.ts
+  return length;
+}
+
+// Example usage:
+const node3 = new ListNode(3);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+
+console.log(getLength(node1)); // Output: 3
