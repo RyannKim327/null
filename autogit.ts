@@ -1,16 +1,13 @@
-const numbers = [3, 7, 2, 9, 5];
-const max = Math.max(...numbers);
-console.log(max); // Output: 9
-const numbers = [3, 7, 2, 9, 5];
-let max = numbers[0];
-
-for (let i = 1; i < numbers.length; i++) {
-  if (numbers[i] > max) {
-    max = numbers[i];
-  }
+function isPalindrome(s: string): boolean {
+  // Remove all non-alphanumeric characters and lowercase the string
+  const cleaned = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  
+  // Compare the cleaned string to its reverse
+  const reversed = cleaned.split('').reverse().join('');
+  
+  return cleaned === reversed;
 }
 
-console.log(max); // Output: 9
-const numbers = [3, 7, 2, 9, 5];
-const max = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
-console.log(max); // Output: 9
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("hello")); // false
