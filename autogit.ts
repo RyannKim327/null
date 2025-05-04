@@ -1,10 +1,19 @@
-function quicksort(arr: number[]): number[] {
-  if (arr.length <= 1) return arr;  // Base case: arrays with 0 or 1 element are already sorted
-
-  const pivot = arr[Math.floor(arr.length / 2)];  // Choose pivot roughly in the middle
-  const less = arr.filter(x => x < pivot);
-  const equal = arr.filter(x => x === pivot);
-  const greater = arr.filter(x => x > pivot);
-
-  return [...quicksort(less), ...equal, ...quicksort(greater)];
+function countOccurrences(text: string, word: string): number {
+    // Escape special characters in the word if necessary
+    const escapedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    
+    // Create a regular expression to find all occurrences of the word
+    const regex = new RegExp(`\\b${escapedWord}\\b`, 'gi');
+    
+    // Match the regex against the text
+    const matches = text.match(regex);
+    
+    // Return the number of matches or 0 if no matches found
+    return matches ? matches.length : 0;
 }
+
+// Example usage:
+const text = "Hello world! The world is beautiful. Welcome to the world!";
+const word = "world";
+const count = countOccurrences(text, word);
+console.log(`The word "${word}" occurs ${count} times.`);
