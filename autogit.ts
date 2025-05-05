@@ -1,18 +1,10 @@
-function binarySearch(arr: number[], target: number): number {
-  let left = 0;
-  let right = arr.length - 1;
-
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid; // Target found, return its index
-    } else if (arr[mid] < target) {
-      left = mid + 1; // Search in the right half
-    } else {
-      right = mid - 1; // Search in the left half
+function isSortedAscending(arr: number[]): boolean {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-
-  return -1; // Target not found
+  return true;
 }
+console.log(isSortedAscending([1, 2, 2, 4, 5])); // true
+console.log(isSortedAscending([1, 3, 2, 4]));     // false
