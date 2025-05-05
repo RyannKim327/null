@@ -1,17 +1,26 @@
-function maxSubarraySum(arr: number[]): number {
-  if (arr.length === 0) return 0; // or handle empty input as you prefer
+function shellSort(arr: number[]): number[] {
+  let n = arr.length;
 
-  let maxSoFar = arr[0];
-  let maxEndingHere = arr[0];
+  // Start with a big gap, then reduce the gap
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    // Do a gapped insertion sort for this gap size.
+    for (let i = gap; i < n; i++) {
+      let temp = arr[i];
+      let j = i;
 
-  for (let i = 1; i < arr.length; i++) {
-    maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
+
+      // Put temp (the original arr[i]) in its correct location
+      arr[j] = temp;
+    }
   }
 
-  return maxSoFar;
+  return arr;
 }
-
-// Example usage:
-const exampleArray = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-console.log(maxSubarraySum(exampleArray)); // Output: 6 (subarray [4, -1, 2, 1])
+const myArray = [23, 12, 1, 8, 34, 54, 2, 3];
+console.log(shellSort(myArray)); 
+// Output: [1, 2, 3, 8, 12, 23, 34, 54]
