@@ -1,42 +1,29 @@
-function boyerMooreHorspool(text: string, pattern: string): number {
-  const m = pattern.length;
-  const n = text.length;
+// Define the node structure
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-  if (m === 0) return 0; // empty pattern matches at start
-  if (m > n) return -1;  // pattern longer than text can't match
-
-  // Build the bad character shift table
-  const badCharShift: Record<string, number> = {};
-  for (let i = 0; i < m - 1; i++) {
-    badCharShift[pattern[i]] = m - 1 - i;
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-
-  let index = 0;
-
-  while (index <= n - m) {
-    let skip = 0;
-
-    // Compare from end of the pattern
-    for (let i = m - 1; i >= 0; i--) {
-      if (pattern[i] !== text[index + i]) {
-        const badChar = text[index + m - 1];
-        skip = badCharShift[badChar] ?? m;
-        break;
-      }
-    }
-
-    if (skip === 0) {
-      // Match found at position index
-      return index;
-    }
-
-    index += skip;
-  }
-
-  return -1; // no match found
 }
-const text = "Here is a simple example";
-const pattern = "example";
 
-const position = boyerMooreHorspool(text, pattern);
-console.log(position); // Output: 17
+// Recursive function to sum all nodes
+function sumOfNodes(root: TreeNode | null): number {
+  if (root === null) return 0;
+
+  // Sum current node + left subtree + right subtree
+  return root.val + sumOfNodes(root.left) + sumOfNodes(root.right);
+}
+
+// Example usage
+const tree = new TreeNode(
+  10,
+  new TreeNode(5, new TreeNode(3), new TreeNode(7)),
+  new TreeNode(15, null, new TreeNode(18))
+);
+
+console.log(sumOfNodes(tree)); // Output: 58
