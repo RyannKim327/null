@@ -1,21 +1,51 @@
-function maxSubArray(nums: number[]): number {
-    if (nums.length === 0) return 0; // handle edge case for empty array
+function fibonacciSearch(arr: number[], target: number): number {
+  const n = arr.length;
 
-    let currentMax = nums[0];
-    let globalMax = nums[0];
+  // Initialize fibonacci numbers
+  let fibMm2 = 0; // (m-2)'th Fibonacci number
+  let fibMm1 = 1; // (m-1)'th Fibonacci number
+  let fibM = fibMm2 + fibMm1; // m'th Fibonacci number
 
-    for (let i = 1; i < nums.length; i++) {
-        // Update currentMax to be either the current number or the current number plus the previous currentMax
-        currentMax = Math.max(nums[i], currentMax + nums[i]);
-        
-        // Update globalMax if we found a new maximum
-        globalMax = Math.max(globalMax, currentMax);
+  // fibM is the smallest Fibonacci number greater or equal to n
+  while (fibM < n) {
+    fibMm2 = fibMm1;
+    fibMm1 = fibM;
+    fibM = fibMm2 + fibMm1;
+  }
+
+  // Marks the eliminated range from front
+  let offset = -1;
+
+  while (fibM > 1) {
+    // Check if fibMm2 is a valid location
+    let i = Math.min(offset + fibMm2, n - 1);
+
+    if (arr[i] < target) {
+      // Move three Fibonacci variables down by one
+      fibM = fibMm1;
+      fibMm1 = fibMm2;
+      fibMm2 = fibM - fibMm1;
+      offset = i;
+    } else if (arr[i] > target) {
+      // Move down Fibonacci sequence by two
+      fibM = fibMm2;
+      fibMm1 = fibMm1 - fibMm2;
+      fibMm2 = fibM - fibMm1;
+    } else {
+      return i; // Element found, return index
     }
+  }
 
-    return globalMax;
+  // Comparing the last element with target
+  if (fibMm1 && arr[offset + 1] === target) {
+    return offset + 1;
+  }
+
+  // Element not found
+  return -1;
 }
 
 // Example usage:
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(arr);
-console.log(result); // Output: 6, which corresponds to the subarray [4, -1, 2, 1]
+const sortedArr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+console.log(fibonacciSearch(sortedArr, 7));  // Output: 3
+console.log(fibonacciSearch(sortedArr, 4));  // Output: -1 (not found)
