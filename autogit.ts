@@ -1,24 +1,18 @@
-function selectionSort(arr: number[]): number[] {
-  const n = arr.length;
+import * as readline from 'readline';
 
-  for (let i = 0; i < n - 1; i++) {
-    // Assume the minimum is the first element
-    let minIndex = i;
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-    // Check the rest of the array for a smaller element
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
+// Function to ask for user input
+const askForName = (): void => {
+    rl.question('What is your name? ', (name: string) => {
+        console.log(`Hello, ${name}! Welcome to the TypeScript world!`);
+        rl.close(); // Close the readline interface
+    });
+};
 
-    // Swap if a smaller element is found
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
-  }
-
-  return arr;
-}
-const numbers = [64, 25, 12, 22, 11];
-console.log(selectionSort(numbers)); // Output: [11, 12, 22, 25, 64]
+// Call the function to start the input process
+askForName();
