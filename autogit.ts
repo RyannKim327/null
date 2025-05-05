@@ -1,64 +1,21 @@
-class TrieNode {
-  children: Map<string, TrieNode>;
-  isEndOfWord: boolean;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
-  }
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
+    }
+
+    // Sort the characters of each string and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    return sortedStr1 === sortedStr2;
 }
 
-class Trie {
-  root: TrieNode;
-
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  insert(word: string): void {
-    let current = this.root;
-
-    for (const char of word) {
-      if (!current.children.has(char)) {
-        current.children.set(char, new TrieNode());
-      }
-      current = current.children.get(char)!;
-    }
-
-    current.isEndOfWord = true;
-  }
-
-  search(word: string): boolean {
-    let current = this.root;
-
-    for (const char of word) {
-      if (!current.children.has(char)) {
-        return false;
-      }
-      current = current.children.get(char)!;
-    }
-
-    return current.isEndOfWord;
-  }
-
-  startsWith(prefix: string): boolean {
-    let current = this.root;
-
-    for (const char of prefix) {
-      if (!current.children.has(char)) {
-        return false;
-      }
-      current = current.children.get(char)!;
-    }
-
-    return true;
-  }
-}
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("helium");
-
-console.log(trie.search("hello"));    // true
-console.log(trie.search("hel"));      // false (because "hel" is not marked as end)
-console.log(trie.startsWith("hel"));  // true
-console.log(trie.startsWith("hey"));  // false
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("Dormitory", "Dirty room")); // true
