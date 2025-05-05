@@ -1,25 +1,88 @@
-function bubbleSort(arr: number[]): number[] {
-  let n = arr.length;
-  let swapped: boolean;
+type Graph = { [key: string]: string[] }; // Adjacency list representation of the graph
 
-  // Outer loop to control passes
-  for (let i = 0; i < n - 1; i++) {
-    swapped = false;
+function bidirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+    if (start === goal) return [start];
 
-    // Inner loop for comparing adjacent elements
-    for (let j = 0; j < n - 1 - i; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap elements if they're in the wrong order
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        swapped = true;
-      }
+    const forwardQueue: string[] = [start];
+    const backwardQueue: string[] = [goal];
+    
+    const forwardVisited: Set<string> = new Set();
+    const backwardVisited: Set<string> = new Set();
+    
+    const forwardParents: { [key: string]: string } = {};
+    const backwardParents: { [key: string]: string } = {};
+    
+    forwardVisited.add(start);
+    backwardVisited.add(goal);
+    
+    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+        // Expand in the forward direction
+        let forwardNode = forwardQueue.shift();
+        if (!forwardNode) return null;
+
+        for (let neighbor of graph[forwardNode] || []) {
+            if (backwardVisited.has(neighbor)) {
+                return reconstructPath(forwardParents, backwardParents, start, neighbor, goal);
+            }
+            if (!forwardVisited.has(neighbor)) {
+                forwardVisited.add(neighbor);
+                forwardParents[neighbor] = forwardNode;
+                forwardQueue.push(neighbor);
+            }
+        }
+
+        // Expand in the backward direction
+        let backwardNode = backwardQueue.shift();
+        if (!backwardNode) return null;
+
+        for (let neighbor of graph[backwardNode] || []) {
+            if (forwardVisited.has(neighbor)) {
+                return reconstructPath(forwardParents, backwardParents, start, neighbor, goal);
+            }
+            if (!backwardVisited.has(neighbor)) {
+                backwardVisited.add(neighbor);
+                backwardParents[neighbor] = backwardNode;
+                backwardQueue.push(neighbor);
+            }
+        }
     }
 
-    // If no swaps occurred in this pass, array is sorted
-    if (!swapped) break;
-  }
-
-  return arr;
+    return null; // No path found
 }
-const numbers = [5, 3, 8, 4, 2];
-console.log(bubbleSort(numbers)); // Output: [2, 3, 4, 5, 8]
+
+function reconstructPath(forwardParents: { [key: string]: string }, backwardParents: { [key: string]: string }, start: string, meet: string, goal: string): string[] {
+    const path = [];
+    let currentNode = meet;
+
+    // Build path from start to the meeting point
+    while (currentNode !== start) {
+        path.push(currentNode);
+        currentNode = forwardParents[currentNode];
+    }
+    path.push(start);
+    path.reverse();
+
+    // Build path from meeting point to goal
+    currentNode = backwardParents[meet];
+    while (currentNode !== goal) {
+        path.push(currentNode);
+        currentNode = backwardParents[currentNode];
+    }
+    path.push(goal);
+    
+    return path;
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E', 'G'],
+    G: ['F']
+};
+
+const path = bidirectionalSearch(graph, 'A', 'G');
+console.log(path); // Output: ['A', 'B', 'E', 'F', 'G'] or another valid path
