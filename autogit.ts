@@ -1,49 +1,29 @@
-import * as readline from 'readline';
-
-// Create an interface for reading input
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-// Function to ask questions
-function askQuestion(query: string): Promise<string> {
-    return new Promise((resolve) => {
-        rl.question(query, (answer) => {
-            resolve(answer);
-        });
-    });
+function isSorted(arr: number[]): boolean {
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] < arr[i - 1]) {
+            return false;
+        }
+    }
+    return true;
 }
 
-// Main function to run the program
-async function main() {
-    try {
-        const name = await askQuestion('What is your name? ');
-        const age = await askQuestion('How old are you? ');
-
-        // Process input and produce output
-        console.log(`Hello, ${name}! You are ${age} years old.`);
-
-    } catch (error) {
-        console.error("An error occurred:", error);
-    } finally {
-        rl.close();
+function shuffleArray(arr: number[]): void {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
 
-// Run the program
-main();
-# Initialize a new npm project (if you haven't already)
-npm init -y
+function randomSort(arr: number[]): number[] {
+    let shuffledArr = [...arr]; // Create a copy of the array
+    while (!isSorted(shuffledArr)) {
+        shuffleArray(shuffledArr);
+    }
+    return shuffledArr;
+}
 
-# Install TypeScript
-npm install typescript --save-dev
-
-# Create a tsconfig.json file (optional but recommended)
-npx tsc --init
-
-# Compile TypeScript to JavaScript
-npx tsc app.ts
-
-# Run the resulting JavaScript file
-node app.js
+// Example usage:
+const unsortedArray = [5, 3, 8, 4, 2];
+console.log("Unsorted Array:", unsortedArray);
+const sortedArray = randomSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
