@@ -1,150 +1,21 @@
-class Node<T> {
-    data: T;
-    next: Node<T> | null;
+function maxSubArray(nums: number[]): number {
+    if (nums.length === 0) return 0; // handle edge case for empty array
 
-    constructor(data: T) {
-        this.data = data;
-        this.next = null;
-    }
-}
-class Queue<T> {
-    private front: Node<T> | null;
-    private rear: Node<T> | null;
-    private size: number;
+    let currentMax = nums[0];
+    let globalMax = nums[0];
 
-    constructor() {
-        this.front = null;
-        this.rear = null;
-        this.size = 0;
+    for (let i = 1; i < nums.length; i++) {
+        // Update currentMax to be either the current number or the current number plus the previous currentMax
+        currentMax = Math.max(nums[i], currentMax + nums[i]);
+        
+        // Update globalMax if we found a new maximum
+        globalMax = Math.max(globalMax, currentMax);
     }
 
-    // Enqueue operation
-    enqueue(data: T): void {
-        const newNode = new Node(data);
-        if (this.rear) {
-            this.rear.next = newNode;
-        }
-        this.rear = newNode;
-        if (!this.front) {
-            this.front = newNode;
-        }
-        this.size++;
-    }
-
-    // Dequeue operation
-    dequeue(): T | null {
-        if (this.isEmpty()) {
-            return null; // or throw an error
-        }
-        const dequeuedNode = this.front!;
-        this.front = this.front.next;
-        if (!this.front) {
-            this.rear = null; // Queue is now empty
-        }
-        this.size--;
-        return dequeuedNode.data;
-    }
-
-    // Peek operation
-    peek(): T | null {
-        return this.front ? this.front.data : null;
-    }
-
-    // Check if the queue is empty
-    isEmpty(): boolean {
-        return this.size === 0;
-    }
-
-    // Get the size of the queue
-    getSize(): number {
-        return this.size;
-    }
-}
-const queue = new Queue<number>();
-
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-
-console.log(queue.peek()); // Output: 1
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.peek()); // Output: 2
-console.log(queue.getSize()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
-
-queue.dequeue();
-queue.dequeue();
-console.log(queue.isEmpty()); // Output: true
-class Node<T> {
-    data: T;
-    next: Node<T> | null;
-
-    constructor(data: T) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-class Queue<T> {
-    private front: Node<T> | null;
-    private rear: Node<T> | null;
-    private size: number;
-
-    constructor() {
-        this.front = null;
-        this.rear = null;
-        this.size = 0;
-    }
-
-    enqueue(data: T): void {
-        const newNode = new Node(data);
-        if (this.rear) {
-            this.rear.next = newNode;
-        }
-        this.rear = newNode;
-        if (!this.front) {
-            this.front = newNode;
-        }
-        this.size++;
-    }
-
-    dequeue(): T | null {
-        if (this.isEmpty()) {
-            return null;
-        }
-        const dequeuedNode = this.front!;
-        this.front = this.front.next;
-        if (!this.front) {
-            this.rear = null;
-        }
-        this.size--;
-        return dequeuedNode.data;
-    }
-
-    peek(): T | null {
-        return this.front ? this.front.data : null;
-    }
-
-    isEmpty(): boolean {
-        return this.size === 0;
-    }
-
-    getSize(): number {
-        return this.size;
-    }
+    return globalMax;
 }
 
 // Example usage:
-const queue = new Queue<number>();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-console.log(queue.peek()); // 1
-console.log(queue.dequeue()); // 1
-console.log(queue.peek()); // 2
-console.log(queue.getSize()); // 2
-console.log(queue.isEmpty()); // false
-
-queue.dequeue();
-queue.dequeue();
-console.log(queue.isEmpty()); // true
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(arr);
+console.log(result); // Output: 6, which corresponds to the subarray [4, -1, 2, 1]
