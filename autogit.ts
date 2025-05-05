@@ -1,62 +1,107 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const merged: number[] = [];
-    let i = 0, j = 0;
-    
-    while (i < nums1.length && j < nums2.length) {
-        if (nums1[i] < nums2[j]) {
-            merged.push(nums1[i++]);
-        } else {
-            merged.push(nums2[j++]);
+function topologicalSortKahn(graph: { [key: string]: string[] }): string[] | null {
+    const inDegree: { [key: string]: number } = {};
+    const queue: string[] = [];
+    const result: string[] = [];
+
+    // Initialize in-degrees
+    for (const node in graph) {
+        inDegree[node] = 0; // Initialize all nodes with zero in-degree
+    }
+
+    // Calculate in-degrees
+    for (const node in graph) {
+        for (const neighbor of graph[node]) {
+            inDegree[neighbor] = (inDegree[neighbor] || 0) + 1;
         }
     }
-    
-    while (i < nums1.length) {
-        merged.push(nums1[i++]);
+
+    // Enqueue nodes with zero in-degree
+    for (const node in inDegree) {
+        if (inDegree[node] === 0) {
+            queue.push(node);
+        }
     }
-    
-    while (j < nums2.length) {
-        merged.push(nums2[j++]);
-    }
-    
-    const len = merged.length;
-    if (len % 2 === 0) {
-        return (merged[len / 2 - 1] + merged[len / 2]) / 2;
-    } else {
-        return merged[Math.floor(len / 2)];
-    }
-}
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    // Ensure nums1 is smaller for minimal binary search range
-    if (nums1.length > nums2.length) return findMedianSortedArrays(nums2, nums1);
 
-    const m = nums1.length, n = nums2.length;
-    let low = 0, high = m;
+    // Process the queue
+    while (queue.length > 0) {
+        const current = queue.shift()!;
+        result.push(current);
 
-    while (low <= high) {
-        const partitionX = Math.floor((low + high) / 2);
-        const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
-
-        const maxLeftX = (partitionX === 0) ? -Infinity : nums1[partitionX - 1];
-        const minRightX = (partitionX === m) ? Infinity : nums1[partitionX];
-        
-        const maxLeftY = (partitionY === 0) ? -Infinity : nums2[partitionY - 1];
-        const minRightY = (partitionY === n) ? Infinity : nums2[partitionY];
-
-        if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
-            // Found correct partition
-            if ((m + n) % 2 === 0) {
-                return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
-            } else {
-                return Math.max(maxLeftX, maxLeftY);
+        // Decrease in-degree of neighboring nodes
+        for (const neighbor of graph[current]) {
+            inDegree[neighbor]--;
+            // If in-degree becomes zero, enqueue it
+            if (inDegree[neighbor] === 0) {
+                queue.push(neighbor);
             }
-        } else if (maxLeftX > minRightY) {
-            // Move towards left side
-            high = partitionX - 1;
-        } else {
-            // Move towards right side
-            low = partitionX + 1;
         }
     }
 
-    throw new Error("Input arrays are not sorted properly");
+    // Check if there was a cycle
+    if (result.length !== Object.keys(graph).length) {
+        return null; // Cycle detected, topological sort is not possible
+    }
+
+    return result;
 }
+
+// Example Usage:
+const graph = {
+    A: ['B', 'C'],
+    B: ['D'],
+    C: ['D', 'E'],
+    D: ['F'],
+    E: ['F'],
+    F: []
+};
+
+const sorted = topologicalSortKahn(graph);
+console.log(sorted); // Output can be ['A', 'B', 'C', 'D', 'E', 'F'] or similar
+function topologicalSortDFS(graph: { [key: string]: string[] }): string[] | null {
+    const visited: Set<string> = new Set();
+    const tempMark: Set<string> = new Set();
+    const result: string[] = [];
+
+    function dfs(node: string): boolean {
+        if (tempMark.has(node)) return false; // Found a cycle
+        if (visited.has(node)) return true; // Already processed
+
+        // Mark as temporary
+        tempMark.add(node);
+
+        for (const neighbor of graph[node]) {
+            if (!dfs(neighbor)) {
+                return false; // Cycle detected in neighbor
+            }
+        }
+
+        // Mark as permanent and record the result
+        tempMark.delete(node);
+        visited.add(node);
+        result.push(node);
+        return true;
+    }
+
+    for (const node in graph) {
+        if (!visited.has(node)) {
+            if (!dfs(node)) {
+                return null; // Cycle detected
+            }
+        }
+    }
+
+    return result.reverse(); // Reverse to get correct topological order
+}
+
+// Example Usage:
+const graphDFS = {
+    A: ['B', 'C'],
+    B: ['D'],
+    C: ['D', 'E'],
+    D: ['F'],
+    E: ['F'],
+    F: []
+};
+
+const sortedDFS = topologicalSortDFS(graphDFS);
+console.log(sortedDFS); // Output can be ['A', 'B', 'C', 'D', 'E', 'F'] or similar
