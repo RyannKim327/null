@@ -1,52 +1,74 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function createBadCharTable(pattern: string): Record<string, number> {
+    const badCharTable: Record<string, number> = {};
+    const m = pattern.length;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    for (let i = 0; i < m; i++) {
+        badCharTable[pattern[i]] = i; // Store the last occurrence of each character
     }
+
+    return badCharTable;
 }
 
-class LinkedList<T> {
-    head: Node<T> | null;
+function createGoodSuffixTable(pattern: string): number[] {
+    const m = pattern.length;
+    const goodSuffixTable = new Array(m).fill(0);
+    const z = new Array(m).fill(0);
+    let j = 0;
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node to the linked list
-    add(value: T): void {
-        const newNode = new Node(value);
-        if (this.head === null) {
-            this.head = newNode;
+    // Calculate Z values
+    for (let i = 1; i < m; i++) {
+        if (i + j < m && pattern[z[i + j]] === pattern[i]) {
+            z[i] = z[i + j] + 1;
         } else {
-            let current: Node<T> | null = this.head;
-            while (current.next) {
-                current = current.next;
+            if (i + j >= m) {
+                j = 0;
             }
-            current.next = newNode;
+            while (i + j < m && pattern[j] === pattern[i + j]) {
+                j++;
+            }
+            z[i] = j;
         }
     }
 
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current: Node<T> | null = this.head;
+    // Fill out good suffix table
+    for (let i = 0; i < m; i++) {
+        goodSuffixTable[m - 1 - z[i]] = i;
+    }
 
-        while (current) {
-            count++;
-            current = current.next;
+    return goodSuffixTable;
+}
+
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharTable(pattern);
+    const goodSuffixTable = createGoodSuffixTable(pattern);
+    const n = text.length;
+    const m = pattern.length;
+    const occurrences: number[] = [];
+
+    let s = 0; // Shift of the pattern against text
+
+    while (s <= n - m) {
+        let j = m - 1;
+
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
         }
 
-        return count;
+        if (j < 0) {
+            occurrences.push(s);
+            s += goodSuffixTable[0]; // Shift the pattern by the good suffix
+        } else {
+            const badCharShift = badCharTable[text[s + j]] !== undefined ? j - badCharTable[text[s + j]] : j + 1;
+            const goodSuffixShift = goodSuffixTable[j];
+            s += Math.max(badCharShift, goodSuffixShift);
+        }
     }
+
+    return occurrences;
 }
 
 // Example usage
-const list = new LinkedList<number>();
-list.add(1);
-list.add(2);
-list.add(3);
-
-console.log(`Length of the linked list: ${list.length()}`); // Output: Length of the linked list: 3
+const text = "ABAAABCDABABCAABABCABAB";
+const pattern = "ABABCABAB";
+const result = boyerMooreSearch(text, pattern);
+console.log(result); // Output the starting indexes of occurrences
