@@ -1,28 +1,21 @@
-function burrowsWheelerTransform(input: string): { bwt: string, lastColumn: string[], indexArray: number[] } {
-    const length = input.length;
-    
-    // Create all cyclic shifts of input
-    const cyclicShifts: string[] = [];
-    for (let i = 0; i < length; i++) {
-        cyclicShifts.push(input.substring(i) + input.substring(0, i));
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove whitespace and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+
+    // If the lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    // Sort the cyclic shifts lexicographically
-    cyclicShifts.sort();
+    // Sort the characters of both strings and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-    // Construct the BWT string and the index array
-    let bwtString = '';
-    const indexArray: number[] = [];
-    for (const shift of cyclicShifts) {
-        bwtString += shift[length - 1]; // Last character of each sorted shift
-        indexArray.push(input.length - shift.indexOf(shift.charAt(0)) - 1); // The original index of that shift
-    }
-
-    return { bwt: bwtString, lastColumn: cyclicShifts, indexArray };
+    return sortedStr1 === sortedStr2;
 }
 
-// Example usage
-const input = "banana$";
-const { bwt, lastColumn } = burrowsWheelerTransform(input);
-console.log("BWT:", bwt);
-console.log("Last column of sorted shifts:", lastColumn);
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));  // false
+console.log(areAnagrams("Astronomer", "Moon starer")); // true
