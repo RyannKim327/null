@@ -1,148 +1,59 @@
-class SkipListNode<T> {
-  value: T | null;
-  forwards: SkipListNode<T>[];
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // Length of the previous longest prefix suffix
+    let i = 1; // Start from the second character
 
-  constructor(value: T | null, level: number) {
-    this.value = value;
-    this.forwards = new Array(level + 1).fill(null);
-  }
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use the previous LPS value
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
-class SkipList<T> {
-  private static readonly MAX_LEVEL = 16;
-  private static readonly P = 0.5;
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
 
-  private header: SkipListNode<T>;
-  private level: number;
+    let i = 0; // Index for text
+    let j = 0; // Index for pattern
 
-  constructor() {
-    this.level = 0;
-    this.header = new SkipListNode<T>(null, SkipList.MAX_LEVEL);
-  }
-
-  private randomLevel(): number {
-    let lvl = 0;
-    while (Math.random() < SkipList.P && lvl < SkipList.MAX_LEVEL) {
-      lvl++;
-    }
-    return lvl;
-  }
-
-  public insert(value: T): void {
-    const update: SkipListNode<T>[] = new Array(SkipList.MAX_LEVEL + 1);
-    let current = this.header;
-
-    // Start from the highest level and move forward while next node value < value
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        current.forwards[i] !== null &&
-        current.forwards[i].value !== null &&
-        current.forwards[i].value < value
-      ) {
-        current = current.forwards[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.forwards[0];
-
-    if (current === null || current.value !== value) {
-      const newLevel = this.randomLevel();
-
-      if (newLevel > this.level) {
-        for (let i = this.level + 1; i <= newLevel; i++) {
-          update[i] = this.header;
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
-        this.level = newLevel;
-      }
 
-      const newNode = new SkipListNode<T>(value, newLevel);
-
-      for (let i = 0; i <= newLevel; i++) {
-        newNode.forwards[i] = update[i].forwards[i];
-        update[i].forwards[i] = newNode;
-      }
-    }
-  }
-
-  public search(value: T): boolean {
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        current.forwards[i] !== null &&
-        current.forwards[i].value !== null &&
-        current.forwards[i].value < value
-      ) {
-        current = current.forwards[i];
-      }
-    }
-
-    current = current.forwards[0];
-
-    return current !== null && current.value === value;
-  }
-
-  public delete(value: T): boolean {
-    const update: SkipListNode<T>[] = new Array(SkipList.MAX_LEVEL + 1);
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        current.forwards[i] !== null &&
-        current.forwards[i].value !== null &&
-        current.forwards[i].value < value
-      ) {
-        current = current.forwards[i];
-      }
-      update[i] = current;
-    }
-
-    current = current.forwards[0];
-
-    if (current !== null && current.value === value) {
-      for (let i = 0; i <= this.level; i++) {
-        if (update[i].forwards[i] !== current) {
-          break;
+        if (j === pattern.length) {
+            // Match found, record the starting index
+            result.push(i - j);
+            j = lps[j - 1]; // Get the next character to match
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            // Mismatch after j matches
+            if (j !== 0) {
+                j = lps[j - 1]; // Try the next character in pattern
+            } else {
+                i++;
+            }
         }
-        update[i].forwards[i] = current.forwards[i];
-      }
-
-      while (this.level > 0 && this.header.forwards[this.level] === null) {
-        this.level--;
-      }
-      return true;
     }
 
-    return false;
-  }
-
-  // Optional: print for debugging
-  public print(): void {
-    for (let i = this.level; i >= 0; i--) {
-      let current = this.header.forwards[i];
-      let levelStr = `Level ${i}: `;
-      while (current !== null) {
-        levelStr += current.value + " -> ";
-        current = current.forwards[i];
-      }
-      levelStr += "null";
-      console.log(levelStr);
-    }
-  }
+    return result; // Return all starting indices of matches found
 }
-const list = new SkipList<number>();
 
-list.insert(3);
-list.insert(6);
-list.insert(7);
-list.insert(9);
-list.insert(12);
-list.insert(19);
-list.insert(17);
+// Example Usage:
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const indices = kmpSearch(text, pattern);
 
-console.log(list.search(9)); // true
-console.log(list.search(5)); // false
-
-list.delete(3);
-list.print();
+console.log(`Pattern found at indices: ${indices.join(", ")}`);
