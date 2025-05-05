@@ -1,42 +1,13 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+let array: number[] = [1, 2, 3, 4, 5];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+// Reverse the array
+array.reverse();
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
+console.log(array); // Output: [5, 4, 3, 2, 1]
+let originalArray: number[] = [1, 2, 3, 4, 5];
 
-    // Move first n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (first === null) {
-            // If n is greater than the length of the list
-            return null;
-        }
-        first = first.next;
-    }
+// Create a reversed copy of the array
+let reversedArray: number[] = originalArray.slice().reverse();
 
-    // Move both pointers until first reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second?.next ?? null; // Move second pointer
-    }
-
-    return second; // second is now pointing to the nth node from the end
-}
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const result = findNthFromEnd(head, n);
-console.log(result ? result.value : 'Node not found');
+console.log(originalArray); // Output: [1, 2, 3, 4, 5]
+console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
