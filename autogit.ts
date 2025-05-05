@@ -1,40 +1,42 @@
-function countingSort(arr: number[]): number[] {
-    if (arr.length === 0) return [];
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    // Find the max and min values to handle negative numbers as well
-    let max = arr[0];
-    let min = arr[0];
-    for (const num of arr) {
-        if (num > max) max = num;
-        if (num < min) min = num;
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Avoid division by zero
+        if (arr[high] === arr[low]) {
+            if (arr[low] === target) {
+                return low; // Found target
+            }
+            return -1; // Target not found
+        }
+        
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
+
+        // Check if the estimated position contains the target
+        if (arr[pos] === target) {
+            return pos; // Found target
+        }
+        
+        // If target is larger, target is in the upper part
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else { // If target is smaller, target is in the lower part
+            high = pos - 1;
+        }
     }
 
-    const range = max - min + 1;
-    const count = new Array(range).fill(0);
-
-    // Count occurrences
-    for (const num of arr) {
-        count[num - min]++;
-    }
-
-    // Calculate cumulative counts
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
-
-    const output = new Array(arr.length);
-
-    // Build the output array by placing elements in correct positions
-    // Iterate backward to make counting sort stable
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const num = arr[i];
-        count[num - min]--;
-        output[count[num - min]] = num;
-    }
-
-    return output;
+    return -1; // Target not found
 }
 
-// Example usage:
-const sorted = countingSort([4, 2, 2, 8, 3, 3, 1]);
-console.log(sorted); // Output: [1, 2, 2, 3, 3, 4, 8]
+// Example usage
+const array = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+const target = 50;
+
+const index = interpolationSearch(array, target);
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found in the array.');
+}
