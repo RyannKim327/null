@@ -1,129 +1,47 @@
-class TrieNode {
-    children: { [key: string]: TrieNode };
-    isEndOfWord: boolean;
+class Stack<T> {
+    private items: T[] = [];
 
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
-    }
-}
-class Trie {
-    root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
+    // Adds an element to the top of the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children[char]) {
-                currentNode.children[char] = new TrieNode();
-            }
-            currentNode = currentNode.children[char];
+    // Removes and returns the top element of the stack
+    pop(): T | undefined {
+        if (this.isEmpty()) {
+            return undefined; // If the stack is empty, return undefined
         }
-
-        currentNode.isEndOfWord = true;
+        return this.items.pop();
     }
 
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.getNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.getNode(prefix) !== null;
-    }
-
-    // Helper method to get the node representing the last character of the word/prefix
-    private getNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children[char]) {
-                return null;
-            }
-            currentNode = currentNode.children[char];
+    // Returns the top element of the stack without removing it
+    peek(): T | undefined {
+        if (this.isEmpty()) {
+            return undefined; // If the stack is empty, return undefined
         }
-
-        return currentNode;
+        return this.items[this.items.length - 1];
     }
-}
-const trie = new Trie();
 
-// Inserting words
-trie.insert("apple");
-trie.insert("app");
+    // Checks if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
 
-// Searching for words
-console.log(trie.search("apple")); // true
-console.log(trie.search("app"));   // true
-console.log(trie.search("appl"));  // false
-console.log(trie.startsWith("ap")); // true
-console.log(trie.startsWith("b"));  // false
-class TrieNode {
-    children: { [key: string]: TrieNode };
-    isEndOfWord: boolean;
+    // Returns the size of the stack
+    size(): number {
+        return this.items.length;
+    }
 
-    constructor() {
-        this.children = {};
-        this.isEndOfWord = false;
+    // Clears the stack
+    clear(): void {
+        this.items = [];
     }
 }
 
-class Trie {
-    root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children[char]) {
-                currentNode.children[char] = new TrieNode();
-            }
-            currentNode = currentNode.children[char];
-        }
-        currentNode.isEndOfWord = true;
-    }
-
-    search(word: string): boolean {
-        const node = this.getNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    startsWith(prefix: string): boolean {
-        return this.getNode(prefix) !== null;
-    }
-
-    private getNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children[char]) {
-                return null;
-            }
-            currentNode = currentNode.children[char];
-        }
-
-        return currentNode;
-    }
-}
-
-// Example Usage:
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("app");
-
-console.log(trie.search("apple")); // true
-console.log(trie.search("app"));   // true
-console.log(trie.search("appl"));  // false
-console.log(trie.startsWith("ap")); // true
-console.log(trie.startsWith("b"));  // false
+// Example usage
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+console.log(stack.peek()); // Outputs: 2
+console.log(stack.pop());  // Outputs: 2
+console.log(stack.size()); // Outputs: 1
