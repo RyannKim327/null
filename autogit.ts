@@ -1,15 +1,8 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("Cannot calculate mean of an empty array.");
-    }
-
-    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / numbers.length;
-    
-    return mean;
-}
-
-// Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+const numbers = [10, 5, 100, 1];
+numbers.sort();
+console.log(numbers); // Output: [1, 10, 100, 5]
+const numbers = [10, 5, 100, 1];
+numbers.sort((a, b) => a - b);  // Ascending order
+console.log(numbers); // Output: [1, 5, 10, 100]
+numbers.sort((a, b) => b - a);
+console.log(numbers); // Output: [100, 10, 5, 1]
