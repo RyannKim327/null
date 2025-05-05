@@ -1,53 +1,17 @@
-class Node {
-    value: string;
-    children: Node[];
+function firstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function depthLimitedSearch(node: Node, target: string, limit: number): boolean {
-    // If the current node's value is the target, return true
-    if (node.value === target) {
-        return true;
-    }
-
-    // If the limit has been reached, return false
-    if (limit <= 0) {
-        return false;
-    }
-
-    // Recursively search in child nodes with the decreased limit
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, target, limit - 1)) {
-            return true;
+    for (const char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // return the first repeated character
         }
+        seenCharacters.add(char); // add the character to the set
     }
-
-    // If the target was not found, return false
-    return false;
+    
+    return null; // return null if there are no repeated characters
 }
 
 // Example usage:
-const root = new Node("A");
-const child1 = new Node("B");
-const child2 = new Node("C");
-const grandchild1 = new Node("D");
-const grandchild2 = new Node("E");
-
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(grandchild1);
-child1.addChild(grandchild2);
-
-const target = "E";
-const limit = 2; // Search up to 2 levels deep
-const found = depthLimitedSearch(root, target, limit);
-
-console.log(`Target ${target} found: ${found}`);
+const inputString = "abca";
+const result = firstRepeatedCharacter(inputString);
+console.log(result); // Output: "a"
