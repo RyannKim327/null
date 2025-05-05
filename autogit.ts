@@ -1,15 +1,36 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[\W_]/g, '').toLowerCase();
-    
-    // Create the reversed version of the normalized string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Compare normalized string with its reversed version
-    return normalizedStr === reversedStr;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
+
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
+    }
+
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
+    }
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
-console.log(isPalindrome("")); // true (an empty string is a palindrome)
+// Example usage:
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
