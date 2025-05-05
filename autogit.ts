@@ -1,27 +1,23 @@
-import axios from 'axios';
-
-interface Post {
-  userId: number;
+interface User {
   id: number;
-  title: string;
-  body: string;
+  name: string;
+  username: string;
+  email: string;
 }
 
-async function fetchPosts(): Promise<void> {
+async function fetchUsers(): Promise<void> {
   try {
-    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-    const posts = response.data;
-
-    posts.forEach(post => {
-      console.log(`Post #${post.id}: ${post.title}`);
+    const response = await fetch('https://jsonplaceholder.typicode.com/users');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const users: User[] = await response.json();
+    users.forEach(user => {
+      console.log(`${user.id}: ${user.name} (${user.email})`);
     });
   } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Axios error:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
-    }
+    console.error('Failed to fetch users:', error);
   }
 }
 
-fetchPosts();
+fetchUsers();
