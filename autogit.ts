@@ -1,58 +1,43 @@
-function buildLPS(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-                // do not increment i here
-            } else {
-                lps[i] = 0;
-                i++;
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Check for division by zero
+        if (arr[high] === arr[low]) {
+            if (arr[low] === target) {
+                return low; // Target found
             }
+            return -1; // Target not found
+        }
+
+        // Estimate the position
+        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+
+        // Check if the estimated position holds the target
+        if (arr[pos] === target) {
+            return pos; // Target found
+        }
+
+        // Adjust the boundaries based on comparison
+        if (arr[pos] < target) {
+            low = pos + 1; // Target is higher, move up
+        } else {
+            high = pos - 1; // Target is lower, move down
         }
     }
 
-    return lps;
-}
-
-function kmpSearch(text: string, pattern: string): number[] {
-    const lps = buildLPS(pattern);
-    const result: number[] = [];
-
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-
-            if (j === pattern.length) {
-                // pattern found at i - j
-                result.push(i - j);
-                j = lps[j - 1];
-            }
-        } else {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result;
+    return -1; // Target not found
 }
 
 // Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const target = 70;
+
+const result = interpolationSearch(arr, target);
+
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log("Element not found");
+}
