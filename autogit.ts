@@ -1,25 +1,52 @@
-function shellSort(arr: number[]): number[] {
-  const n = arr.length;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-  // Start with a big gap, then reduce it
-  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    // Do a gapped insertion sort for this gap size
-    for (let i = gap; i < n; i++) {
-      const temp = arr[i];
-
-      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-      let j = i;
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      // Put temp (the original arr[i]) in its correct location
-      arr[j] = temp;
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
-  }
-
-  return arr;
 }
-const example = [23, 42, 4, 16, 8, 15];
-console.log(shellSort(example)); // Output: [4, 8, 15, 16, 23, 42]
+
+class LinkedList<T> {
+    head: Node<T> | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node to the linked list
+    add(value: T): void {
+        const newNode = new Node(value);
+        if (this.head === null) {
+            this.head = newNode;
+        } else {
+            let current: Node<T> | null = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current: Node<T> | null = this.head;
+
+        while (current) {
+            count++;
+            current = current.next;
+        }
+
+        return count;
+    }
+}
+
+// Example usage
+const list = new LinkedList<number>();
+list.add(1);
+list.add(2);
+list.add(3);
+
+console.log(`Length of the linked list: ${list.length()}`); // Output: Length of the linked list: 3
