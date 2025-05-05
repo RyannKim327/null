@@ -1,37 +1,21 @@
-function findMax(arr: number[]): number {
-    return Math.max(...arr);
-}
+const array = [1, 2, 2, 3, 4, 4, 5];
 
-const numbers = [3, 5, 1, 8, 2];
-const maxNumber = findMax(numbers);
-console.log(maxNumber); // Output: 8
-function findMax(arr: number[]): number {
-    let max = arr[0];
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] > max) {
-            max = arr[i];
-        }
-    }
-    return max;
-}
+const uniqueArray = Array.from(new Set(array));
 
-const numbers = [3, 5, 1, 8, 2];
-const maxNumber = findMax(numbers);
-console.log(maxNumber); // Output: 8
-function findMax(arr: number[]): number {
-    return arr.reduce((max, current) => Math.max(max, current), arr[0]);
-}
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const uniqueArray = [...new Set(array)];
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
+type Item = { id: number; name: string };
 
-const numbers = [3, 5, 1, 8, 2];
-const maxNumber = findMax(numbers);
-console.log(maxNumber); // Output: 8
-function findMax(arr: number[]): number | null {
-    if (arr.length === 0) {
-        return null; // or throw an error, or return undefined
-    }
-    return Math.max(...arr);
-}
+const items: Item[] = [
+  { id: 1, name: 'foo' },
+  { id: 2, name: 'bar' },
+  { id: 1, name: 'baz' },
+];
 
-const numbers: number[] = [];
-const maxNumber = findMax(numbers);
-console.log(maxNumber); // Output: null
+const uniqueItems = Array.from(
+  new Map(items.map(item => [item.id, item])).values()
+);
+
+console.log(uniqueItems);
+// [{ id: 1, name: 'baz' }, { id: 2, name: 'bar' }]
