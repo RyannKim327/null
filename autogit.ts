@@ -1,29 +1,25 @@
-function isSorted(arr: number[]): boolean {
-    for (let i = 1; i < arr.length; i++) {
-        if (arr[i] < arr[i - 1]) {
-            return false;
-        }
-    }
-    return true;
-}
+function shellSort(arr: number[]): number[] {
+  const n = arr.length;
 
-function shuffleArray(arr: number[]): void {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-}
+  // Start with a big gap, then reduce it
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    // Do a gapped insertion sort for this gap size
+    for (let i = gap; i < n; i++) {
+      const temp = arr[i];
 
-function randomSort(arr: number[]): number[] {
-    let shuffledArr = [...arr]; // Create a copy of the array
-    while (!isSorted(shuffledArr)) {
-        shuffleArray(shuffledArr);
-    }
-    return shuffledArr;
-}
+      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+      let j = i;
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
 
-// Example usage:
-const unsortedArray = [5, 3, 8, 4, 2];
-console.log("Unsorted Array:", unsortedArray);
-const sortedArray = randomSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+      // Put temp (the original arr[i]) in its correct location
+      arr[j] = temp;
+    }
+  }
+
+  return arr;
+}
+const example = [23, 42, 4, 16, 8, 15];
+console.log(shellSort(example)); // Output: [4, 8, 15, 16, 23, 42]
