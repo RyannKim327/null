@@ -1,28 +1,22 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+function isPrime(num: number): boolean {
+    // Handle special cases
+    if (num <= 1) return false; // 0 and 1 are not prime
+    if (num === 2) return true; // 2 is prime
+    if (num % 2 === 0) return false; // Exclude even numbers greater than 2
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the minimum is the first element of the unsorted part
-        let minIndex = i;
-
-        // Find the index of the minimum element in the unsorted part
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
-
-        // If the minimum is not the position of i, swap them
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+    // Check for factors from 3 to sqrt(num)
+    const limit = Math.sqrt(num);
+    for (let i = 3; i <= limit; i += 2) {
+        if (num % i === 0) {
+            return false; // Found a factor, not prime
         }
     }
 
-    return arr;
+    return true; // No factors found, is prime
 }
 
 // Example usage:
-const array = [64, 34, 25, 12, 22, 11, 90];
-console.log("Unsorted array:", array);
-const sortedArray = selectionSort(array);
-console.log("Sorted array:", sortedArray);
+console.log(isPrime(11)); // true
+console.log(isPrime(4));  // false
+console.log(isPrime(23)); // true
+console.log(isPrime(1));  // false
