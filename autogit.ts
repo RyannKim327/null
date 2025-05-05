@@ -1,43 +1,129 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class TrieNode {
+    children: { [key: string]: TrieNode };
+    isEndOfWord: boolean;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Check for division by zero
-        if (arr[high] === arr[low]) {
-            if (arr[low] === target) {
-                return low; // Target found
-            }
-            return -1; // Target not found
-        }
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
+}
+class Trie {
+    root: TrieNode;
 
-        // Estimate the position
-        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
-
-        // Check if the estimated position holds the target
-        if (arr[pos] === target) {
-            return pos; // Target found
-        }
-
-        // Adjust the boundaries based on comparison
-        if (arr[pos] < target) {
-            low = pos + 1; // Target is higher, move up
-        } else {
-            high = pos - 1; // Target is lower, move down
-        }
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    return -1; // Target not found
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children[char]) {
+                currentNode.children[char] = new TrieNode();
+            }
+            currentNode = currentNode.children[char];
+        }
+
+        currentNode.isEndOfWord = true;
+    }
+
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        const node = this.getNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    // Check if there is any word in the Trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.getNode(prefix) !== null;
+    }
+
+    // Helper method to get the node representing the last character of the word/prefix
+    private getNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children[char]) {
+                return null;
+            }
+            currentNode = currentNode.children[char];
+        }
+
+        return currentNode;
+    }
+}
+const trie = new Trie();
+
+// Inserting words
+trie.insert("apple");
+trie.insert("app");
+
+// Searching for words
+console.log(trie.search("apple")); // true
+console.log(trie.search("app"));   // true
+console.log(trie.search("appl"));  // false
+console.log(trie.startsWith("ap")); // true
+console.log(trie.startsWith("b"));  // false
+class TrieNode {
+    children: { [key: string]: TrieNode };
+    isEndOfWord: boolean;
+
+    constructor() {
+        this.children = {};
+        this.isEndOfWord = false;
+    }
 }
 
-// Example usage:
-const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
+class Trie {
+    root: TrieNode;
 
-const result = interpolationSearch(arr, target);
+    constructor() {
+        this.root = new TrieNode();
+    }
 
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log("Element not found");
+    insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children[char]) {
+                currentNode.children[char] = new TrieNode();
+            }
+            currentNode = currentNode.children[char];
+        }
+        currentNode.isEndOfWord = true;
+    }
+
+    search(word: string): boolean {
+        const node = this.getNode(word);
+        return node !== null && node.isEndOfWord;
+    }
+
+    startsWith(prefix: string): boolean {
+        return this.getNode(prefix) !== null;
+    }
+
+    private getNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children[char]) {
+                return null;
+            }
+            currentNode = currentNode.children[char];
+        }
+
+        return currentNode;
+    }
 }
+
+// Example Usage:
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("app");
+
+console.log(trie.search("apple")); // true
+console.log(trie.search("app"));   // true
+console.log(trie.search("appl"));  // false
+console.log(trie.startsWith("ap")); // true
+console.log(trie.startsWith("b"));  // false
