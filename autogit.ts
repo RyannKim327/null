@@ -1,11 +1,16 @@
-function countWordOccurrences(text: string, word: string): number {
-  // Create a regex for the exact word, with word boundaries to avoid partial matches
-  const regex = new RegExp(`\\b${word}\\b`, 'gi'); 
-  const matches = text.match(regex);
-  return matches ? matches.length : 0;
-}
+const str = "Hello, world!";
+const substring = "world";
 
-// Example:
-const text = "Hello world, hello universe. Hello everyone!";
-const wordToCount = "hello";
-console.log(countWordOccurrences(text, wordToCount));  // Output: 3
+if (str.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
+}
+const str = "Hello, world!";
+const substring = "world";
+
+if (str.indexOf(substring) !== -1) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
+}
