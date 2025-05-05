@@ -1,66 +1,53 @@
-type Edge = {
-  from: number;
-  to: number;
-  weight: number;
-};
+class Node {
+    value: string;
+    children: Node[];
 
-function bellmanFord(
-  verticesCount: number,
-  edges: Edge[],
-  source: number
-): { distances: number[]; predecessors: (number | null)[] } | null {
-  const distances = Array(verticesCount).fill(Infinity);
-  const predecessors = Array(verticesCount).fill(null);
-
-  distances[source] = 0;
-
-  // Relax edges repeatedly
-  for (let i = 0; i < verticesCount - 1; i++) {
-    let updated = false;
-    for (const edge of edges) {
-      const { from, to, weight } = edge;
-      if (distances[from] !== Infinity && distances[from] + weight < distances[to]) {
-        distances[to] = distances[from] + weight;
-        predecessors[to] = from;
-        updated = true;
-      }
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
     }
-    if (!updated) break; // Early stop if no update
-  }
 
-  // Check for negative weight cycles
-  for (const edge of edges) {
-    const { from, to, weight } = edge;
-    if (distances[from] !== Infinity && distances[from] + weight < distances[to]) {
-      console.error("Graph contains a negative weight cycle");
-      return null; // Negative cycle detected
+    addChild(child: Node) {
+        this.children.push(child);
     }
-  }
+}
 
-  return { distances, predecessors };
+function depthLimitedSearch(node: Node, target: string, limit: number): boolean {
+    // If the current node's value is the target, return true
+    if (node.value === target) {
+        return true;
+    }
+
+    // If the limit has been reached, return false
+    if (limit <= 0) {
+        return false;
+    }
+
+    // Recursively search in child nodes with the decreased limit
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, target, limit - 1)) {
+            return true;
+        }
+    }
+
+    // If the target was not found, return false
+    return false;
 }
 
 // Example usage:
+const root = new Node("A");
+const child1 = new Node("B");
+const child2 = new Node("C");
+const grandchild1 = new Node("D");
+const grandchild2 = new Node("E");
 
-const edges: Edge[] = [
-  { from: 0, to: 1, weight: 6 },
-  { from: 0, to: 2, weight: 7 },
-  { from: 1, to: 2, weight: 8 },
-  { from: 1, to: 3, weight: 5 },
-  { from: 1, to: 4, weight: -4 },
-  { from: 2, to: 3, weight: -3 },
-  { from: 2, to: 4, weight: 9 },
-  { from: 3, to: 1, weight: -2 },
-  { from: 4, to: 0, weight: 2 },
-  { from: 4, to: 3, weight: 7 },
-];
+root.addChild(child1);
+root.addChild(child2);
+child1.addChild(grandchild1);
+child1.addChild(grandchild2);
 
-const verticesCount = 5;
-const source = 0;
+const target = "E";
+const limit = 2; // Search up to 2 levels deep
+const found = depthLimitedSearch(root, target, limit);
 
-const result = bellmanFord(verticesCount, edges, source);
-
-if (result) {
-  console.log("Distances: ", result.distances);
-  console.log("Predecessors: ", result.predecessors);
-}
+console.log(`Target ${target} found: ${found}`);
