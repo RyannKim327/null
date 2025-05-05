@@ -1,21 +1,11 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lowercase
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+function maxSubarraySum(nums: number[]): number {
+  let maxSoFar = nums[0];
+  let currentMax = nums[0];
 
-    // If lengths are different, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
-    }
+  for (let i = 1; i < nums.length; i++) {
+    currentMax = Math.max(nums[i], currentMax + nums[i]);
+    maxSoFar = Math.max(maxSoFar, currentMax);
+  }
 
-    // Sort the characters of each string and compare
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+  return maxSoFar;
 }
-
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-console.log(areAnagrams("Dormitory", "Dirty room")); // true
