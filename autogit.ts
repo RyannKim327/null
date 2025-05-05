@@ -1,47 +1,57 @@
-class Stack<T> {
-    private items: T[] = [];
+type Graph = Map<string, Map<string, number>>; 
+// Map from node to (Map of neighbor -> edge weight)
 
-    // Adds an element to the top of the stack
-    push(item: T): void {
-        this.items.push(item);
+function dijkstra(graph: Graph, start: string): Map<string, number> {
+  const distances = new Map<string, number>();
+  const visited = new Set<string>();
+
+  // Initialize distances to Infinity, except start = 0
+  for (const node of graph.keys()) {
+    distances.set(node, Infinity);
+  }
+  distances.set(start, 0);
+
+  while (visited.size < graph.size) {
+    // Pick the unvisited node with the smallest distance
+    let currentNode: string | null = null;
+    let smallestDistance = Infinity;
+    for (const [node, distance] of distances.entries()) {
+      if (!visited.has(node) && distance < smallestDistance) {
+        smallestDistance = distance;
+        currentNode = node;
+      }
     }
 
-    // Removes and returns the top element of the stack
-    pop(): T | undefined {
-        if (this.isEmpty()) {
-            return undefined; // If the stack is empty, return undefined
-        }
-        return this.items.pop();
+    if (currentNode === null) {
+      // No reachable remaining nodes
+      break;
     }
 
-    // Returns the top element of the stack without removing it
-    peek(): T | undefined {
-        if (this.isEmpty()) {
-            return undefined; // If the stack is empty, return undefined
-        }
-        return this.items[this.items.length - 1];
-    }
+    visited.add(currentNode);
 
-    // Checks if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
+    const neighbors = graph.get(currentNode);
+    if (!neighbors) continue;
 
-    // Returns the size of the stack
-    size(): number {
-        return this.items.length;
-    }
+    for (const [neighbor, weight] of neighbors.entries()) {
+      if (visited.has(neighbor)) continue;
 
-    // Clears the stack
-    clear(): void {
-        this.items = [];
+      const newDist = distances.get(currentNode)! + weight;
+      if (newDist < distances.get(neighbor)!) {
+        distances.set(neighbor, newDist);
+      }
     }
+  }
+
+  return distances;
 }
+const graph: Graph = new Map([
+  ["A", new Map([["B", 5], ["C", 2]])],
+  ["B", new Map([["D", 1]])],
+  ["C", new Map([["B", 8], ["D", 7]])],
+  ["D", new Map([["E", 3]])],
+  ["E", new Map()],
+]);
 
-// Example usage
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-console.log(stack.peek()); // Outputs: 2
-console.log(stack.pop());  // Outputs: 2
-console.log(stack.size()); // Outputs: 1
+const distancesFromA = dijkstra(graph, "A");
+console.log(distancesFromA);
+// Output will be minimum distances from A to all nodes
