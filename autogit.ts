@@ -1,32 +1,27 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+import axios from 'axios';
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === target) return low;
-            return -1;
-        }
-
-        // Estimate the position using interpolation formula
-        const pos =
-            low +
-            Math.floor(
-                ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-            );
-
-        if (arr[pos] === target) {
-            return pos; // Found target
-        } else if (arr[pos] < target) {
-            low = pos + 1; // Target is in upper part
-        } else {
-            high = pos - 1; // Target is in lower part
-        }
-    }
-    return -1; // Target not found
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
-const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90];
-const target = 70;
 
-const index = interpolationSearch(arr, target);
-console.log(`Found target at index: ${index}`);  // Output: Found target at index: 6
+async function fetchPosts(): Promise<void> {
+  try {
+    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
+    const posts = response.data;
+
+    posts.forEach(post => {
+      console.log(`Post #${post.id}: ${post.title}`);
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
+}
+
+fetchPosts();
