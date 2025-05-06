@@ -1,31 +1,21 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
-    let gap = Math.floor(n / 2); // Start with a big gap, then reduce the gap
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings by converting them to lowercase and removing spaces
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    // Start with a big gap, then reduce the gap
-    while (gap > 0) {
-        // Do a gapped insertion sort for this gap size.
-        for (let i = gap; i < n; i++) {
-            // Save the value to be inserted
-            const temp = arr[i];
-            let j = i;
-
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
-        gap = Math.floor(gap / 2); // Reduce the gap
+    // Check if the lengths are the same; if not, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    return arr;
+    // Sort the characters in each string and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
-const array = [12, 34, 54, 2, 3];
-const sortedArray = shellSort(array);
-console.log(sortedArray); // Output: [2, 3, 12, 34, 54]
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+console.log(areAnagrams("anagram", "nagaram")); // true
