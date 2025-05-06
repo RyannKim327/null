@@ -1,38 +1,35 @@
-function getDigit(num: number, place: number): number {
-  // Returns the digit at 'place' (0-based from right)
-  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+function secondLargest(arr: number[]): number | undefined {
+  if (arr.length < 2) return undefined; // Not enough elements
 
-function digitCount(num: number): number {
-  // Count digits in the number
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+  // Sort array in descending order
+  const sorted = [...arr].sort((a, b) => b - a);
 
-function mostDigits(nums: number[]): number {
-  // Find the max number of digits in the array
-  let maxDigits = 0;
-  for (const num of nums) {
-    maxDigits = Math.max(maxDigits, digitCount(num));
-  }
-  return maxDigits;
-}
-
-function radixSort(nums: number[]): number[] {
-  const maxDigitCount = mostDigits(nums);
-  for (let k = 0; k < maxDigitCount; k++) {
-    // Create buckets for each digit 0-9
-    const digitBuckets: number[][] = Array.from({ length: 10 }, () => []);
-    for (const num of nums) {
-      const digit = getDigit(num, k);
-      digitBuckets[digit].push(num);
+  // Find the first element less than the largest (to handle duplicates)
+  const largest = sorted[0];
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i] < largest) {
+      return sorted[i];
     }
-    // Flatten the buckets back into nums array
-    nums = [].concat(...digitBuckets);
   }
-  return nums;
-}
 
-// Example usage
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+  return undefined; // All elements are equal, no second largest
+}
+const numbers = [3, 5, 1, 2, 5, 5];
+console.log(secondLargest(numbers)); // Output: 3
+function secondLargest(arr: number[]): number | undefined {
+  if (arr.length < 2) return undefined;
+
+  let largest = -Infinity;
+  let second = -Infinity;
+
+  for (const num of arr) {
+    if (num > largest) {
+      second = largest;
+      largest = num;
+    } else if (num > second && num < largest) {
+      second = num;
+    }
+  }
+
+  return second === -Infinity ? undefined : second;
+}
