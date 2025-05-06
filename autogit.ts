@@ -1,23 +1,26 @@
-function binarySearchRecursive(
-  arr: number[], 
-  target: number, 
-  left: number = 0, 
-  right: number = arr.length - 1
-): number {
-  if (left > right) {
-    return -1; // Target not found
-  }
+function insertionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-  const mid = Math.floor((left + right) / 2);
+    // Loop from the second element to the end of the array
+    for (let i = 1; i < n; i++) {
+        const current = arr[i]; // Current element to be compared
+        let j = i - 1;
 
-  if (arr[mid] === target) {
-    return mid;
-  } else if (arr[mid] > target) {
-    return binarySearchRecursive(arr, target, left, mid - 1);
-  } else {
-    return binarySearchRecursive(arr, target, mid + 1, right);
-  }
+        // Move elements of arr[0..i-1], that are greater than current,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > current) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+
+        // Place the current element at its correct position
+        arr[j + 1] = current;
+    }
+
+    return arr; // return the sorted array
 }
-const sortedArray = [1, 3, 5, 7, 9, 11];
-const index = binarySearchRecursive(sortedArray, 7);
-console.log(index); // Output: 3
+
+// Example usage
+const unsortedArray = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
