@@ -1,22 +1,21 @@
-function firstNonRepeatingChar(s: string): string | null {
-  const charCount: Record<string, number> = {};
+function insertionSort(arr: number[]): number[] {
+    // Traverse from the second element to the end of the array
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i]; // The element to be inserted
+        let j = i - 1; // Start comparing with the previous element
 
-  // First pass: count characters
-  for (const char of s) {
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-
-  // Second pass: find first character with count 1
-  for (const char of s) {
-    if (charCount[char] === 1) {
-      return char;
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j]; // Shift element to the right
+            j--; // Move to the next element on the left
+        }
+        arr[j + 1] = key; // Insert the key at its correct position
     }
-  }
-
-  // If no unique character found
-  return null;
+    return arr; // Return the sorted array
 }
 
-// Example usage:
-console.log(firstNonRepeatingChar("swiss")); // Output: "w"
-console.log(firstNonRepeatingChar("aabbcc")); // Output: null
+// Example usage
+const unsortedArray = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
