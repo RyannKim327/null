@@ -1,22 +1,42 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null = null;
+class Stack<T> {
+  private items: T[] = [];
 
-  constructor(value: T) {
-    this.value = value;
-  }
-}
-
-function findMiddle<T>(head: ListNode<T> | null): ListNode<T> | null {
-  if (!head) return null;
-
-  let slow: ListNode<T> | null = head;
-  let fast: ListNode<T> | null = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow!.next;
-    fast = fast.next.next;
+  // Add an element to the top of the stack
+  push(element: T): void {
+    this.items.push(element);
   }
 
-  return slow;
+  // Remove and return the top element of the stack
+  pop(): T | undefined {
+    return this.items.pop();
+  }
+
+  // Peek at the top element without removing it
+  peek(): T | undefined {
+    return this.items[this.items.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty(): boolean {
+    return this.items.length === 0;
+  }
+
+  // Get the size of the stack
+  size(): number {
+    return this.items.length;
+  }
+
+  // Clear the stack
+  clear(): void {
+    this.items = [];
+  }
 }
+const stack = new Stack<number>();
+stack.push(10);
+stack.push(20);
+console.log(stack.peek());  // 20
+console.log(stack.pop());   // 20
+console.log(stack.size());  // 1
+console.log(stack.isEmpty()); // false
+stack.clear();
+console.log(stack.isEmpty()); // true
