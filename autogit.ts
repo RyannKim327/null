@@ -1,13 +1,36 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  // Quick length check
-  if (str1.length !== str2.length) return false;
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    
+    // Start with an initial gap, reducing it to 1 at the end
+    let gap = Math.floor(n / 2);
 
-  // Normalize strings: lowercase and remove non-alphabetic characters if needed
-  const normalize = (str: string) => str.toLowerCase().split('').sort().join('');
+    while (gap > 0) {
+        // Perform a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be inserted
+            const temp = arr[i];
+            let j = i;
 
-  return normalize(str1) === normalize(str2);
+            // Shift earlier gap-sorted elements up until the correct location for temp is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            // Put temp in its correct location
+            arr[j] = temp;
+        }
+        
+        // Reduce the gap for the next iteration
+        gap = Math.floor(gap / 2);
+    }
+
+    return arr;
 }
 
-// Example usage:
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world'));   // false
+// Example usage
+const arr = [12, 34, 54, 2, 3];
+console.log("Original array:", arr);
+console.log("Sorted array:", shellSort(arr));
+Original array: [12, 34, 54, 2, 3]
+Sorted array: [2, 3, 12, 34, 54]
