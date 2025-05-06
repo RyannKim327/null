@@ -1,76 +1,54 @@
-type Graph = Map<number, number[]>;
+function fibonacciSearch(arr: number[], target: number): number {
+  const n = arr.length;
 
-class TarjanSCC {
-  private index: number = 0;
-  private stack: number[] = [];
-  private onStack: Set<number> = new Set();
-  private indexes: Map<number, number> = new Map();
-  private lowlinks: Map<number, number> = new Map();
-  private sccs: number[][] = [];
+  // Initialize Fibonacci numbers
+  let fibMMm2 = 0; // (m-2)'th Fibonacci number
+  let fibMMm1 = 1; // (m-1)'th Fibonacci number
+  let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci number
 
-  constructor(private graph: Graph) {}
-
-  public run(): number[][] {
-    for (const node of this.graph.keys()) {
-      if (!this.indexes.has(node)) {
-        this.strongConnect(node);
-      }
-    }
-    return this.sccs;
+  // fibM is going to store the smallest Fibonacci number greater or equal to n
+  while (fibM < n) {
+    fibMMm2 = fibMMm1;
+    fibMMm1 = fibM;
+    fibM = fibMMm2 + fibMMm1;
   }
 
-  private strongConnect(node: number) {
-    this.indexes.set(node, this.index);
-    this.lowlinks.set(node, this.index);
-    this.index += 1;
-    this.stack.push(node);
-    this.onStack.add(node);
+  // Marks the eliminated range from front
+  let offset = -1;
 
-    const neighbors = this.graph.get(node) || [];
-    for (const neighbor of neighbors) {
-      if (!this.indexes.has(neighbor)) {
-        // neighbor has not yet been visited; recurse on it
-        this.strongConnect(neighbor);
-        this.lowlinks.set(
-          node,
-          Math.min(this.lowlinks.get(node)!, this.lowlinks.get(neighbor)!)
-        );
-      } else if (this.onStack.has(neighbor)) {
-        // neighbor is in stack and hence in the current SCC
-        this.lowlinks.set(
-          node,
-          Math.min(this.lowlinks.get(node)!, this.indexes.get(neighbor)!)
-        );
-      }
-    }
+  while (fibM > 1) {
+    // Check if fibMMm2 is a valid location
+    let i = Math.min(offset + fibMMm2, n - 1);
 
-    // If node is a root node, pop the stack and generate an SCC
-    if (this.lowlinks.get(node) === this.indexes.get(node)) {
-      const scc: number[] = [];
-      let w: number;
-      do {
-        w = this.stack.pop()!;
-        this.onStack.delete(w);
-        scc.push(w);
-      } while (w !== node);
-      this.sccs.push(scc);
+    if (arr[i] < target) {
+      // Move forward in array, cut off subarray from offset to i
+      fibM = fibMMm1;
+      fibMMm1 = fibMMm2;
+      fibMMm2 = fibM - fibMMm1;
+      offset = i;
+    } else if (arr[i] > target) {
+      // Move backward in array, cut off subarray after i+1
+      fibM = fibMMm2;
+      fibMMm1 = fibMMm1 - fibMMm2;
+      fibMMm2 = fibM - fibMMm1;
+    } else {
+      // Found target
+      return i;
     }
   }
+
+  // If last element is target
+  if (fibMMm1 && arr[offset + 1] === target) {
+    return offset + 1;
+  }
+
+  // Target not found
+  return -1;
 }
 
 // Example usage:
+const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const target = 85;
+const index = fibonacciSearch(sortedArray, target);
 
-const graph: Graph = new Map([
-  [1, [2]],
-  [2, [3]],
-  [3, [1, 4]],
-  [4, [5]],
-  [5, [6, 7]],
-  [6, [4, 8]],
-  [7, [8]],
-  [8, []],
-]);
-
-const tarjan = new TarjanSCC(graph);
-const stronglyConnectedComponents = tarjan.run();
-console.log(stronglyConnectedComponents);
+console.log(index); // Output: 8
