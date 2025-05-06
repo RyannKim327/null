@@ -1,57 +1,57 @@
-function kmpSearch(text: string, pattern: string): number[] {
-  const lps = buildLPS(pattern);
-  const result: number[] = [];
+type Graph = Map<string, Map<string, number>>;
 
-  let i = 0; // index for text
-  let j = 0; // index for pattern
+class PriorityQueue<T> {
+  private elements: {item: T; priority: number}[] = [];
 
-  while (i < text.length) {
-    if (pattern[j] === text[i]) {
-      i++;
-      j++;
-    }
-
-    if (j === pattern.length) {
-      // pattern found at index i - j
-      result.push(i - j);
-      j = lps[j - 1];
-    } else if (i < text.length && pattern[j] !== text[i]) {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
-    }
+  enqueue(item: T, priority: number) {
+    this.elements.push({item, priority});
+    this.elements.sort((a, b) => a.priority - b.priority);
   }
 
-  return result;
+  dequeue(): T | undefined {
+    return this.elements.shift()?.item;
+  }
+
+  isEmpty(): boolean {
+    return this.elements.length === 0;
+  }
 }
 
-function buildLPS(pattern: string): number[] {
-  const lps = new Array(pattern.length).fill(0);
-  let length = 0; // length of the previous longest prefix suffix
-  let i = 1;
+function dijkstra(graph: Graph, start: string): Map<string, number> {
+  const distances = new Map<string, number>();
+  const pq = new PriorityQueue<string>();
 
-  while (i < pattern.length) {
-    if (pattern[i] === pattern[length]) {
-      length++;
-      lps[i] = length;
-      i++;
-    } else {
-      if (length !== 0) {
-        length = lps[length - 1];
-      } else {
-        lps[i] = 0;
-        i++;
+  graph.forEach((_, node) => distances.set(node, Infinity));
+  distances.set(start, 0);
+  pq.enqueue(start, 0);
+
+  while (!pq.isEmpty()) {
+    const current = pq.dequeue()!;
+    const currentDistance = distances.get(current)!;
+
+    const neighbors = graph.get(current);
+    if (!neighbors) continue;
+
+    neighbors.forEach((weight, neighbor) => {
+      const distanceThroughCurrent = currentDistance + weight;
+      if (distanceThroughCurrent < distances.get(neighbor)!) {
+        distances.set(neighbor, distanceThroughCurrent);
+        pq.enqueue(neighbor, distanceThroughCurrent);
       }
-    }
+    });
   }
 
-  return lps;
+  return distances;
 }
 
 // Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+const graph: Graph = new Map([
+  ['A', new Map([['B', 1], ['C', 4]])],
+  ['B', new Map([['C', 2], ['D', 5]])],
+  ['C', new Map([['D', 1]])],
+  ['D', new Map()],
+]);
+
+const shortestPaths = dijkstra(graph, 'A');
+console.log(shortestPaths);
+// Output distances from A: Map { 'A' => 0, 'B' => 1, 'C' => 3, 'D' => 4 }
