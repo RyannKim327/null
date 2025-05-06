@@ -1,7 +1,19 @@
-const arr = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArr = Array.from(new Set(arr));
-console.log(uniqueArr); // [1, 2, 3, 4, 5]
-const uniqueArr = [...new Set(arr)];
-const arr = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
-console.log(uniqueArr); // [1, 2, 3, 4, 5]
+import * as readline from 'readline';
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question('What’s your name? ', (name) => {
+  console.log(`Hello, ${name}! Welcome to TypeScript.`);
+  rl.question('How old are you? ', (age) => {
+    const ageNum = Number(age);
+    if (isNaN(ageNum)) {
+      console.log('That doesn’t look like a valid number.');
+    } else {
+      console.log(`Great! You’re ${ageNum} years old.`);
+    }
+    rl.close();
+  });
+});
