@@ -1,8 +1,19 @@
-function getRandomInt(min: number, max: number): number {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function factorial(n: number): number {
+  if (n < 0) {
+    throw new Error('Factorial is not defined for negative numbers');
+  }
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
 }
-function getRandomFloat(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
+
+// Example usage:
+console.log(factorial(5)); // Output: 120
+function factorial(n: number): number {
+  if (n < 0) {
+    throw new Error('Factorial is not defined for negative numbers');
+  }
+  return n <= 1 ? 1 : n * factorial(n - 1);
 }
