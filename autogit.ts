@@ -1,29 +1,32 @@
 class ListNode<T> {
   value: T;
-  next: ListNode<T> | null = null;
+  next: ListNode<T> | null;
 
-  constructor(value: T) {
+  constructor(value: T, next: ListNode<T> | null = null) {
     this.value = value;
+    this.next = next;
   }
 }
 
 function findMiddle<T>(head: ListNode<T> | null): ListNode<T> | null {
-  let slow = head;
-  let fast = head;
+  if (!head) return null;
+
+  let slow: ListNode<T> | null = head;
+  let fast: ListNode<T> | null = head;
 
   while (fast !== null && fast.next !== null) {
-    slow = slow!.next;         // Move slow by 1
-    fast = fast.next.next;     // Move fast by 2
+    slow = slow!.next;
+    fast = fast.next.next;
   }
 
-  // When fast reaches the end, slow is at the middle
   return slow;
 }
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+// Constructing a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const node5 = new ListNode(5);
+const node4 = new ListNode(4, node5);
+const node3 = new ListNode(3, node4);
+const node2 = new ListNode(2, node3);
+const head = new ListNode(1, node2);
 
-const middleNode = findMiddle(head);
-console.log(middleNode?.value);  // Outputs 3
+const middle = findMiddle(head);
+console.log(middle?.value); // Output: 3
