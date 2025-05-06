@@ -1,37 +1,55 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-    while (left <= right) {
-        // Calculate the mid index
-        const mid = Math.floor((left + right) / 2);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+                // don't increment i here
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    return lps;
+}
 
-        // Check if the target is at mid
-        if (arr[mid] === target) {
-            return mid; // Target found, return the index
-        } 
-        // If target is greater, ignore the left half
-        else if (arr[mid] < target) {
-            left = mid + 1;
-        } 
-        // If target is smaller, ignore the right half
-        else {
-            right = mid - 1;
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
         }
     }
 
-    // Target is not present in the array
-    return -1; 
+    return result;
 }
 
-// Example usage
-const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
-const target = 7;
-
-const result = binarySearch(sortedArray, target);
-
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found');
-}
+// Example usage:
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = kmpSearch(text, pattern);
+console.log(matches); // Output: [10]
