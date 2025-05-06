@@ -1,9 +1,5 @@
-import cron from 'node-cron';
-
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-  console.log('Running task at', new Date().toLocaleTimeString());
-});
-
-// Start the scheduled task
-task.start();
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const uniqueArray = [...new Set(array)];
+const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
