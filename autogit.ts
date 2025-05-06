@@ -1,13 +1,11 @@
 function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings by removing spaces and converting to lowercase
-    const normalize = (str: string) => 
-        str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
-    
-    return normalize(str1) === normalize(str2);
+  // Normalize the strings: remove non-letter characters, lowercase
+  const normalize = (str: string) =>
+    str.toLowerCase().replace(/[^a-z0-9]/g, '').split('').sort().join('');
+
+  return normalize(str1) === normalize(str2);
 }
 
-// Example Usage:
-const string1 = "listen";
-const string2 = "silent";
-
-console.log(areAnagrams(string1, string2)); // Output: true
+// Example usage:
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'world'));   // false
