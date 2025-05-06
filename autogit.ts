@@ -1,55 +1,29 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+function selectionSort(arr: number[]): number[] {
+    const n: number = arr.length;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-                // don't increment i here
-            } else {
-                lps[i] = 0;
-                i++;
+    // Traverse through all array elements
+    for (let i = 0; i < n - 1; i++) {
+        // Find the index of the minimum element in the remaining unsorted array
+        let minIndex: number = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;  // Update minIndex if a smaller element is found
             }
         }
-    }
-    return lps;
-}
 
-function kmpSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            const temp: number = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
         }
     }
 
-    return result;
+    return arr;
 }
 
-// Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const matches = kmpSearch(text, pattern);
-console.log(matches); // Output: [10]
+// Example usage
+const arr: number[] = [29, 10, 14, 37, 13];
+console.log("Unsorted array:", arr);
+const sortedArr: number[] = selectionSort(arr);
+console.log("Sorted array:", sortedArr);
