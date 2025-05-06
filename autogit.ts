@@ -1,12 +1,29 @@
-// Define an array of integers
-let numbers: number[] = [5, 3, 8, 1, 2, 7];
+type Graph = { [node: string]: string[] };
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+function dfs(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+  if (visited.has(start)) return;  // Already visited
 
-console.log("Sorted array (ascending):", numbers);
+  console.log(start);  // Process the node (e.g., print it)
+  visited.add(start);
 
-// If you want to sort in descending order, you can reverse the comparison
-numbers.sort((a, b) => b - a);
+  for (const neighbor of graph[start] || []) {
+    dfs(graph, neighbor, visited);
+  }
+}
+const graph: Graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
 
-console.log("Sorted array (descending):", numbers);
+dfs(graph, "A");
+// Output:
+// A
+// B
+// D
+// E
+// F
+// C
