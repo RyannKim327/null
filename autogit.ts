@@ -1,14 +1,23 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false; // 0 and 1 are not prime
-  if (num <= 3) return true;  // 2 and 3 are prime
-
-  if (num % 2 === 0 || num % 3 === 0) return false;
-
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) {
-      return false;
-    }
+function binarySearchRecursive(
+  arr: number[], 
+  target: number, 
+  left: number = 0, 
+  right: number = arr.length - 1
+): number {
+  if (left > right) {
+    return -1; // Target not found
   }
 
-  return true;
+  const mid = Math.floor((left + right) / 2);
+
+  if (arr[mid] === target) {
+    return mid;
+  } else if (arr[mid] > target) {
+    return binarySearchRecursive(arr, target, left, mid - 1);
+  } else {
+    return binarySearchRecursive(arr, target, mid + 1, right);
+  }
 }
+const sortedArray = [1, 3, 5, 7, 9, 11];
+const index = binarySearchRecursive(sortedArray, 7);
+console.log(index); // Output: 3
