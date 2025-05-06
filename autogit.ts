@@ -1,10 +1,18 @@
-function reverseWords(input: string): string {
-    return input.split(' ') // Split the string into an array of words
-                .reverse() // Reverse the array
-                .join(' '); // Join the array back into a string
-}
+function insertionSort(arr: number[]): number[] {
+  // Make a copy to avoid mutating the original array
+  const sorted = [...arr];
 
-// Example usage:
-const originalString = "Hello world from TypeScript";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "TypeScript from world Hello"
+  for (let i = 1; i < sorted.length; i++) {
+    let current = sorted[i];
+    let j = i - 1;
+
+    // Move elements of sorted[0..i-1] that are greater than current, one position ahead
+    while (j >= 0 && sorted[j] > current) {
+      sorted[j + 1] = sorted[j];
+      j--;
+    }
+    sorted[j + 1] = current;
+  }
+
+  return sorted;
+}
