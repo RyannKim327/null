@@ -1,54 +1,57 @@
-function fibonacciSearch(arr: number[], target: number): number {
-  const n = arr.length;
+function kmpSearch(text: string, pattern: string): number[] {
+  const lps = buildLPS(pattern);
+  const result: number[] = [];
 
-  // Initialize Fibonacci numbers
-  let fibMMm2 = 0; // (m-2)'th Fibonacci number
-  let fibMMm1 = 1; // (m-1)'th Fibonacci number
-  let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci number
+  let i = 0; // index for text
+  let j = 0; // index for pattern
 
-  // fibM is going to store the smallest Fibonacci number greater or equal to n
-  while (fibM < n) {
-    fibMMm2 = fibMMm1;
-    fibMMm1 = fibM;
-    fibM = fibMMm2 + fibMMm1;
-  }
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
 
-  // Marks the eliminated range from front
-  let offset = -1;
-
-  while (fibM > 1) {
-    // Check if fibMMm2 is a valid location
-    let i = Math.min(offset + fibMMm2, n - 1);
-
-    if (arr[i] < target) {
-      // Move forward in array, cut off subarray from offset to i
-      fibM = fibMMm1;
-      fibMMm1 = fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-      offset = i;
-    } else if (arr[i] > target) {
-      // Move backward in array, cut off subarray after i+1
-      fibM = fibMMm2;
-      fibMMm1 = fibMMm1 - fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-    } else {
-      // Found target
-      return i;
+    if (j === pattern.length) {
+      // pattern found at index i - j
+      result.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
     }
   }
 
-  // If last element is target
-  if (fibMMm1 && arr[offset + 1] === target) {
-    return offset + 1;
+  return result;
+}
+
+function buildLPS(pattern: string): number[] {
+  const lps = new Array(pattern.length).fill(0);
+  let length = 0; // length of the previous longest prefix suffix
+  let i = 1;
+
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[length]) {
+      length++;
+      lps[i] = length;
+      i++;
+    } else {
+      if (length !== 0) {
+        length = lps[length - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
+    }
   }
 
-  // Target not found
-  return -1;
+  return lps;
 }
 
 // Example usage:
-const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const target = 85;
-const index = fibonacciSearch(sortedArray, target);
-
-console.log(index); // Output: 8
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
