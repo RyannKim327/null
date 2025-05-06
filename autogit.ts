@@ -1,13 +1,19 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+function firstNonRepeatingChar(str: string): string | null {
+  const charCount: Record<string, number> = {};
 
-const commonElements = array1.filter(element => array2.includes(element));
+  // Count occurrences of each character
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
 
-console.log(commonElements); // Output: [4, 5]
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+  // Find the first character with a count of 1
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
 
-const set2 = new Set(array2);
-const commonElements = array1.filter(element => set2.has(element));
-
-console.log(commonElements); // Output: [4, 5]
+  return null; // no unique character found
+}
+console.log(firstNonRepeatingChar("swiss")); // Outputs: w
+console.log(firstNonRepeatingChar("aabbcc")); // Outputs: null
