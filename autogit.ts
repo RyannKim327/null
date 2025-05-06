@@ -1,54 +1,72 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class TarjanSCC {
+  private graph: number[][];
+  private index: number;
+  private stack: number[];
+  private onStack: boolean[];
+  private indexes: number[];
+  private lowLinks: number[];
+  private sccs: number[][];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+  constructor(graph: number[][]) {
+    this.graph = graph;
+    const n = graph.length;
+    this.index = 0;
+    this.stack = [];
+    this.onStack = new Array(n).fill(false);
+    this.indexes = new Array(n).fill(-1);
+    this.lowLinks = new Array(n).fill(-1);
+    this.sccs = [];
+  }
+
+  public getSCCs(): number[][] {
+    for (let v = 0; v < this.graph.length; v++) {
+      if (this.indexes[v] === -1) {
+        this.strongConnect(v);
+      }
     }
+    return this.sccs;
+  }
+
+  private strongConnect(v: number): void {
+    this.indexes[v] = this.index;
+    this.lowLinks[v] = this.index;
+    this.index++;
+    this.stack.push(v);
+    this.onStack[v] = true;
+
+    for (const w of this.graph[v]) {
+      if (this.indexes[w] === -1) {
+        this.strongConnect(w);
+        this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
+      } else if (this.onStack[w]) {
+        this.lowLinks[v] = Math.min(this.lowLinks[v], this.indexes[w]);
+      }
+    }
+
+    // If v is a root node, pop the stack and generate an SCC
+    if (this.lowLinks[v] === this.indexes[v]) {
+      const scc: number[] = [];
+      let w: number;
+      do {
+        w = this.stack.pop()!;
+        this.onStack[w] = false;
+        scc.push(w);
+      } while (w !== v);
+      this.sccs.push(scc);
+    }
+  }
 }
+// Graph represented as adjacency list
+// Index represents the node, array at index are its neighbors
+const graph = [
+  [1],    // 0 -> 1
+  [2],    // 1 -> 2
+  [0, 3], // 2 -> 0, 3
+  [4],    // 3 -> 4
+  [],     // 4
+];
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // Empty list or single node is a palindrome
-    }
-
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-    while (fast && fast.next) {
-        slow = slow!.next; // Move slow by 1
-        fast = fast.next.next; // Move fast by 2
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let curr: ListNode | null = slow;
-    while (curr) {
-        const nextTemp = curr.next; // Store next node
-        curr.next = prev; // Reverse the direction
-        prev = curr; // Move prev to current node
-        curr = nextTemp; // Move to the next node
-    }
-
-    // Step 3: Compare the first half and the reversed second half
-    let firstHalf: ListNode | null = head;
-    let secondHalf: ListNode | null = prev; // Start of the reversed second half
-    while (secondHalf) {
-        if (firstHalf!.value !== secondHalf.value) {
-            return false; // Not a palindrome
-        }
-        firstHalf = firstHalf!.next;
-        secondHalf = secondHalf.next;
-    }
-
-    return true; // Is a palindrome
-}
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(head)); // Output: true
+const tarjan = new TarjanSCC(graph);
+const sccs = tarjan.getSCCs();
+console.log(sccs);
+// Output may be something like: [[4], [3], [0, 2, 1]]
