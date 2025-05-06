@@ -1,58 +1,76 @@
-class Graph {
-  private adjList: Map<string, string[]>;
+type Graph = Map<number, number[]>;
 
-  constructor() {
-    this.adjList = new Map();
-  }
+class TarjanSCC {
+  private index: number = 0;
+  private stack: number[] = [];
+  private onStack: Set<number> = new Set();
+  private indexes: Map<number, number> = new Map();
+  private lowlinks: Map<number, number> = new Map();
+  private sccs: number[][] = [];
 
-  // Add a vertex to the graph
-  addVertex(vertex: string): void {
-    if (!this.adjList.has(vertex)) {
-      this.adjList.set(vertex, []);
+  constructor(private graph: Graph) {}
+
+  public run(): number[][] {
+    for (const node of this.graph.keys()) {
+      if (!this.indexes.has(node)) {
+        this.strongConnect(node);
+      }
     }
+    return this.sccs;
   }
 
-  // Add an edge to the graph
-  addEdge(vertex1: string, vertex2: string): void {
-    this.addVertex(vertex1);
-    this.addVertex(vertex2);
-    this.adjList.get(vertex1)!.push(vertex2);
-    this.adjList.get(vertex2)!.push(vertex1); // For undirected graph
-  }
+  private strongConnect(node: number) {
+    this.indexes.set(node, this.index);
+    this.lowlinks.set(node, this.index);
+    this.index += 1;
+    this.stack.push(node);
+    this.onStack.add(node);
 
-  // Implement BFS
-  bfs(startVertex: string): string[] {
-    let visited: Set<string> = new Set();
-    let queue: string[] = [];
-    let result: string[] = [];
-
-    visited.add(startVertex);
-    queue.push(startVertex);
-
-    while (queue.length > 0) {
-      const vertex = queue.shift()!;
-      result.push(vertex);
-
-      const neighbors = this.adjList.get(vertex) || [];
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor);
-          queue.push(neighbor);
-        }
+    const neighbors = this.graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      if (!this.indexes.has(neighbor)) {
+        // neighbor has not yet been visited; recurse on it
+        this.strongConnect(neighbor);
+        this.lowlinks.set(
+          node,
+          Math.min(this.lowlinks.get(node)!, this.lowlinks.get(neighbor)!)
+        );
+      } else if (this.onStack.has(neighbor)) {
+        // neighbor is in stack and hence in the current SCC
+        this.lowlinks.set(
+          node,
+          Math.min(this.lowlinks.get(node)!, this.indexes.get(neighbor)!)
+        );
       }
     }
 
-    return result;
+    // If node is a root node, pop the stack and generate an SCC
+    if (this.lowlinks.get(node) === this.indexes.get(node)) {
+      const scc: number[] = [];
+      let w: number;
+      do {
+        w = this.stack.pop()!;
+        this.onStack.delete(w);
+        scc.push(w);
+      } while (w !== node);
+      this.sccs.push(scc);
+    }
   }
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addEdge('A', 'B');
-graph.addEdge('A', 'C');
-graph.addEdge('B', 'D');
-graph.addEdge('C', 'E');
-graph.addEdge('D', 'F');
 
-const bfsResult = graph.bfs('A');
-console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+const graph: Graph = new Map([
+  [1, [2]],
+  [2, [3]],
+  [3, [1, 4]],
+  [4, [5]],
+  [5, [6, 7]],
+  [6, [4, 8]],
+  [7, [8]],
+  [8, []],
+]);
+
+const tarjan = new TarjanSCC(graph);
+const stronglyConnectedComponents = tarjan.run();
+console.log(stronglyConnectedComponents);
