@@ -1,14 +1,35 @@
-function firstRepeatedChar(str: string): string | null {
-  const seen = new Set<string>();
-  for (const char of str) {
-    if (seen.has(char)) {
-      return char;
+function topologicalSort(graph: Map<string, string[]>): string[] {
+  const visited = new Set<string>();
+  const stack: string[] = [];
+
+  function dfs(node: string) {
+    if (visited.has(node)) return;
+    visited.add(node);
+    const neighbors = graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      dfs(neighbor);
     }
-    seen.add(char);
+    stack.push(node);
   }
-  return null; // no repeated character found
+
+  for (const node of graph.keys()) {
+    if (!visited.has(node)) {
+      dfs(node);
+    }
+  }
+
+  return stack.reverse(); // reverse to get the correct order
 }
 
-// Example:
-console.log(firstRepeatedChar("swiss")); // Output: "s"
-console.log(firstRepeatedChar("abcdef")); // Output: null
+// Example usage:
+const graph = new Map<string, string[]>([
+  ['5', ['2', '0']],
+  ['4', ['0', '1']],
+  ['2', ['3']],
+  ['3', ['1']],
+  ['0', []],
+  ['1', []],
+]);
+
+const order = topologicalSort(graph);
+console.log(order); // Possible output: ['4', '5', '2', '3', '1', '0']
