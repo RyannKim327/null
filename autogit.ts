@@ -1,25 +1,31 @@
-class ListNode {
-  value: any;
-  next: ListNode | null;
+function interpolationSearch(arr: number[], target: number): number {
+  let low = 0;
+  let high = arr.length - 1;
 
-  constructor(value: any, next: ListNode | null = null) {
-    this.value = value;
-    this.next = next;
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    // Avoid division by zero
+    if (arr[high] === arr[low]) {
+      if (arr[low] === target) {
+        return low;
+      }
+      break;
+    }
+
+    // Estimate the position
+    const pos = low + Math.floor(
+      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+    );
+
+    if (arr[pos] === target) {
+      return pos;
+    }
+
+    if (arr[pos] < target) {
+      low = pos + 1;
+    } else {
+      high = pos - 1;
+    }
   }
+
+  return -1; // Not found
 }
-function getLinkedListLength(head: ListNode | null): number {
-  let count = 0;
-  let current = head;
-
-  while (current !== null) {
-    count++;
-    current = current.next;
-  }
-
-  return count;
-}
-const node3 = new ListNode(3);
-const node2 = new ListNode(2, node3);
-const node1 = new ListNode(1, node2);
-
-console.log(getLinkedListLength(node1)); // 3
