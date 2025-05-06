@@ -1,19 +1,24 @@
-function factorial(n: number): number {
-  if (n < 0) {
-    throw new Error('Factorial is not defined for negative numbers');
-  }
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
-}
+function maxSubArray(nums: number[]): { maxSum: number; start: number; end: number } {
+  let maxSum = nums[0];
+  let currentSum = 0;
+  let start = 0;
+  let tempStart = 0;
+  let end = 0;
 
-// Example usage:
-console.log(factorial(5)); // Output: 120
-function factorial(n: number): number {
-  if (n < 0) {
-    throw new Error('Factorial is not defined for negative numbers');
+  for (let i = 0; i < nums.length; i++) {
+    currentSum += nums[i];
+
+    if (currentSum > maxSum) {
+      maxSum = currentSum;
+      start = tempStart;
+      end = i;
+    }
+
+    if (currentSum < 0) {
+      currentSum = 0;
+      tempStart = i + 1;
+    }
   }
-  return n <= 1 ? 1 : n * factorial(n - 1);
+
+  return { maxSum, start, end };
 }
