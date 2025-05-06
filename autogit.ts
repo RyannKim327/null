@@ -1,23 +1,20 @@
-function factorial(n: number): number {
-  if (n < 0) {
-    throw new Error("Factorial is not defined for negative numbers");
+function gnomeSort(arr: number[]): number[] {
+  let i = 1;
+  while (i < arr.length) {
+    if (arr[i] >= arr[i - 1]) {
+      i++;
+    } else {
+      [arr[i], arr[i - 1]] = [arr[i - 1], arr[i]];
+      if (i > 1) {
+        i--;
+      } else {
+        i++;
+      }
+    }
   }
-  if (n === 0 || n === 1) {
-    return 1;
-  }
-  return n * factorial(n - 1);
+  return arr;
 }
 
-console.log(factorial(5));  // Output: 120
-function factorialIterative(n: number): number {
-  if (n < 0) {
-    throw new Error("Factorial is not defined for negative numbers");
-  }
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
-}
-
-console.log(factorialIterative(5));  // Output: 120
+// Example usage:
+const unsorted = [34, 2, 78, 1, 56, 99, 23];
+console.log('Sorted:', gnomeSort(unsorted));
