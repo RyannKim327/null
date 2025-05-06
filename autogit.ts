@@ -1,11 +1,22 @@
-// Define an array of integers
-const numbers: number[] = [34, 12, 5, 67, 23, 89, 1];
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null = null;
 
-// Use the sort method with a comparison function
-const sortedNumbers: number[] = numbers.sort((a, b) => a - b);
+  constructor(value: T) {
+    this.value = value;
+  }
+}
 
-console.log(sortedNumbers); // Output: [1, 5, 12, 23, 34, 67, 89]
-const numbers: number[] = [34, 12, 5, 67, 23, 89, 1];
-const sortedNumbers: number[] = [...numbers].sort((a, b) => a - b);
-console.log(sortedNumbers); // Output: [1, 5, 12, 23, 34, 67, 89]
-console.log(numbers);       // Original array remains unchanged
+function findMiddle<T>(head: ListNode<T> | null): ListNode<T> | null {
+  if (!head) return null;
+
+  let slow: ListNode<T> | null = head;
+  let fast: ListNode<T> | null = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  return slow;
+}
