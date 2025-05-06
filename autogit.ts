@@ -1,19 +1,39 @@
-function firstNonRepeatingChar(str: string): string | null {
-  const charCount: Record<string, number> = {};
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null = null;
 
-  // Count occurrences of each character
-  for (const char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
+  constructor(value: T) {
+    this.value = value;
   }
-
-  // Find the first character with a count of 1
-  for (const char of str) {
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  return null; // no unique character found
 }
-console.log(firstNonRepeatingChar("swiss")); // Outputs: w
-console.log(firstNonRepeatingChar("aabbcc")); // Outputs: null
+
+function findNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
+  if (!head || n <= 0) return null;
+
+  let first: ListNode<T> | null = head;
+  let second: ListNode<T> | null = head;
+
+  // Move first pointer n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (!first) return null; // n is larger than the length of list
+    first = first.next;
+  }
+
+  // Move both pointers until first reaches end
+  while (first) {
+    first = first.next;
+    second = second!.next;
+  }
+
+  return second;
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const result = findNthFromEnd(head, 2);
+console.log(result ? result.value : 'Not found');  // Output: 4
