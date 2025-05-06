@@ -1,39 +1,45 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        return findMedianSortedArrays(nums2, nums1);
+type Graph = Map<string, string[]>;
+
+function topologicalSort(graph: Graph): string[] {
+  const visited = new Set<string>();
+  const tempMark = new Set<string>(); // To detect cycles
+  const result: string[] = [];
+
+  function visit(node: string) {
+    if (tempMark.has(node)) {
+      throw new Error("Graph is not a DAG (contains a cycle)");
     }
-
-    const m = nums1.length;
-    const n = nums2.length;
-    let left = 0, right = m;
-
-    while (left <= right) {
-        const partitionX = Math.floor((left + right) / 2);
-        const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
-
-        const maxLeftX = partitionX === 0 ? Number.NEGATIVE_INFINITY : nums1[partitionX - 1];
-        const minRightX = partitionX === m ? Number.POSITIVE_INFINITY : nums1[partitionX];
-
-        const maxLeftY = partitionY === 0 ? Number.NEGATIVE_INFINITY : nums2[partitionY - 1];
-        const minRightY = partitionY === n ? Number.POSITIVE_INFINITY : nums2[partitionY];
-
-        if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
-            // Found the correct partition
-            if ((m + n) % 2 === 0) {
-                return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
-            } else {
-                return Math.max(maxLeftX, maxLeftY);
-            }
-        } else if (maxLeftX > minRightY) {
-            // Move partitionX to the left
-            right = partitionX - 1;
-        } else {
-            // Move partitionX to the right
-            left = partitionX + 1;
-        }
+    if (!visited.has(node)) {
+      tempMark.add(node);
+      const neighbors = graph.get(node) || [];
+      for (const neighbor of neighbors) {
+        visit(neighbor);
+      }
+      tempMark.delete(node);
+      visited.add(node);
+      result.push(node);
     }
+  }
 
-    // If input arrays are not sorted or empty, this should not happen
-    throw new Error("Input arrays are not sorted or invalid");
+  // Visit all nodes
+  for (const node of graph.keys()) {
+    if (!visited.has(node)) {
+      visit(node);
+    }
+  }
+
+  return result.reverse(); // reverse because nodes get appended after recursion
 }
+const graph: Graph = new Map([
+  ["shirt", ["tie", "belt"]],
+  ["tie", ["jacket"]],
+  ["belt", ["jacket"]],
+  ["watch", []],
+  ["pants", ["belt", "shoes"]],
+  ["shoes", []],
+  ["jacket", []],
+]);
+
+const order = topologicalSort(graph);
+console.log(order);
+[ 'watch', 'pants', 'shoes', 'shirt', 'belt', 'tie', 'jacket' ]
