@@ -1,46 +1,50 @@
-function heapSort(arr: number[]): number[] {
-  const n = arr.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-  // Helper function to heapify a subtree rooted at index i
-  // n is the size of the heap
-  function heapify(arr: number[], n: number, i: number) {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
-
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-      largest = left;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-      largest = right;
-    }
-
-    // If largest is not root, swap and continue heapifying
-    if (largest !== i) {
-      [arr[i], arr[largest]] = [arr[largest], arr[i]];
-      heapify(arr, n, largest);
-    }
-  }
-
-  // Build max heap
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
-  }
-
-  // Extract elements one by one from heap
-  for (let i = n - 1; i > 0; i--) {
-    // Move current root (max) to end
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    // call max heapify on the reduced heap
-    heapify(arr, i, 0);
-  }
-
-  return arr;
 }
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head) return true;
 
-// Example usage:
-const array = [4, 10, 3, 5, 1];
-console.log(heapSort(array)); // [1, 3, 4, 5, 10]
+    // Convert the linked list to an array
+    const values: number[] = [];
+    let currentNode: ListNode | null = head;
+
+    while (currentNode) {
+        values.push(currentNode.value);
+        currentNode = currentNode.next;
+    }
+
+    // Check if the array is a palindrome
+    let left = 0;
+    let right = values.length - 1;
+
+    while (left < right) {
+        if (values[left] !== values[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+
+    return true;
+}
+// Create a linked list: 1 -> 2 -> 2 -> 1
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
+
+// Check if the linked list is a palindrome
+console.log(isPalindrome(head)); // Output: true
+
+// Create a non-palindromic linked list: 1 -> 2 -> 3
+const head2 = new ListNode(1);
+head2.next = new ListNode(2);
+head2.next.next = new ListNode(3);
+
+console.log(isPalindrome(head2)); // Output: false
