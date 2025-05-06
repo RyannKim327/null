@@ -1,21 +1,17 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings by converting them to lowercase and removing spaces
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+function isPrime(num: number): boolean {
+  if (num <= 1) return false; // 0 and 1 are not prime
+  if (num <= 3) return true;  // 2 and 3 are prime
 
-    // Check if the lengths are the same; if not, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+  // This skips middle five numbers in below loop
+  if (num % 2 === 0 || num % 3 === 0) return false;
+
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) {
+      return false;
     }
+  }
 
-    // Sort the characters in each string and compare
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
-
-    return sortedStr1 === sortedStr2;
+  return true;
 }
-
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-console.log(areAnagrams("anagram", "nagaram")); // true
+console.log(isPrime(17)); // true
+console.log(isPrime(18)); // false
