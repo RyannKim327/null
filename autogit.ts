@@ -1,50 +1,38 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: an array of 0 or 1 elements is already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    // Split the array into halves
-    const mid = Math.floor(arr.length / 2);
-    const left = mergeSort(arr.slice(0, mid));
-    const right = mergeSort(arr.slice(mid));
-
-    // Merge the sorted halves
-    return merge(left, right);
+function getDigit(num: number, place: number): number {
+  // Returns the digit at 'place' (0-based from right)
+  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
 
-function merge(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    // Compare each element and merge them in sorted order
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
-    }
-
-    // Concatenate any remaining elements from the left array
-    while (leftIndex < left.length) {
-        result.push(left[leftIndex]);
-        leftIndex++;
-    }
-
-    // Concatenate any remaining elements from the right array
-    while (rightIndex < right.length) {
-        result.push(right[rightIndex]);
-        rightIndex++;
-    }
-
-    return result;
+function digitCount(num: number): number {
+  // Count digits in the number
+  if (num === 0) return 1;
+  return Math.floor(Math.log10(Math.abs(num))) + 1;
 }
 
-// Example Usage:
-const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+function mostDigits(nums: number[]): number {
+  // Find the max number of digits in the array
+  let maxDigits = 0;
+  for (const num of nums) {
+    maxDigits = Math.max(maxDigits, digitCount(num));
+  }
+  return maxDigits;
+}
+
+function radixSort(nums: number[]): number[] {
+  const maxDigitCount = mostDigits(nums);
+  for (let k = 0; k < maxDigitCount; k++) {
+    // Create buckets for each digit 0-9
+    const digitBuckets: number[][] = Array.from({ length: 10 }, () => []);
+    for (const num of nums) {
+      const digit = getDigit(num, k);
+      digitBuckets[digit].push(num);
+    }
+    // Flatten the buckets back into nums array
+    nums = [].concat(...digitBuckets);
+  }
+  return nums;
+}
+
+// Example usage
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
