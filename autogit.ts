@@ -1,28 +1,25 @@
-function largestPrimeFactor(n: number): number {
-  let largestFactor = -1;
+class ListNode {
+  value: any;
+  next: ListNode | null;
 
-  // Remove all factors of 2 first
-  while (n % 2 === 0) {
-    largestFactor = 2;
-    n /= 2;
+  constructor(value: any, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
   }
-
-  // Now n must be odd. Start checking odd factors.
-  let factor = 3;
-  while (factor * factor <= n) {
-    while (n % factor === 0) {
-      largestFactor = factor;
-      n /= factor;
-    }
-    factor += 2;
-  }
-
-  // If after this n > 2, then n itself is prime (and largest)
-  if (n > 2) {
-    largestFactor = n;
-  }
-
-  return largestFactor;
 }
-console.log(largestPrimeFactor(13195)); // Outputs: 29
-console.log(largestPrimeFactor(600851475143)); // Outputs: 6857
+
+function hasCycle(head: ListNode | null): boolean {
+  let slow = head;
+  let fast = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;           // move slow pointer by 1
+    fast = fast.next.next;       // move fast pointer by 2
+
+    if (slow === fast) {
+      return true;               // cycle detected
+    }
+  }
+
+  return false;                  // no cycle
+}
