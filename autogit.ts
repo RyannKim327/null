@@ -1,41 +1,50 @@
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+function mergeSort(arr: number[]): number[] {
+    // Base case: an array of 0 or 1 elements is already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    // Split the array into halves
+    const mid = Math.floor(arr.length / 2);
+    const left = mergeSort(arr.slice(0, mid));
+    const right = mergeSort(arr.slice(mid));
+
+    // Merge the sorted halves
+    return merge(left, right);
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let diameter = 0;
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-    const height = (node: TreeNode | null): number => {
-        if (!node) return 0; // Base case: height of a null node is 0
+    // Compare each element and merge them in sorted order
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
+        }
+    }
 
-        // Recursively find the height of left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-        
-        // Update the diameter if the path through this node is longer
-        diameter = Math.max(diameter, leftHeight + rightHeight);
+    // Concatenate any remaining elements from the left array
+    while (leftIndex < left.length) {
+        result.push(left[leftIndex]);
+        leftIndex++;
+    }
 
-        // Return the height of the tree rooted at "node"
-        return 1 + Math.max(leftHeight, rightHeight);
-    };
+    // Concatenate any remaining elements from the right array
+    while (rightIndex < right.length) {
+        result.push(right[rightIndex]);
+        rightIndex++;
+    }
 
-    height(root); // Start the height calculation
-    return diameter; // Return the calculated diameter
+    return result;
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Example Usage:
+const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
