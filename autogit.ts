@@ -1,15 +1,12 @@
-function maxSubArray(arr: number[]): number {
-    if (arr.length === 0) return 0;
+// Define an array of integers
+let numbers: number[] = [5, 3, 8, 1, 2, 7];
 
-    let maxSoFar = arr[0];
-    let maxEndingHere = arr[0];
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-    for (let i = 1; i < arr.length; i++) {
-        // update max ending here by including current element or starting new subarray
-        maxEndingHere = Math.max(arr[i], maxEndingHere + arr[i]);
-        // update max so far if necessary
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
-    }
+console.log("Sorted array (ascending):", numbers);
 
-    return maxSoFar;
-}
+// If you want to sort in descending order, you can reverse the comparison
+numbers.sort((a, b) => b - a);
+
+console.log("Sorted array (descending):", numbers);
