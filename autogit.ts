@@ -1,80 +1,36 @@
-class TarjanSCC {
-  private graph: number[][];
-  private index: number;
-  private stack: number[];
-  private indices: number[];
-  private lowlink: number[];
-  private onStack: boolean[];
-  private sccs: number[][];
-
-  constructor(graph: number[][]) {
-    this.graph = graph; // adjacency list representation
-    this.index = 0;
-    this.stack = [];
-    this.indices = new Array(graph.length).fill(-1);
-    this.lowlink = new Array(graph.length).fill(0);
-    this.onStack = new Array(graph.length).fill(false);
-    this.sccs = [];
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+  if (nums1.length > nums2.length) {
+    // Ensure nums1 is the smaller array
+    [nums1, nums2] = [nums2, nums1];
   }
 
-  public run(): number[][] {
-    for (let v = 0; v < this.graph.length; v++) {
-      if (this.indices[v] === -1) {
-        this.strongConnect(v);
+  const m = nums1.length;
+  const n = nums2.length;
+  let low = 0;
+  let high = m;
+
+  while (low <= high) {
+    const partitionX = Math.floor((low + high) / 2);
+    const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
+
+    const maxLeftX = partitionX === 0 ? -Infinity : nums1[partitionX - 1];
+    const minRightX = partitionX === m ? Infinity : nums1[partitionX];
+
+    const maxLeftY = partitionY === 0 ? -Infinity : nums2[partitionY - 1];
+    const minRightY = partitionY === n ? Infinity : nums2[partitionY];
+
+    if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
+      if ((m + n) % 2 === 0) {
+        return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
+      } else {
+        return Math.max(maxLeftX, maxLeftY);
       }
-    }
-    return this.sccs;
-  }
-
-  private strongConnect(v: number): void {
-    this.indices[v] = this.index;
-    this.lowlink[v] = this.index;
-    this.index++;
-    this.stack.push(v);
-    this.onStack[v] = true;
-
-    // Consider successors of v
-    for (const w of this.graph[v]) {
-      if (this.indices[w] === -1) {
-        // Successor w has not yet been visited; recurse on it
-        this.strongConnect(w);
-        this.lowlink[v] = Math.min(this.lowlink[v], this.lowlink[w]);
-      } else if (this.onStack[w]) {
-        // Successor w is in stack => update lowlink[v]
-        this.lowlink[v] = Math.min(this.lowlink[v], this.indices[w]);
-      }
-    }
-
-    // If v is a root node, pop the stack and generate an SCC
-    if (this.lowlink[v] === this.indices[v]) {
-      const scc: number[] = [];
-      let w: number;
-      do {
-        w = this.stack.pop()!;
-        this.onStack[w] = false;
-        scc.push(w);
-      } while (w !== v);
-      this.sccs.push(scc);
+    } else if (maxLeftX > minRightY) {
+      high = partitionX - 1;
+    } else {
+      low = partitionX + 1;
     }
   }
+
+  throw new Error("Input arrays are not sorted or invalid");
 }
-// Example graph:
-// 0 -> 1
-// 1 -> 2
-// 2 -> 0, 3
-// 3 -> 4
-// 4 -> (none)
-
-const graph = [
-  [1],    // 0
-  [2],    // 1
-  [0, 3], // 2
-  [4],    // 3
-  []      // 4
-];
-
-const tarjan = new TarjanSCC(graph);
-const stronglyConnectedComponents = tarjan.run();
-
-console.log(stronglyConnectedComponents);
-// Output: [ [ 0, 2, 1 ], [ 3 ], [ 4 ] ]
