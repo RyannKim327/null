@@ -1,18 +1,30 @@
-function insertionSort(arr: number[]): number[] {
-  // Make a copy to avoid mutating the original array
-  const sorted = [...arr];
+import * as readline from 'readline';
 
-  for (let i = 1; i < sorted.length; i++) {
-    let current = sorted[i];
-    let j = i - 1;
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-    // Move elements of sorted[0..i-1] that are greater than current, one position ahead
-    while (j >= 0 && sorted[j] > current) {
-      sorted[j + 1] = sorted[j];
-      j--;
-    }
-    sorted[j + 1] = current;
-  }
+// Function to ask a question and return a Promise
+const askQuestion = (question: string): Promise<string> => {
+    return new Promise((resolve) => {
+        rl.question(question, (answer) => {
+            resolve(answer);
+        });
+    });
+};
 
-  return sorted;
-}
+// Main function to run the program
+const main = async () => {
+    const name: string = await askQuestion("What is your name? ");
+    const age: string = await askQuestion("How old are you? ");
+
+    console.log(`Hello, ${name}! You are ${age} years old.`);
+    
+    // Close the readline interface
+    rl.close();
+};
+
+// Run the main function
+main();
