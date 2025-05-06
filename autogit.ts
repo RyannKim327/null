@@ -1,41 +1,15 @@
-type Graph = { [node: string]: string[] };
+const str = "Hello, world!";
+const substring = "world";
 
-function depthLimitedSearch(
-  graph: Graph,
-  start: string,
-  goal: string,
-  limit: number
-): boolean {
-  function recursiveDLS(node: string, depth: number): boolean {
-    if (depth === 0) {
-      return node === goal;
-    }
+const containsSubstring = str.includes(substring);
+console.log(containsSubstring); // Output: true
+const str = "Hello, world!";
+const substring = "world";
 
-    if (node === goal) {
-      return true;
-    }
+const containsSubstring = str.indexOf(substring) !== -1;
+console.log(containsSubstring); // Output: true
+const str = "Hello, world!";
+const substring = "world";
 
-    if (!graph[node]) return false; // no neighbors
-
-    for (const neighbor of graph[node]) {
-      if (recursiveDLS(neighbor, depth - 1)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  return recursiveDLS(start, limit);
-}
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: [],
-};
-
-console.log(depthLimitedSearch(graph, 'A', 'F', 2)); // true (reachable within depth 2)
-console.log(depthLimitedSearch(graph, 'A', 'F', 1)); // false (not reachable within depth 1)
+const containsSubstring = str.search(substring) !== -1;
+console.log(containsSubstring); // Output: true
