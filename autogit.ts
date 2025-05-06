@@ -1,53 +1,57 @@
-function merge(left: number[], right: number[]): number[] {
-  const result: number[] = [];
-  let i = 0, j = 0;
+function computeLPSArray(pattern: string): number[] {
+  const lps = new Array(pattern.length).fill(0);
+  let length = 0; // length of the previous longest prefix suffix
+  let i = 1;
 
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      result.push(left[i++]);
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[length]) {
+      length++;
+      lps[i] = length;
+      i++;
     } else {
-      result.push(right[j++]);
-    }
-  }
-
-  // Append any remaining elements
-  while (i < left.length) result.push(left[i++]);
-  while (j < right.length) result.push(right[j++]);
-
-  return result;
-}
-
-function mergeSortIterative(arr: number[]): number[] {
-  if (arr.length <= 1) return arr;
-
-  // Start with size 1 subarrays and double each iteration
-  let width = 1;
-  const n = arr.length;
-  let temp: number[] = [...arr];
-
-  while (width < n) {
-    for (let i = 0; i < n; i += 2 * width) {
-      // left and right boundaries of the subarrays to merge
-      const leftStart = i;
-      const leftEnd = Math.min(i + width, n);
-      const rightEnd = Math.min(i + 2 * width, n);
-
-      // Extract subarrays to merge
-      const left = temp.slice(leftStart, leftEnd);
-      const right = temp.slice(leftEnd, rightEnd);
-
-      // Merge and place back into temp
-      const merged = merge(left, right);
-      for (let j = 0; j < merged.length; j++) {
-        temp[leftStart + j] = merged[j];
+      if (length !== 0) {
+        length = lps[length - 1];
+      } else {
+        lps[i] = 0;
+        i++;
       }
     }
-    width *= 2;
   }
 
-  return temp;
+  return lps;
+}
+
+function kmpSearch(text: string, pattern: string): number[] {
+  const lps = computeLPSArray(pattern);
+  const occurrences: number[] = [];
+
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      // pattern found at index i - j
+      occurrences.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return occurrences;
 }
 
 // Example usage:
-const arr = [38, 27, 43, 3, 9, 82, 10];
-console.log(mergeSortIterative(arr)); // [3, 9, 10, 27, 38, 43, 82]
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const matches = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
