@@ -1,20 +1,10 @@
-function bubbleSort(arr: number[]): number[] {
-  let n = arr.length;
-  let swapped: boolean;
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-  do {
-    swapped = false;
-    for (let i = 1; i < n; i++) {
-      if (arr[i - 1] > arr[i]) {
-        // Swap elements
-        [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
-        swapped = true;
-      }
-    }
-    n--; // Optimizing: largest element is at the end after each pass
-  } while (swapped);
+const commonElements = array1.filter(element => array2.includes(element));
 
-  return arr;
-}
-const numbers = [5, 3, 8, 4, 2];
-console.log(bubbleSort(numbers));  // Output: [2, 3, 4, 5, 8]
+console.log(commonElements); // Output: [3, 4, 5]
+const set2 = new Set(array2);
+const commonElements = array1.filter(element => set2.has(element));
+
+console.log(commonElements); // Output: [3, 4, 5]
