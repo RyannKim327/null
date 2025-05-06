@@ -1,39 +1,20 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null = null;
+function bubbleSort(arr: number[]): number[] {
+  let n = arr.length;
+  let swapped: boolean;
 
-  constructor(value: T) {
-    this.value = value;
-  }
+  do {
+    swapped = false;
+    for (let i = 1; i < n; i++) {
+      if (arr[i - 1] > arr[i]) {
+        // Swap elements
+        [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+        swapped = true;
+      }
+    }
+    n--; // Optimizing: largest element is at the end after each pass
+  } while (swapped);
+
+  return arr;
 }
-
-function findNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
-  if (!head || n <= 0) return null;
-
-  let first: ListNode<T> | null = head;
-  let second: ListNode<T> | null = head;
-
-  // Move first pointer n steps ahead
-  for (let i = 0; i < n; i++) {
-    if (!first) return null; // n is larger than the length of list
-    first = first.next;
-  }
-
-  // Move both pointers until first reaches end
-  while (first) {
-    first = first.next;
-    second = second!.next;
-  }
-
-  return second;
-}
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const result = findNthFromEnd(head, 2);
-console.log(result ? result.value : 'Not found');  // Output: 4
+const numbers = [5, 3, 8, 4, 2];
+console.log(bubbleSort(numbers));  // Output: [2, 3, 4, 5, 8]
