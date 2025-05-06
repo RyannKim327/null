@@ -1,26 +1,24 @@
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
-
-async function fetchPosts(): Promise<Post[]> {
-  try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data: Post[] = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Failed to fetch posts:', error);
-    return [];
+class ListNode {
+  value: any;
+  next: ListNode | null;
+  
+  constructor(value: any) {
+    this.value = value;
+    this.next = null;
   }
 }
 
-// Example usage:
-fetchPosts().then(posts => {
-  console.log('Received posts:', posts.slice(0, 3)); // just log first 3 for brevity
-});
+function hasCycle(head: ListNode | null): boolean {
+  if (!head) return false;
+
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head.next;
+
+  while (fast && fast.next) {
+    if (slow === fast) return true;  // Cycle detected
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  return false; // No cycle
+}
