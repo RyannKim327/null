@@ -1,30 +1,27 @@
-import * as readline from 'readline';
+import axios from 'axios';
 
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 
-// Function to ask a question and return a Promise
-const askQuestion = (question: string): Promise<string> => {
-    return new Promise((resolve) => {
-        rl.question(question, (answer) => {
-            resolve(answer);
-        });
+async function fetchPosts(): Promise<void> {
+  try {
+    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
+    const posts = response.data;
+
+    posts.forEach(post => {
+      console.log(`Post #${post.id}: ${post.title}`);
     });
-};
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
+}
 
-// Main function to run the program
-const main = async () => {
-    const name: string = await askQuestion("What is your name? ");
-    const age: string = await askQuestion("How old are you? ");
-
-    console.log(`Hello, ${name}! You are ${age} years old.`);
-    
-    // Close the readline interface
-    rl.close();
-};
-
-// Run the main function
-main();
+fetchPosts();
