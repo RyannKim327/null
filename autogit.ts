@@ -1,104 +1,64 @@
-function topologicalSortDFS(graph: Record<string, string[]>): string[] {
-    const visited: Set<string> = new Set();
-    const stack: string[] = [];
-    const result: string[] = [];
+type Edge = {
+  from: number;
+  to: number;
+  weight: number;
+};
 
-    function dfs(node: string): void {
-        if (visited.has(node)) return;
+function bellmanFord(
+  verticesCount: number,
+  edges: Edge[],
+  source: number
+): { distances: number[]; predecessors: (number | null)[] | null } {
+  // Initialize distances array: start with Infinity
+  const distances = new Array(verticesCount).fill(Infinity);
+  // For path reconstruction
+  const predecessors = new Array(verticesCount).fill(null);
 
-        visited.add(node);
+  distances[source] = 0; // Distance from source to itself is 0
 
-        // Visit all the neighbors
-        if (graph[node]) {
-            for (const neighbor of graph[node]) {
-                dfs(neighbor);
-            }
-        }
-
-        // Push the node onto the stack
-        stack.push(node);
+  // Relax all edges |V| - 1 times
+  for (let i = 0; i < verticesCount - 1; i++) {
+    let updated = false;
+    for (const edge of edges) {
+      const { from, to, weight } = edge;
+      if (distances[from] !== Infinity && distances[from] + weight < distances[to]) {
+        distances[to] = distances[from] + weight;
+        predecessors[to] = from;
+        updated = true;
+      }
     }
+    // If no update occurred, no need to continue
+    if (!updated) break;
+  }
 
-    for (const node in graph) {
-        if (!visited.has(node)) {
-            dfs(node);
-        }
+  // Check for negative weight cycles
+  for (const edge of edges) {
+    const { from, to, weight } = edge;
+    if (distances[from] !== Infinity && distances[from] + weight < distances[to]) {
+      // Negative cycle detected, no solution
+      return { distances: [], predecessors: null };
     }
+  }
 
-    // The stack is in reverse order of the topological sort
-    while (stack.length) {
-        result.push(stack.pop()!);
-    }
-
-    return result;
+  return { distances, predecessors };
 }
 
 // Example usage:
-const graph: Record<string, string[]> = {
-    A: ['C'],
-    B: ['C', 'D'],
-    C: ['E'],
-    D: ['F'],
-    E: [],
-    F: []
-};
+const edges: Edge[] = [
+  { from: 0, to: 1, weight: 4 },
+  { from: 0, to: 2, weight: 5 },
+  { from: 1, to: 2, weight: -3 },
+  { from: 2, to: 3, weight: 4 },
+];
 
-const sortedOrder = topologicalSortDFS(graph);
-console.log(sortedOrder);
-function topologicalSortKahn(graph: Record<string, string[]>): string[] {
-    const inDegree: Record<string, number> = {};
-    const queue: string[] = [];
-    const result: string[] = [];
+const verticesCount = 4;
+const source = 0;
 
-    // Initialize inDegree for all nodes
-    for (const node in graph) {
-        inDegree[node] = 0;
-    }
+const result = bellmanFord(verticesCount, edges, source);
 
-    // Calculate inDegree for each node
-    for (const neighbors of Object.values(graph)) {
-        for (const neighbor of neighbors) {
-            inDegree[neighbor] = (inDegree[neighbor] || 0) + 1;
-        }
-    }
-
-    // Collect nodes with inDegree 0
-    for (const node in inDegree) {
-        if (inDegree[node] === 0) {
-            queue.push(node);
-        }
-    }
-
-    while (queue.length > 0) {
-        const current = queue.shift()!;
-        result.push(current);
-
-        // Decrease inDegree for each neighbor
-        for (const neighbor of graph[current]) {
-            inDegree[neighbor]--;
-            if (inDegree[neighbor] === 0) {
-                queue.push(neighbor);
-            }
-        }
-    }
-
-    // Check if topological sort is possible (if we have processed all nodes)
-    if (result.length !== Object.keys(graph).length) {
-        throw new Error("Graph has at least one cycle, topological sort not possible.");
-    }
-
-    return result;
+if (result.predecessors === null) {
+  console.log("Graph contains a negative weight cycle");
+} else {
+  console.log("Distances from source:", result.distances);
+  console.log("Predecessors for each vertex:", result.predecessors);
 }
-
-// Example usage:
-const graphKahn: Record<string, string[]> = {
-    A: ['C'],
-    B: ['C', 'D'],
-    C: ['E'],
-    D: ['F'],
-    E: [],
-    F: []
-};
-
-const sortedOrderKahn = topologicalSortKahn(graphKahn);
-console.log(sortedOrderKahn);
