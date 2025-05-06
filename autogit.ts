@@ -1,16 +1,25 @@
-function removeSpaces(input: string): string {
-    return input.replace(/\s+/g, ''); // This regex matches all whitespace characters
-}
+class ListNode {
+  value: any;
+  next: ListNode | null;
 
-// Example usage:
-const originalString = "Hello, how are you?";
-const stringWithoutSpaces = removeSpaces(originalString);
-console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
-function removeSpacesOnly(input: string): string {
-    return input.replace(/ /g, ''); // This regex matches only spaces
+  constructor(value: any, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
+function getLinkedListLength(head: ListNode | null): number {
+  let count = 0;
+  let current = head;
 
-// Example usage:
-const originalString = "Hello, how are you?";
-const stringWithoutSpaces = removeSpacesOnly(originalString);
-console.log(stringWithoutSpaces); // Output: "Hello,howareyou?"
+  while (current !== null) {
+    count++;
+    current = current.next;
+  }
+
+  return count;
+}
+const node3 = new ListNode(3);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+
+console.log(getLinkedListLength(node1)); // 3
