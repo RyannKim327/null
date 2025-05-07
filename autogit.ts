@@ -1,23 +1,9 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
+import cron from 'node-cron';
 
-  constructor(val: number, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-  if (!headA || !headB) return null;
-
-  let pA: ListNode | null = headA;
-  let pB: ListNode | null = headB;
-
-  while (pA !== pB) {
-    pA = pA ? pA.next : headB;
-    pB = pB ? pB.next : headA;
-  }
-
-  // Either the intersection node or null if no intersection
-  return pA;
-}
+// Schedule a task to run every minute
+cron.schedule('* * * * *', () => {
+  const now = new Date();
+  console.log(`Task running at ${now.toLocaleTimeString()}`);
+});
+npm install node-cron
+npm install --save-dev @types/node-cron
