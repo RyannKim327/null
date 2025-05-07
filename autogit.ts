@@ -1,63 +1,27 @@
-type Graph = Map<string, string[]>;
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-interface QueueItem {
-  node: string;
-  depth: number;
-}
-
-function breadthLimitedSearch(graph: Graph, start: string, goal: string, limit: number): string[] | null {
-  // Queue holds nodes along with their depth from the start node
-  const queue: QueueItem[] = [{ node: start, depth: 0 }];
-  const visited = new Set<string>();
-  // Map to reconstruct path after finding the goal
-  const parentMap = new Map<string, string | null>();
-  parentMap.set(start, null);
-
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift()!;
-
-    if (node === goal) {
-      // Reconstruct path going backward from goal to start
-      const path: string[] = [];
-      let current: string | null = node;
-      while (current !== null) {
-        path.push(current);
-        current = parentMap.get(current) ?? null;
-      }
-      return path.reverse();
-    }
-
-    if (depth < limit) {
-      const neighbors = graph.get(node) || [];
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor);
-          parentMap.set(neighbor, node);
-          queue.push({ node: neighbor, depth: depth + 1 });
-        }
-      }
-    }
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-
-  // Goal not found within the depth limit
-  return null;
 }
-const graph: Graph = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['D', 'E']],
-  ['C', ['F']],
-  ['D', []],
-  ['E', ['F']],
-  ['F', []],
-]);
 
-const start = 'A';
-const goal = 'F';
-const depthLimit = 2;
+function countLeafNodes(root: TreeNode | null): number {
+  if (root === null) return 0;
 
-const path = breadthLimitedSearch(graph, start, goal, depthLimit);
-if (path) {
-  console.log(`Path found: ${path.join(' -> ')}`);
-} else {
-  console.log(`No path found within depth limit ${depthLimit}`);
+  // If leaf node (no children)
+  if (root.left === null && root.right === null) return 1;
+
+  // Recursively count leaf nodes in left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
+const tree = new TreeNode(1,
+  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
+  new TreeNode(3)
+);
+
+console.log(countLeafNodes(tree)); // Output should be 3 (nodes 4, 5, 3)
