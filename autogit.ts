@@ -1,33 +1,32 @@
-const array = [1, 2, 3, 3, 4, 5, 5, 6];
-const uniqueArray = Array.from(new Set(array));
+function largestPrimeFactor(n: number): number {
+  let number = n;
+  let largestFactor = -1;
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 3, 4, 5, 5, 6];
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
+  // Divide out the 2s to handle even factors first
+  while (number % 2 === 0) {
+    largestFactor = 2;
+    number /= 2;
+  }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 3, 4, 5, 5, 6];
-const uniqueArray = array.reduce((accumulator, current) => {
-    if (!accumulator.includes(current)) {
-        accumulator.push(current);
+  // Now check for odd factors from 3 upward
+  let factor = 3;
+  const maxFactor = Math.sqrt(number);
+
+  while (factor <= maxFactor && number > 1) {
+    while (number % factor === 0) {
+      largestFactor = factor;
+      number /= factor;
     }
-    return accumulator;
-}, [] as number[]); // Specify type if needed
+    factor += 2; // Check only odd factors
+  }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
-const array = [1, 2, 3, 3, 4, 5, 5, 6];
-const uniqueArray: number[] = [];
+  // If number is still greater than 2, it is a prime number and largest factor
+  if (number > 2) {
+    largestFactor = number;
+  }
 
-array.forEach(item => {
-    if (!uniqueArray.includes(item)) {
-        uniqueArray.push(item);
-    }
-});
+  return largestFactor;
+}
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
-import _ from 'lodash';
-
-const array = [1, 2, 3, 3, 4, 5, 5, 6];
-const uniqueArray = _.uniq(array);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+// Example:
+console.log(largestPrimeFactor(13195)); // Output will be 29
