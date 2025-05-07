@@ -1,12 +1,10 @@
-// Sample array of integers
-const numbers: number[] = [5, 3, 8, 1, 2, 7];
+function removeSpaces(input: string): string {
+    return input.replace(/\s+/g, '');
+}
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
-
-console.log("Sorted array (ascending):", numbers);
-
-// To sort in descending order, you can reverse the comparison
-numbers.sort((a, b) => b - a);
-
-console.log("Sorted array (descending):", numbers);
+// Example usage:
+const result = removeSpaces("Hello World! This is a test string.");
+console.log(result); // Outputs: "HelloWorld!Thisisateststring."
+function removeSpacesOnly(input: string): string {
+    return input.replace(/ /g, '');
+}
