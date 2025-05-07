@@ -1,27 +1,28 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function quicksort(arr: number[]): number[] {
+    // Base case: if the array is empty or has one item, return it as is.
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+    // Select a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
+
+    // Partition the array into left and right
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]); // Elements less than pivot
+        } else {
+            right.push(arr[i]); // Elements greater or equal to pivot
+        }
+    }
+
+    // Recursively sort the left part and the right part, then concatenate with the pivot
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-  if (root === null) return 0;
-
-  // If leaf node (no children)
-  if (root.left === null && root.right === null) return 1;
-
-  // Recursively count leaf nodes in left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-const tree = new TreeNode(1,
-  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-  new TreeNode(3)
-);
-
-console.log(countLeafNodes(tree)); // Output should be 3 (nodes 4, 5, 3)
+// Example usage:
+const arr = [3, 6, 8, 10, 1, 2, 1];
+console.log("Original array:", arr);
+console.log("Sorted array:", quicksort(arr));
