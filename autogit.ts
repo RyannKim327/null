@@ -1,13 +1,15 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
+function getStringLength(str: string): number {
+    let count = 0;
+
+    // Iterate through each character in the string
+    for (let char of str) {
+        count++;
     }
-    // Recursive case
-    return n * factorial(n - 1);
+
+    return count;
 }
 
 // Example usage
-const number = 5;
-console.log(`Factorial of ${number} is ${factorial(number)}`);
-Factorial of 5 is 120
+const myString = "Hello, world!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
