@@ -1,41 +1,44 @@
-function longestCommonSubsequence(text1: string, text2: string): string {
-  const m = text1.length;
-  const n = text2.length;
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+  if (nums1.length > nums2.length) {
+    // Ensure nums1 is the smaller array
+    return findMedianSortedArrays(nums2, nums1);
+  }
 
-  // dp[i][j] will store the length of LCS of text1[0..i-1] and text2[0..j-1]
-  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  const m = nums1.length;
+  const n = nums2.length;
+  let low = 0, high = m;
 
-  // Build the dp array
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (text1[i - 1] === text2[j - 1]) {
-        dp[i][j] = 1 + dp[i - 1][j - 1];
+  while (low <= high) {
+    const partitionX = Math.floor((low + high) / 2);
+    const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
+
+    const maxLeftX = partitionX === 0 ? -Infinity : nums1[partitionX - 1];
+    const minRightX = partitionX === m ? Infinity : nums1[partitionX];
+
+    const maxLeftY = partitionY === 0 ? -Infinity : nums2[partitionY - 1];
+    const minRightY = partitionY === n ? Infinity : nums2[partitionY];
+
+    // Check if we found the correct partition
+    if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
+      // If combined length is even
+      if ((m + n) % 2 === 0) {
+        return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
       } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        // If combined length is odd
+        return Math.max(maxLeftX, maxLeftY);
       }
-    }
-  }
-
-  // Reconstruct LCS from dp array
-  let i = m, j = n;
-  let lcs = '';
-
-  while (i > 0 && j > 0) {
-    if (text1[i - 1] === text2[j - 1]) {
-      lcs = text1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
+    } else if (maxLeftX > minRightY) {
+      // We are too far on right side for partitionX, go left
+      high = partitionX - 1;
     } else {
-      j--;
+      // We are too far on left side for partitionX, go right
+      low = partitionX + 1;
     }
   }
 
-  return lcs;
+  throw new Error("Input arrays are not sorted properly.");
 }
+const arr1 = [1, 3, 8];
+const arr2 = [7, 9, 10, 11];
 
-// Example usage:
-const s1 = "ABCBDAB";
-const s2 = "BDCABA";
-console.log(longestCommonSubsequence(s1, s2)); // Output: "BCBA" or "BDAB"
+console.log(findMedianSortedArrays(arr1, arr2)); // Output: 8
