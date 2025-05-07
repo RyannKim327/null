@@ -1,25 +1,45 @@
-function insertionSort(arr: number[]): number[] {
-    // Iterate through the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        // Take the current element
-        let current = arr[i];
-        // Initialize a variable to hold the position to insert
-        let j = i - 1;
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
 
-        // Move elements of arr[0..i-1], that are greater than current, to one position ahead of their current position
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j];
-            j--;
-        }
+    // Build a max-heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
 
-        // Insert the current element at the correct position
-        arr[j + 1] = current;
+    // One by one extract elements from the heap
+    for (let i = n - 1; i > 0; i--) {
+        // Move the current root (largest) to the end
+        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
+        heapify(arr, i, 0);
     }
 
     return arr;
 }
 
+function heapify(arr: number[], n: number, i: number): void {
+    let largest = i; // Initialize largest as root
+    const left = 2 * i + 1; // left = 2*i + 1
+    const right = 2 * i + 2; // right = 2*i + 2
+
+    // If left child is larger than root
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    // If right child is larger than largest so far
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    // If largest is not root
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
+        // Recursively heapify the affected sub-tree
+        heapify(arr, n, largest);
+    }
+}
+
 // Example usage
-const array = [12, 11, 13, 5, 6];
-const sortedArray = insertionSort(array);
-console.log(sortedArray); // Output: [5, 6, 11, 12, 13]
+const array = [3, 5, 1, 10, 2];
+const sortedArray = heapSort(array);
+console.log(sortedArray); // Output: [1, 2, 3, 5, 10]
