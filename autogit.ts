@@ -1,115 +1,51 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class ListNode {
+    value: any;
+    next: ListNode | null;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
-}
-class Trie {
-    private root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the trie
-    insert(word: string): void {
-        let currentNode = this.root;
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        currentNode.isEndOfWord = true;
-    }
-
-    // Search for a word in the trie
-    search(word: string): boolean {
-        const node = this._findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if any word in the trie starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this._findNode(prefix) !== null;
-    }
-
-    // Helper method to find a node by prefix
-    private _findNode(prefix: string): TrieNode | null {
-        let currentNode = this.root;
-        for (const char of prefix) {
-            if (!currentNode.children.has(char)) {
-                return null;
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return currentNode;
-    }
-}
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));  // true
-console.log(trie.search("app"));    // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app"));     // true
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
-
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
+    constructor(value: any, next: ListNode | null = null) {
+        this.value = value;
+        this.next = next;
     }
 }
 
-class Trie {
-    private root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current !== null) {
+        length++;
+        current = current.next;
     }
-
-    insert(word: string): void {
-        let currentNode = this.root;
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        currentNode.isEndOfWord = true;
-    }
-
-    search(word: string): boolean {
-        const node = this._findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    startsWith(prefix: string): boolean {
-        return this._findNode(prefix) !== null;
-    }
-
-    private _findNode(prefix: string): TrieNode | null {
-        let currentNode = this.root;
-        for (const char of prefix) {
-            if (!currentNode.children.has(char)) {
-                return null;
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return currentNode;
-    }
+    return length;
 }
 
-// Example usage
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));  // true
-console.log(trie.search("app"));    // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app"));     // true
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (headA === null || headB === null) return null;
+
+    const lenA = getLength(headA);
+    const lenB = getLength(headB);
+
+    let currA = headA;
+    let currB = headB;
+
+    // Advance pointer in longer list
+    if (lenA > lenB) {
+        for (let i = 0; i < lenA - lenB; i++) {
+            if (currA) currA = currA.next;
+        }
+    } else {
+        for (let i = 0; i < lenB - lenA; i++) {
+            if (currB) currB = currB.next;
+        }
+    }
+
+    // Traverse both lists together comparing references
+    while (currA !== null && currB !== null) {
+        if (currA === currB) {
+            return currA;
+        }
+        currA = currA.next;
+        currB = currB.next;
+    }
+
+    return null; // No intersection
+}
