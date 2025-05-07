@@ -1,41 +1,56 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
+function buildLPS(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-  constructor(val: number, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
-  }
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    return lps;
 }
-function isPalindrome(head: ListNode | null): boolean {
-  if (!head || !head.next) return true;
 
-  // Find middle (slow will point to middle)
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head;
-  while (fast && fast.next) {
-    slow = slow!.next;
-    fast = fast.next.next;
-  }
+function kmpSearch(text: string, pattern: string): number[] {
+    if (pattern.length === 0) return [];
 
-  // Reverse second half
-  let prev: ListNode | null = null;
-  let curr: ListNode | null = slow;
-  while (curr) {
-    const nextTemp = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = nextTemp;
-  }
+    const lps = buildLPS(pattern);
+    const result: number[] = [];
 
-  // Compare first half and reversed second half
-  let firstHalf: ListNode | null = head;
-  let secondHalf: ListNode | null = prev;
-  while (secondHalf) {
-    if (firstHalf!.val !== secondHalf.val) return false;
-    firstHalf = firstHalf!.next;
-    secondHalf = secondHalf.next;
-  }
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-  return true;
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // match found at index (i - j)
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return result;
 }
+const text = "ababcabcabababd";
+const pattern = "ababd";
+
+const matches = kmpSearch(text, pattern);
+console.log(matches); // Output: [10]
