@@ -1,61 +1,41 @@
-// Define a Node class
-class Node {
-    value: number;
-    next: Node | null = null;
+function longestCommonSubsequence(text1: string, text2: string): string {
+  const m = text1.length;
+  const n = text2.length;
 
-    constructor(value: number) {
-        this.value = value;
+  // dp[i][j] will store the length of LCS of text1[0..i-1] and text2[0..j-1]
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+  // Build the dp array
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (text1[i - 1] === text2[j - 1]) {
+        dp[i][j] = 1 + dp[i - 1][j - 1];
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+      }
     }
+  }
+
+  // Reconstruct LCS from dp array
+  let i = m, j = n;
+  let lcs = '';
+
+  while (i > 0 && j > 0) {
+    if (text1[i - 1] === text2[j - 1]) {
+      lcs = text1[i - 1] + lcs;
+      i--;
+      j--;
+    } else if (dp[i - 1][j] > dp[i][j - 1]) {
+      i--;
+    } else {
+      j--;
+    }
+  }
+
+  return lcs;
 }
 
-// Define a LinkedList class
-class LinkedList {
-    head: Node | null = null;
-
-    // Method to append a new node to the linked list
-    append(value: number) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current: Node | null = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the middle element of the linked list
-    findMiddle(): Node | null {
-        if (!this.head) {
-            return null;
-        }
-
-        let slow: Node | null = this.head;
-        let fast: Node | null = this.head;
-
-        while (fast && fast.next) {
-            slow = slow.next; // Move slow pointer by 1
-            fast = fast.next.next; // Move fast pointer by 2
-        }
-
-        return slow; // When fast pointer reaches the end, slow pointer is at the middle
-    }
-}
-
-// Example usage
-const linkedList = new LinkedList();
-linkedList.append(1);
-linkedList.append(2);
-linkedList.append(3);
-linkedList.append(4);
-linkedList.append(5);
-
-// Find the middle node
-const middleNode = linkedList.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: 3
-} else {
-    console.log('The linked list is empty.');
-}
+// Example usage:
+const s1 = "ABCBDAB";
+const s2 = "BDCABA";
+console.log(longestCommonSubsequence(s1, s2)); // Output: "BCBA" or "BDAB"
