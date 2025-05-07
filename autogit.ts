@@ -1,43 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, ActivityIndicator } from 'react-native';
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null = null;
+  right: TreeNode<T> | null = null;
 
-// Simulated async task, like connecting to a service or fetching data
-async function connectAsync(): Promise<string> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // simulate success/failure randomly
-      const success = Math.random() > 0.3;
-      if (success) {
-        resolve('Connection successful!');
-      } else {
-        reject(new Error('Connection failed.'));
-      }
-    }, 2000);
-  });
+  constructor(value: T) {
+    this.value = value;
+  }
 }
 
-export default function AsyncConnectionComponent() {
-  const [status, setStatus] = useState<string>('Disconnected');
-  const [loading, setLoading] = useState(false);
+class BinarySearchTree<T> {
+  root: TreeNode<T> | null = null;
 
-  const handleConnect = async () => {
-    setLoading(true);
-    setStatus('Connecting...');
-    try {
-      const message = await connectAsync();
-      setStatus(message);
-    } catch (e) {
-      setStatus((e as Error).message);
-    } finally {
-      setLoading(false);
+  // comparator helps us handle generic types
+  private comparator: (a: T, b: T) => number;
+
+  constructor(comparator: (a: T, b: T) => number) {
+    this.comparator = comparator;
+  }
+
+  insert(value: T): void {
+    const newNode = new TreeNode(value);
+    if (this.root === null) {
+      this.root = newNode;
+      return;
     }
-  };
 
-  return (
-    <View style={{ padding: 20 }}>
-      <Text>Status: {status}</Text>
-      {loading ? <ActivityIndicator size="small" /> : null}
-      <Button title="Connect" onPress={handleConnect} />
-    </View>
-  );
+    let current = this.root;
+    while (true) {
+      if (this.comparator(value, current.value) < 0) {
+        if (current.left === null) {
+          current.left = newNode;
+          return;
+        }
+        current = current.left;
+      } else {
+        if (current.right === null) {
+          current.right = newNode;
+          return;
+        }
+        current = current.right;
+      }
+    }
+  }
+
+  search(value: T): boolean {
+    let current = this.root;
+
+    while (current !== null) {
+      const comp = this.comparator(value, current.value);
+      if (comp === 0) {
+        return true;
+      } else if (comp < 0) {
+        current = current.left;
+      } else {
+        current = current.right;
+      }
+    }
+
+    return false;
+  }
 }
+// For numbers, a straightforward comparator:
+const numberComparator = (a: number, b: number) => a - b;
+
+const bst = new BinarySearchTree<number>(numberComparator);
+
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+
+console.log(bst.search(10)); // true
+console.log(bst.search(7));  // false
