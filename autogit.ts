@@ -1,57 +1,65 @@
-function buildLPSArray(pattern: string): number[] {
-  const lps: number[] = Array(pattern.length).fill(0);
-  let length = 0; // length of the previous longest prefix suffix
-  let i = 1;
+type Graph = Map<string, string[]>;
 
-  while(i < pattern.length) {
-    if(pattern[i] === pattern[length]) {
-      length++;
-      lps[i] = length;
-      i++;
-    } else {
-      if(length !== 0) {
-        length = lps[length - 1];
-      } else {
-        lps[i] = 0;
-        i++;
+function topologicalSort(graph: Graph): string[] | null {
+  const visited = new Set<string>();
+  const visiting = new Set<string>();  // To detect cycles
+  const result: string[] = [];
+
+  function dfs(node: string): boolean {
+    if (visiting.has(node)) {
+      // Cycle detected
+      return false;
+    }
+
+    if (visited.has(node)) {
+      // Already processed this node
+      return true;
+    }
+
+    visiting.add(node);
+
+    const neighbors = graph.get(node) ?? [];
+    for (const neighbor of neighbors) {
+      if (!dfs(neighbor)) {
+        return false;
+      }
+    }
+
+    visiting.delete(node);
+    visited.add(node);
+    result.push(node);
+    return true;
+  }
+
+  for (const node of graph.keys()) {
+    if (!visited.has(node)) {
+      if (!dfs(node)) {
+        // Cycle detected, no valid topological ordering
+        return null;
       }
     }
   }
 
-  return lps;
+  // The result has nodes in reverse order of dependencies, so reverse it
+  return result.reverse();
 }
 
-function kmpSearch(text: string, pattern: string): number[] {
-  const lps = buildLPSArray(pattern);
-  const results: number[] = [];
+// Example usage:
 
-  let i = 0; // index for text
-  let j = 0; // index for pattern
+const graph: Graph = new Map([
+  ['shirt', ['belt', 'tie']],
+  ['tie', ['jacket']],
+  ['belt', ['jacket']],
+  ['pants', ['belt']],
+  ['socks', ['shoes']],
+  ['shoes', []],
+  ['jacket', []],
+]);
 
-  while (i < text.length) {
-    if (text[i] === pattern[j]) {
-      i++;
-      j++;
+const ordering = topologicalSort(graph);
 
-      if (j === pattern.length) {
-        // match found, push start index
-        results.push(i - j);
-        j = lps[j - 1];  // prepare for the next possible match
-      }
-    } else {
-      if (j !== 0) {
-        j = lps[j - 1];
-      } else {
-        i++;
-      }
-    }
-  }
-
-  return results;
+if (ordering) {
+  console.log('Topological Order:', ordering);
+} else {
+  console.log('Cycle detected, no valid ordering.');
 }
-
-// Usage example:
-const text = "abxabcabcaby";
-const pattern = "abcaby";
-const matches = kmpSearch(text, pattern);
-console.log(matches); // Output: [6]
