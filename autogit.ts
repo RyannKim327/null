@@ -1,15 +1,23 @@
-const numbers = [10, 5, 20, 3, 7];
+function insertionSort(arr: number[]): number[] {
+  // Make a copy to avoid mutating the original array
+  const sortedArr = [...arr];
 
-// Sort ascending
-numbers.sort((a, b) => a - b);
+  for (let i = 1; i < sortedArr.length; i++) {
+    let currentValue = sortedArr[i];
+    let j = i - 1;
 
-console.log(numbers); // Output: [3, 5, 7, 10, 20]
-function sortIntegers(arr: number[], descending = false): number[] {
-  return arr.sort((a, b) => descending ? b - a : a - b);
+    // Shift elements of sortedArr[0..i-1] that are greater than currentValue to one position ahead
+    while (j >= 0 && sortedArr[j] > currentValue) {
+      sortedArr[j + 1] = sortedArr[j];
+      j--;
+    }
+
+    // Insert the current value into its correct position
+    sortedArr[j + 1] = currentValue;
+  }
+
+  return sortedArr;
 }
-
-const sortedAsc = sortIntegers([4, 1, 7, 3]);
-const sortedDesc = sortIntegers([4, 1, 7, 3], true);
-
-console.log(sortedAsc); // [1, 3, 4, 7]
-console.log(sortedDesc); // [7, 4, 3, 1]
+const unsorted = [5, 3, 8, 4, 2];
+const sorted = insertionSort(unsorted);
+console.log(sorted);  // Output: [2, 3, 4, 5, 8]
