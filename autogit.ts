@@ -1,27 +1,36 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+let arr = [1, 2, 3, 4, 5];
+const indexToRemove = arr.indexOf(3); // Find the index of the element to remove
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+if (indexToRemove !== -1) {
+    arr.splice(indexToRemove, 1); // Remove 1 element at index
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-  if (root === null) return 0;
+console.log(arr); // Output: [1, 2, 4, 5]
+let arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-  // Leaf node condition: no left and no right children
-  if (root.left === null && root.right === null) return 1;
+arr = arr.filter(element => element !== elementToRemove);
 
-  // Recursively count leaves in left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+console.log(arr); // Output: [1, 2, 4, 5]
+let arr = [1, 2, 3, 4, 5];
+const indexToRemove = arr.indexOf(3);
+
+if (indexToRemove !== -1) {
+    arr = [
+        ...arr.slice(0, indexToRemove), // Elements before the element to remove
+        ...arr.slice(indexToRemove + 1), // Elements after the element to remove
+    ];
 }
-const tree = new TreeNode(1, 
-  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-  new TreeNode(3, null, new TreeNode(6))
-);
 
-console.log(countLeafNodes(tree)); // Output: 3
+console.log(arr); // Output: [1, 2, 4, 5]
+let arr = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
+
+arr = arr.reduce((acc, current) => {
+    if (current !== elementToRemove) {
+        acc.push(current);
+    }
+    return acc;
+}, []);
+
+console.log(arr); // Output: [1, 2, 4, 5]
