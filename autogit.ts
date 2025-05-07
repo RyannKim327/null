@@ -1,13 +1,23 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false;      // 0, 1 and negative numbers are not prime
-  if (num <= 3) return true;       // 2 and 3 are prime
-
-  if (num % 2 === 0 || num % 3 === 0) return false;  // multiples of 2 or 3 are not prime
-
-  // Check divisors from 5 to sqrt(num), increment by 6 for efficiency
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) return false;
-  }
-
-  return true;
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
+
+async function fetchUsers(): Promise<void> {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/users');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const users: User[] = await response.json();
+    users.forEach(user => {
+      console.log(`${user.id}: ${user.name} (${user.username}) - ${user.email}`);
+    });
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+}
+
+fetchUsers();
