@@ -1,23 +1,45 @@
-function insertionSort(arr: number[]): number[] {
-  // Make a copy to avoid mutating the original array
-  const sortedArr = [...arr];
+class ListNode {
+  val: number;
+  next: ListNode | null;
 
-  for (let i = 1; i < sortedArr.length; i++) {
-    let currentValue = sortedArr[i];
-    let j = i - 1;
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
 
-    // Shift elements of sortedArr[0..i-1] that are greater than currentValue to one position ahead
-    while (j >= 0 && sortedArr[j] > currentValue) {
-      sortedArr[j + 1] = sortedArr[j];
-      j--;
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+  if (!headA || !headB) return null;
+
+  // Helper to get length of list
+  function getLength(head: ListNode | null): number {
+    let length = 0;
+    while (head) {
+      length++;
+      head = head.next;
     }
-
-    // Insert the current value into its correct position
-    sortedArr[j + 1] = currentValue;
+    return length;
   }
 
-  return sortedArr;
+  let lenA = getLength(headA);
+  let lenB = getLength(headB);
+
+  // Align heads to same starting point by skipping extra nodes in longer list
+  while (lenA > lenB) {
+    headA = headA!.next!;
+    lenA--;
+  }
+  while (lenB > lenA) {
+    headB = headB!.next!;
+    lenB--;
+  }
+
+  // Move in tandem to find intersection
+  while (headA && headB) {
+    if (headA === headB) return headA;
+    headA = headA.next;
+    headB = headB.next;
+  }
+
+  return null;  // No intersection found
 }
-const unsorted = [5, 3, 8, 4, 2];
-const sorted = insertionSort(unsorted);
-console.log(sorted);  // Output: [2, 3, 4, 5, 8]
