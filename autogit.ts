@@ -1,12 +1,57 @@
-function calculateMean(numbers: number[]): number {
-  if (numbers.length === 0) {
-    throw new Error("Cannot calculate mean of an empty list");
+class TrieNode {
+  children: Map<string, TrieNode>;
+  isEndOfWord: boolean;
+
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
   }
-  
-  const sum = numbers.reduce((acc, val) => acc + val, 0);
-  return sum / numbers.length;
 }
 
-// Example usage:
-const nums = [2, 4, 6, 8, 10];
-console.log(calculateMean(nums)); // Output: 6
+class Trie {
+  root: TrieNode;
+
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  insert(word: string): void {
+    let currentNode = this.root;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new TrieNode());
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    currentNode.isEndOfWord = true;
+  }
+
+  search(word: string): boolean {
+    let currentNode = this.root;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return currentNode.isEndOfWord;
+  }
+
+  startsWith(prefix: string): boolean {
+    let currentNode = this.root;
+    for (const char of prefix) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return true;
+  }
+}
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // true
+console.log(trie.search("app"));     // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app"));     // true
