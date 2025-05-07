@@ -1,18 +1,27 @@
-function binarySearch(arr: number[], target: number): number {
-  let left = 0;
-  let right = arr.length - 1;
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-
-    if (arr[mid] === target) {
-      return mid; // Found the target, return its index
-    } else if (arr[mid] < target) {
-      left = mid + 1; // Search the right half
-    } else {
-      right = mid - 1; // Search the left half
-    }
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-
-  return -1; // Target not found
 }
+
+function countLeafNodes(root: TreeNode | null): number {
+  if (root === null) return 0;
+
+  // Leaf node condition: no left and no right children
+  if (root.left === null && root.right === null) return 1;
+
+  // Recursively count leaves in left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+const tree = new TreeNode(1, 
+  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
+  new TreeNode(3, null, new TreeNode(6))
+);
+
+console.log(countLeafNodes(tree)); // Output: 3
