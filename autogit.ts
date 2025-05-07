@@ -1,36 +1,46 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-  // Ensure nums1 is the smaller array
-  if (nums1.length > nums2.length) {
-    [nums1, nums2] = [nums2, nums1];
-  }
+function rabinKarp(text: string, pattern: string): number[] {
+    const d = 256; // number of characters in the input alphabet
+    const q = 101; // a prime number
+    const M = pattern.length;
+    const N = text.length;
+    const result: number[] = [];
+    const h = Math.pow(d, M - 1) % q; // The base value
+    let p = 0; // hash value for pattern
+    let t = 0; // hash value for text
+    let i: number;
 
-  const m = nums1.length;
-  const n = nums2.length;
-  let low = 0;
-  let high = m;
-
-  while (low <= high) {
-    const partitionX = Math.floor((low + high) / 2);
-    const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
-
-    const maxLeftX = (partitionX === 0) ? -Infinity : nums1[partitionX - 1];
-    const minRightX = (partitionX === m) ? Infinity : nums1[partitionX];
-
-    const maxLeftY = (partitionY === 0) ? -Infinity : nums2[partitionY - 1];
-    const minRightY = (partitionY === n) ? Infinity : nums2[partitionY];
-
-    if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
-      if ((m + n) % 2 === 0) {
-        return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
-      } else {
-        return Math.max(maxLeftX, maxLeftY);
-      }
-    } else if (maxLeftX > minRightY) {
-      high = partitionX - 1;
-    } else {
-      low = partitionX + 1;
+    // Calculate the hash value of the pattern and the first window of text
+    for (i = 0; i < M; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % q;
+        t = (d * t + text.charCodeAt(i)) % q;
     }
-  }
 
-  throw new Error("Input arrays are not sorted or invalid.");
+    // Slide the pattern over text one by one
+    for (i = 0; i <= N - M; i++) {
+        // Check the hash values of the pattern and text
+        if (p === t) {
+            // If the hash values match, check for characters one by one
+            if (text.substr(i, M) === pattern) {
+                result.push(i); // Pattern found at index i
+            }
+        }
+
+        // Calculate hash value for the next window of text
+        if (i < N - M) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + M)) % q;
+
+            // We might get a negative value of t, converting it to positive
+            if (t < 0) {
+                t = t + q;
+            }
+        }
+    }
+
+    return result;
 }
+
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "abc";
+const indices = rabinKarp(text, pattern);
+console.log(`Pattern found at indices: ${indices.join(", ")}`);
