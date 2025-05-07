@@ -1,122 +1,63 @@
-class SuffixTreeNode {
-  edges: Map<string, SuffixTreeEdge>;
-  suffixIndex?: number; // Only for leaves
+type Graph = Map<string, string[]>;
 
-  constructor() {
-    this.edges = new Map();
-    this.suffixIndex = undefined;
-  }
+interface QueueItem {
+  node: string;
+  depth: number;
 }
 
-class SuffixTreeEdge {
-  start: number; // start index of substring in original string
-  end: number;   // end index (inclusive)
-  node: SuffixTreeNode;
+function breadthLimitedSearch(graph: Graph, start: string, goal: string, limit: number): string[] | null {
+  // Queue holds nodes along with their depth from the start node
+  const queue: QueueItem[] = [{ node: start, depth: 0 }];
+  const visited = new Set<string>();
+  // Map to reconstruct path after finding the goal
+  const parentMap = new Map<string, string | null>();
+  parentMap.set(start, null);
 
-  constructor(start: number, end: number, node: SuffixTreeNode) {
-    this.start = start;
-    this.end = end;
-    this.node = node;
-  }
-}
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift()!;
 
-class SuffixTree {
-  root: SuffixTreeNode;
-  text: string;
+    if (node === goal) {
+      // Reconstruct path going backward from goal to start
+      const path: string[] = [];
+      let current: string | null = node;
+      while (current !== null) {
+        path.push(current);
+        current = parentMap.get(current) ?? null;
+      }
+      return path.reverse();
+    }
 
-  constructor(text: string) {
-    this.text = text + "$";  // append unique terminal symbol
-    this.root = new SuffixTreeNode();
-    this.buildNaive();
-  }
-
-  private buildNaive() {
-    for (let i = 0; i < this.text.length; i++) {
-      this.insertSuffix(i);
+    if (depth < limit) {
+      const neighbors = graph.get(node) || [];
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          parentMap.set(neighbor, node);
+          queue.push({ node: neighbor, depth: depth + 1 });
+        }
+      }
     }
   }
 
-  // Insert suffix starting at pos
-  private insertSuffix(pos: number) {
-    let currentNode = this.root;
-    let currentPos = pos;
-
-    while (currentPos < this.text.length) {
-      const char = this.text[currentPos];
-      if (!currentNode.edges.has(char)) {
-        // No edge starting with char, create a new leaf edge
-        const leaf = new SuffixTreeNode();
-        leaf.suffixIndex = pos;
-        currentNode.edges.set(char, new SuffixTreeEdge(currentPos, this.text.length - 1, leaf));
-        return;
-      }
-
-      // Walk along the edge
-      const edge = currentNode.edges.get(char)!;
-      const labelStart = edge.start;
-      const labelEnd = edge.end;
-
-      let labelIndex = labelStart;
-      let suffixIndex = currentPos;
-
-      // Walk while characters match
-      while (labelIndex <= labelEnd && this.text[labelIndex] === this.text[suffixIndex]) {
-        labelIndex++;
-        suffixIndex++;
-      }
-
-      if (labelIndex > labelEnd) {
-        // Entire edge label matches, go down to next node
-        currentNode = edge.node;
-        currentPos = suffixIndex;
-        continue;
-      }
-
-      // Mismatch found, need to split the edge
-      const existingChar = this.text[labelIndex];
-      const newChar = this.text[suffixIndex];
-
-      // Create a new intermediate node
-      const splitNode = new SuffixTreeNode();
-
-      // Create edge from split node to existing child node
-      const oldEdge = new SuffixTreeEdge(labelIndex, labelEnd, edge.node);
-      // Update current edge to end at split position
-      edge.end = labelIndex - 1;
-      edge.node = splitNode;
-
-      // Attach old edge starting at labelIndex now connected to splitNode
-      splitNode.edges.set(existingChar, oldEdge);
-
-      // Create a new leaf for the new suffix part
-      const leaf = new SuffixTreeNode();
-      leaf.suffixIndex = pos;
-      const newEdge = new SuffixTreeEdge(suffixIndex, this.text.length - 1, leaf);
-      splitNode.edges.set(newChar, newEdge);
-
-      return;
-    }
-  }
-
-  // Optional - method to visualize tree (example: print all suffixes)
-  collectSuffixes() {
-    const results: { suffix: string; index: number }[] = [];
-
-    const dfs = (node: SuffixTreeNode, path: string) => {
-      if (node.suffixIndex !== undefined) {
-        results.push({ suffix: this.text.substring(node.suffixIndex), index: node.suffixIndex });
-      }
-      for (const [char, edge] of node.edges) {
-        const edgeLabel = this.text.substring(edge.start, edge.end + 1);
-        dfs(edge.node, path + edgeLabel);
-      }
-    };
-
-    dfs(this.root, "");
-    return results;
-  }
+  // Goal not found within the depth limit
+  return null;
 }
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D', 'E']],
+  ['C', ['F']],
+  ['D', []],
+  ['E', ['F']],
+  ['F', []],
+]);
 
-// Example usage:
-const tree = new SuffixTree("banana");
-console.log(tree.collectSuffixes());
+const start = 'A';
+const goal = 'F';
+const depthLimit = 2;
+
+const path = breadthLimitedSearch(graph, start, goal, depthLimit);
+if (path) {
+  console.log(`Path found: ${path.join(' -> ')}`);
+} else {
+  console.log(`No path found within depth limit ${depthLimit}`);
+}
