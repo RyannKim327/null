@@ -1,51 +1,14 @@
-class Stack<T> {
-    private items: T[] = [];
-
-    // Add an element to the stack
-    push(item: T): void {
-        this.items.push(item);
-    }
-
-    // Remove and return the top element of the stack
-    pop(): T | undefined {
-        if (this.isEmpty()) {
-            throw new Error("Stack is empty");
-        }
-        return this.items.pop();
-    }
-
-    // Return the top element of the stack without removing it
-    peek(): T | undefined {
-        if (this.isEmpty()) {
-            return undefined;
-        }
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Return the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // For debugging: return the stack contents as an array
-    toArray(): T[] {
-        return [...this.items]; // Return a shallow copy of the items array
-    }
+const arr = [5, 3, 9, 1, 7];
+const max = Math.max(...arr);
+console.log(max); // 9
+const arr = [5, 3, 9, 1, 7];
+const max = arr.reduce((acc, val) => (val > acc ? val : acc), arr[0]);
+console.log(max); // 9
+const arr = [5, 3, 9, 1, 7];
+let max = arr[0];
+for (const num of arr) {
+  if (num > max) {
+    max = num;
+  }
 }
-
-// Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop()); // Output: 3
-console.log(stack.size()); // Output: 2
-console.log(stack.isEmpty()); // Output: false
-console.log(stack.toArray()); // Output: [1, 2]
+console.log(max); // 9
