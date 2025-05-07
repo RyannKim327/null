@@ -1,45 +1,13 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
-
-  constructor(val: number, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-  if (!headA || !headB) return null;
-
-  // Helper to get length of list
-  function getLength(head: ListNode | null): number {
-    let length = 0;
-    while (head) {
-      length++;
-      head = head.next;
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
     }
-    return length;
-  }
-
-  let lenA = getLength(headA);
-  let lenB = getLength(headB);
-
-  // Align heads to same starting point by skipping extra nodes in longer list
-  while (lenA > lenB) {
-    headA = headA!.next!;
-    lenA--;
-  }
-  while (lenB > lenA) {
-    headB = headB!.next!;
-    lenB--;
-  }
-
-  // Move in tandem to find intersection
-  while (headA && headB) {
-    if (headA === headB) return headA;
-    headA = headA.next;
-    headB = headB.next;
-  }
-
-  return null;  // No intersection found
+    // Recursive case
+    return n * factorial(n - 1);
 }
+
+// Example usage
+const number = 5;
+console.log(`Factorial of ${number} is ${factorial(number)}`);
+Factorial of 5 is 120
