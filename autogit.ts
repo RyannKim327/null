@@ -1,17 +1,58 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false; // 0 and 1 are not prime
-  if (num <= 3) return true;  // 2 and 3 are prime
+type Graph = Map<string, string[]>;
 
-  // This skips middle five numbers in below loop
-  if (num % 2 === 0 || num % 3 === 0) return false;
+interface QueueElement {
+  node: string;
+  depth: number;
+}
 
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) {
-      return false;
+function breadthLimitedSearch(graph: Graph, start: string, goal: string, limit: number): string[] | null {
+  const queue: QueueElement[] = [{ node: start, depth: 0 }];
+  const visited = new Set<string>();
+  const parent = new Map<string, string | null>();
+
+  parent.set(start, null);
+
+  while (queue.length > 0) {
+    const { node, depth } = queue.shift()!;
+
+    if (node === goal) {
+      // Reconstruct path by tracing parents
+      const path: string[] = [];
+      let current: string | null = node;
+      while (current !== null) {
+        path.push(current);
+        current = parent.get(current) ?? null;
+      }
+      return path.reverse();
+    }
+
+    if (depth < limit) {
+      const neighbors = graph.get(node) ?? [];
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          parent.set(neighbor, node);
+          queue.push({ node: neighbor, depth: depth + 1 });
+        }
+      }
     }
   }
 
-  return true;
+  // No path found within depth limit
+  return null;
 }
-console.log(isPrime(17)); // true
-console.log(isPrime(18)); // false
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D']],
+  ['C', ['E']],
+  ['D', []],
+  ['E', ['F']],
+  ['F', []],
+]);
+
+const start = 'A';
+const goal = 'F';
+const depthLimit = 2;
+
+const path = breadthLimitedSearch(graph, start, goal, depthLimit);
+console.log(path); // null, because 'F' is at depth 3
