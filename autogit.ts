@@ -1,22 +1,23 @@
-function insertionSort(arr: number[]): number[] {
-    // Make a copy to avoid mutating the original array
-    const sortedArr = [...arr];
+function bubbleSort(arr: number[]): number[] {
+  let n = arr.length;
+  let swapped: boolean;
 
-    for (let i = 1; i < sortedArr.length; i++) {
-        let current = sortedArr[i];
-        let j = i - 1;
-
-        // Shift elements that are greater than current one position ahead
-        while (j >= 0 && sortedArr[j] > current) {
-            sortedArr[j + 1] = sortedArr[j];
-            j--;
-        }
-        // Place current element at its correct position
-        sortedArr[j + 1] = current;
+  do {
+    swapped = false;
+    for (let i = 1; i < n; i++) {
+      if (arr[i - 1] > arr[i]) {
+        // Swap elements
+        [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+        swapped = true;
+      }
     }
+    // Each pass places the largest element at the end
+    n--;
+  } while (swapped);
 
-    return sortedArr;
+  return arr;
 }
-const unsorted = [8, 3, 5, 1, 9];
-const sorted = insertionSort(unsorted);
-console.log(sorted); // [1, 3, 5, 8, 9]
+
+// Example usage:
+const sortedArray = bubbleSort([5, 3, 8, 4, 2]);
+console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
