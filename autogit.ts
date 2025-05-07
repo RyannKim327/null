@@ -1,23 +1,28 @@
-function burrowsWheelerTransform(input: string): string {
-  // Append a unique end character that's lexicographically smaller than any other char
-  const endChar = '\0';
-  const s = input + endChar;
-
-  // Generate all rotations of s
-  const rotations: string[] = [];
-  for (let i = 0; i < s.length; i++) {
-    rotations.push(s.slice(i) + s.slice(0, i));
+function quicksort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: arrays with 0 or 1 elem are already sorted
   }
 
-  // Sort rotations lexicographically
-  rotations.sort();
+  const pivot = arr[Math.floor(arr.length / 2)];
+  const less: number[] = [];
+  const equal: number[] = [];
+  const greater: number[] = [];
 
-  // The last column is formed by taking last char of each rotation
-  let lastColumn = '';
-  for (const rotation of rotations) {
-    lastColumn += rotation[rotation.length - 1];
+  for (const num of arr) {
+    if (num < pivot) {
+      less.push(num);
+    } else if (num === pivot) {
+      equal.push(num);
+    } else {
+      greater.push(num);
+    }
   }
 
-  return lastColumn;
+  // Recursively sort and then combine the results
+  return [...quicksort(less), ...equal, ...quicksort(greater)];
 }
-console.log(burrowsWheelerTransform("banana"));
+
+// Example usage:
+const unsorted = [5, 3, 8, 4, 2];
+const sorted = quicksort(unsorted);
+console.log(sorted); // [2, 3, 4, 5, 8]
