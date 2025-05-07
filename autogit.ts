@@ -1,57 +1,29 @@
-class TrieNode {
-  children: Map<string, TrieNode>;
-  isEndOfWord: boolean;
+function areAnagrams(str1: string, str2: string): boolean {
+  // Early exit if lengths don't match
+  if (str1.length !== str2.length) return false;
 
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
-  }
+  // Sort and compare
+  const sortedStr1 = str1.split('').sort().join('');
+  const sortedStr2 = str2.split('').sort().join('');
+  return sortedStr1 === sortedStr2;
 }
+function areAnagrams(str1: string, str2: string): boolean {
+  if (str1.length !== str2.length) return false;
 
-class Trie {
-  root: TrieNode;
+  const charCount = new Map<string, number>();
 
-  constructor() {
-    this.root = new TrieNode();
+  for (const char of str1) {
+    charCount.set(char, (charCount.get(char) ?? 0) + 1);
   }
 
-  insert(word: string): void {
-    let currentNode = this.root;
-    for (const char of word) {
-      if (!currentNode.children.has(char)) {
-        currentNode.children.set(char, new TrieNode());
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-    currentNode.isEndOfWord = true;
+  for (const char of str2) {
+    if (!charCount.has(char)) return false;
+
+    const newCount = charCount.get(char)! - 1;
+    if (newCount < 0) return false;
+
+    charCount.set(char, newCount);
   }
 
-  search(word: string): boolean {
-    let currentNode = this.root;
-    for (const char of word) {
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-    return currentNode.isEndOfWord;
-  }
-
-  startsWith(prefix: string): boolean {
-    let currentNode = this.root;
-    for (const char of prefix) {
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-    return true;
-  }
+  return true;
 }
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));   // true
-console.log(trie.search("app"));     // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app"));     // true
