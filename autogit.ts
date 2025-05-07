@@ -1,29 +1,40 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  // Early exit if lengths don't match
-  if (str1.length !== str2.length) return false;
-
-  // Sort and compare
-  const sortedStr1 = str1.split('').sort().join('');
-  const sortedStr2 = str2.split('').sort().join('');
-  return sortedStr1 === sortedStr2;
+function kthSmallest(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;
+  const sorted = [...arr].sort((a, b) => a - b);
+  return sorted[k - 1];
 }
-function areAnagrams(str1: string, str2: string): boolean {
-  if (str1.length !== str2.length) return false;
+function quickselect(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;
 
-  const charCount = new Map<string, number>();
-
-  for (const char of str1) {
-    charCount.set(char, (charCount.get(char) ?? 0) + 1);
+  function partition(left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
+    for (let i = left; i < right; i++) {
+      if (arr[i] < pivotValue) {
+        [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+        storeIndex++;
+      }
+    }
+    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
+    return storeIndex;
   }
 
-  for (const char of str2) {
-    if (!charCount.has(char)) return false;
-
-    const newCount = charCount.get(char)! - 1;
-    if (newCount < 0) return false;
-
-    charCount.set(char, newCount);
+  function select(left: number, right: number, kSmallest: number): number {
+    if (left === right) return arr[left];
+    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
+    const pivotNewIndex = partition(left, right, pivotIndex);
+    if (kSmallest === pivotNewIndex) {
+      return arr[kSmallest];
+    } else if (kSmallest < pivotNewIndex) {
+      return select(left, pivotNewIndex - 1, kSmallest);
+    } else {
+      return select(pivotNewIndex + 1, right, kSmallest);
+    }
   }
 
-  return true;
+  return select(0, arr.length - 1, k - 1);
 }
+const arr = [7, 10, 4, 3, 20, 15];
+console.log(kthSmallest(arr, 3));  // Output: 7
+console.log(quickselect(arr, 3));  // Output: 7
