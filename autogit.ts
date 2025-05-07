@@ -1,50 +1,49 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+/**
+ * Interpolation search function
+ * @param arr - Sorted array of numbers
+ * @param target - The value to search for
+ * @returns The index of the target value or -1 if not found
+ */
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Avoid division by zero
+        if (arr[high] === arr[low]) {
+            if (arr[low] === target) {
+                return low;
+            }
+            return -1;
+        }
+
+        // Estimate the position of the target
+        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos;
+        }
+
+        // If target is greater, ignore left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        }
+        // If target is smaller, ignore right half
+        else {
+            high = pos - 1;
+        }
     }
-
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move current root (max element) to end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
-}
-
-// Function to heapify a subtree rooted with node i which is
-// an index in arr[]. n is size of heap
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
-
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-        
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
+    return -1; // Target not found
 }
 
 // Example usage
-const array = [12, 11, 13, 5, 6, 7];
-const sortedArray = heapSort(array);
-console.log(sortedArray);
+const sortedArray: number[] = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue: number = 70;
+
+const index = interpolationSearch(sortedArray, targetValue);
+if (index !== -1) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log('Element not found');
+}
