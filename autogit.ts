@@ -1,45 +1,22 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+function quicksort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: arrays with 0 or 1 element are already sorted
+  }
 
-    // Build a max-heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+  const pivot = arr[arr.length - 1]; // Choose the last element as the pivot
+  const left: number[] = [];
+  const right: number[] = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
     }
+  }
 
-    // One by one extract elements from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Move the current root (largest) to the end
-        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
-
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
-
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
-}
-
-// Example usage
-const array = [3, 5, 1, 10, 2];
-const sortedArray = heapSort(array);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 10]
+const numbers = [4, 2, 7, 1, 3];
+const sorted = quicksort(numbers);
+console.log(sorted); // Output: [1, 2, 3, 4, 7]
