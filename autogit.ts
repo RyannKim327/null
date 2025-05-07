@@ -1,28 +1,15 @@
-function quicksort(arr: number[]): number[] {
-  if (arr.length <= 1) {
-    return arr; // Base case: arrays with 0 or 1 elem are already sorted
+function isPrime(num: number): boolean {
+  if (num <= 1) return false;             // 0 and 1 are not prime
+  if (num <= 3) return true;              // 2 and 3 are prime
+
+  if (num % 2 === 0 || num % 3 === 0) return false; // divisible by 2 or 3
+
+  // Check from 5 to sqrt(num), skipping multiples of 2 and 3
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
   }
 
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const less: number[] = [];
-  const equal: number[] = [];
-  const greater: number[] = [];
-
-  for (const num of arr) {
-    if (num < pivot) {
-      less.push(num);
-    } else if (num === pivot) {
-      equal.push(num);
-    } else {
-      greater.push(num);
-    }
-  }
-
-  // Recursively sort and then combine the results
-  return [...quicksort(less), ...equal, ...quicksort(greater)];
+  return true;
 }
-
-// Example usage:
-const unsorted = [5, 3, 8, 4, 2];
-const sorted = quicksort(unsorted);
-console.log(sorted); // [2, 3, 4, 5, 8]
+console.log(isPrime(11));  // true
+console.log(isPrime(15));  // false
