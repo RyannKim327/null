@@ -1,9 +1,13 @@
-function factorial(n: number): number {
-  if (n <= 1) {
-    return 1; // Base case: factorial of 0 or 1 is 1
-  }
-  return n * factorial(n - 1); // Recursive case
+function reverseWords(input: string): string {
+    // Split the string into an array of words
+    const words = input.split(' ');
+    // Reverse the array of words
+    const reversedWords = words.reverse();
+    // Join the reversed words back into a string
+    return reversedWords.join(' ');
 }
 
 // Example usage:
-console.log(factorial(5)); // Outputs 120
+const originalString = "Hello World from TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript from World Hello"
