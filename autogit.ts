@@ -1,68 +1,35 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    head: ListNode | null;
-    constructor() {
-        this.head = null;
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    // Ensure nums1 is the smaller array
+    if (nums1.length > nums2.length) {
+        return findMedianSortedArrays(nums2, nums1);
     }
 
-    // Method to append a new node at the end of the list
-    append(value: number) {
-        const newNode = new ListNode(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
+    const m = nums1.length;
+    const n = nums2.length;
+    let low = 0, high = m;
 
-    // Method to find the nth node from the end
-    findNthFromEnd(n: number): ListNode | null {
-        let first: ListNode | null = this.head;
-        let second: ListNode | null = this.head;
+    while (low <= high) {
+        const partitionX = Math.floor((low + high) / 2);
+        const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
 
-        // Move the first pointer n nodes ahead
-        for (let i = 0; i < n; i++) {
-            if (first === null) {
-                return null; // n is larger than the size of the list
+        const maxLeftX = partitionX === 0 ? -Infinity : nums1[partitionX - 1];
+        const minRightX = partitionX === m ? Infinity : nums1[partitionX];
+
+        const maxLeftY = partitionY === 0 ? -Infinity : nums2[partitionY - 1];
+        const minRightY = partitionY === n ? Infinity : nums2[partitionY];
+
+        if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
+            if ((m + n) % 2 === 0) {
+                return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
+            } else {
+                return Math.max(maxLeftX, maxLeftY);
             }
-            first = first.next;
+        } else if (maxLeftX > minRightY) {
+            high = partitionX - 1;  // move left in nums1
+        } else {
+            low = partitionX + 1;   // move right in nums1
         }
-
-        // Move both pointers until the first pointer reaches the end
-        while (first !== null) {
-            first = first.next;
-            second = second.next;
-        }
-
-        // The second pointer is now at the nth node from the end
-        return second;
     }
-}
 
-// Example usage
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
-
-const n = 2;
-const node = list.findNthFromEnd(n);
-if (node) {
-    console.log(`The ${n}th node from the end is: ${node.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
+    throw new Error("Input arrays are not sorted or invalid");
 }
