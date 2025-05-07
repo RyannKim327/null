@@ -1,45 +1,59 @@
-function kthSmallest_sort(arr: number[], k: number): number | null {
-  if (k < 1 || k > arr.length) return null;  // handle invalid k
-  const sorted = [...arr].sort((a, b) => a - b);
-  return sorted[k - 1];
-}
-function kthSmallest_quickselect(arr: number[], k: number): number | null {
-  if (k < 1 || k > arr.length) return null;
+function computeLPSArray(pattern: string): number[] {
+  const lps = new Array(pattern.length).fill(0);
+  let length = 0; // length of the previous longest prefix suffix
+  let i = 1;
 
-  function partition(left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
-
-    for (let i = left; i < right; i++) {
-      if (arr[i] < pivotValue) {
-        [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-        storeIndex++;
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[length]) {
+      length++;
+      lps[i] = length;
+      i++;
+    } else {
+      if (length !== 0) {
+        length = lps[length - 1];
+        // do not increment i here
+      } else {
+        lps[i] = 0;
+        i++;
       }
     }
-
-    // Move pivot to its final place
-    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
-    return storeIndex;
   }
 
-  function select(left: number, right: number, kSmallest: number): number {
-    if (left === right) return arr[left];
+  return lps;
+}
 
-    // Choose a random pivot index between left and right
-    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
+function KMPSearch(text: string, pattern: string): number[] {
+  const lps = computeLPSArray(pattern);
+  const resultIndices: number[] = [];
 
-    const pivotFinalIndex = partition(left, right, pivotIndex);
+  let i = 0; // index for text
+  let j = 0; // index for pattern
 
-    if (kSmallest === pivotFinalIndex) {
-      return arr[kSmallest];
-    } else if (kSmallest < pivotFinalIndex) {
-      return select(left, pivotFinalIndex - 1, kSmallest);
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+
+      if (j === pattern.length) {
+        // pattern found at index (i - j)
+        resultIndices.push(i - j);
+        j = lps[j - 1];
+      }
     } else {
-      return select(pivotFinalIndex + 1, right, kSmallest);
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
     }
   }
 
-  return select(0, arr.length - 1, k - 1);
+  return resultIndices;
 }
+
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
+Pattern found at indices: [10]
