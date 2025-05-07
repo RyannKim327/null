@@ -1,60 +1,62 @@
-function merge<T>(left: T[], right: T[]): T[] {
-    const merged: T[] = [];
-    let i = 0;
-    let j = 0;
+// Node class to represent each element in the linked list
+class Node<T> {
+  value: T;
+  next: Node<T> | null = null;
 
-    // Compare and merge elements from left and right arrays
-    while (i < left.length && j < right.length) {
-        if (left[i] <= right[j]) {
-            merged.push(left[i]);
-            i++;
-        } else {
-            merged.push(right[j]);
-            j++;
-        }
-    }
-
-    // Add remaining elements of left (if any)
-    while (i < left.length) {
-        merged.push(left[i]);
-        i++;
-    }
-
-    // Add remaining elements of right (if any)
-    while (j < right.length) {
-        merged.push(right[j]);
-        j++;
-    }
-
-    return merged;
+  constructor(value: T) {
+    this.value = value;
+  }
 }
 
-function iterativeMergeSort<T>(arr: T[]): T[] {
-    const n = arr.length;
-    let size = 1;
+// Queue class using linked list
+class Queue<T> {
+  private head: Node<T> | null = null;  // front of the queue
+  private tail: Node<T> | null = null;  // rear of the queue
+  private length: number = 0;
 
-    // Outer loop for sizes of subarrays to merge
-    while (size < n) {
-        for (let leftStart = 0; leftStart < n; leftStart += size * 2) {
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + size * 2, n);
+  // Add element to the end of the queue
+  enqueue(value: T): void {
+    const newNode = new Node(value);
 
-            const leftArray = arr.slice(leftStart, mid);
-            const rightArray = arr.slice(mid, rightEnd);
-            const merged = merge(leftArray, rightArray);
+    if (!this.tail) {
+      // If the queue is empty
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail.next = newNode;
+      this.tail = newNode;
+    }
+    this.length++;
+  }
 
-            // Copy merged array back into the original array
-            for (let k = 0; k < merged.length; k++) {
-                arr[leftStart + k] = merged[k];
-            }
-        }
-        size *= 2; // Increase the size of the subarray to be merged
+  // Remove element from the front of the queue
+  dequeue(): T | undefined {
+    if (!this.head) return undefined;
+
+    const value = this.head.value;
+    this.head = this.head.next;
+
+    // If the queue becomes empty, reset tail as well
+    if (!this.head) {
+      this.tail = null;
     }
 
-    return arr;
-}
+    this.length--;
+    return value;
+  }
 
-// Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = iterativeMergeSort(array);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+  // Peek at the front element without removing it
+  peek(): T | undefined {
+    return this.head?.value;
+  }
+
+  // Check if the queue is empty
+  isEmpty(): boolean {
+    return this.length === 0;
+  }
+
+  // Get the size of the queue
+  size(): number {
+    return this.length;
+  }
+}
