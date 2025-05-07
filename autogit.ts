@@ -1,55 +1,54 @@
-function rabinKarp(text: string, pattern: string): number[] {
-  const result: number[] = [];
-  const m = pattern.length;
-  const n = text.length;
+function buildLPS(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let len = 0; // Length of previous longest prefix suffix
+    let i = 1;   // Current index in pattern
 
-  if (m > n) return result;
-
-  const base = 256; // Number of characters in the input alphabet (extended ASCII)
-  const prime = 101; // A prime number to mod the hash values
-  
-  let patternHash = 0; // Hash value for pattern
-  let windowHash = 0;  // Hash value for text window
-  let h = 1;
-
-  // The value of h would be "pow(base, m-1)%prime"
-  for (let i = 0; i < m - 1; i++) {
-    h = (h * base) % prime;
-  }
-
-  // Calculate the hash value of the pattern and first window of the text
-  for (let i = 0; i < m; i++) {
-    patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
-    windowHash = (base * windowHash + text.charCodeAt(i)) % prime;
-  }
-
-  // Slide the pattern over text one by one
-  for (let i = 0; i <= n - m; i++) {
-    // If the hash values match, then only check characters one by one
-    if (patternHash === windowHash) {
-      let match = true;
-      for (let j = 0; j < m; j++) {
-        if (text.charAt(i + j) !== pattern.charAt(j)) {
-          match = false;
-          break;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
-      }
-      if (match) result.push(i);
     }
-
-    // Calculate hash for next window of text: Remove leading char, add trailing char
-    if (i < n - m) {
-      windowHash = (base * (windowHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
-      // We might get negative value, converting it to positive
-      if (windowHash < 0) {
-        windowHash += prime;
-      }
-    }
-  }
-
-  return result;
+    return lps;
 }
-const text = "abracadabra";
-const pattern = "abra";
-const positions = rabinKarp(text, pattern);
-console.log(positions); // Output: [0, 7]
+
+function kmpSearch(text: string, pattern: string): number {
+    const lps = buildLPS(pattern);
+    let i = 0; // Index for text
+    let j = 0; // Index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            // Found the pattern at index (i - j)
+            return i - j;
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+    // If we reach here, pattern was not found
+    return -1;
+}
+
+// Example Usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+
+const result = kmpSearch(text, pattern);
+console.log(result); // Output: 10 (index where "ababd" starts in the text)
