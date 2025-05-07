@@ -1,105 +1,65 @@
-class PriorityQueue<T> {
-  private heap: T[];
-  private comparator: (a: T, b: T) => boolean;
+function merge(left: number[], right: number[]): number[] {
+    let result: number[] = [];
+    let i = 0;
+    let j = 0;
 
-  constructor(comparator: (a: T, b: T) => boolean = (a, b) => a < b) {
-    this.heap = [];
-    this.comparator = comparator;
-  }
-
-  private parent(index: number): number {
-    return Math.floor((index - 1) / 2);
-  }
-
-  private leftChild(index: number): number {
-    return 2 * index + 1;
-  }
-
-  private rightChild(index: number): number {
-    return 2 * index + 2;
-  }
-
-  private swap(i: number, j: number): void {
-    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
-  }
-
-  private siftUp(index: number): void {
-    while (
-      index > 0 &&
-      this.comparator(this.heap[index], this.heap[this.parent(index)])
-    ) {
-      this.swap(index, this.parent(index));
-      index = this.parent(index);
-    }
-  }
-
-  private siftDown(index: number): void {
-    let left = this.leftChild(index);
-    let right = this.rightChild(index);
-    let smallest = index;
-
-    if (
-      left < this.heap.length &&
-      this.comparator(this.heap[left], this.heap[smallest])
-    ) {
-      smallest = left;
+    // Merge the two arrays
+    while (i < left.length && j < right.length) {
+        if (left[i] < right[j]) {
+            result.push(left[i]);
+            i++;
+        } else {
+            result.push(right[j]);
+            j++;
+        }
     }
 
-    if (
-      right < this.heap.length &&
-      this.comparator(this.heap[right], this.heap[smallest])
-    ) {
-      smallest = right;
+    // Push remaining elements from left array, if any
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
     }
 
-    if (smallest !== index) {
-      this.swap(index, smallest);
-      this.siftDown(smallest);
+    // Push remaining elements from right array, if any
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
     }
-  }
 
-  public push(item: T): void {
-    this.heap.push(item);
-    this.siftUp(this.heap.length - 1);
-  }
-
-  public pop(): T | undefined {
-    if (this.heap.length === 0) return undefined;
-    const root = this.heap[0];
-    const end = this.heap.pop()!;
-    if (this.heap.length > 0) {
-      this.heap[0] = end;
-      this.siftDown(0);
-    }
-    return root;
-  }
-
-  public peek(): T | undefined {
-    return this.heap[0];
-  }
-
-  public size(): number {
-    return this.heap.length;
-  }
-
-  public isEmpty(): boolean {
-    return this.heap.length === 0;
-  }
+    return result;
 }
-const pq = new PriorityQueue<number>();
 
-pq.push(5);
-pq.push(3);
-pq.push(8);
+function iterativeMergeSort(arr: number[]): number[] {
+    const n = arr.length;
+    if (n < 2) return arr;
 
-console.log(pq.peek()); // 3
+    let size = 1;
+    while (size < n) {
+        let left = 0;
 
-while (!pq.isEmpty()) {
-  console.log(pq.pop()); // 3, 5, 8
+        // For each pair of subarrays of size "size"
+        while (left < n) {
+            // Find the mid point and right end point of the subarrays
+            const mid = Math.min(left + size, n);
+            const right = Math.min(left + 2 * size, n);
+            
+            // Merge the two halves
+            const mergedArray = merge(arr.slice(left, mid), arr.slice(mid, right));
+
+            // Copy mergedArray back to the original array
+            for (let k = 0; k < mergedArray.length; k++) {
+                arr[left + k] = mergedArray[k];
+            }
+
+            left += 2 * size; // Move to the next pair of subarrays
+        }
+
+        size *= 2; // Double the size for the next iteration
+    }
+
+    return arr;
 }
-const maxHeap = new PriorityQueue<number>((a, b) => a > b);
-maxHeap.push(5);
-maxHeap.push(3);
-maxHeap.push(8);
 
-console.log(maxHeap.pop()); // 8
+// Example usage
+const arr = [38, 27, 43, 3, 9, 82, 10];
+console.log(iterativeMergeSort(arr)); // Output: [3, 9, 10, 27, 38, 43, 82]
