@@ -1,14 +1,37 @@
-function maxSubArray(nums: number[]): number {
-  let maxSoFar = nums[0];
-  let maxEndingHere = nums[0];
-
-  for (let i = 1; i < nums.length; i++) {
-    // Extend the previous subarray or start fresh from current element
-    maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
-    // Track the max sum found so far
-    maxSoFar = Math.max(maxSoFar, maxEndingHere);
-  }
-
-  return maxSoFar;
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    return count;
 }
-console.log(maxSubArray([-2,1,-3,4,-1,2,1,-5,4])); // Output: 6 (subarray [4,-1,2,1])
+
+const inputString = "hello world";
+const characterToCount = "o";
+console.log(countCharacter(inputString, characterToCount)); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
+
+const inputString = "hello world";
+const characterToCount = "o";
+console.log(countCharacter(inputString, characterToCount)); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return Array.from(str).reduce((count, currentChar) => {
+        return currentChar === char ? count + 1 : count;
+    }, 0);
+}
+
+const inputString = "hello world";
+const characterToCount = "o";
+console.log(countCharacter(inputString, characterToCount)); // Output: 2
+function countCharacter(str: string, char: string): number {
+    const matches = str.match(new RegExp(char, 'g'));
+    return matches ? matches.length : 0;
+}
+
+const inputString = "hello world";
+const characterToCount = "o";
+console.log(countCharacter(inputString, characterToCount)); // Output: 2
