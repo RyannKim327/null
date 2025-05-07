@@ -1,8 +1,15 @@
-function removeVowels(input: string): string {
-    return input.replace(/[aeiouAEIOU]/g, '');
-}
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-// Example usage:
-const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
-console.log(stringWithoutVowels); // Hll, Wrld!
+const contains: boolean = str.includes(substring);
+console.log(contains); // Output: true
+const str: string = "Hello, world!";
+const substring: string = "world";
+
+const contains: boolean = str.indexOf(substring) !== -1;
+console.log(contains); // Output: true
+const str: string = "Hello, world!";
+const substring: string = "world";
+
+const contains: boolean = /world/.test(str);
+console.log(contains); // Output: true
