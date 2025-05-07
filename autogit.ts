@@ -1,40 +1,41 @@
-function kthSmallest(arr: number[], k: number): number | undefined {
-  if (k < 1 || k > arr.length) return undefined;
-  const sorted = [...arr].sort((a, b) => a - b);
-  return sorted[k - 1];
-}
-function quickselect(arr: number[], k: number): number | undefined {
-  if (k < 1 || k > arr.length) return undefined;
+class ListNode {
+  val: number;
+  next: ListNode | null;
 
-  function partition(left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
-    for (let i = left; i < right; i++) {
-      if (arr[i] < pivotValue) {
-        [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-        storeIndex++;
-      }
-    }
-    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
-    return storeIndex;
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
+function isPalindrome(head: ListNode | null): boolean {
+  if (!head || !head.next) return true;
+
+  // Find middle (slow will point to middle)
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
+  while (fast && fast.next) {
+    slow = slow!.next;
+    fast = fast.next.next;
   }
 
-  function select(left: number, right: number, kSmallest: number): number {
-    if (left === right) return arr[left];
-    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
-    const pivotNewIndex = partition(left, right, pivotIndex);
-    if (kSmallest === pivotNewIndex) {
-      return arr[kSmallest];
-    } else if (kSmallest < pivotNewIndex) {
-      return select(left, pivotNewIndex - 1, kSmallest);
-    } else {
-      return select(pivotNewIndex + 1, right, kSmallest);
-    }
+  // Reverse second half
+  let prev: ListNode | null = null;
+  let curr: ListNode | null = slow;
+  while (curr) {
+    const nextTemp = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = nextTemp;
   }
 
-  return select(0, arr.length - 1, k - 1);
+  // Compare first half and reversed second half
+  let firstHalf: ListNode | null = head;
+  let secondHalf: ListNode | null = prev;
+  while (secondHalf) {
+    if (firstHalf!.val !== secondHalf.val) return false;
+    firstHalf = firstHalf!.next;
+    secondHalf = secondHalf.next;
+  }
+
+  return true;
 }
-const arr = [7, 10, 4, 3, 20, 15];
-console.log(kthSmallest(arr, 3));  // Output: 7
-console.log(quickselect(arr, 3));  // Output: 7
