@@ -1,52 +1,43 @@
-// Define a type for the graph or tree node
-type Node<T> = {
-    value: T;
-    children: Node<T>[];
-};
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 
-// Depth-limited search function
-function depthLimitedSearch<T>(root: Node<T>, target: T, limit: number): Node<T> | null {
-    // Stack for the nodes
-    const stack: { node: Node<T>, depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if we have found the target
-        if (node.value === target) {
-            return node;
-        }
-
-        // If we haven't reached the limit, add children to the stack
-        if (depth < limit) {
-            for (const child of node.children) {
-                stack.push({ node: child, depth: depth + 1 });
-            }
-        }
-    }
-
-    // If we exhaust the stack and haven't found the target, return null
-    return null;
+// Simulated async task, like connecting to a service or fetching data
+async function connectAsync(): Promise<string> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // simulate success/failure randomly
+      const success = Math.random() > 0.3;
+      if (success) {
+        resolve('Connection successful!');
+      } else {
+        reject(new Error('Connection failed.'));
+      }
+    }, 2000);
+  });
 }
 
-// Example usage
-const tree: Node<number> = {
-    value: 1,
-    children: [
-        { value: 2, children: [] },
-        { 
-            value: 3, 
-            children: [
-                { value: 4, children: [] },
-                { value: 5, children: [] }
-            ] 
-        }
-    ]
-};
+export default function AsyncConnectionComponent() {
+  const [status, setStatus] = useState<string>('Disconnected');
+  const [loading, setLoading] = useState(false);
 
-const targetValue = 4;
-const depthLimit = 2;
+  const handleConnect = async () => {
+    setLoading(true);
+    setStatus('Connecting...');
+    try {
+      const message = await connectAsync();
+      setStatus(message);
+    } catch (e) {
+      setStatus((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-const result = depthLimitedSearch(tree, targetValue, depthLimit);
-console.log(result ? `Found target: ${result.value}` : 'Target not found');
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>Status: {status}</Text>
+      {loading ? <ActivityIndicator size="small" /> : null}
+      <Button title="Connect" onPress={handleConnect} />
+    </View>
+  );
+}
