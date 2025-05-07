@@ -1,13 +1,23 @@
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("The array must contain at least one number");
+function firstNonRepeatingCharacter(str: string): string | null {
+    const charCount: { [key: string]: number } = {};
+
+    // Step 1: Count the frequency of each character
+    for (const char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
     }
-    
-    const sum = numbers.reduce((accumulator, current) => accumulator + current, 0);
-    return sum / numbers.length;
+
+    // Step 2: Find the first non-repeating character
+    for (const char of str) {
+        if (charCount[char] === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
+
+    // Return null if no non-repeating character is found
+    return null;
 }
 
 // Example usage:
-const numbers = [10, 20, 30, 40, 50];
-const mean = calculateMean(numbers);
-console.log(`The mean is: ${mean}`);
+const input = "swiss";
+const result = firstNonRepeatingCharacter(input);
+console.log(result); // Output: "w"
