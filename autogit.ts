@@ -1,45 +1,20 @@
-function quickselect(arr: number[], k: number): number | undefined {
-  if (k < 1 || k > arr.length) return undefined;
-
-  function partition(left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
-
-    for (let i = left; i < right; i++) {
-      if (arr[i] < pivotValue) {
-        [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-        storeIndex++;
-      }
-    }
-
-    // Swap pivot to its final place
-    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
-    return storeIndex;
-  }
-
-  function select(left: number, right: number, kSmallest: number): number {
-    if (left === right) return arr[left];
-
-    // Choose a random pivotIndex between left and right
-    let pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
-    pivotIndex = partition(left, right, pivotIndex);
-
-    if (kSmallest === pivotIndex) {
-      return arr[kSmallest];
-    } else if (kSmallest < pivotIndex) {
-      return select(left, pivotIndex - 1, kSmallest);
-    } else {
-      return select(pivotIndex + 1, right, kSmallest);
-    }
-  }
-
-  // kth smallest is at index k-1 (0-based)
-  return select(0, arr.length - 1, k - 1);
+function countOccurrences(text: string, word: string, caseSensitive = false): number {
+  const flags = caseSensitive ? 'g' : 'gi'; // global and (optionally) case-insensitive
+  const pattern = new RegExp(`\\b${word}\\b`, flags);
+  const matches = text.match(pattern);
+  return matches ? matches.length : 0;
 }
-const nums = [7, 10, 4, 3, 20, 15];
-const k = 3;
-const kthSmallest = quickselect(nums, k);
-console.log(`The ${k}rd smallest element is`, kthSmallest);  // Output: 7
-const kthSmallest = arr.sort((a, b) => a - b)[k - 1];
+
+// Example usage:
+const example = "The quick brown fox jumps over the lazy dog. The fox is clever.";
+console.log(countOccurrences(example, "fox")); // Output: 2
+console.log(countOccurrences(example, "the")); // Output: 2 (case-insensitive)
+console.log(countOccurrences(example, "The", true)); // Output: 2 (case-sensitive)
+function countOccurrencesSplit(text: string, word: string): number {
+  const words = text.toLowerCase().split(/\W+/); // split by non-word characters
+  return words.filter(w => w === word.toLowerCase()).length;
+}
+
+// Example usage:
+console.log(countOccurrencesSplit(example, "fox")); // Output: 2
+console.log(countOccurrencesSplit(example, "the")); // Output: 2
