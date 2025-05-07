@@ -1,51 +1,57 @@
-class ListNode {
-    value: any;
-    next: ListNode | null;
+function buildLPSArray(pattern: string): number[] {
+  const lps: number[] = Array(pattern.length).fill(0);
+  let length = 0; // length of the previous longest prefix suffix
+  let i = 1;
 
-    constructor(value: any, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
-    }
-}
-
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let current = head;
-    while (current !== null) {
-        length++;
-        current = current.next;
-    }
-    return length;
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (headA === null || headB === null) return null;
-
-    const lenA = getLength(headA);
-    const lenB = getLength(headB);
-
-    let currA = headA;
-    let currB = headB;
-
-    // Advance pointer in longer list
-    if (lenA > lenB) {
-        for (let i = 0; i < lenA - lenB; i++) {
-            if (currA) currA = currA.next;
-        }
+  while(i < pattern.length) {
+    if(pattern[i] === pattern[length]) {
+      length++;
+      lps[i] = length;
+      i++;
     } else {
-        for (let i = 0; i < lenB - lenA; i++) {
-            if (currB) currB = currB.next;
-        }
+      if(length !== 0) {
+        length = lps[length - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
+  }
 
-    // Traverse both lists together comparing references
-    while (currA !== null && currB !== null) {
-        if (currA === currB) {
-            return currA;
-        }
-        currA = currA.next;
-        currB = currB.next;
-    }
-
-    return null; // No intersection
+  return lps;
 }
+
+function kmpSearch(text: string, pattern: string): number[] {
+  const lps = buildLPSArray(pattern);
+  const results: number[] = [];
+
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+
+  while (i < text.length) {
+    if (text[i] === pattern[j]) {
+      i++;
+      j++;
+
+      if (j === pattern.length) {
+        // match found, push start index
+        results.push(i - j);
+        j = lps[j - 1];  // prepare for the next possible match
+      }
+    } else {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return results;
+}
+
+// Usage example:
+const text = "abxabcabcaby";
+const pattern = "abcaby";
+const matches = kmpSearch(text, pattern);
+console.log(matches); // Output: [6]
