@@ -1,97 +1,29 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    // Start with a big gap, then reduce the gap
+    let gap = Math.floor(n / 2);
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
+    while (gap > 0) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            const temp = arr[i];
+            let j = i;
 
-    addVertex(vertex: number) {
-        if (!this.adjacencyList.has(vertex)) {
-            this.adjacencyList.set(vertex, []);
-        }
-    }
-
-    addEdge(v1: number, v2: number) {
-        this.addVertex(v1);
-        this.addVertex(v2);
-        this.adjacencyList.get(v1)?.push(v2);
-        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
-    }
-
-    dfs(startVertex: number) {
-        const visited = new Set<number>();
-        this.dfsUtil(startVertex, visited);
-    }
-
-    private dfsUtil(vertex: number, visited: Set<number>) {
-        visited.add(vertex);
-        console.log(vertex); // Process the vertex (Here we simply log it)
-
-        const neighbors = this.adjacencyList.get(vertex) || [];
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                this.dfsUtil(neighbor, visited);
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
             }
+
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
+
+        gap = Math.floor(gap / 2);
     }
+
+    return arr;
 }
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 5);
-
-console.log("DFS starting from vertex 1:");
-graph.dfs(1);
-class Graph {
-    private adjacencyList: Map<number, number[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
-    }
-
-    addVertex(vertex: number) {
-        if (!this.adjacencyList.has(vertex)) {
-            this.adjacencyList.set(vertex, []);
-        }
-    }
-
-    addEdge(v1: number, v2: number) {
-        this.addVertex(v1);
-        this.addVertex(v2);
-        this.adjacencyList.get(v1)?.push(v2);
-        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
-    }
-
-    dfs(startVertex: number) {
-        const visited = new Set<number>();
-        const stack: number[] = [startVertex];
-
-        while (stack.length > 0) {
-            const vertex = stack.pop()!;
-            if (!visited.has(vertex)) {
-                visited.add(vertex);
-                console.log(vertex); // Process the vertex (Here we simply log it)
-
-                const neighbors = this.adjacencyList.get(vertex) || [];
-                for (const neighbor of neighbors) {
-                    if (!visited.has(neighbor)) {
-                        stack.push(neighbor);
-                    }
-                }
-            }
-        }
-    }
-}
-
-// Example usage:
-const graph = new Graph();
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 5);
-
-console.log("DFS starting from vertex 1:");
-graph.dfs(1);
+const array = [23, 12, 1, 8, 34, 54, 2, 3];
+console.log(shellSort(array));
+[1, 2, 3, 8, 12, 23, 34, 54]
