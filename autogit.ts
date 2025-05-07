@@ -1,22 +1,9 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-  
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
+const complexEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-function maxDepth(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-  
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-  
-  return Math.max(leftDepth, rightDepth) + 1;
+function isValidEmailComplex(email: string): boolean {
+  return complexEmailRegex.test(email);
 }
