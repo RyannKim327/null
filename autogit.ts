@@ -1,12 +1,15 @@
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-function isValidEmail(email: string): boolean {
-    return emailRegex.test(email);
+function getRandomNumber(min: number, max: number): number {
+    // Ensure min is inclusive and max is exclusive
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
-// Example usage:
-const email1 = "test@example.com";
-const email2 = "invalid-email@.com";
+// Example usage
+const randomNumber = getRandomNumber(1, 10); // Generates a random number between 1 and 9
+console.log(randomNumber);
+function getRandomNumberInclusive(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-console.log(`${email1} is valid: ${isValidEmail(email1)}`); // true
-console.log(`${email2} is valid: ${isValidEmail(email2)}`); // false
+// Example usage
+const randomNumberInclusive = getRandomNumberInclusive(1, 10); // Generates a random number between 1 and 10
+console.log(randomNumberInclusive);
