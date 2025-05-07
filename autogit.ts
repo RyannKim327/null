@@ -1,15 +1,29 @@
-const str: string = "Hello, world!";
-const substring: string = "world";
+import * as readline from 'readline';
 
-const contains: boolean = str.includes(substring);
-console.log(contains); // Output: true
-const str: string = "Hello, world!";
-const substring: string = "world";
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
 
-const contains: boolean = str.indexOf(substring) !== -1;
-console.log(contains); // Output: true
-const str: string = "Hello, world!";
-const substring: string = "world";
+// Function to calculate the square of a number
+const calculateSquare = (num: number): number => {
+    return num * num;
+}
 
-const contains: boolean = /world/.test(str);
-console.log(contains); // Output: true
+// Asking user for input
+rl.question('Please enter a number: ', (input: string) => {
+    const numberInput = parseFloat(input);
+
+    if (isNaN(numberInput)) {
+        console.log("You didn't enter a valid number. Please try again.");
+    } else {
+        const square = calculateSquare(numberInput);
+        console.log(`The square of ${numberInput} is ${square}.`);
+    }
+
+    // Close the readline interface
+    rl.close();
+});
+Please enter a number: 5
+The square of 5 is 25.
