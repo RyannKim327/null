@@ -1,62 +1,33 @@
-// Node class to represent each element in the linked list
-class Node<T> {
-  value: T;
-  next: Node<T> | null = null;
+const array = [1, 2, 3, 3, 4, 5, 5, 6];
+const uniqueArray = Array.from(new Set(array));
 
-  constructor(value: T) {
-    this.value = value;
-  }
-}
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+const array = [1, 2, 3, 3, 4, 5, 5, 6];
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
 
-// Queue class using linked list
-class Queue<T> {
-  private head: Node<T> | null = null;  // front of the queue
-  private tail: Node<T> | null = null;  // rear of the queue
-  private length: number = 0;
-
-  // Add element to the end of the queue
-  enqueue(value: T): void {
-    const newNode = new Node(value);
-
-    if (!this.tail) {
-      // If the queue is empty
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+const array = [1, 2, 3, 3, 4, 5, 5, 6];
+const uniqueArray = array.reduce((accumulator, current) => {
+    if (!accumulator.includes(current)) {
+        accumulator.push(current);
     }
-    this.length++;
-  }
+    return accumulator;
+}, [] as number[]); // Specify type if needed
 
-  // Remove element from the front of the queue
-  dequeue(): T | undefined {
-    if (!this.head) return undefined;
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+const array = [1, 2, 3, 3, 4, 5, 5, 6];
+const uniqueArray: number[] = [];
 
-    const value = this.head.value;
-    this.head = this.head.next;
-
-    // If the queue becomes empty, reset tail as well
-    if (!this.head) {
-      this.tail = null;
+array.forEach(item => {
+    if (!uniqueArray.includes(item)) {
+        uniqueArray.push(item);
     }
+});
 
-    this.length--;
-    return value;
-  }
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
+import _ from 'lodash';
 
-  // Peek at the front element without removing it
-  peek(): T | undefined {
-    return this.head?.value;
-  }
+const array = [1, 2, 3, 3, 4, 5, 5, 6];
+const uniqueArray = _.uniq(array);
 
-  // Check if the queue is empty
-  isEmpty(): boolean {
-    return this.length === 0;
-  }
-
-  // Get the size of the queue
-  size(): number {
-    return this.length;
-  }
-}
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5, 6]
