@@ -1,58 +1,30 @@
-type Graph = Map<string, string[]>;
+function largestPrimeFactor(n: number): number {
+    let number = n;
+    let maxPrime = -1;
 
-interface QueueElement {
-  node: string;
-  depth: number;
-}
-
-function breadthLimitedSearch(graph: Graph, start: string, goal: string, limit: number): string[] | null {
-  const queue: QueueElement[] = [{ node: start, depth: 0 }];
-  const visited = new Set<string>();
-  const parent = new Map<string, string | null>();
-
-  parent.set(start, null);
-
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift()!;
-
-    if (node === goal) {
-      // Reconstruct path by tracing parents
-      const path: string[] = [];
-      let current: string | null = node;
-      while (current !== null) {
-        path.push(current);
-        current = parent.get(current) ?? null;
-      }
-      return path.reverse();
+    // Check for the number of 2s that divide n
+    while (number % 2 === 0) {
+        maxPrime = 2;
+        number /= 2;
     }
 
-    if (depth < limit) {
-      const neighbors = graph.get(node) ?? [];
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor)) {
-          visited.add(neighbor);
-          parent.set(neighbor, node);
-          queue.push({ node: neighbor, depth: depth + 1 });
+    // n must be odd at this point
+    // Check for odd factors from 3 to the square root of n
+    for (let i = 3; i * i <= number; i += 2) {
+        while (number % i === 0) {
+            maxPrime = i;
+            number /= i;
         }
-      }
     }
-  }
 
-  // No path found within depth limit
-  return null;
+    // This condition is to check if n is a prime number greater than 2
+    if (number > 2) {
+        maxPrime = number;
+    }
+
+    return maxPrime;
 }
-const graph: Graph = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['D']],
-  ['C', ['E']],
-  ['D', []],
-  ['E', ['F']],
-  ['F', []],
-]);
 
-const start = 'A';
-const goal = 'F';
-const depthLimit = 2;
-
-const path = breadthLimitedSearch(graph, start, goal, depthLimit);
-console.log(path); // null, because 'F' is at depth 3
+// Example usage:
+const number = 13195;
+console.log(`The largest prime factor of ${number} is: ${largestPrimeFactor(number)}`);
