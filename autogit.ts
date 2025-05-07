@@ -1,37 +1,22 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
+
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
         }
-    }
-    return count;
+    } while (swapped);
+
+    return arr;
 }
 
-const inputString = "hello world";
-const characterToCount = "o";
-console.log(countCharacter(inputString, characterToCount)); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
-
-const inputString = "hello world";
-const characterToCount = "o";
-console.log(countCharacter(inputString, characterToCount)); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return Array.from(str).reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
-}
-
-const inputString = "hello world";
-const characterToCount = "o";
-console.log(countCharacter(inputString, characterToCount)); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const matches = str.match(new RegExp(char, 'g'));
-    return matches ? matches.length : 0;
-}
-
-const inputString = "hello world";
-const characterToCount = "o";
-console.log(countCharacter(inputString, characterToCount)); // Output: 2
+// Example usage:
+const randomArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(randomArray);
+console.log("Sorted Array:", sortedArray);
