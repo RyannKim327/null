@@ -1,28 +1,48 @@
-function calculateTriangleArea(base: number, height: number): number {
-    return 0.5 * base * height;
-}
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
-// Example usage:
-const base = 10;
-const height = 5;
-const area = calculateTriangleArea(base, height);
-console.log(`The area of the triangle is ${area}.`);
-type Point = {
-    x: number;
-    y: number;
+const AsyncConnectionExample: React.FC = () => {
+  const [data, setData] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Simulate an async task connecting to a server
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      // Mocking an async call to a REST API
+      const response = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      const json = await response.json();
+      setData(json.title);
+    } catch (e) {
+      setError((e as Error).message);
+      setData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  return (
+    <View style={styles.container}>
+      {loading && <Text>Loading...</Text>}
+      {error && <Text style={styles.error}>Error: {error}</Text>}
+      {data && <Text>Received Data: {data}</Text>}
+      <Button title="Fetch Again" onPress={fetchData} />
+    </View>
+  );
 };
 
-function calculateTriangleAreaByVertices(point1: Point, point2: Point, point3: Point): number {
-    const area = Math.abs(point1.x * (point2.y - point3.y) +
-                          point2.x * (point3.y - point1.y) +
-                          point3.x * (point1.y - point2.y)) / 2;
-    return area;
-}
+const styles = StyleSheet.create({
+  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  error: { color: 'red' },
+});
 
-// Example usage:
-const p1: Point = { x: 0, y: 0 };
-const p2: Point = { x: 4, y: 0 };
-const p3: Point = { x: 0, y: 3 };
-
-const areaUsingVertices = calculateTriangleAreaByVertices(p1, p2, p3);
-console.log(`The area of the triangle using vertices is ${areaUsingVertices}.`);
+export default AsyncConnectionExample;
