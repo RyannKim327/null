@@ -1,27 +1,8 @@
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers");
-    }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
-
-// Example usage
-const num = 5;
-console.log(`Factorial of ${num} (Iterative): ${factorialIterative(num)}`);
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers");
-    }
-    if (n === 0 || n === 1) {
-        return 1; // Base case
-    }
-    return n * factorialRecursive(n - 1); // Recursive case
+function isValidEmail(email: string): boolean {
+  const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+  return emailRegex.test(email);
 }
-
-// Example usage
-const num = 5;
-console.log(`Factorial of ${num} (Recursive): ${factorialRecursive(num)}`);
