@@ -1,9 +1,13 @@
-function validateEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
+function factorial(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers");
+    }
+    if (n === 0) {
+        return 1; // base case
+    }
+    return n * factorial(n - 1); // recursive case
 }
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-function validateEmail(email: string): boolean {
-  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return emailRegex.test(email);
-}
+
+// Example usage:
+console.log(factorial(5)); // Output: 120
+console.log(factorial(0)); // Output: 1
