@@ -1,18 +1,43 @@
-const array = [1, 2, 3, 2, 4, 3, 5];
-const uniqueArray = Array.from(new Set(array));
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const uniqueArray = [...new Set(array)];
-const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
-const array = [
-  { id: 1, name: 'John' },
-  { id: 2, name: 'Jane' },
-  { id: 1, name: 'John' }
-];
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        if (low === high) {
+            if (arr[low] === target) {
+                return low;
+            }
+            return -1;
+        }
 
-const uniqueArray = Array.from(
-  new Map(array.map(item => [item.id, item])).values()
-);
+        // Calculate the position using the interpolation formula
+        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
 
-console.log(uniqueArray);
-// [{ id: 1, name: 'John' }, { id: 2, name: 'Jane' }]
+        // Check if target is present at pos
+        if (arr[pos] === target) {
+            return pos;
+        }
+
+        // If target is larger, ignore left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        }
+        // If target is smaller, ignore right half
+        else {
+            high = pos - 1;
+        }
+    }
+
+    return -1; // target is not found
+}
+
+// Example usage
+const arr = [10, 20, 30, 40, 50];
+const target = 30;
+
+const result = interpolationSearch(arr, target);
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log("Element not found.");
+}
