@@ -1,38 +1,21 @@
-function secondLargest(arr: number[]): number | null {
-    if (arr.length < 2) return null; // Not enough elements
-    
-    // Remove duplicates by using Set, then convert back to an array
-    const uniqueArr = Array.from(new Set(arr));
-
-    // Sort the array in descending order
-    uniqueArr.sort((a, b) => b - a);
-
-    return uniqueArr[1]; // Second largest element
+function calculateTriangleArea(base: number, height: number): number {
+    return 0.5 * base * height;
 }
 
-// Example usage:
-const arr = [10, 5, 20, 20, 8];
-const result = secondLargest(arr);
-console.log(result); // Output: 10
-function secondLargest(arr: number[]): number | null {
-    if (arr.length < 2) return null; // Not enough elements
-
-    let first = Number.NEGATIVE_INFINITY;
-    let second = Number.NEGATIVE_INFINITY;
-
-    for (const num of arr) {
-        if (num > first) {
-            second = first;
-            first = num;
-        } else if (num > second && num !== first) {
-            second = num;
-        }
-    }
-
-    return second === Number.NEGATIVE_INFINITY ? null : second; // Check if we found a valid second largest
+// Example usage
+const base = 10;
+const height = 5;
+const area = calculateTriangleArea(base, height);
+console.log(`Area of the triangle: ${area}`);
+function calculateHeronTriangleArea(a: number, b: number, c: number): number {
+    const s = (a + b + c) / 2; // Semi-perimeter
+    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    return area;
 }
 
-// Example usage:
-const arr = [10, 5, 20, 20, 8];
-const result = secondLargest(arr);
-console.log(result); // Output: 10
+// Example usage
+const sideA = 5;
+const sideB = 6;
+const sideC = 7;
+const areaHeron = calculateHeronTriangleArea(sideA, sideB, sideC);
+console.log(`Area of the triangle using Heron's formula: ${areaHeron}`);
