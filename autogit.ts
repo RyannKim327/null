@@ -1,43 +1,63 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+type Edge = { node: string; weight: number };
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        if (low === high) {
-            if (arr[low] === target) {
-                return low;
-            }
-            return -1;
-        }
+type Graph = {
+  [key: string]: Edge[];
+};
+type Edge = { node: string; weight: number };
+type Graph = { [key: string]: Edge[] };
 
-        // Calculate the position using the interpolation formula
-        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+function dijkstra(graph: Graph, start: string): { [node: string]: number } {
+  const distances: { [node: string]: number } = {};
+  const visited: Set<string> = new Set();
+  
+  // Initialize distances
+  Object.keys(graph).forEach(node => {
+    distances[node] = Infinity;
+  });
+  distances[start] = 0;
 
-        // Check if target is present at pos
-        if (arr[pos] === target) {
-            return pos;
-        }
+  // Helper function to get the unvisited node with the smallest tentative distance
+  function getClosestNode(): string | null {
+    let closestNode: string | null = null;
+    let smallestDistance = Infinity;
 
-        // If target is larger, ignore left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        }
-        // If target is smaller, ignore right half
-        else {
-            high = pos - 1;
-        }
+    for (const node in distances) {
+      if (!visited.has(node) && distances[node] < smallestDistance) {
+        smallestDistance = distances[node];
+        closestNode = node;
+      }
     }
+    return closestNode;
+  }
 
-    return -1; // target is not found
+  let currentNode = getClosestNode();
+
+  while (currentNode !== null) {
+    visited.add(currentNode);
+    const currentDistance = distances[currentNode];
+
+    for (const neighbor of graph[currentNode]) {
+      if (visited.has(neighbor.node)) continue;
+      
+      const newDistance = currentDistance + neighbor.weight;
+      if (newDistance < distances[neighbor.node]) {
+        distances[neighbor.node] = newDistance;
+      }
+    }
+    currentNode = getClosestNode();
+  }
+
+  return distances;
 }
+const graph: Graph = {
+  A: [{ node: "B", weight: 5 }, { node: "C", weight: 1 }],
+  B: [{ node: "A", weight: 5 }, { node: "C", weight: 2 }, { node: "D", weight: 1 }],
+  C: [{ node: "A", weight: 1 }, { node: "B", weight: 2 }, { node: "D", weight: 4 }, { node: "E", weight: 8 }],
+  D: [{ node: "B", weight: 1 }, { node: "C", weight: 4 }, { node: "E", weight: 3 }, { node: "F", weight: 6 }],
+  E: [{ node: "C", weight: 8 }, { node: "D", weight: 3 }],
+  F: [{ node: "D", weight: 6 }],
+};
 
-// Example usage
-const arr = [10, 20, 30, 40, 50];
-const target = 30;
-
-const result = interpolationSearch(arr, target);
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log("Element not found.");
-}
+const distancesFromA = dijkstra(graph, "A");
+console.log(distancesFromA);
+// Output should be shortest distances from node "A" to all other nodes
