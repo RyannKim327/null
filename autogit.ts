@@ -1,15 +1,12 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  const normalize = (str: string) =>
-    str
-      .toLowerCase()
-      .replace(/[^a-z0-9]/g, '')  // optional: remove non-alphanumeric
-      .split('')
-      .sort()
-      .join('');
+import * as readline from 'readline';
 
-  return normalize(str1) === normalize(str2);
-}
+// Create an interface for input and output
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
-// Usage:
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world'));   // false
+rl.question('What is your name? ', (name: string) => {
+  console.log(`Hello, ${name}! Welcome to TypeScript.`);
+  rl.close();
+});
