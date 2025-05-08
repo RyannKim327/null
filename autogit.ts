@@ -1,35 +1,28 @@
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = 2; // For example, to remove the element `3`
+function largestPrimeFactor(n: number): number {
+  let largestFactor = -1;
 
-if (indexToRemove > -1) {
-    array.splice(indexToRemove, 1);
-}
+  // Remove factors of 2
+  while (n % 2 === 0) {
+    largestFactor = 2;
+    n /= 2;
+  }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
-
-const newArray = array.filter(item => item !== valueToRemove);
-
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 2, 5];
-const valueToRemove = 2;
-
-const indexToRemove = array.findIndex(item => item === valueToRemove);
-
-if (indexToRemove > -1) {
-    array.splice(indexToRemove, 1);
-}
-
-console.log(array); // Output: [1, 3, 2, 5]
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== valueToRemove) {
-        acc.push(item);
+  // Check odd factors from 3 up to sqrt(n)
+  let factor = 3;
+  while (factor * factor <= n) {
+    while (n % factor === 0) {
+      largestFactor = factor;
+      n /= factor;
     }
-    return acc;
-}, [] as number[]);
+    factor += 2;
+  }
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+  // If n is still > 2, then n is prime and largest
+  if (n > 2) largestFactor = n;
+
+  return largestFactor;
+}
+
+// Example
+console.log(largestPrimeFactor(13195)); // Outputs 29
+console.log(largestPrimeFactor(600851475143)); // Outputs 6857
