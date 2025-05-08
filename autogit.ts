@@ -1,51 +1,50 @@
-interface Candidate {
-    sequence: string;
-    score: number;
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
+
+    const dp: number[] = new Array(nums.length).fill(1);
+    
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+    
+    return Math.max(...dp);
 }
 
-function beamSearch(initialSequence: string, beamWidth: number, maxIterations: number): string {
-    let candidates: Candidate[] = [{ sequence: initialSequence, score: evaluate(initialSequence) }];
+// Example usage:
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(arr)); // Output: 4
+function longestIncreasingSubsequence(nums: number[]): number {
+    const tails: number[] = [];
 
-    for (let iteration = 0; iteration < maxIterations; iteration++) {
-        let newCandidates: Candidate[] = [];
+    for (const num of nums) {
+        let left = 0;
+        let right = tails.length;
 
-        // Generate new candidates from current candidates
-        for (const candidate of candidates) {
-            const nextSequences = generateNextSequences(candidate.sequence);
-            for (const sequence of nextSequences) {
-                const score = evaluate(sequence);
-                newCandidates.push({ sequence, score });
+        // Binary search for the insertion point
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (tails[mid] < num) {
+                left = mid + 1;
+            } else {
+                right = mid;
             }
         }
 
-        // Sort candidates by score and select top `beamWidth`
-        newCandidates.sort((a, b) => b.score - a.score);
-        candidates = newCandidates.slice(0, beamWidth);
+        // If left is equal to the length of tails, then num is greater than all elements in tails.
+        if (left === tails.length) {
+            tails.push(num);
+        } else {
+            tails[left] = num;
+        }
     }
 
-    // Return the best candidate from the final candidates
-    candidates.sort((a, b) => b.score - a.score);
-    return candidates[0].sequence;
+    return tails.length;
 }
 
-function generateNextSequences(sequence: string): string[] {
-    // In a real scenario, this would generate the next possible sequences.
-    // For simplicity, we just return two options by adding characters.
-    return [
-        sequence + 'A',
-        sequence + 'B',
-    ];
-}
-
-function evaluate(sequence: string): number {
-    // In a real scenario, this would be the actual scoring logic.
-    // For simplicity, we use the length of the sequence as the score.
-    return sequence.length;
-}
-
-// Example usage
-const initialSequence = 'Start';
-const beamWidth = 2;
-const maxIterations = 5;
-const bestSequence = beamSearch(initialSequence, beamWidth, maxIterations);
-console.log(`Best sequence: ${bestSequence}`);
+// Example usage:
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(arr)); // Output: 4
