@@ -1,28 +1,53 @@
-const arr = [1, 2, 3, 4, 3];
-const valueToRemove = 3;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-const index = arr.indexOf(valueToRemove);
-if (index !== -1) {
-  arr.splice(index, 1);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
 
-console.log(arr); // Output: [1, 2, 4, 3]
-const arr = [1, 2, 3, 4, 3];
-const valueToRemove = 3;
+class LinkedList {
+    head: ListNode | null;
 
-const filteredArr = arr.filter(item => item !== valueToRemove);
+    constructor() {
+        this.head = null;
+    }
 
-console.log(filteredArr); // Output: [1, 2, 4]
-const arr = ['a', 'b', 'c', 'd'];
-const indexToRemove = 2;
+    // Method to add a new node to the list
+    append(value: number) {
+        const newNode = new ListNode(value);
+        if (this.head === null) {
+            this.head = newNode;
+            return;
+        }
+        
+        let current = this.head;
+        while (current.next !== null) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
 
-arr.splice(indexToRemove, 1);
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
 
-console.log(arr); // Output: ['a', 'b', 'd']
-function removeElement<T>(array: T[], value: T): T[] {
-  const index = array.indexOf(value);
-  if (index > -1) {
-    array.splice(index, 1);
-  }
-  return array;
+        while (current !== null) {
+            count++;
+            current = current.next;
+        }
+        
+        return count;
+    }
 }
+
+// Example usage
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+
+console.log("Length of linked list:", linkedList.length()); // Output: Length of linked list: 3
