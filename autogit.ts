@@ -1,57 +1,22 @@
-interface State {
-  // Define your state properties here
-  value: string;    // Example of a state attribute
-  // Add other properties as necessary
-}
-
-interface Node {
-  state: State;     // Current state
-  score: number;    // Score for the current state
-}
-
-function generateSuccessors(state: State): State[] {
-  // Placeholder function to generate new states (successors)
-  // Implement your logic to return possible successors based on the current state
-  return [
-    { value: state.value + 'A' },
-    { value: state.value + 'B' },
-    { value: state.value + 'C' }
-  ];
-}
-
-function scoreState(state: State): number {
-  // Placeholder scoring function that assigns a score to the state
-  // You should implement your own scoring logic based on your requirements
-  return Math.random(); // Example: random score
-}
-
-function beamSearch(initialState: State, beamWidth: number, maxSteps: number): State | null {
-  let currentStates: Node[] = [{ state: initialState, score: scoreState(initialState) }];
-  
-  for (let step = 0; step < maxSteps; step++) {
-    let successors: Node[] = [];
-
-    // Expand all current states
-    for (const node of currentStates) {
-      const newStates = generateSuccessors(node.state);
-      for (const newState of newStates) {
-        successors.push({ state: newState, score: scoreState(newState) });
-      }
-    }
-
-    // Sort successors by score and trim to beam width
-    successors.sort((a, b) => b.score - a.score);
-    currentStates = successors.slice(0, beamWidth);
+function quicksort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr;
   }
 
-  // Return the best state found
-  return currentStates.length > 0 ? currentStates[0].state : null;
+  const pivot = arr[arr.length - 1];
+  const left: number[] = [];
+  const right: number[] = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
+    }
+  }
+
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
-
-// Example Usage
-const initialState: State = { value: '' }; // Initial state
-const beamWidth = 3;                         // Size of the beam
-const maxSteps = 5;                          // Max number of steps in search
-
-const bestState = beamSearch(initialState, beamWidth, maxSteps);
-console.log('Best State Found:', bestState);
+const numbers = [3, 6, 8, 10, 1, 2, 1];
+const sorted = quicksort(numbers);
+console.log(sorted); // [1, 1, 2, 3, 6, 8, 10]
