@@ -1,75 +1,57 @@
-class Tarjan {
-    private index: number;
-    private stack: number[];
-    private indices: number[];
-    private lowLinks: number[];
-    private onStack: boolean[];
-    private sccs: number[][];
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
 
-    constructor(private graph: number[][]) {
-        const size = graph.length;
-        this.index = 0;
-        this.stack = [];
-        this.indices = new Array(size).fill(-1);
-        this.lowLinks = new Array(size).fill(0);
-        this.onStack = new Array(size).fill(false);
-        this.sccs = [];
+    // Create an array to store the first few Fibonacci numbers
+    const fib: number[] = [0, 1];
+    let fibM2 = fib[0]; // (m-2)'th Fibonacci number
+    let fibM1 = fib[1]; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
+
+    // Generate Fibonacci numbers until we find one greater than or equal to n
+    while (fibM < n) {
+        fib.push(fibM);
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
 
-    public findSCCs(): number[][] {
-        for (let i = 0; i < this.graph.length; i++) {
-            if (this.indices[i] === -1) {
-                this.strongConnect(i);
-            }
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        const i = Math.min(offset + fibM2, n - 1);
+
+        // If x is greater than the value at index i, cut the subarray after i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fib[fib.length - fibM1]; // Shift Fibonacci numbers
+            offset = i; // Update the offset
         }
-        return this.sccs;
+        // If x is less than the value at index i, cut the subarray before i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2; // Update to (m-2)'th Fibonacci number
+            fibM2 = fib[fib.length - fibM]; // Update to (m-3)'th Fibonacci number
+        }
+        // element found
+        else return i;
     }
 
-    private strongConnect(v: number) {
-        // Set the depth index for v to the smallest unused index
-        this.indices[v] = this.index;
-        this.lowLinks[v] = this.index;
-        this.index++;
-        this.stack.push(v);
-        this.onStack[v] = true;
+    // comparing the last element with x
+    if (fibM1 && arr[offset + 1] === x) return offset + 1;
 
-        // Consider successors of v
-        for (const w of this.graph[v]) {
-            if (this.indices[w] === -1) {
-                // Successor w has not yet been visited; recurse on it
-                this.strongConnect(w);
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
-            } else if (this.onStack[w]) {
-                // Successor w is in stack and hence in the current SCC
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
-            }
-        }
-
-        // If v is a root node, pop the stack and generate an SCC
-        if (this.lowLinks[v] === this.indices[v]) {
-            const scc: number[] = [];
-            let w: number;
-            do {
-                w = this.stack.pop()!;
-                this.onStack[w] = false;
-                scc.push(w);
-            } while (w !== v);
-            this.sccs.push(scc);
-        }
-    }
+    // element not found
+    return -1;
 }
 
-// Example usage:
-const graph: number[][] = [
-    [1],        // 0 -> 1
-    [2],        // 1 -> 2
-    [0],        // 2 -> 0
-    [1, 4],     // 3 -> 1, 3
-    [5],        // 4 -> 5
-    [4, 6],     // 5 -> 4, 6
-    [5],        // 6 -> 5
-];
+// Sample usage
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
 
-const tarjan = new Tarjan(graph);
-const stronglyConnectedComponents = tarjan.findSCCs();
-console.log(stronglyConnectedComponents);
+const index = fibonacciSearch(arr, x);
+if (index >= 0) {
+    console.log(`Element found at index: ${index}`);
+} else {
+    console.log("Element not found in the array.");
+}
