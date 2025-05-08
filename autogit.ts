@@ -1,31 +1,26 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+function bubbleSort(arr: number[]): number[] {
+    let n: number = arr.length;
+    let swapped: boolean;
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-
-        if (arr[mid] === target) {
-            return mid; // Target found, return its index
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap arr[i] and arr[i + 1]
+                let temp = arr[i];
+                arr[i] = arr[i + 1];
+                arr[i + 1] = temp;
+                swapped = true;
+            }
         }
+        // Decrease n because the last element is in correct position
+        n--;
+    } while (swapped);
 
-        if (arr[mid] < target) {
-            left = mid + 1; // Search in the right half
-        } else {
-            right = mid - 1; // Search in the left half
-        }
-    }
-
-    return -1; // Target not found
+    return arr;
 }
 
-// Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const index = binarySearch(sortedArray, target);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found in the array.');
-}
+// Example usage
+const numbers: number[] = [64, 34, 25, 12, 22, 11, 90];
+const sortedNumbers = bubbleSort(numbers);
+console.log(sortedNumbers); // Output: [11, 12, 22, 25, 34, 64, 90]
