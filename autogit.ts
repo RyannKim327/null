@@ -1,23 +1,28 @@
-function shellSort(arr: number[]): number[] {
-  const n = arr.length;
-  
-  // Start with a big gap, then reduce the gap
-  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    // Do a gapped insertion sort for this gap size.
-    for (let i = gap; i < n; i++) {
-      const temp = arr[i];
-      let j = i;
-      
-      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-      
-      // Put temp (the original arr[i]) in its correct location
-      arr[j] = temp;
+function maxSubArraySum(arr: number[]): { maxSum: number, start: number, end: number } {
+  let maxSum = arr[0];
+  let currentSum = 0;
+
+  let startTemp = 0;
+  let start = 0;
+  let end = 0;
+
+  for (let i = 0; i < arr.length; i++) {
+    currentSum += arr[i];
+    
+    if (currentSum > maxSum) {
+      maxSum = currentSum;
+      start = startTemp;
+      end = i;
+    }
+    
+    if (currentSum < 0) {
+      currentSum = 0;
+      startTemp = i + 1;
     }
   }
-  
-  return arr;
+
+  return { maxSum, start, end };
 }
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArraySum(arr);
+console.log(result); // { maxSum: 6, start: 3, end: 6 }, subarray is [4, -1, 2, 1]
