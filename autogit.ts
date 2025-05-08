@@ -1,24 +1,27 @@
-function reverseWords(input: string): string {
-    // Split the input string into words
-    const wordsArray = input.split(' ');
-    // Reverse the order of words
-    const reversedArray = wordsArray.reverse();
-    // Join the reversed array back into a string
-    const reversedString = reversedArray.join(' ');
-    return reversedString;
-}
+function majorityElement(nums: number[]): number | null {
+  let count = 0;
+  let candidate: number | null = null;
 
-// Example usage
-const originalString = "Hello World This is TypeScript";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "TypeScript is This World Hello"
-function reverseWords(input: string): string {
-    const wordsArray = input.trim().split(/\s+/); // Split on one or more whitespace characters
-    const reversedArray = wordsArray.reverse();
-    return reversedArray.join(' ');
-}
+  for (const num of nums) {
+    if (count === 0) {
+      candidate = num;
+      count = 1;
+    } else if (num === candidate) {
+      count++;
+    } else {
+      count--;
+    }
+  }
 
-// Example usage
-const originalString = "   Hello   World This is TypeScript  ";
-const reversedString = reverseWords(originalString);
-console.log(reversedString); // Output: "TypeScript is This World Hello"
+  // Optional step: Verify that candidate actually appears more than n/2 times
+  if (candidate !== null) {
+    const occurrence = nums.filter(num => num === candidate).length;
+    if (occurrence > nums.length / 2) {
+      return candidate;
+    }
+  }
+
+  return null; // no majority element found
+}
+const array = [2, 2, 1, 1, 1, 2, 2];
+console.log(majorityElement(array)); // Output: 2
