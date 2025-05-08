@@ -1,35 +1,12 @@
-// Define the binary tree node structure
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
+// Sorting in ascending order
+numbers.sort((a, b) => a - b);
 
-function sumOfNodes(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-  // Sum the current node value plus sums of left and right subtrees
-  return root.val + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
-function sumOfNodesIterative(root: TreeNode | null): number {
-  if (!root) return 0;
-  
-  let sum = 0;
-  const stack: TreeNode[] = [root];
-  
-  while (stack.length > 0) {
-    const node = stack.pop()!;
-    sum += node.val;
-    if (node.right) stack.push(node.right);
-    if (node.left) stack.push(node.left);
-  }
-  
-  return sum;
-}
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+const numbers: number[] = [5, 3, 8, 1, 2];
+
+// Sorting in descending order
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
