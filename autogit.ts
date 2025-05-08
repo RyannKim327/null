@@ -1,24 +1,14 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function isPrime(num: number): boolean {
+  if (num <= 1) return false; // 0 and 1 are not prime numbers
+  if (num <= 3) return true;  // 2 and 3 are prime
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
+  // Eliminate multiples of 2 and 3 early
+  if (num % 2 === 0 || num % 3 === 0) return false;
 
-function maxDepth(root: TreeNode | null): number {
-  if (root === null) {
-    return 0; // no tree means depth is 0
+  // Check for factors up to the square root of num
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
   }
 
-  // Recursively get depth of left and right subtrees
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  // Max depth is the larger one plus the current node
-  return Math.max(leftDepth, rightDepth) + 1;
+  return true;
 }
