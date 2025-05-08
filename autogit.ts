@@ -1,43 +1,13 @@
-function kthSmallest(arr: number[], k: number): number | undefined {
-  if (k < 1 || k > arr.length) return undefined; // handle invalid k
-  const sorted = [...arr].sort((a, b) => a - b);
-  return sorted[k - 1];
-}
-function quickselect(arr: number[], k: number): number | undefined {
-  if (k < 1 || k > arr.length) return undefined;
+function binarySearch<T>(arr: T[], target: T, left = 0, right = arr.length - 1): number {
+    if (left > right) return -1;  // Base case: target not found
 
-  function partition(left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]]; // move pivot to end
-    let storeIndex = left;
-    for (let i = left; i < right; i++) {
-      if (arr[i] < pivotValue) {
-        [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-        storeIndex++;
-      }
-    }
-    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]]; // move pivot to its final place
-    return storeIndex;
-  }
+    const mid = Math.floor((left + right) / 2);
 
-  function select(left: number, right: number, kSmallest: number): number {
-    if (left === right) return arr[left]; // only one element
-
-    const pivotIndex = Math.floor((left + right) / 2);
-    const pivotNewIndex = partition(left, right, pivotIndex);
-
-    if (kSmallest === pivotNewIndex) {
-      return arr[kSmallest];
-    } else if (kSmallest < pivotNewIndex) {
-      return select(left, pivotNewIndex - 1, kSmallest);
+    if (arr[mid] === target) {
+        return mid;  // Target found
+    } else if (arr[mid] > target) {
+        return binarySearch(arr, target, left, mid - 1);  // Search left half
     } else {
-      return select(pivotNewIndex + 1, right, kSmallest);
+        return binarySearch(arr, target, mid + 1, right);  // Search right half
     }
-  }
-
-  // k-1 because indexes are zero-based
-  return select(0, arr.length - 1, k - 1);
 }
-const arr = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(quickselect(arr, k)); // Outputs 7 which is the 3rd smallest
