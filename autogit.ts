@@ -1,37 +1,10 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+function isPalindrome(str: string): boolean {
+  const normalized = str.toLowerCase().replace(/[^a-z0-9]/g, ''); // Ignore case and non-alphanumeric
+  const reversed = normalized.split('').reverse().join('');
+  return normalized === reversed;
 }
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
-    }
-
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-
-// Example usage:
-// Creating a sample binary tree:
-//         1
-//        / \
-//       2   3
-//      /
-//     4
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-
-const depth = maxDepth(root);
-console.log(depth); // Output: 3
+// Examples
+console.log(isPalindrome("Racecar")); // true
+console.log(isPalindrome("Hello"));   // false
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
