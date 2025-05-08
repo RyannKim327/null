@@ -1,64 +1,35 @@
-class TrieNode {
-  children: Map<string, TrieNode>;
-  isEndOfWord: boolean;
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = 2; // For example, to remove the element `3`
 
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
-  }
+if (indexToRemove > -1) {
+    array.splice(indexToRemove, 1);
 }
 
-class Trie {
-  private root: TrieNode;
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-  constructor() {
-    this.root = new TrieNode();
-  }
+const newArray = array.filter(item => item !== valueToRemove);
 
-  // Inserts a word into the trie.
-  insert(word: string): void {
-    let node = this.root;
-    for (const char of word) {
-      if (!node.children.has(char)) {
-        node.children.set(char, new TrieNode());
-      }
-      node = node.children.get(char)!;
-    }
-    node.isEndOfWord = true;
-  }
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 2, 5];
+const valueToRemove = 2;
 
-  // Searches for a word in the trie.
-  search(word: string): boolean {
-    const node = this.findNode(word);
-    return node !== null && node.isEndOfWord;
-  }
+const indexToRemove = array.findIndex(item => item === valueToRemove);
 
-  // Returns true if there is a word in the trie that starts with the given prefix.
-  startsWith(prefix: string): boolean {
-    return this.findNode(prefix) !== null;
-  }
-
-  // Helper function to find the end node of a given word/prefix.
-  private findNode(word: string): TrieNode | null {
-    let node = this.root;
-    for (const char of word) {
-      if (!node.children.has(char)) {
-        return null; // If the character is not found, return null
-      }
-      node = node.children.get(char)!;
-    }
-    return node; // Return the last node (could be end of a word or prefix)
-  }
+if (indexToRemove > -1) {
+    array.splice(indexToRemove, 1);
 }
 
-// Example usage:
-const trie = new Trie();
+console.log(array); // Output: [1, 3, 2, 5]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-trie.insert("hello");
-trie.insert("helium");
-trie.insert("hey");
+const newArray = array.reduce((acc, item) => {
+    if (item !== valueToRemove) {
+        acc.push(item);
+    }
+    return acc;
+}, [] as number[]);
 
-console.log(trie.search("hello")); // true
-console.log(trie.search("hel")); // false
-console.log(trie.startsWith("he")); // true
-console.log(trie.startsWith("hi")); // false
+console.log(newArray); // Output: [1, 2, 4, 5]
