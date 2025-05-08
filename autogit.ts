@@ -1,11 +1,49 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+type Graph<T> = Map<T, T[]>;
+function depthLimitedSearch<T>(
+  graph: Graph<T>,
+  start: T,
+  goal: T,
+  limit: number
+): T[] | null {
+  // Stack holds entries with node and depth
+  const stack: { node: T; path: T[]; depth: number }[] = [
+    { node: start, path: [start], depth: 0 },
+  ];
 
-const common = array1.filter(item => array2.includes(item));
-console.log(common); // Output: [3, 4, 5]
-const array1 = [1, 2, 3, 4, 5, 3];
-const array2 = [3, 4, 5, 6, 7];
+  while (stack.length > 0) {
+    const { node, path, depth } = stack.pop()!;
 
-const set2 = new Set(array2);
-const commonUnique = [...new Set(array1)].filter(item => set2.has(item));
-console.log(commonUnique); // Output: [3, 4, 5]
+    // Check if the goal is found
+    if (node === goal) {
+      return path;
+    }
+
+    // If depth limit not reached, expand children
+    if (depth < limit) {
+      const neighbors = graph.get(node) ?? [];
+      for (const neighbor of neighbors) {
+        // Avoid cycles by checking if neighbor is already in path
+        if (!path.includes(neighbor)) {
+          stack.push({
+            node: neighbor,
+            path: [...path, neighbor],
+            depth: depth + 1,
+          });
+        }
+      }
+    }
+  }
+
+  // Goal not found within limit
+  return null;
+}
+const graph = new Map<string, string[]>([
+  ['A', ['B', 'C']],
+  ['B', ['D']],
+  ['C', ['E']],
+  ['D', []],
+  ['E', []],
+]);
+
+const path = depthLimitedSearch(graph, 'A', 'E', 2);
+console.log(path); // e.g. ['A', 'C', 'E']
