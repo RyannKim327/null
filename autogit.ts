@@ -1,25 +1,27 @@
-function shellSort(arr: number[]): number[] {
-  let n = arr.length;
-
-  // Start with a big gap, then reduce the gap
-  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-    // Do a gapped insertion sort for this gap size.
-    for (let i = gap; i < n; i++) {
-      const temp = arr[i];
-      let j = i;
-
-      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-      while (j >= gap && arr[j - gap] > temp) {
-        arr[j] = arr[j - gap];
-        j -= gap;
-      }
-
-      arr[j] = temp;
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers");
     }
-  }
-
-  return arr;
+    let result = 1;
+    for (let i = 2; i <= n; i++) {
+        result *= i;
+    }
+    return result;
 }
-const array = [23, 12, 1, 8, 34, 54, 2, 3];
-const sortedArray = shellSort(array);
-console.log(sortedArray); // [1, 2, 3, 8, 12, 23, 34, 54]
+
+// Example usage
+const num = 5;
+console.log(`Factorial of ${num} (Iterative): ${factorialIterative(num)}`);
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers");
+    }
+    if (n === 0 || n === 1) {
+        return 1; // Base case
+    }
+    return n * factorialRecursive(n - 1); // Recursive case
+}
+
+// Example usage
+const num = 5;
+console.log(`Factorial of ${num} (Recursive): ${factorialRecursive(num)}`);
