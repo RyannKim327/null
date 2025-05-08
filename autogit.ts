@@ -1,20 +1,34 @@
-function maxSubArray(nums: number[]): number {
-    if (nums.length === 0) {
-        throw new Error("Array cannot be empty");
+const arrayWithDuplicates: number[] = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = Array.from(new Set(arrayWithDuplicates));
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const uniqueArray: number[] = [...new Set(arrayWithDuplicates)];
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const arrayWithDuplicates: number[] = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = arrayWithDuplicates.filter((value, index, self) => {
+    return self.indexOf(value) === index;
+});
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const arrayWithDuplicates: number[] = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray: number[] = arrayWithDuplicates.reduce((accumulator, current) => {
+    if (!accumulator.includes(current)) {
+        accumulator.push(current);
     }
+    return accumulator;
+}, [] as number[]);
 
-    let maxSoFar = nums[0];  // This variable will hold the maximum sum found so far
-    let maxEndingHere = nums[0];  // This variable will hold the maximum sum of the subarray ending at the current position
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const arrayWithDuplicates: number[] = [1, 2, 2, 3, 4, 4, 5];
+const seen: { [key: number]: boolean } = {};
+const uniqueArray: number[] = [];
 
-    for (let i = 1; i < nums.length; i++) {
-        maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
-        maxSoFar = Math.max(maxSoFar, maxEndingHere);
+arrayWithDuplicates.forEach(value => {
+    if (!seen[value]) {
+        seen[value] = true;
+        uniqueArray.push(value);
     }
+});
 
-    return maxSoFar;
-}
-
-// Example usage
-const array = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(array);
-console.log(result);  // Output: 6, which is the sum of the subarray [4, -1, 2, 1]
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
