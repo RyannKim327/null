@@ -1,27 +1,11 @@
-import axios from 'axios';
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
+const common = array1.filter(item => array2.includes(item));
+console.log(common); // Output: [3, 4, 5]
+const array1 = [1, 2, 3, 4, 5, 3];
+const array2 = [3, 4, 5, 6, 7];
 
-async function fetchUsers(): Promise<void> {
-  try {
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    const users = response.data;
-
-    users.forEach(user => {
-      console.log(`${user.name} (${user.username}) - ${user.email}`);
-    });
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(`Axios error: ${error.message}`);
-    } else {
-      console.error(`Unexpected error: ${error}`);
-    }
-  }
-}
-
-fetchUsers();
+const set2 = new Set(array2);
+const commonUnique = [...new Set(array1)].filter(item => set2.has(item));
+console.log(commonUnique); // Output: [3, 4, 5]
