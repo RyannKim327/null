@@ -1,95 +1,30 @@
-interface Node {
-  x: number;
-  y: number;
-}
-
-function nodesEqual(a: Node, b: Node): boolean {
-  return a.x === b.x && a.y === b.y;
-}
-function heuristic(a: Node, b: Node): number {
-  return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
-}
-function aStar(start: Node, goal: Node, grid: number[][]): Node[] | null {
-  const rows = grid.length;
-  const cols = grid[0].length;
-
-  function neighbors(node: Node): Node[] {
-    const result: Node[] = [];
-    const directions = [
-      {dx: -1, dy: 0},
-      {dx: 1, dy: 0},
-      {dx: 0, dy: -1},
-      {dx: 0, dy: 1}
-    ];
-
-    for (const {dx, dy} of directions) {
-      const x = node.x + dx;
-      const y = node.y + dy;
-      if (x >= 0 && x < cols && y >= 0 && y < rows && grid[y][x] === 0) {
-        result.push({x, y});
-      }
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    return result;
-  }
+    // Choose a pivot element, here we take the last element as pivot
+    const pivot = arr[arr.length - 1];
 
-  // We use a simple array as openSet; for better performance, a priority queue is recommended.
-  const openSet: Node[] = [start];
-  const cameFrom = new Map<string, Node>();
+    // Create two sub-arrays for elements less than and greater than the pivot
+    const left: number[] = [];
+    const right: number[] = [];
 
-  // Initialize gScore and fScore
-  const gScore = new Map<string, number>();
-  const fScore = new Map<string, number>();
-
-  function nodeKey(node: Node): string {
-    return `${node.x},${node.y}`;
-  }
-
-  gScore.set(nodeKey(start), 0);
-  fScore.set(nodeKey(start), heuristic(start, goal));
-
-  while (openSet.length > 0) {
-    // Get the node in openSet with the lowest fScore
-    openSet.sort((a, b) => (fScore.get(nodeKey(a)) ?? Infinity) - (fScore.get(nodeKey(b)) ?? Infinity));
-    const current = openSet.shift()!;
-    
-    if (nodesEqual(current, goal)) {
-      // Reconstruct path
-      const path: Node[] = [];
-      let curr = current;
-      while (cameFrom.has(nodeKey(curr))) {
-        path.push(curr);
-        curr = cameFrom.get(nodeKey(curr))!;
-      }
-      path.push(start);
-      return path.reverse();
-    }
-
-    for (const neighbor of neighbors(current)) {
-      const tentativeGScore = (gScore.get(nodeKey(current)) ?? Infinity) + 1; // assuming cost between nodes is 1
-      if (tentativeGScore < (gScore.get(nodeKey(neighbor)) ?? Infinity)) {
-        cameFrom.set(nodeKey(neighbor), current);
-        gScore.set(nodeKey(neighbor), tentativeGScore);
-        fScore.set(nodeKey(neighbor), tentativeGScore + heuristic(neighbor, goal));
-        if (!openSet.some(n => nodesEqual(n, neighbor))) {
-          openSet.push(neighbor);
+    // Partition the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
         }
-      }
     }
-  }
 
-  // No path found
-  return null;
+    // Recursively apply quicksort to left and right sub-arrays and concatenate results with pivot
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
-const grid = [
-  [0, 0, 0, 0],
-  [1, 1, 0, 1],
-  [0, 0, 0, 0],
-  [0, 1, 1, 0]
-];
 
-const start: Node = {x: 0, y: 0};
-const goal: Node = {x: 3, y: 3};
-
-const path = aStar(start, goal, grid);
-console.log(path);
+// Example usage
+const array = [10, 7, 8, 9, 1, 5];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 5, 7, 8, 9, 10]
