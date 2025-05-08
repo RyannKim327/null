@@ -1,38 +1,36 @@
-type Graph = {
-  [key: string]: string[];
-};
+function isPalindrome(s: string): boolean {
+  // Normalize the string: remove non-alphanumeric and case-insensitive
+  // This can be done in place with pointers (more on that below)
+  
+  let left = 0;
+  let right = s.length - 1;
 
-function bfs(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const queue: string[] = [];
-  const result: string[] = [];
-
-  visited.add(startNode);
-  queue.push(startNode);
-
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    result.push(current);
-
-    for (const neighbor of graph[current] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
+  while (left < right) {
+    // Move left pointer to the next alphanumeric character
+    while (left < right && !isAlphaNumeric(s[left])) {
+      left++;
     }
+    // Move right pointer to the previous alphanumeric character
+    while (left < right && !isAlphaNumeric(s[right])) {
+      right--;
+    }
+
+    // Compare characters case-insensitively
+    if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+      return false;
+    }
+    left++;
+    right--;
   }
 
-  return result;
+  return true;
 }
 
-// Example usage:
-const graphExample = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: []
-};
-
-console.log(bfs(graphExample, 'A')); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+function isAlphaNumeric(char: string): boolean {
+  const code = char.charCodeAt(0);
+  return (
+    (code >= 48 && code <= 57) || // '0'-'9'
+    (code >= 65 && code <= 90) || // 'A'-'Z'
+    (code >= 97 && code <= 122)   // 'a'-'z'
+  );
+}
