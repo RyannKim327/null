@@ -1,38 +1,35 @@
-function countingSort(arr: number[]): number[] {
-    if (arr.length === 0) {
-        return [];
-    }
+// Define the binary tree node structure
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-    // Step 1: Find the range
-    const min = Math.min(...arr);
-    const max = Math.max(...arr);
-    
-    // Step 2: Create a count array
-    const range = max - min + 1; // inclusive range
-    const count = new Array(range).fill(0);
-
-    // Step 3: Count occurrences
-    arr.forEach(num => {
-        count[num - min]++;
-    });
-
-    // Step 4: Modify count array to store cumulative counts
-    for (let i = 1; i < count.length; i++) {
-        count[i] += count[i - 1];
-    }
-
-    // Step 5: Build the output array
-    const output = new Array(arr.length);
-    for (let i = arr.length - 1; i >= 0; i--) {
-        const num = arr[i];
-        output[count[num - min] - 1] = num; // Place the number in the output array
-        count[num - min]--; // Decrease count
-    }
-
-    return output;
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
 }
 
-// Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const sortedArr = countingSort(arr);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+function sumOfNodes(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
+  // Sum the current node value plus sums of left and right subtrees
+  return root.val + sumOfNodes(root.left) + sumOfNodes(root.right);
+}
+function sumOfNodesIterative(root: TreeNode | null): number {
+  if (!root) return 0;
+  
+  let sum = 0;
+  const stack: TreeNode[] = [root];
+  
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    sum += node.val;
+    if (node.right) stack.push(node.right);
+    if (node.left) stack.push(node.left);
+  }
+  
+  return sum;
+}
