@@ -1,34 +1,65 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+type State = any;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+interface Candidate {
+  state: State;
+  score: number;  // higher is better
 }
 
-function maxDepth(root: TreeNode | null): number {
-    // Base case: if the node is null, the depth is 0
-    if (root === null) {
-        return 0;
+function beamSearch(
+  initialState: State,
+  successorsFn: (state: State) => State[],
+  scoreFn: (state: State) => number,
+  beamWidth: number,
+  maxDepth: number
+): State[] {
+  let beam: Candidate[] = [{ state: initialState, score: scoreFn(initialState) }];
+
+  for (let depth = 0; depth < maxDepth; depth++) {
+    let allSuccessors: Candidate[] = [];
+
+    for (let candidate of beam) {
+      const nextStates = successorsFn(candidate.state);
+
+      for (let nextState of nextStates) {
+        allSuccessors.push({
+          state: nextState,
+          score: scoreFn(nextState),
+        });
+      }
     }
 
-    // Recursively find the depth of the left and right subtree
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    if (allSuccessors.length === 0) {
+      // No more expansions available
+      break;
+    }
 
-    // The maximum depth is the greater of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    // Sort all successors by score descending and keep top beamWidth
+    allSuccessors.sort((a, b) => b.score - a.score);
+    beam = allSuccessors.slice(0, beamWidth);
+  }
+
+  // Return the top states found
+  return beam.map(c => c.state);
+}
+const target = 10;
+
+// Initial state is an empty array
+const initialState: number[] = [];
+
+// Successor function: add a number between 1 and 3
+const successorsFn = (state: number[]): number[][] => {
+  return [1, 2, 3].map(x => [...state, x]);
 }
 
-// Example usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+// Score function: the closer the sum to target, the higher the score
+const scoreFn = (state: number[]) => {
+  const sum = state.reduce((a, b) => a + b, 0);
+  // Negative absolute distance so higher score means closer sum to target
+  return -Math.abs(target - sum);
+}
 
-console.log(maxDepth(root)); // Output: 3
+const beamWidth = 2;
+const maxDepth = 5;
+
+const results = beamSearch(initialState, successorsFn, scoreFn, beamWidth, maxDepth);
+console.log(results);
