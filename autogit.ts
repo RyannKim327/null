@@ -1,36 +1,64 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+class TrieNode {
+  children: Map<string, TrieNode>;
+  isEndOfWord: boolean;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position
-        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
+  }
+}
 
-        // Check if the estimated position contains the target
-        if (arr[pos] === target) {
-            return pos; // Target found
-        }
+class Trie {
+  private root: TrieNode;
 
-        // If target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        }
-        // If target is smaller, ignore the right half
-        else {
-            high = pos - 1;
-        }
+  constructor() {
+    this.root = new TrieNode();
+  }
+
+  // Inserts a word into the trie.
+  insert(word: string): void {
+    let node = this.root;
+    for (const char of word) {
+      if (!node.children.has(char)) {
+        node.children.set(char, new TrieNode());
+      }
+      node = node.children.get(char)!;
     }
+    node.isEndOfWord = true;
+  }
 
-    return -1; // Target not found
+  // Searches for a word in the trie.
+  search(word: string): boolean {
+    const node = this.findNode(word);
+    return node !== null && node.isEndOfWord;
+  }
+
+  // Returns true if there is a word in the trie that starts with the given prefix.
+  startsWith(prefix: string): boolean {
+    return this.findNode(prefix) !== null;
+  }
+
+  // Helper function to find the end node of a given word/prefix.
+  private findNode(word: string): TrieNode | null {
+    let node = this.root;
+    for (const char of word) {
+      if (!node.children.has(char)) {
+        return null; // If the character is not found, return null
+      }
+      node = node.children.get(char)!;
+    }
+    return node; // Return the last node (could be end of a word or prefix)
+  }
 }
 
-// Example Usage
-const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
-const index = interpolationSearch(arr, target);
+// Example usage:
+const trie = new Trie();
 
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found');
-}
+trie.insert("hello");
+trie.insert("helium");
+trie.insert("hey");
+
+console.log(trie.search("hello")); // true
+console.log(trie.search("hel")); // false
+console.log(trie.startsWith("he")); // true
+console.log(trie.startsWith("hi")); // false
