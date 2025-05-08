@@ -1,34 +1,24 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+function reverseWords(input: string): string {
+    // Split the input string into words
+    const wordsArray = input.split(' ');
+    // Reverse the order of words
+    const reversedArray = wordsArray.reverse();
+    // Join the reversed array back into a string
+    const reversedString = reversedArray.join(' ');
+    return reversedString;
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-  let maxDiameter = 0;
-
-  // Helper function to compute height of tree and update diameter
-  function height(node: TreeNode | null): number {
-    if (!node) return -1; // height of an empty node is -1 to ensure edges counted correctly
-
-    let leftHeight = height(node.left);
-    let rightHeight = height(node.right);
-
-    // Diameter at this node = edges in the longest path through this node
-    let diameterAtNode = leftHeight + rightHeight + 2;
-
-    maxDiameter = Math.max(maxDiameter, diameterAtNode);
-
-    // Height of this node is max height of children plus 1 edge
-    return Math.max(leftHeight, rightHeight) + 1;
-  }
-
-  height(root);
-  return maxDiameter;
+// Example usage
+const originalString = "Hello World This is TypeScript";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is This World Hello"
+function reverseWords(input: string): string {
+    const wordsArray = input.trim().split(/\s+/); // Split on one or more whitespace characters
+    const reversedArray = wordsArray.reverse();
+    return reversedArray.join(' ');
 }
+
+// Example usage
+const originalString = "   Hello   World This is TypeScript  ";
+const reversedString = reverseWords(originalString);
+console.log(reversedString); // Output: "TypeScript is This World Hello"
