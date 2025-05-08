@@ -1,12 +1,28 @@
-const numbers: number[] = [5, 3, 8, 1, 2];
+const arr = [1, 2, 3, 4, 3];
+const valueToRemove = 3;
 
-// Sorting in ascending order
-numbers.sort((a, b) => a - b);
+const index = arr.indexOf(valueToRemove);
+if (index !== -1) {
+  arr.splice(index, 1);
+}
 
-console.log(numbers); // Output: [1, 2, 3, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 2];
+console.log(arr); // Output: [1, 2, 4, 3]
+const arr = [1, 2, 3, 4, 3];
+const valueToRemove = 3;
 
-// Sorting in descending order
-numbers.sort((a, b) => b - a);
+const filteredArr = arr.filter(item => item !== valueToRemove);
 
-console.log(numbers); // Output: [8, 5, 3, 2, 1]
+console.log(filteredArr); // Output: [1, 2, 4]
+const arr = ['a', 'b', 'c', 'd'];
+const indexToRemove = 2;
+
+arr.splice(indexToRemove, 1);
+
+console.log(arr); // Output: ['a', 'b', 'd']
+function removeElement<T>(array: T[], value: T): T[] {
+  const index = array.indexOf(value);
+  if (index > -1) {
+    array.splice(index, 1);
+  }
+  return array;
+}
