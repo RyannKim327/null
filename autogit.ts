@@ -1,40 +1,22 @@
-type AdjacencyList = { [key: string]: string[] };
+const arr = [1, 2, 3, 4, 3];
+const valueToRemove = 3;
 
-function bfs(graph: AdjacencyList, start: string): string[] {
-    const visited: Set<string> = new Set(); // Set to keep track of visited nodes
-    const queue: string[] = []; // Queue to hold nodes to visit
-    const result: string[] = []; // Result of the BFS traversal
-
-    queue.push(start); // Start with the initial node
-    visited.add(start); // Mark the starting node as visited
-
-    while (queue.length > 0) {
-        const node = queue.shift(); // Get the first node in the queue
-        if (node) {
-            result.push(node); // Add the node to the result
-            const neighbors = graph[node]; // Get the neighbors of the node
-
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) { // If the neighbor has not been visited
-                    visited.add(neighbor); // Mark it as visited
-                    queue.push(neighbor); // Add to the queue
-                }
-            }
-        }
-    }
-
-    return result; // Return the BFS traversal result
+const index = arr.indexOf(valueToRemove);
+if (index !== -1) {
+  arr.splice(index, 1);
 }
 
-// Example usage:
-const graph: AdjacencyList = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-};
+console.log(arr); // [1, 2, 4, 3]
+const arr = [1, 2, 3, 4, 3];
+const valueToRemove = 3;
 
-const bfsResult = bfs(graph, 'A');
-console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ] (order may vary based on implementation)
+const filtered = arr.filter(item => item !== valueToRemove);
+console.log(filtered); // [1, 2, 4]
+const arr = [1, 2, 3, 4];
+const indexToRemove = 2;
+
+if (indexToRemove > -1 && indexToRemove < arr.length) {
+  arr.splice(indexToRemove, 1);
+}
+
+console.log(arr); // [1, 2, 4]
