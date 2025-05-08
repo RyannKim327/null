@@ -1,45 +1,16 @@
-type Graph = {
-    [key: string]: string[]; // Each key (node) maps to an array of neighbors
-};
-
-function bfs(graph: Graph, startNode: string): string[] {
-    const visited: Set<string> = new Set(); // To track visited nodes
-    const queue: string[] = []; // Queue to manage the current node list
-    const result: string[] = []; // To store the order of visited nodes
-
-    // Start from the given starting node
-    queue.push(startNode);
-    visited.add(startNode);
-
-    while (queue.length > 0) {
-        const currentNode = queue.shift(); // Dequeue the first node
-        if (currentNode) {
-            result.push(currentNode); // Add the current node to the result
-
-            // Get all neighbors of the current node
-            const neighbors = graph[currentNode];
-            for (const neighbor of neighbors) {
-                // If not visited, mark it and enqueue it
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
-        }
-    }
-
-    return result; // Return the order of visited nodes
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
+    
+    // Get normalized and sorted character arrays
+    const normalizedStr1 = normalize(str1).split('').sort().join('');
+    const normalizedStr2 = normalize(str2).split('').sort().join('');
+    
+    // Compare the two sorted strings
+    return normalizedStr1 === normalizedStr2;
 }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: []
-};
-
-const result = bfs(graph, 'A');
-console.log(result); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+// Example usage
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("triangle", "integral")); // true
+console.log(areAnagrams("apple", "pale")); // false
