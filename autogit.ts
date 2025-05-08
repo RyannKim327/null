@@ -1,22 +1,28 @@
-const arr = [1, 2, 3, 4, 3];
-const valueToRemove = 3;
-
-const index = arr.indexOf(valueToRemove);
-if (index !== -1) {
-  arr.splice(index, 1);
+// Define the shape of the data you expect from the API
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-console.log(arr); // [1, 2, 4, 3]
-const arr = [1, 2, 3, 4, 3];
-const valueToRemove = 3;
+async function fetchUsers(): Promise<User[]> {
+  const response = await fetch('https://jsonplaceholder.typicode.com/users');
 
-const filtered = arr.filter(item => item !== valueToRemove);
-console.log(filtered); // [1, 2, 4]
-const arr = [1, 2, 3, 4];
-const indexToRemove = 2;
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
 
-if (indexToRemove > -1 && indexToRemove < arr.length) {
-  arr.splice(indexToRemove, 1);
+  const data: User[] = await response.json();
+  return data;
 }
 
-console.log(arr); // [1, 2, 4]
+fetchUsers()
+  .then(users => {
+    users.forEach(user => {
+      console.log(`${user.name} (${user.email})`);
+    });
+  })
+  .catch(error => {
+    console.error('Failed to fetch users:', error);
+  });
