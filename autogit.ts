@@ -1,13 +1,11 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 is 1
-    if (n === 0) {
-        return 1;
-    }
-    // Recursive case: n! = n * (n-1)!
-    return n * factorial(n - 1);
-}
+npm install node-cron
+npm install --save-dev @types/node-cron
+import cron from 'node-cron';
 
-// Example usage
-console.log(factorial(5)); // Output: 120
-console.log(factorial(0)); // Output: 1
-console.log(factorial(3)); // Output: 6
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+  console.log('Running a task every minute:', new Date().toLocaleTimeString());
+});
+
+// Start the cron job
+task.start();
