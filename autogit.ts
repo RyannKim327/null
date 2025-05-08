@@ -1,50 +1,40 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
+type AdjacencyList = { [key: string]: string[] };
 
-    const dp: number[] = new Array(nums.length).fill(1);
-    
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
+function bfs(graph: AdjacencyList, start: string): string[] {
+    const visited: Set<string> = new Set(); // Set to keep track of visited nodes
+    const queue: string[] = []; // Queue to hold nodes to visit
+    const result: string[] = []; // Result of the BFS traversal
+
+    queue.push(start); // Start with the initial node
+    visited.add(start); // Mark the starting node as visited
+
+    while (queue.length > 0) {
+        const node = queue.shift(); // Get the first node in the queue
+        if (node) {
+            result.push(node); // Add the node to the result
+            const neighbors = graph[node]; // Get the neighbors of the node
+
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) { // If the neighbor has not been visited
+                    visited.add(neighbor); // Mark it as visited
+                    queue.push(neighbor); // Add to the queue
+                }
             }
         }
     }
-    
-    return Math.max(...dp);
+
+    return result; // Return the BFS traversal result
 }
 
 // Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(arr)); // Output: 4
-function longestIncreasingSubsequence(nums: number[]): number {
-    const tails: number[] = [];
+const graph: AdjacencyList = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+};
 
-    for (const num of nums) {
-        let left = 0;
-        let right = tails.length;
-
-        // Binary search for the insertion point
-        while (left < right) {
-            const mid = Math.floor((left + right) / 2);
-            if (tails[mid] < num) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-
-        // If left is equal to the length of tails, then num is greater than all elements in tails.
-        if (left === tails.length) {
-            tails.push(num);
-        } else {
-            tails[left] = num;
-        }
-    }
-
-    return tails.length;
-}
-
-// Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(arr)); // Output: 4
+const bfsResult = bfs(graph, 'A');
+console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ] (order may vary based on implementation)
