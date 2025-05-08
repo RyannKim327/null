@@ -1,21 +1,33 @@
-function factorialIterative(n: number): number {
-  if (n < 0) {
-    throw new Error('Factorial is not defined for negative numbers');
+class ListNode {
+  value: any;
+  next: ListNode | null;
+
+  constructor(value: any, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
   }
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
-  }
-  return result;
 }
-function factorialRecursive(n: number): number {
-  if (n < 0) {
-    throw new Error('Factorial is not defined for negative numbers');
+
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+  if (!head) return null;
+
+  let first: ListNode | null = head;
+  let second: ListNode | null = head;
+
+  // Move first pointer n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (!first) {
+      // n is larger than the length of the list
+      return null;
+    }
+    first = first.next;
   }
-  if (n === 0 || n === 1) {
-    return 1;
+
+  // Move both pointers until first reaches the end
+  while (first) {
+    first = first.next;
+    second = second!.next;
   }
-  return n * factorialRecursive(n - 1);
+
+  return second;
 }
-console.log(factorialIterative(5)); // output: 120
-console.log(factorialRecursive(5)); // output: 120
