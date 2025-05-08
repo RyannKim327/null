@@ -1,21 +1,21 @@
-function firstNonRepeatingChar(s: string): string | null {
-  const charCount: { [key: string]: number } = {};
-
-  // Count occurrences of each character
-  for (const char of s) {
-    charCount[char] = (charCount[char] || 0) + 1;
+function quicksort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: arrays with 0 or 1 element are already sorted
   }
 
-  // Find first character with a count of 1
-  for (const char of s) {
-    if (charCount[char] === 1) {
-      return char;
+  const pivot = arr[arr.length - 1]; // Choose the last element as pivot
+  const left: number[] = [];
+  const right: number[] = [];
+
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
+    } else {
+      right.push(arr[i]);
     }
   }
 
-  return null; // No non-repeating character found
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
-
-// Example usage
-console.log(firstNonRepeatingChar("swiss")); // Output: "w"
-console.log(firstNonRepeatingChar("aabbcc")); // Output: null
+const sorted = quicksort([3, 6, 1, 8, 4, 5]);
+console.log(sorted); // [1, 3, 4, 5, 6, 8]
