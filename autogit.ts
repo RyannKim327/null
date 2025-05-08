@@ -1,65 +1,17 @@
-type Edge = {
-    source: number;
-    destination: number;
-    weight: number;
-};
+function isPrime(num: number): boolean {
+  if (num <= 1) return false; // 1 and below are not prime
+  if (num <= 3) return true;  // 2 and 3 are prime
 
-class Graph {
-    private edges: Edge[];
-    private vertexCount: number;
+  if (num % 2 === 0 || num % 3 === 0) return false;
 
-    constructor(vertexCount: number) {
-        this.vertexCount = vertexCount;
-        this.edges = [];
-    }
+  // Check for factors from 5 to sqrt(num)
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
+  }
 
-    addEdge(source: number, destination: number, weight: number): void {
-        this.edges.push({ source, destination, weight });
-    }
-
-    bellmanFord(source: number): void {
-        const distances: number[] = new Array(this.vertexCount).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 1: Relaxation of edges |V| - 1 times
-        for (let i = 1; i < this.vertexCount; i++) {
-            for (const edge of this.edges) {
-                if (distances[edge.source] !== Infinity &&
-                    distances[edge.source] + edge.weight < distances[edge.destination]) {
-                    distances[edge.destination] = distances[edge.source] + edge.weight;
-                }
-            }
-        }
-
-        // Step 2: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            if (distances[edge.source] !== Infinity &&
-                distances[edge.source] + edge.weight < distances[edge.destination]) {
-                console.error("Graph contains negative-weight cycle");
-                return;
-            }
-        }
-
-        // Output the results
-        console.log("Vertex Distance from Source:");
-        for (let i = 0; i < this.vertexCount; i++) {
-            console.log(`${i}\t\t${distances[i]}`);
-        }
-    }
+  return true;
 }
-
-// Example usage:
-const g = new Graph(5);
-
-// Adding edges: (source, destination, weight)
-g.addEdge(0, 1, -1);
-g.addEdge(0, 2, 4);
-g.addEdge(1, 2, 3);
-g.addEdge(1, 3, 2);
-g.addEdge(1, 4, 2);
-g.addEdge(3, 2, 5);
-g.addEdge(3, 1, 1);
-g.addEdge(4, 3, -3);
-
-// Run Bellman-Ford algorithm from source vertex 0
-g.bellmanFord(0);
+console.log(isPrime(11));  // true
+console.log(isPrime(15));  // false
+console.log(isPrime(2));   // true
+console.log(isPrime(1));   // false
