@@ -1,57 +1,57 @@
-function fibonacciSearch(arr: number[], x: number): number {
-    const n = arr.length;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Create an array to store the first few Fibonacci numbers
-    const fib: number[] = [0, 1];
-    let fibM2 = fib[0]; // (m-2)'th Fibonacci number
-    let fibM1 = fib[1]; // (m-1)'th Fibonacci number
-    let fibM = fibM1 + fibM2; // m'th Fibonacci number
-
-    // Generate Fibonacci numbers until we find one greater than or equal to n
-    while (fibM < n) {
-        fib.push(fibM);
-        fibM2 = fibM1;
-        fibM1 = fibM;
-        fibM = fibM1 + fibM2;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    let offset = -1;
-
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        const i = Math.min(offset + fibM2, n - 1);
-
-        // If x is greater than the value at index i, cut the subarray after i
-        if (arr[i] < x) {
-            fibM = fibM1;
-            fibM1 = fibM2;
-            fibM2 = fib[fib.length - fibM1]; // Shift Fibonacci numbers
-            offset = i; // Update the offset
-        }
-        // If x is less than the value at index i, cut the subarray before i
-        else if (arr[i] > x) {
-            fibM = fibM2;
-            fibM1 = fibM1 - fibM2; // Update to (m-2)'th Fibonacci number
-            fibM2 = fib[fib.length - fibM]; // Update to (m-3)'th Fibonacci number
-        }
-        // element found
-        else return i;
-    }
-
-    // comparing the last element with x
-    if (fibM1 && arr[offset + 1] === x) return offset + 1;
-
-    // element not found
-    return -1;
 }
 
-// Sample usage
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const x = 85;
-
-const index = fibonacciSearch(arr, x);
-if (index >= 0) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log("Element not found in the array.");
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
+    
+    // Recursively sum the values of the left and right subtrees and add the current node's value
+    const leftSum = sumOfNodes(root.left);
+    const rightSum = sumOfNodes(root.right);
+    
+    return root.value + leftSum + rightSum;
 }
+
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+const totalSum = sumOfNodes(root);
+console.log(`Sum of all nodes: ${totalSum}`); // Outputs: Sum of all nodes: 15
+function sumOfNodesIterative(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
+
+    let totalSum = 0;
+    const stack: TreeNode[] = [root]; // Initialize stack with the root node
+
+    while (stack.length > 0) {
+        const currentNode = stack.pop()!;
+        totalSum += currentNode.value; // Accumulate the node value
+
+        // Push child nodes onto the stack
+        if (currentNode.right) stack.push(currentNode.right);
+        if (currentNode.left) stack.push(currentNode.left);
+    }
+
+    return totalSum;
+}
+
+// Example usage:
+const totalSumIterative = sumOfNodesIterative(root);
+console.log(`Sum of all nodes (iterative): ${totalSumIterative}`); // Outputs: Sum of all nodes (iterative): 15
