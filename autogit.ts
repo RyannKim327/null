@@ -1,58 +1,49 @@
-class Node<T> {
-  value: T;
-  next: Node<T> | null = null;
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
 
-  constructor(value: T) {
-    this.value = value;
-  }
-}
+    // Build max heap
+    function heapify(arr: number[], n: number, i: number): void {
+        let largest = i; // Initialize largest as root
+        const left = 2 * i + 1; // left child
+        const right = 2 * i + 2; // right child
 
-class Queue<T> {
-  private head: Node<T> | null = null;
-  private tail: Node<T> | null = null;
-  private length: number = 0;
+        // If left child is larger than root
+        if (left < n && arr[left] > arr[largest]) {
+            largest = left;
+        }
 
-  // Add an element to the end of the queue
-  enqueue(value: T): void {
-    const newNode = new Node(value);
-    if (!this.tail) {
-      // Queue is empty
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-    this.length++;
-  }
+        // If right child is larger than largest so far
+        if (right < n && arr[right] > arr[largest]) {
+            largest = right;
+        }
 
-  // Remove and return the element at the front of the queue
-  dequeue(): T | null {
-    if (!this.head) return null;
+        // If largest is not root
+        if (largest !== i) {
+            [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
 
-    const dequeuedValue = this.head.value;
-    this.head = this.head.next;
-    if (!this.head) {
-      // Queue became empty
-      this.tail = null;
+            // Recursively heapify the affected sub-tree
+            heapify(arr, n, largest);
+        }
     }
 
-    this.length--;
-    return dequeuedValue;
-  }
+    // Main function to sort an array using heap sort
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
 
-  // Return the element at the front without removing it
-  peek(): T | null {
-    return this.head ? this.head.value : null;
-  }
+    // One by one extract elements from heap
+    for (let i = n - 1; i > 0; i--) {
+        // Move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
 
-  // Check if the queue is empty
-  isEmpty(): boolean {
-    return this.length === 0;
-  }
+        // call heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
 
-  // Get the current size of the queue
-  size(): number {
-    return this.length;
-  }
+    return arr;
 }
+
+// Example usage:
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = heapSort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
