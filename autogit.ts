@@ -1,41 +1,38 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-  const m = str1.length;
-  const n = str2.length;
+function secondLargest(arr: number[]): number | null {
+    if (arr.length < 2) return null; // Not enough elements
+    
+    // Remove duplicates by using Set, then convert back to an array
+    const uniqueArr = Array.from(new Set(arr));
 
-  // Create dp table with dimensions (m+1) x (n+1)
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    new Array(n + 1).fill(0)
-  );
+    // Sort the array in descending order
+    uniqueArr.sort((a, b) => b - a);
 
-  // Fill dp table
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (str1[i - 1] === str2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-
-  // Backtrack to find the LCS string
-  let i = m, j = n;
-  let lcs = "";
-
-  while (i > 0 && j > 0) {
-    if (str1[i - 1] === str2[j - 1]) {
-      lcs = str1[i - 1] + lcs;
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs;
+    return uniqueArr[1]; // Second largest element
 }
 
 // Example usage:
-console.log(longestCommonSubsequence("AGGTAB", "GXTXAYB")); // Outputs: "GTAB"
+const arr = [10, 5, 20, 20, 8];
+const result = secondLargest(arr);
+console.log(result); // Output: 10
+function secondLargest(arr: number[]): number | null {
+    if (arr.length < 2) return null; // Not enough elements
+
+    let first = Number.NEGATIVE_INFINITY;
+    let second = Number.NEGATIVE_INFINITY;
+
+    for (const num of arr) {
+        if (num > first) {
+            second = first;
+            first = num;
+        } else if (num > second && num !== first) {
+            second = num;
+        }
+    }
+
+    return second === Number.NEGATIVE_INFINITY ? null : second; // Check if we found a valid second largest
+}
+
+// Example usage:
+const arr = [10, 5, 20, 20, 8];
+const result = secondLargest(arr);
+console.log(result); // Output: 10
