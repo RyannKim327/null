@@ -1,29 +1,19 @@
-function findMajorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
+function binarySearch(arr: number[], target: number): number {
+  let left = 0;
+  let right = arr.length - 1;
 
-    // Phase 1: Find a candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
-    }
-
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    if (candidate !== null && count > Math.floor(nums.length / 2)) {
-        return candidate;
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    if (arr[mid] === target) {
+      return mid; // Found the target, return the index
+    } else if (arr[mid] < target) {
+      left = mid + 1; // Target is in the right half
     } else {
-        return null; // No majority element found
+      right = mid - 1; // Target is in the left half
     }
+  }
+  return -1; // Target not found
 }
-const arr = [2, 2, 1, 1, 1, 2, 2];
-const majority = findMajorityElement(arr);
-console.log(majority); // Output: 2
+const nums = [1, 3, 5, 7, 9];
+console.log(binarySearch(nums, 5)); // Output: 2
+console.log(binarySearch(nums, 8)); // Output: -1
