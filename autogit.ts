@@ -1,33 +1,14 @@
-class ListNode {
-  value: any;
-  next: ListNode | null;
+const arr1 = [1, 2, 3, 4];
+const arr2 = [3, 4, 5, 6];
 
-  constructor(value: any, next: ListNode | null = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
+const commonElements = arr1.filter(element => arr2.includes(element));
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-  if (!head) return null;
+console.log(commonElements); // Output: [3, 4]
+const arr1 = [1, 2, 3, 4];
+const arr2 = [3, 4, 5, 6];
 
-  let first: ListNode | null = head;
-  let second: ListNode | null = head;
+const set2 = new Set(arr2);
 
-  // Move first pointer n steps ahead
-  for (let i = 0; i < n; i++) {
-    if (!first) {
-      // n is larger than the length of the list
-      return null;
-    }
-    first = first.next;
-  }
+const commonElements = arr1.filter(element => set2.has(element));
 
-  // Move both pointers until first reaches the end
-  while (first) {
-    first = first.next;
-    second = second!.next;
-  }
-
-  return second;
-}
+console.log(commonElements); // Output: [3, 4]
