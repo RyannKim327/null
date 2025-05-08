@@ -1,21 +1,19 @@
-function calculateTriangleArea(base: number, height: number): number {
-    return 0.5 * base * height;
-}
+npm install node-cron
+npm install typescript @types/node --save-dev
+import cron from 'node-cron';
 
-// Example usage
-const base = 10;
-const height = 5;
-const area = calculateTriangleArea(base, height);
-console.log(`Area of the triangle: ${area}`);
-function calculateHeronTriangleArea(a: number, b: number, c: number): number {
-    const s = (a + b + c) / 2; // Semi-perimeter
-    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
-    return area;
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    console.log('This message is logged every minute: ' + new Date().toLocaleTimeString());
+});
 
-// Example usage
-const sideA = 5;
-const sideB = 6;
-const sideC = 7;
-const areaHeron = calculateHeronTriangleArea(sideA, sideB, sideC);
-console.log(`Area of the triangle using Heron's formula: ${areaHeron}`);
+// Start the task
+task.start();
+
+// Optional: Stop the task after some time (e.g., 5 minutes)
+setTimeout(() => {
+    task.stop();
+    console.log('Task stopped.');
+}, 5 * 60 * 1000); // Stop after 5 minutes
+npx tsc cron-example.ts
+node cron-example.js
