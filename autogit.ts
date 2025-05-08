@@ -1,10 +1,15 @@
-function isPalindrome(str: string): boolean {
-  const normalized = str.toLowerCase().replace(/[^a-z0-9]/g, ''); // Ignore case and non-alphanumeric
-  const reversed = normalized.split('').reverse().join('');
-  return normalized === reversed;
+function areAnagrams(str1: string, str2: string): boolean {
+  const normalize = (str: string) =>
+    str
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '')  // optional: remove non-alphanumeric
+      .split('')
+      .sort()
+      .join('');
+
+  return normalize(str1) === normalize(str2);
 }
 
-// Examples
-console.log(isPalindrome("Racecar")); // true
-console.log(isPalindrome("Hello"));   // false
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+// Usage:
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'world'));   // false
