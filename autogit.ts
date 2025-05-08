@@ -1,27 +1,55 @@
-function maxSubArray(nums: number[]): { maxSum: number, start: number, end: number } {
-  let maxSum = nums[0];
-  let currentSum = nums[0];
-  let start = 0;
-  let maxStart = 0;
-  let maxEnd = 0;
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = computeLpsArray(pattern); // Build the LPS array
+    const result: number[] = [];
+    let j = 0; // Index for pattern
+    let i = 0; // Index for text
 
-  for (let i = 1; i < nums.length; i++) {
-    if (currentSum + nums[i] < nums[i]) {
-      currentSum = nums[i];
-      start = i;
-    } else {
-      currentSum += nums[i];
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found at index (i - j)
+            j = lps[j - 1]; // Get the next character to compare
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters
+            } else {
+                i++;
+            }
+        }
     }
 
-    if (currentSum > maxSum) {
-      maxSum = currentSum;
-      maxStart = start;
-      maxEnd = i;
-    }
-  }
-
-  return { maxSum, start: maxStart, end: maxEnd };
+    return result; // Return all starting indices of matches
 }
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(arr);
-console.log(result); // { maxSum: 6, start: 3, end: 6 }
+
+function computeLpsArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // Length of previous longest prefix suffix
+    let i = 1; // Start from the second character
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use LPS value
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps; // Return the computed LPS array
+}
+
+// Example usage
+const text = "abcabcabcd";
+const pattern = "abcab";
+const matches = kmpSearch(text, pattern);
+console.log(`Pattern found at indices: ${matches.join(', ')}`);
