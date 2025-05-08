@@ -1,28 +1,48 @@
-function maxSubArraySum(arr: number[]): { maxSum: number, start: number, end: number } {
-  let maxSum = arr[0];
-  let currentSum = 0;
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-  let startTemp = 0;
-  let start = 0;
-  let end = 0;
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
 
-  for (let i = 0; i < arr.length; i++) {
-    currentSum += arr[i];
-    
-    if (currentSum > maxSum) {
-      maxSum = currentSum;
-      start = startTemp;
-      end = i;
-    }
-    
-    if (currentSum < 0) {
-      currentSum = 0;
-      startTemp = i + 1;
-    }
+function getLength<T>(head: ListNode<T> | null): number {
+  let length = 0;
+  let current = head;
+  while (current !== null) {
+    length++;
+    current = current.next;
+  }
+  return length;
+}
+
+function getIntersectionNode<T>(
+  headA: ListNode<T> | null,
+  headB: ListNode<T> | null
+): ListNode<T> | null {
+  let lengthA = getLength(headA);
+  let lengthB = getLength(headB);
+
+  // Advance the head pointer of the longer list by the difference in lengths
+  while (lengthA > lengthB && headA !== null) {
+    headA = headA.next;
+    lengthA--;
+  }
+  while (lengthB > lengthA && headB !== null) {
+    headB = headB.next;
+    lengthB--;
   }
 
-  return { maxSum, start, end };
+  // Move both pointers forward until they meet
+  while (headA !== null && headB !== null) {
+    if (headA === headB) {
+      return headA; // Intersection found
+    }
+    headA = headA.next;
+    headB = headB.next;
+  }
+
+  return null; // No intersection
 }
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArraySum(arr);
-console.log(result); // { maxSum: 6, start: 3, end: 6 }, subarray is [4, -1, 2, 1]
