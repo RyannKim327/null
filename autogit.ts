@@ -1,53 +1,37 @@
-// MyAsyncModule.kt
-package com.example.myapp
+function isPalindrome(s: string): boolean {
+    // Convert the string to lower case and filter non-alphanumeric characters
+    // We avoid using additional space for a filtered string by simply skipping characters
+    let left = 0;
+    let right = s.length - 1;
 
-import com.facebook.react.bridge.ReactApplicationContext
-import com.facebook.react.bridge.ReactContextBaseJavaModule
-import com.facebook.react.bridge.Promise
-import com.facebook.react.bridge.ReactMethod
-import android.os.AsyncTask
+    while (left < right) {
+        // Move left pointer to the right if the character is not alphanumeric
+        while (left < right && !isAlphanumeric(s[left])) {
+            left++;
+        }
+        // Move right pointer to the left if the character is not alphanumeric
+        while (left < right && !isAlphanumeric(s[right])) {
+            right--;
+        }
 
-class MyAsyncModule(reactContext: ReactApplicationContext) : ReactContextBaseJavaModule(reactContext) {
-    override fun getName() = "MyAsyncModule"
+        // Compare characters (case insensitive)
+        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+            return false;
+        }
 
-    @ReactMethod
-    fun doBackgroundTask(input: String, promise: Promise) {
-        object : AsyncTask<Void, Void, String>() {
-            override fun doInBackground(vararg params: Void?): String {
-                // Simulate some background processing
-                Thread.sleep(2000)
-                return "Processed: $input"
-            }
-
-            override fun onPostExecute(result: String) {
-                promise.resolve(result)
-            }
-        }.execute()
+        // Move both pointers towards the center
+        left++;
+        right--;
     }
-}
-import { NativeModules, Platform } from 'react-native';
 
-const { MyAsyncModule } = NativeModules;
-
-async function runBackgroundTask(input: string): Promise<string> {
-  if (Platform.OS !== 'android') {
-    throw new Error("This module is only supported on Android");
-  }
-  
-  try {
-    const result: string = await MyAsyncModule.doBackgroundTask(input);
-    return result;
-  } catch (error) {
-    throw new Error(`Background task failed: ${error}`);
-  }
+    return true;
 }
 
-// Usage example
-(async () => {
-  try {
-    const output = await runBackgroundTask("Hello AsyncTask");
-    console.log(output); // Outputs: Processed: Hello AsyncTask
-  } catch (e) {
-    console.error(e);
-  }
-})();
+// Helper function to check if a character is alphanumeric
+function isAlphanumeric(char: string): boolean {
+    return /^[0-9a-zA-Z]*$/.test(char); // Regular expression to check alphanumeric
+}
+
+// Example usage
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // Should return true
+console.log(isPalindrome("race a car")); // Should return false
