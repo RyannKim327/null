@@ -1,30 +1,8 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-  constructor(val: number) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
-  }
-}
+const numbers: number[] = [5, 2, 9, 1, 5, 6];
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-  let maxDiameter = 0;
+// Sort in ascending order
+numbers.sort((a, b) => a - b);
 
-  function height(node: TreeNode | null): number {
-    if (!node) return 0;
-
-    const leftHeight = height(node.left);
-    const rightHeight = height(node.right);
-
-    // Update maxDiameter if this path is longer
-    maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
-
-    // Height of node is max of left or right subtree height + 1 for the current node
-    return Math.max(leftHeight, rightHeight) + 1;
-  }
-
-  height(root);
-  return maxDiameter;
-}
+console.log(numbers); // Output: [1, 2, 5, 5, 6, 9]
+numbers.sort((a, b) => b - a);
+console.log(numbers); // Output: [9, 6, 5, 5, 2, 1]
