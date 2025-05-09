@@ -1,26 +1,56 @@
-const numbers: number[] = [3, 5, 1, 8, 2];
-const maxValue = Math.max(...numbers);
-console.log(maxValue); // Output: 8
-const numbers: number[] = [3, 5, 1, 8, 2];
-let maxValue: number = numbers[0]; // Assume the first element is the largest
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0); // lps[i] = longest prefix suffix length for pattern[0..i]
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > maxValue) {
-        maxValue = numbers[i];
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // fallback to previous lps
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
+
+    return lps;
 }
 
-console.log(maxValue); // Output: 8
-const numbers: number[] = [3, 5, 1, 8, 2];
-const maxValue = numbers.reduce((acc, curr) => (curr > acc ? curr : acc), numbers[0]);
-console.log(maxValue); // Output: 8
-const numbers: number[] = [3, 5, 1, 8, 2];
-let maxValue: number = numbers[0]; // Assume the first element is the largest
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
 
-numbers.forEach(num => {
-    if (num > maxValue) {
-        maxValue = num;
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // pattern found at index (i - j)
+            j = lps[j - 1]; // continue to look for next matches
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
-});
 
-console.log(maxValue); // Output: 8
+    return result;
+}
+
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const occurrences = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", occurrences);
