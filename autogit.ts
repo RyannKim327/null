@@ -1,30 +1,20 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
 }
+function countLeafNodes(root: TreeNode | null): number {
+  if (root === null) return 0;
 
-function findNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
-  if (!head || n <= 0) return null;
-
-  let fast: ListNode<T> | null = head;
-  let slow: ListNode<T> | null = head;
-
-  // Move fast ahead by n steps
-  for (let i = 0; i < n; i++) {
-    if (!fast) return null; // n is larger than the length of the list
-    fast = fast.next;
+  if (root.left === null && root.right === null) {
+    return 1;
   }
 
-  // Move both pointers until fast reaches the end
-  while (fast) {
-    fast = fast.next;
-    slow = slow!.next;
-  }
-
-  return slow;
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
 }
