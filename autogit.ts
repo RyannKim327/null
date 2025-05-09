@@ -1,98 +1,116 @@
-class Node<K, V> {
-    constructor(public key: K, public value: V, public next?: Node<K, V>) {}
+class AVLNode<T> {
+  value: T;
+  height: number;
+  left: AVLNode<T> | null = null;
+  right: AVLNode<T> | null = null;
+
+  constructor(value: T) {
+    this.value = value;
+    this.height = 1;
+  }
+}
+class AVLTree<T> {
+  root: AVLNode<T> | null = null;
+
+  // Utility functions will go here
+}
+private height(node: AVLNode<T> | null): number {
+  return node ? node.height : 0;
 }
 
-class HashTable<K, V> {
-    private table: Array<Node<K, V> | null>;
-    private size: number;
+private getBalance(node: AVLNode<T> | null): number {
+  if (!node) return 0;
+  return this.height(node.left) - this.height(node.right);
+}
+private rightRotate(y: AVLNode<T>): AVLNode<T> {
+  const x = y.left!;
+  const T2 = x.right;
 
-    constructor(size: number) {
-        this.size = size;
-        this.table = new Array(size).fill(null);
-    }
+  // Perform rotation
+  x.right = y;
+  y.left = T2;
 
-    private hash(key: K): number {
-        let hashValue = 0;
-        const keyString = typeof key === 'string' ? key : JSON.stringify(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hashValue += keyString.charCodeAt(i);
-        }
-        return hashValue % this.size;
-    }
+  // Update heights
+  y.height = Math.max(this.height(y.left), this.height(y.right)) + 1;
+  x.height = Math.max(this.height(x.left), this.height(x.right)) + 1;
 
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        let node = this.table[index];
-
-        if (!node) {
-            this.table[index] = new Node(key, value);
-        } else {
-            while (node) {
-                if (node.key === key) {
-                    node.value = value; // update existing value
-                    return;
-                }
-                if (!node.next) {
-                    node.next = new Node(key, value); // add new node at the end
-                    return;
-                }
-                node = node.next;
-            }
-        }
-    }
-
-    public get(key: K): V | null {
-        const index = this.hash(key);
-        let node = this.table[index];
-
-        while (node) {
-            if (node.key === key) {
-                return node.value;
-            }
-            node = node.next;
-        }
-        return null; // key not found
-    }
-
-    public remove(key: K): void {
-        const index = this.hash(key);
-        let node = this.table[index];
-        let prevNode: Node<K, V> | null = null;
-
-        while (node) {
-            if (node.key === key) {
-                if (prevNode) {
-                    prevNode.next = node.next; // remove node
-                } else {
-                    this.table[index] = node.next; // remove head node
-                }
-                return;
-            }
-            prevNode = node;
-            node = node.next;
-        }
-    }
-
-    public display(): void {
-        this.table.forEach((node, index) => {
-            let output = `Index ${index}: `;
-            while (node) {
-                output += `{${node.key}: ${node.value}} -> `;
-                node = node.next;
-            }
-            output += "null";
-            console.log(output);
-        });
-    }
+  return x;
 }
 
-// Example Usage
-const hashTable = new HashTable<string, number>(10);
-hashTable.set("one", 1);
-hashTable.set("two", 2);
-hashTable.set("three", 3);
-hashTable.display();
+private leftRotate(x: AVLNode<T>): AVLNode<T> {
+  const y = x.right!;
+  const T2 = y.left;
 
-console.log(hashTable.get("two"));  // Output: 2
-hashTable.remove("two");
-hashTable.display();
+  // Perform rotation
+  y.left = x;
+  x.right = T2;
+
+  // Update heights
+  x.height = Math.max(this.height(x.left), this.height(x.right)) + 1;
+  y.height = Math.max(this.height(y.left), this.height(y.right)) + 1;
+
+  return y;
+}
+insert(value: T) {
+  this.root = this._insert(this.root, value);
+}
+
+private _insert(node: AVLNode<T> | null, value: T): AVLNode<T> {
+  if (!node) return new AVLNode(value);
+
+  if (value < node.value) {
+    node.left = this._insert(node.left, value);
+  } else if (value > node.value) {
+    node.right = this._insert(node.right, value);
+  } else {
+    // No duplicates
+    return node;
+  }
+
+  // Update height
+  node.height = 1 + Math.max(this.height(node.left), this.height(node.right));
+
+  // Get balance factor
+  const balance = this.getBalance(node);
+
+  // Left Left Case
+  if (balance > 1 && value < node.left!.value) {
+    return this.rightRotate(node);
+  }
+
+  // Right Right Case
+  if (balance < -1 && value > node.right!.value) {
+    return this.leftRotate(node);
+  }
+
+  // Left Right Case
+  if (balance > 1 && value > node.left!.value) {
+    node.left = this.leftRotate(node.left!);
+    return this.rightRotate(node);
+  }
+
+  // Right Left Case
+  if (balance < -1 && value < node.right!.value) {
+    node.right = this.rightRotate(node.right!);
+    return this.leftRotate(node);
+  }
+
+  return node;
+}
+inOrderTraversal(node: AVLNode<T> | null = this.root, result: T[] = []): T[] {
+  if (node) {
+    this.inOrderTraversal(node.left, result);
+    result.push(node.value);
+    this.inOrderTraversal(node.right, result);
+  }
+  return result;
+}
+const tree = new AVLTree<number>();
+tree.insert(10);
+tree.insert(20);
+tree.insert(30);
+tree.insert(40);
+tree.insert(50);
+tree.insert(25);
+
+console.log(tree.inOrderTraversal());  // Should output a sorted array: [10, 20, 25, 30, 40, 50]
