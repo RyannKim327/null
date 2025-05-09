@@ -1,11 +1,20 @@
-const array1 = [1, 2, 3, 4];
-const array2 = [3, 4, 5, 6];
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-const commonElements = array1.filter(element => array2.includes(element));
-console.log(commonElements); // Output: [3, 4]
-const array1 = [1, 2, 3, 4];
-const array2 = [3, 4, 5, 6];
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+  }
+}
 
-const set2 = new Set(array2);
-const commonElements = array1.filter(element => set2.has(element));
-console.log(commonElements); // Output: [3, 4]
+function maxDepth(root: TreeNode | null): number {
+  if (root === null) return 0;
+
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
+}
