@@ -1,45 +1,20 @@
-type Graph = {
-    [key: string]: string[]; // Adjacency list representation
-};
-
-function breadthFirstSearch(graph: Graph, startNode: string): string[] {
-    const visited: Set<string> = new Set();
-    const queue: string[] = [];
-    const result: string[] = [];
-
-    // Start with the initial node
-    queue.push(startNode);
-    visited.add(startNode);
-
-    while (queue.length > 0) {
-        const currentNode = queue.shift(); // Get the first element from the queue
-        if (currentNode) {
-            result.push(currentNode); // Process the current node
-
-            // Get all adjacent nodes
-            const neighbors = graph[currentNode] || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor); // Mark it as visited
-                    queue.push(neighbor); // Add it to the queue
-                }
-            }
-        }
-    }
-
-    return result;
+function calculateTriangleArea(base: number, height: number): number {
+    return 0.5 * base * height;
 }
 
-// Example usage
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: [],
-};
+// Example usage:
+const base = 10;
+const height = 5;
+const area = calculateTriangleArea(base, height);
+console.log(`The area of the triangle is ${area}`);  // Output: The area of the triangle is 25
+function calculateTriangleAreaHeron(a: number, b: number, c: number): number {
+    const s = (a + b + c) / 2;  // semiperimeter
+    return Math.sqrt(s * (s - a) * (s - b) * (s - c));
+}
 
-const startingNode = 'A';
-const traversalOrder = breadthFirstSearch(graph, startingNode);
-console.log(traversalOrder); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+// Example usage:
+const sideA = 5;
+const sideB = 6;
+const sideC = 7;
+const areaHeron = calculateTriangleAreaHeron(sideA, sideB, sideC);
+console.log(`The area of the triangle is ${areaHeron}`);
