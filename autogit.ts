@@ -1,14 +1,24 @@
-const arr = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArr = Array.from(new Set(arr));
-console.log(uniqueArr); // [1, 2, 3, 4, 5]
-const uniqueArr = [...new Set(arr)];
-const uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
-const uniqueArr = [];
-const seen = new Set();
+function isPrime(num: number): boolean {
+    // Check for edge cases
+    if (num <= 1) return false; // 0 and 1 are not prime numbers
+    if (num <= 3) return true;  // 2 and 3 are prime numbers
 
-for (const item of arr) {
-  if (!seen.has(item)) {
-    seen.add(item);
-    uniqueArr.push(item);
-  }
+    // Eliminate multiples of 2 and 3
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    // Check for factors from 5 to the square root of num
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
+        }
+    }
+
+    return true;
 }
+
+// Example usage:
+console.log(isPrime(11)); // true
+console.log(isPrime(15)); // false
+console.log(isPrime(1));  // false
+console.log(isPrime(2));  // true
+console.log(isPrime(29)); // true
