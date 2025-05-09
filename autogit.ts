@@ -1,51 +1,28 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
-  constructor(val = 0, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
-  }
+function largestPrimeFactor(n: number): number {
+    let largestFactor = 0;
+
+    // Divide out the factor 2
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
+
+    // Check for odd factors from 3 up to sqrt(n)
+    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // If n is still greater than 1, then n itself is a prime number
+    if (n > 1) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-function getLength(head: ListNode | null): number {
-  let length = 0;
-  let current = head;
-  while (current !== null) {
-    length++;
-    current = current.next;
-  }
-  return length;
-}
-
-function getIntersectionNode(
-  headA: ListNode | null,
-  headB: ListNode | null
-): ListNode | null {
-  const lenA = getLength(headA);
-  const lenB = getLength(headB);
-
-  let curA = headA;
-  let curB = headB;
-
-  // Advance the pointer of the longer list by the difference in lengths
-  if (lenA > lenB) {
-    for (let i = 0; i < lenA - lenB; i++) {
-      curA = curA!.next;
-    }
-  } else {
-    for (let i = 0; i < lenB - lenA; i++) {
-      curB = curB!.next;
-    }
-  }
-
-  // Move both pointers in sync looking for intersection node
-  while (curA !== null && curB !== null) {
-    if (curA === curB) {
-      return curA;
-    }
-    curA = curA.next;
-    curB = curB.next;
-  }
-
-  return null;
-}
+// Example usage:
+const number = 13195; // Replace this with any number
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
