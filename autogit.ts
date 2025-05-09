@@ -1,7 +1,11 @@
-let arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr);  // Output: [5, 4, 3, 2, 1]
-let arr = [1, 2, 3, 4, 5];
-let reversedArr = arr.slice().reverse();
-console.log(reversedArr);  // Output: [5, 4, 3, 2, 1]
-console.log(arr);          // Original array remains [1, 2, 3, 4, 5]
+const array1 = [1, 2, 3, 4];
+const array2 = [3, 4, 5, 6];
+
+const commonElements = array1.filter(element => array2.includes(element));
+console.log(commonElements); // Output: [3, 4]
+const array1 = [1, 2, 3, 4];
+const array2 = [3, 4, 5, 6];
+
+const set2 = new Set(array2);
+const commonElements = array1.filter(element => set2.has(element));
+console.log(commonElements); // Output: [3, 4]
