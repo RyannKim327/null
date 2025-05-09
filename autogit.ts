@@ -1,90 +1,43 @@
-class PriorityQueue<T> {
-  private heap: T[] = [];
-  private compare: (a: T, b: T) => boolean;
+function topologicalSort(graph: Map<number, number[]>): number[] {
+  const visited = new Set<number>();
+  const stack: number[] = [];
+  const tempMark = new Set<number>(); // to detect cycles
 
-  // compare defines the priority order; default is min-heap
-  constructor(compareFn?: (a: T, b: T) => boolean) {
-    this.compare = compareFn || ((a, b) => a < b);
-  }
-
-  private swap(i: number, j: number) {
-    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
-  }
-
-  private parent(index: number) {
-    return Math.floor((index - 1) / 2);
-  }
-
-  private leftChild(index: number) {
-    return 2 * index + 1;
-  }
-
-  private rightChild(index: number) {
-    return 2 * index + 2;
-  }
-
-  private siftUp(index: number) {
-    let parent = this.parent(index);
-    while (index > 0 && this.compare(this.heap[index], this.heap[parent])) {
-      this.swap(index, parent);
-      index = parent;
-      parent = this.parent(index);
+  function visit(node: number) {
+    if (tempMark.has(node)) {
+      throw new Error('Graph is not a DAG - cycle detected');
+    }
+    if (!visited.has(node)) {
+      tempMark.add(node);
+      const neighbors = graph.get(node) || [];
+      for (const neighbor of neighbors) {
+        visit(neighbor);
+      }
+      tempMark.delete(node);
+      visited.add(node);
+      stack.push(node);
     }
   }
 
-  private siftDown(index: number) {
-    let left = this.leftChild(index);
-    let right = this.rightChild(index);
-    let smallest = index;
-
-    if (left < this.heap.length && this.compare(this.heap[left], this.heap[smallest])) {
-      smallest = left;
-    }
-    if (right < this.heap.length && this.compare(this.heap[right], this.heap[smallest])) {
-      smallest = right;
-    }
-    if (smallest !== index) {
-      this.swap(index, smallest);
-      this.siftDown(smallest);
+  for (const node of graph.keys()) {
+    if (!visited.has(node)) {
+      visit(node);
     }
   }
 
-  public enqueue(element: T) {
-    this.heap.push(element);
-    this.siftUp(this.heap.length - 1);
-  }
-
-  public dequeue(): T | undefined {
-    if (this.isEmpty()) return undefined;
-
-    const root = this.heap[0];
-    const last = this.heap.pop()!;
-    if (this.heap.length > 0) {
-      this.heap[0] = last;
-      this.siftDown(0);
-    }
-    return root;
-  }
-
-  public peek(): T | undefined {
-    return this.heap[0];
-  }
-
-  public size(): number {
-    return this.heap.length;
-  }
-
-  public isEmpty(): boolean {
-    return this.heap.length === 0;
-  }
+  return stack.reverse();
 }
-const pq = new PriorityQueue<number>();
+const graph = new Map<number, number[]>();
+graph.set(5, [2, 0]);
+graph.set(4, [0, 1]);
+graph.set(2, [3]);
+graph.set(3, [1]);
+graph.set(0, []);
+graph.set(1, []);
 
-pq.enqueue(10);
-pq.enqueue(5);
-pq.enqueue(20);
-pq.enqueue(1);
-
-while (!pq.isEmpty()) {
-  console.log(pq.dequeue());  // Output: 1, 5, 10, 20
+try {
+  const sorted = topologicalSort(graph);
+  console.log(sorted); // might output: [4,5,2,3,1,0]
+} catch (err) {
+  console.error(err);
 }
