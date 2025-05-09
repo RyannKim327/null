@@ -1,44 +1,29 @@
-class Stack<T> {
-  private items: T[] = [];
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-  // Add an element to the top of the stack
-  push(element: T): void {
-    this.items.push(element);
-  }
+    // Check for the number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
 
-  // Remove and return the top element of the stack
-  pop(): T | undefined {
-    return this.items.pop();
-  }
+    // Now check for odd factors from 3 to sqrt(n)
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
 
-  // Looks at the top element without removing it
-  peek(): T | undefined {
-    return this.items[this.items.length - 1];
-  }
+    // If n is still greater than 2, then n is prime
+    if (n > 2) {
+        largestFactor = n;
+    }
 
-  // Check if the stack is empty
-  isEmpty(): boolean {
-    return this.items.length === 0;
-  }
-
-  // Gets the size of the stack
-  size(): number {
-    return this.items.length;
-  }
-
-  // Empty the stack
-  clear(): void {
-    this.items = [];
-  }
+    return largestFactor;
 }
 
-// Usage example:
-
-const stack = new Stack<number>();
-stack.push(10);
-stack.push(20);
-
-console.log(stack.peek()); // 20
-console.log(stack.pop());  // 20
-console.log(stack.pop());  // 10
-console.log(stack.pop());  // undefined (stack is empty)
+// Example usage:
+const number = 600851475143;
+const largestFactor = largestPrimeFactor(number);
+console.log(`The largest prime factor of ${number} is ${largestFactor}`);
