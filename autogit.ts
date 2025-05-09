@@ -1,10 +1,16 @@
-function countOccurrences(text: string, word: string): number {
-  const regex = new RegExp(`\\b${word}\\b`, 'gi'); // word boundaries, global, ignore case
-  const matches = text.match(regex);
-  return matches ? matches.length : 0;
+function firstRepeatedChar(str: string): string | null {
+  const seen = new Set<string>();
+
+  for (const char of str) {
+    if (seen.has(char)) {
+      return char;
+    }
+    seen.add(char);
+  }
+
+  return null; // No repeated character found
 }
 
-// Example:
-const text = "Hello world! The world is vast. Hello again.";
-const word = "world";
-console.log(countOccurrences(text, word)); // Output: 2
+// Example usage:
+console.log(firstRepeatedChar("swiss")); // Output: s
+console.log(firstRepeatedChar("abc"));   // Output: null
