@@ -1,14 +1,10 @@
-function isPalindrome(str: string): boolean {
-  // Normalize the string by removing non-alphanumeric characters and making it lowercase
-  const normalized = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-  
-  // Reverse the normalized string
-  const reversed = normalized.split('').reverse().join('');
-  
-  // Check if the normalized string is equal to its reversed version
-  return normalized === reversed;
+function countOccurrences(text: string, word: string): number {
+  const regex = new RegExp(`\\b${word}\\b`, 'gi'); // word boundaries, global, ignore case
+  const matches = text.match(regex);
+  return matches ? matches.length : 0;
 }
 
-// Usage example
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
-console.log(isPalindrome("hello")); // false
+// Example:
+const text = "Hello world! The world is vast. Hello again.";
+const word = "world";
+console.log(countOccurrences(text, word)); // Output: 2
