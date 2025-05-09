@@ -1,13 +1,48 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false; // 0 and 1 are not prime
-  if (num <= 3) return true;  // 2 and 3 are prime
-
-  if (num % 2 === 0 || num % 3 === 0) return false;
-
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) return false;
+class ListNode {
+  val: number;
+  next: ListNode | null;
+  
+  constructor(val: number) {
+    this.val = val;
+    this.next = null;
   }
-  return true;
 }
-console.log(isPrime(17)); // true
-console.log(isPrime(18)); // false
+
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+  if (!headA || !headB) return null;
+
+  // Helper to get length of list
+  function getLength(head: ListNode | null): number {
+    let length = 0;
+    let current = head;
+    while (current) {
+      length++;
+      current = current.next;
+    }
+    return length;
+  }
+
+  let lenA = getLength(headA);
+  let lenB = getLength(headB);
+
+  // Align both heads
+  while (lenA > lenB) {
+    headA = headA!.next;
+    lenA--;
+  }
+  while (lenB > lenA) {
+    headB = headB!.next;
+    lenB--;
+  }
+
+  // Traverse both together
+  while (headA && headB) {
+    if (headA === headB) {
+      return headA; // Intersection found
+    }
+    headA = headA.next;
+    headB = headB.next;
+  }
+
+  return null; // No intersection
+}
