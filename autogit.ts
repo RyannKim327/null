@@ -1,34 +1,75 @@
-function interpolationSearch(arr: number[], target: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+// Node class represents each element in the linked list
+class Node<T> {
+  value: T;
+  next: Node<T> | null = null;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    // Avoid division by zero if arr[high] == arr[low]
-    if (arr[high] === arr[low]) {
-      if (arr[low] === target) return low;
-      return -1;
-    }
+  constructor(value: T) {
+    this.value = value;
+  }
+}
 
-    // Estimate the position using the interpolation formula
-    const pos = low + Math.floor(
-      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
+class Queue<T> {
+  private head: Node<T> | null = null;
+  private tail: Node<T> | null = null;
+  private size: number = 0;
 
-    if (arr[pos] === target) {
-      return pos;
-    }
+  // Add to the end (tail) of the queue
+  enqueue(value: T): void {
+    const newNode = new Node(value);
 
-    if (arr[pos] < target) {
-      low = pos + 1;
+    if (!this.tail) {
+      // If queue is empty, head and tail are the same
+      this.head = newNode;
+      this.tail = newNode;
     } else {
-      high = pos - 1;
+      // Link the new node to the end and move the tail pointer
+      this.tail.next = newNode;
+      this.tail = newNode;
     }
+
+    this.size++;
   }
 
-  return -1; // target not found
-}
-const data = [10, 20, 30, 40, 50, 60, 70, 80];
-const target = 40;
+  // Remove from the front (head) of the queue
+  dequeue(): T | null {
+    if (!this.head) {
+      return null; // Queue is empty
+    }
 
-const index = interpolationSearch(data, target);
-console.log(index);  // Output: 3
+    const value = this.head.value;
+    this.head = this.head.next;
+    this.size--;
+
+    if (!this.head) {
+      // If queue becomes empty, reset tail to null as well
+      this.tail = null;
+    }
+
+    return value;
+  }
+
+  // Check the element at the front of the queue without removing it
+  peek(): T | null {
+    return this.head ? this.head.value : null;
+  }
+
+  // Check if the queue is empty
+  isEmpty(): boolean {
+    return this.size === 0;
+  }
+
+  // Get the size of the queue
+  getSize(): number {
+    return this.size;
+  }
+}
+const queue = new Queue<number>();
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.peek()); // 10
+console.log(queue.dequeue()); // 10
+console.log(queue.dequeue()); // 20
+console.log(queue.getSize()); // 1
+console.log(queue.isEmpty()); // false
