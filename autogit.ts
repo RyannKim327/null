@@ -1,14 +1,35 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Reverse the normalized string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Check if the normalized string equals the reversed string
-    return normalizedStr === reversedStr;
+// Import necessary types from Node.js (if applicable)
+import fetch from 'node-fetch';
+
+// Define an interface for a User
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
 
-// Example usage
-console.log(isPalindrome('A man, a plan, a canal, Panama!')); // true
-console.log(isPalindrome('Hello, World!')); // false
+// Function to fetch users from JSONPlaceholder API
+async function fetchUsers(): Promise<void> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/users');
+        
+        // Check if the response is ok (status code in the range 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const users: User[] = await response.json();
+        
+        // Print each user's name to the console
+        users.forEach(user => {
+            console.log(`User: ${user.name}, Username: ${user.username}`);
+        });
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
+}
+
+// Call the function to fetch users
+fetchUsers();
+npm install node-fetch
