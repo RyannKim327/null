@@ -1,16 +1,4 @@
-function firstRepeatedChar(str: string): string | null {
-  const seen = new Set<string>();
+const originalString = "Hello World!";
+const lowerCaseString = originalString.toLowerCase();
 
-  for (const char of str) {
-    if (seen.has(char)) {
-      return char;
-    }
-    seen.add(char);
-  }
-
-  return null; // No repeated character found
-}
-
-// Example usage:
-console.log(firstRepeatedChar("swiss")); // Output: s
-console.log(firstRepeatedChar("abc"));   // Output: null
+console.log(lowerCaseString); // Outputs: "hello world!"
