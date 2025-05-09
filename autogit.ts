@@ -1,56 +1,30 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0); // lps[i] = longest prefix suffix length for pattern[0..i]
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // fallback to previous lps
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+  constructor(val: number) {
+    this.val = val;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
+function diameterOfBinaryTree(root: TreeNode | null): number {
+  let maxDiameter = 0;
 
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+  function height(node: TreeNode | null): number {
+    if (!node) return 0;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
 
-        if (j === pattern.length) {
-            result.push(i - j); // pattern found at index (i - j)
-            j = lps[j - 1]; // continue to look for next matches
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
+    // Update maxDiameter if this path is longer
+    maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
 
-    return result;
+    // Height of node is max of left or right subtree height + 1 for the current node
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  height(root);
+  return maxDiameter;
 }
-
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const occurrences = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", occurrences);
