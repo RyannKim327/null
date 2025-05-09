@@ -1,43 +1,23 @@
-mkdir ts-api-example
-cd ts-api-example
-npm init -y
-npm install typescript axios @types/node
-npx tsc --init
-import axios from 'axios';
+function findSecondLargest(arr: number[]): number | null {
+  if (arr.length < 2) return null; // No second largest if less than 2 elements
 
-// Define an interface for the data we expect to receive
-interface Post {
-    id: number;
-    title: string;
-    body: string;
-}
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-// Function to fetch posts from JSONPlaceholder API
-const fetchPosts = async (): Promise<Post[]> => {
-    try {
-        const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        throw error;
+  for (const num of arr) {
+    if (num > largest) {
+      secondLargest = largest;
+      largest = num;
+    } else if (num > secondLargest && num < largest) {
+      secondLargest = num;
     }
-};
+  }
 
-// Main function to run the application
-const main = async () => {
-    const posts = await fetchPosts();
-    console.log('Fetched Posts:');
-    posts.forEach(post => {
-        console.log(`ID: ${post.id}`);
-        console.log(`Title: ${post.title}`);
-        console.log(`Body: ${post.body}`);
-        console.log('------------------------');
-    });
-};
-
-// Execute the main function
-main().catch(error => {
-    console.error('Error in main function:', error);
-});
-npx tsc
-node app.js
+  return secondLargest === -Infinity ? null : secondLargest;
+}
+const nums = [10, 5, 8, 12, 7];
+console.log(findSecondLargest(nums));  // Output: 10
+function secondLargestSort(arr: number[]): number | null {
+  const uniqueSorted = Array.from(new Set(arr)).sort((a, b) => b - a);
+  return uniqueSorted.length >= 2 ? uniqueSorted[1] : null;
+}
