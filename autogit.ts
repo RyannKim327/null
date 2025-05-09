@@ -1,110 +1,61 @@
-type Node = {
-  id: string;
-  neighbors: { node: Node; cost: number }[];
-};
-
-type PriorityQueueItem = {
-  node: Node;
-  f: number; // g + h
-};
-
-class PriorityQueue {
-  private elements: PriorityQueueItem[];
-
-  constructor() {
-    this.elements = [];
-  }
-
-  enqueue(node: Node, f: number) {
-    this.elements.push({ node, f });
-    this.elements.sort((a, b) => a.f - b.f); // Sort by f cost
-  }
-
-  dequeue(): Node | null {
-    return this.elements.shift()?.node || null;
-  }
-
-  isEmpty(): boolean {
-    return this.elements.length === 0;
-  }
-}
-
-class AStar {
-  private graph: { [id: string]: Node };
-  
-  constructor(graph: { [id: string]: Node }) {
-    this.graph = graph;
-  }
-
-  heuristic(node: Node, goal: Node): number {
-    // This is a placeholder for the actual heuristic function.
-    // It could be Euclidean distance, Manhattan distance, etc.
-    return 1; // This should be your heuristic estimation
-  }
-
-  search(startId: string, goalId: string): Node[] | null {
-    const start = this.graph[startId];
-    const goal = this.graph[goalId];
-
-    const openSet = new PriorityQueue();
-    const cameFrom: { [key: string]: Node | null } = {};
-
-    const gScore: { [key: string]: number } = {};
-    const fScore: { [key: string]: number } = {};
-
-    // Initialize scores
-    gScore[startId] = 0;
-    fScore[startId] = this.heuristic(start, goal);
-    openSet.enqueue(start, fScore[startId]);
-
-    while (!openSet.isEmpty()) {
-      const current = openSet.dequeue();
-      if (!current) break;
-
-      if (current.id === goalId) {
-        return this.reconstructPath(cameFrom, current);
-      }
-
-      for (const neighbor of current.neighbors) {
-        const tentativeGScore = gScore[current.id] + neighbor.cost;
-
-        if (tentativeGScore < (gScore[neighbor.node.id] || Infinity)) {
-          // This path to neighbor is better than any previous one
-          cameFrom[neighbor.node.id] = current;
-          gScore[neighbor.node.id] = tentativeGScore;
-          fScore[neighbor.node.id] = tentativeGScore + this.heuristic(neighbor.node, goal);
-
-          // Only add if it's not already in the queue
-          openSet.enqueue(neighbor.node, fScore[neighbor.node.id]);
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+    
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
-      }
+        
+        // Pattern found
+        if (j === pattern.length) {
+            result.push(i - j); // Store the index of the pattern in text
+            j = lps[j - 1]; // Look for the next match
+        } 
+        // Mismatch after j matches
+        else if (i < text.length && pattern[j] !== text[i]) {
+            // Do not match lps[0..lps[j-1]] characters, they will match anyway
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
-
-    return null; // No path found
-  }
-
-  private reconstructPath(cameFrom: { [key: string]: Node | null }, current: Node): Node[] {
-    const totalPath: Node[] = [current];
-    while (cameFrom[current.id]) {
-      current = cameFrom[current.id]!;
-      totalPath.unshift(current);
-    }
-    return totalPath;
-  }
+    
+    return result;
 }
 
-// Example of creating a graph and executing the A* search
-const graph: { [id: string]: Node } = {
-  A: { id: "A", neighbors: [] },
-  B: { id: "B", neighbors: [] },
-  C: { id: "C", neighbors: [] },
-};
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // length of previous longest prefix suffix
+    let i = 1;
 
-// Adding edges with costs
-graph["A"].neighbors.push({ node: graph["B"], cost: 1 });
-graph["B"].neighbors.push({ node: graph["C"], cost: 2 });
-graph["A"].neighbors.push({ node: graph["C"], cost: 4 });
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            // mismatch after length matches
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
 
-const astar = new AStar(graph);
-const path = astar.search("A", "C");
-console.log(path?.map(node => node.id)); // Output will be the path from A to C
+    return lps;
+}
+
+// Example usage
+const text = "ababcababcabc";
+const pattern = "abc";
+const matches = kmpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
