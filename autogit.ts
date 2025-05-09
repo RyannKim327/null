@@ -1,92 +1,64 @@
-class TarjanSCC {
-  private graph: Map<number, number[]>; // adjacency list representation
-  private index: number; // timer for dfs visitation time
-  private stack: number[];
-  private onStack: Set<number>;
-  private indices: Map<number, number>;
-  private lowLink: Map<number, number>;
-  private sccs: number[][];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-  constructor(graph: Map<number, number[]>) {
-    this.graph = graph;
-    this.index = 0;
-    this.stack = [];
-    this.onStack = new Set();
-    this.indices = new Map();
-    this.lowLink = new Map();
-    this.sccs = [];
-  }
-
-  public run(): number[][] {
-    for (const node of this.graph.keys()) {
-      if (!this.indices.has(node)) {
-        this.strongConnect(node);
-      }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return this.sccs;
-  }
-
-  private strongConnect(node: number) {
-    this.indices.set(node, this.index);
-    this.lowLink.set(node, this.index);
-    this.index++;
-    this.stack.push(node);
-    this.onStack.add(node);
-
-    const neighbors = this.graph.get(node) || [];
-    for (const neighbor of neighbors) {
-      if (!this.indices.has(neighbor)) {
-        // Neighbor has not been visited; recurse on it
-        this.strongConnect(neighbor);
-        this.lowLink.set(
-          node,
-          Math.min(this.lowLink.get(node)!, this.lowLink.get(neighbor)!)
-        );
-      } else if (this.onStack.has(neighbor)) {
-        // Neighbor is in stack and hence in the current SCC
-        this.lowLink.set(
-          node,
-          Math.min(this.lowLink.get(node)!, this.indices.get(neighbor)!)
-        );
-      }
-    }
-
-    // If node is a root node, pop the stack and generate SCC
-    if (this.lowLink.get(node) === this.indices.get(node)) {
-      const scc: number[] = [];
-      let w: number;
-      do {
-        w = this.stack.pop()!;
-        this.onStack.delete(w);
-        scc.push(w);
-      } while (w !== node);
-      this.sccs.push(scc);
-    }
-  }
 }
 
-// Example usage:
+class LinkedList {
+    head: ListNode | null;
 
-// Suppose we have a graph:
-// 1 → 2
-// 2 → 3
-// 3 → 1, 4
-// 4 → 5
-// 5 → 4
+    constructor() {
+        this.head = null;
+    }
 
-const graph = new Map<number, number[]>([
-  [1, [2]],
-  [2, [3]],
-  [3, [1, 4]],
-  [4, [5]],
-  [5, [4]],
-]);
+    // Method to append a new node at the end of the linked list
+    append(value: number): void {
+        const newNode = new ListNode(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
 
-const tarjan = new TarjanSCC(graph);
-const stronglyConnectedComponents = tarjan.run();
+    // Method to find the middle element of the linked list
+    findMiddle(): ListNode | null {
+        if (!this.head) {
+            return null; // The list is empty
+        }
 
-console.log(stronglyConnectedComponents);
-// Output might be:
-// [ [ 5, 4 ], [ 1, 3, 2 ] ]
-// SCCs grouped in arrays, order of groups or elements may vary
+        let slowPointer = this.head;
+        let fastPointer = this.head;
+
+        while (fastPointer && fastPointer.next) {
+            slowPointer = slowPointer.next; // Move slow pointer by 1
+            fastPointer = fastPointer.next.next; // Move fast pointer by 2
+        }
+
+        return slowPointer; // Slow pointer is now at the middle
+    }
+}
+
+// Example Usage:
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
+linkedList.append(5);
+
+const middleNode = linkedList.findMiddle();
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`);
+} else {
+    console.log("The linked list is empty.");
+}
