@@ -1,45 +1,41 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: an array of zero or one element is sorted
+  }
+
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
+
+  // Recursively sort left and right halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
+
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
+}
+
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0; // pointer for left array
+  let j = 0; // pointer for right array
+
+  // Merge while both arrays have elements
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
     }
-    return count;
+  }
+
+  // Add any remaining elements from left or right
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
 
 // Example usage:
-const str = "hello world";
-const char = "o";
-const occurrences = countCharacter(str, char);
-console.log(`The character "${char}" occurs ${occurrences} times.`);
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
-
-// Example usage:
-const str = "hello world";
-const char = "l";
-const occurrences = countCharacter(str, char);
-console.log(`The character "${char}" occurs ${occurrences} times.`);
-function countCharacter(str: string, char: string): number {
-    return Array.from(str).reduce((count, current) => {
-        return count + (current === char ? 1 : 0);
-    }, 0);
-}
-
-// Example usage:
-const str = "hello world";
-const char = "l";
-const occurrences = countCharacter(str, char);
-console.log(`The character "${char}" occurs ${occurrences} times.`);
-function countCharacter(str: string, char: string): number {
-    const matches = str.match(new RegExp(char, 'g'));
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const str = "hello world";
-const char = "l";
-const occurrences = countCharacter(str, char);
-console.log(`The character "${char}" occurs ${occurrences} times.`);
+const unsorted = [38, 27, 43, 3, 9, 82, 10];
+const sorted = mergeSort(unsorted);
+console.log(sorted);
