@@ -1,139 +1,56 @@
-class MinHeap {
-    private heap: number[];
+function fibonacciSearch(arr: number[], target: number): number {
+    const n = arr.length;
 
-    constructor() {
-        this.heap = [];
+    // Initialize fibonacci numbers
+    let fibMMm2 = 0; // (m-2)'th Fibonacci number
+    let fibMMm1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci number
+
+    // fibM is going to store the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
     }
 
-    // Insert a new value into the heap
-    insert(value: number): void {
-        this.heap.push(value);
-        this.bubbleUp();
-    }
+    // Marks the eliminated range from front
+    let offset = -1;
 
-    // Removes and returns the minimum value (root) from the heap
-    removeMin(): number | null {
-        if (this.heap.length === 0) {
-            return null;
+    /* while there are elements to be inspected. Note that
+       we compare arr[min(offset+fibMMm2, n-1)] with target.
+       When fibM becomes 1, fibMMm1 becomes 1 and fibMMm2 becomes 0 */
+    while (fibM > 1) {
+        // Check if fibMMm2 is a valid location
+        const i = Math.min(offset + fibMMm2, n - 1);
+
+        if (arr[i] < target) {
+            // Move fibonacci numbers down two steps
+            fibM = fibMMm1;
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+            offset = i;
+        } else if (arr[i] > target) {
+            // Move fibonacci numbers down one step
+            fibM = fibMMm2;
+            fibMMm1 = fibMMm1 - fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+        } else {
+            // Element found. Return index
+            return i;
         }
-        const min = this.heap[0];
-        const end = this.heap.pop(); // Remove the last element
-        if (this.heap.length > 0 && end !== undefined) {
-            this.heap[0] = end; // Move the last element to the root
-            this.bubbleDown();
-        }
-        return min;
     }
 
-    // Get the minimum value without removing it
-    peek(): number | null {
-        return this.heap.length > 0 ? this.heap[0] : null;
+    // comparing the last element with target
+    if (fibMMm1 && arr[offset + 1] === target) {
+        return offset + 1;
     }
 
-    // Bubble up the last element
-    private bubbleUp(): void {
-        let index = this.heap.length - 1;
-        const element = this.heap[index];
-
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            const parent = this.heap[parentIndex];
-
-            if (element >= parent) break; // If the element is in the correct position
-
-            this.heap[index] = parent; // Move parent down
-            index = parentIndex; // Move index up to parent's index
-        }
-        this.heap[index] = element; // Place the element at its final position
-    }
-
-    // Bubble down the root element
-    private bubbleDown(): void {
-        let index = 0;
-        const length = this.heap.length;
-        const element = this.heap[0];
-
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild: number, rightChild: number;
-            let swapIndex: number = -1; // To keep track of the index to swap with
-
-            if (leftChildIndex < length) {
-                leftChild = this.heap[leftChildIndex];
-                if (leftChild < element) {
-                    swapIndex = leftChildIndex;
-                }
-            }
-
-            if (rightChildIndex < length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swapIndex === -1 && rightChild < element) ||
-                    (swapIndex !== -1 && rightChild < leftChild!)
-                ) {
-                    swapIndex = rightChildIndex;
-                }
-            }
-
-            if (swapIndex === -1) break; // Element is in the correct position
-            this.heap[index] = this.heap[swapIndex]; // Swap with the child
-            index = swapIndex; // Move index down to the child's index
-        }
-        this.heap[index] = element; // Place the element at its final position
-    }
-
-    // Returns the size of the heap
-    size(): number {
-        return this.heap.length;
-    }
-
-    // Check if the heap is empty
-    isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
+    // element not found. return -1
+    return -1;
 }
 
-class PriorityQueue {
-    private minHeap: MinHeap;
-
-    constructor() {
-        this.minHeap = new MinHeap();
-    }
-
-    // Enqueue a new value with priority
-    enqueue(value: number): void {
-        this.minHeap.insert(value);
-    }
-
-    // Dequeue the highest priority value
-    dequeue(): number | null {
-        return this.minHeap.removeMin();
-    }
-
-    // Peek the highest priority value
-    peek(): number | null {
-        return this.minHeap.peek();
-    }
-
-    // Returns the size of the queue
-    size(): number {
-        return this.minHeap.size();
-    }
-
-    // Check if the priority queue is empty
-    isEmpty(): boolean {
-        return this.minHeap.isEmpty();
-    }
-}
-
-// Usage:
-const pq = new PriorityQueue();
-pq.enqueue(5);
-pq.enqueue(3);
-pq.enqueue(8);
-
-console.log(pq.dequeue()); // 3 (minimum)
-console.log(pq.peek());    // 5 (next minimum)
-console.log(pq.size());    // 2
-console.log(pq.isEmpty()); // false
+// Example usage:
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const target = 85;
+const index = fibonacciSearch(arr, target);
+console.log(index); // Outputs: 8
