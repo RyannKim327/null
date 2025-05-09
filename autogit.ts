@@ -1,24 +1,30 @@
-function isPrime(num: number): boolean {
-    // Check for edge cases
-    if (num <= 1) return false; // 0 and 1 are not prime numbers
-    if (num <= 3) return true;  // 2 and 3 are prime numbers
+function secondLargest(arr: number[]): number | null {
+  if (arr.length < 2) return null; // Not enough elements
 
-    // Eliminate multiples of 2 and 3
-    if (num % 2 === 0 || num % 3 === 0) return false;
+  // Sort array in descending order
+  const sortedArr = [...arr].sort((a, b) => b - a);
 
-    // Check for factors from 5 to the square root of num
-    for (let i = 5; i * i <= num; i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) {
-            return false;
-        }
+  // Find the first element that is less than the largest
+  for (let i = 1; i < sortedArr.length; i++) {
+    if (sortedArr[i] < sortedArr[0]) {
+      return sortedArr[i];
     }
-
-    return true;
+  }
+  
+  return null; // No second largest if all elements are equal
 }
-
-// Example usage:
-console.log(isPrime(11)); // true
-console.log(isPrime(15)); // false
-console.log(isPrime(1));  // false
-console.log(isPrime(2));  // true
-console.log(isPrime(29)); // true
+function secondLargest(arr: number[]): number | null {
+  let largest = -Infinity;
+  let second = -Infinity;
+  
+  for (const num of arr) {
+    if (num > largest) {
+      second = largest;
+      largest = num;
+    } else if (num > second && num < largest) {
+      second = num;
+    }
+  }
+  
+  return second === -Infinity ? null : second;
+}
