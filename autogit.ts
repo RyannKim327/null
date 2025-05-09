@@ -1,17 +1,20 @@
-function firstRepeatedCharacter(input: string): string | null {
-    const seenCharacters = new Set<string>();
+class TreeNode {
+  value: any;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-    for (const char of input) {
-        if (seenCharacters.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenCharacters.add(char);
-    }
-
-    return null; // Return null if no character is repeated
+  constructor(value: any, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.value = value;
+    this.left = left;
+    this.right = right;
+  }
 }
 
-// Example usage:
-const str = "aabbccdef";
-const result = firstRepeatedCharacter(str);
-console.log(result); // Output: 'a'
+function countLeafNodes(root: TreeNode | null): number {
+  if (!root) return 0;               // If node is null, no leaves here
+  if (!root.left && !root.right) {  // If no children, it's a leaf
+    return 1;
+  }
+  // Recurse on left and right subtrees and sum their leaf counts
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
