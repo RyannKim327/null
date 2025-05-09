@@ -1,35 +1,25 @@
-// Import necessary types from Node.js (if applicable)
-import fetch from 'node-fetch';
+function bubbleSort(arr: number[]): number[] {
+  let n = arr.length;
+  let swapped: boolean;
 
-// Define an interface for a User
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-}
+  // Repeat until no swaps occur
+  do {
+    swapped = false;
 
-// Function to fetch users from JSONPlaceholder API
-async function fetchUsers(): Promise<void> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/users');
-        
-        // Check if the response is ok (status code in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const users: User[] = await response.json();
-        
-        // Print each user's name to the console
-        users.forEach(user => {
-            console.log(`User: ${user.name}, Username: ${user.username}`);
-        });
-    } catch (error) {
-        console.error('Error fetching users:', error);
+    for (let i = 1; i < n; i++) {
+      if (arr[i - 1] > arr[i]) {
+        // Swap adjacent elements if they are out of order
+        [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+        swapped = true;
+      }
     }
-}
 
-// Call the function to fetch users
-fetchUsers();
-npm install node-fetch
+    // After each pass, the largest element is at the end,
+    // so we can reduce n to avoid re-checking it
+    n--;
+  } while (swapped);
+
+  return arr;
+}
+const numbers = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(numbers)); // [11, 12, 22, 25, 34, 64, 90]
