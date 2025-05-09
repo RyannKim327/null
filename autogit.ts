@@ -1,81 +1,40 @@
-type Graph = Map<number, number[]>;
+npm install axios
+npm install --save-dev typescript @types/node
+import axios from 'axios';
 
-class TarjanSCC {
-  private graph: Graph;
-  private index: number;
-  private stack: number[];
-  private onStack: Set<number>;
-  private indices: Map<number, number>;
-  private lowLink: Map<number, number>;
-  private sccs: number[][];
-
-  constructor(graph: Graph) {
-    this.graph = graph;
-    this.index = 0;
-    this.stack = [];
-    this.onStack = new Set();
-    this.indices = new Map();
-    this.lowLink = new Map();
-    this.sccs = [];
-  }
-
-  public run(): number[][] {
-    for (const node of this.graph.keys()) {
-      if (!this.indices.has(node)) {
-        this.strongConnect(node);
-      }
-    }
-    return this.sccs;
-  }
-
-  private strongConnect(node: number) {
-    // Set the discovery index and low link value to the current index
-    this.indices.set(node, this.index);
-    this.lowLink.set(node, this.index);
-    this.index++;
-    this.stack.push(node);
-    this.onStack.add(node);
-
-    // Consider successors of 'node'
-    for (const neighbor of this.graph.get(node) || []) {
-      if (!this.indices.has(neighbor)) {
-        // Neighbor has not yet been visited; recurse on it
-        this.strongConnect(neighbor);
-        this.lowLink.set(node, Math.min(this.lowLink.get(node)!, this.lowLink.get(neighbor)!));
-      } else if (this.onStack.has(neighbor)) {
-        // Neighbor is in stack -> update low link value
-        this.lowLink.set(node, Math.min(this.lowLink.get(node)!, this.indices.get(neighbor)!));
-      }
-    }
-
-    // If node is a root node, pop the stack and generate an SCC
-    if (this.lowLink.get(node) === this.indices.get(node)) {
-      const scc: number[] = [];
-      let w: number | undefined;
-      do {
-        w = this.stack.pop();
-        if (w !== undefined) {
-          this.onStack.delete(w);
-          scc.push(w);
-        }
-      } while (w !== node);
-      this.sccs.push(scc);
-    }
-  }
+// Define an interface for the user data structure
+interface User {
+    gender: string;
+    name: {
+        title: string;
+        first: string;
+        last: string;
+    };
+    email: string;
+    phone: string;
+    picture: {
+        large: string;
+    };
 }
 
-// Example usage:
-const graph: Graph = new Map([
-  [1, [2]],
-  [2, [3]],
-  [3, [1, 4]],
-  [4, [5]],
-  [5, [6, 7]],
-  [6, [4, 8]],
-  [7, [8]],
-  [8, []],
-]);
+// Define a function that fetches random user data
+async function fetchRandomUser(): Promise<void> {
+    try {
+        const response = await axios.get<{ results: User[] }>('https://randomuser.me/api/');
+        const user = response.data.results[0]; // Get the first user from the results
 
-const tarjan = new TarjanSCC(graph);
-const stronglyConnectedComponents = tarjan.run();
-console.log(stronglyConnectedComponents);
+        console.log('Random User Data:');
+        console.log(`Name: ${user.name.title} ${user.name.first} ${user.name.last}`);
+        console.log(`Gender: ${user.gender}`);
+        console.log(`Email: ${user.email}`);
+        console.log(`Phone: ${user.phone}`);
+        console.log(`Picture URL: ${user.picture.large}`);
+    } catch (error) {
+        console.error('Error fetching random user:', error);
+    }
+}
+
+// Call the function to fetch a random user
+fetchRandomUser();
+npx tsc fetchRandomUser.ts
+node fetchRandomUser.js
