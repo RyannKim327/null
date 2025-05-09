@@ -1,44 +1,28 @@
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const newArray = originalArray.filter(item => item !== elementToRemove);
+function largestPrimeFactor(n: number): number {
+  let largestFactor = -1;
 
-console.log(newArray); // Output: [1, 2, 4, 5]
-let array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-const index = array.indexOf(elementToRemove);
+  // Divide out all 2s
+  while (n % 2 === 0) {
+    largestFactor = 2;
+    n /= 2;
+  }
 
-if (index !== -1) {
-    array.splice(index, 1); // Removes 1 element at the found index
-}
-
-console.log(array); // Output: [1, 2, 4, 5]
-interface Item {
-    id: number;
-    name: string;
-}
-
-let array: Item[] = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' }
-];
-
-const idToRemove = 2;
-const index = array.findIndex(item => item.id === idToRemove);
-
-if (index !== -1) {
-    array.splice(index, 1);
-}
-
-console.log(array); // Output: [{ id: 1, name: 'Item 1' }, { id: 3, name: 'Item 3' }]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
+  // Check odd factors from 3 upwards
+  for (let i = 3; i <= Math.sqrt(n); i += 2) {
+    while (n % i === 0) {
+      largestFactor = i;
+      n /= i;
     }
-    return acc;
-}, [] as number[]);
+  }
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+  // If n is still > 2, it means n itself is prime
+  if (n > 2) {
+    largestFactor = n;
+  }
+
+  return largestFactor;
+}
+
+// Example:
+console.log(largestPrimeFactor(13195)); // 29
+console.log(largestPrimeFactor(600851475143)); // 6857
