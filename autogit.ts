@@ -1,29 +1,45 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+type Graph = {
+    [key: string]: string[]; // Adjacency list representation
+};
 
-    // Check for the number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
-    }
+function breadthFirstSearch(graph: Graph, startNode: string): string[] {
+    const visited: Set<string> = new Set();
+    const queue: string[] = [];
+    const result: string[] = [];
 
-    // Now check for odd factors from 3 to sqrt(n)
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    // Start with the initial node
+    queue.push(startNode);
+    visited.add(startNode);
+
+    while (queue.length > 0) {
+        const currentNode = queue.shift(); // Get the first element from the queue
+        if (currentNode) {
+            result.push(currentNode); // Process the current node
+
+            // Get all adjacent nodes
+            const neighbors = graph[currentNode] || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor); // Mark it as visited
+                    queue.push(neighbor); // Add it to the queue
+                }
+            }
         }
     }
 
-    // If n is still greater than 2, then n is prime
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    return result;
 }
 
-// Example usage:
-const number = 600851475143;
-const largestFactor = largestPrimeFactor(number);
-console.log(`The largest prime factor of ${number} is ${largestFactor}`);
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: [],
+};
+
+const startingNode = 'A';
+const traversalOrder = breadthFirstSearch(graph, startingNode);
+console.log(traversalOrder); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
