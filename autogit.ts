@@ -1,23 +1,11 @@
-function findSecondLargest(arr: number[]): number | null {
-  if (arr.length < 2) return null; // No second largest if less than 2 elements
-
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
-
-  for (const num of arr) {
-    if (num > largest) {
-      secondLargest = largest;
-      largest = num;
-    } else if (num > secondLargest && num < largest) {
-      secondLargest = num;
+function isSortedAscending(arr: number[]): boolean {
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < arr[i - 1]) {
+      return false;
     }
   }
-
-  return secondLargest === -Infinity ? null : secondLargest;
+  return true;
 }
-const nums = [10, 5, 8, 12, 7];
-console.log(findSecondLargest(nums));  // Output: 10
-function secondLargestSort(arr: number[]): number | null {
-  const uniqueSorted = Array.from(new Set(arr)).sort((a, b) => b - a);
-  return uniqueSorted.length >= 2 ? uniqueSorted[1] : null;
+function isSortedAscending(arr: number[]): boolean {
+  return arr.every((value, index) => index === 0 || arr[index - 1] <= value);
 }
