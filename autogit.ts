@@ -1,29 +1,59 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+class Node {
+    value: string;
+    children: Node[];
 
-    while (left <= right) {
-        // Use floor to get middle index
-        const mid = Math.floor((left + right) / 2);
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
+    }
 
-        if (arr[mid] === target) {
-            return mid; // target found at index mid
-        } else if (arr[mid] < target) {
-            left = mid + 1; // search right half
-        } else {
-            right = mid - 1; // search left half
+    addChild(child: Node): void {
+        this.children.push(child);
+    }
+}
+
+function depthLimitedSearch(root: Node, target: string, limit: number): boolean {
+    if (limit < 0) {
+        return false; // Limit exceeded
+    }
+
+    const stack: { node: Node, depth: number }[] = [];
+    stack.push({ node: root, depth: 0 });
+
+    while (stack.length > 0) {
+        const { node, depth } = stack.pop()!; // Get the last element
+
+        // Check if we've found the target
+        if (node.value === target) {
+            return true;
+        }
+
+        // If current depth is less than the limit, expand the node
+        if (depth < limit) {
+            // Push children onto the stack
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                stack.push({ node: node.children[i], depth: depth + 1 });
+            }
         }
     }
 
-    return -1; // target not found
+    return false; // Target not found within the depth limit
 }
-const sortedArray = [1, 3, 5, 7, 9, 11];
-const target = 7;
 
-const index = binarySearch(sortedArray, target);
+// Example usage:
+const root = new Node("A");
+const childB = new Node("B");
+const childC = new Node("C");
+const childD = new Node("D");
+const childE = new Node("E");
 
-if (index !== -1) {
-    console.log(`Found target ${target} at index ${index}`);
-} else {
-    console.log(`Target ${target} not found in the array`);
-}
+root.addChild(childB);
+root.addChild(childC);
+childB.addChild(childD);
+childC.addChild(childE);
+
+const target = "D";
+const depthLimit = 2;
+
+const found = depthLimitedSearch(root, target, depthLimit);
+console.log(`Target ${target} ${found ? 'found' : 'not found'} within depth limit ${depthLimit}.`);
