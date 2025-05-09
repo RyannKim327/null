@@ -1,72 +1,20 @@
-// First, define a Node class
-class Node<T> {
-  value: T;
-  next: Node<T> | null = null;
-
-  constructor(value: T) {
-    this.value = value;
-  }
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize: convert to lowercase and remove spaces
+    const normalize = (str: string) => str.toLowerCase().replace(/\s+/g, '').split('').sort().join('');
+    
+    // Normalize both strings
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
+    
+    // Compare normalized strings
+    return normalizedStr1 === normalizedStr2;
 }
 
-// Now, the LinkedList class
-class LinkedList<T> {
-  head: Node<T> | null = null;
+// Example usage
+const str1 = "listen";
+const str2 = "silent";
+console.log(areAnagrams(str1, str2)); // Output: true
 
-  // Insert at the end
-  append(value: T): void {
-    const newNode = new Node(value);
-
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-
-    current.next = newNode;
-  }
-
-  // Insert at the beginning
-  prepend(value: T): void {
-    const newNode = new Node(value);
-    newNode.next = this.head;
-    this.head = newNode;
-  }
-
-  // Find a node with a specific value
-  find(value: T): Node<T> | null {
-    let current = this.head;
-
-    while (current) {
-      if (current.value === value) return current;
-      current = current.next;
-    }
-
-    return null;
-  }
-
-  // Convert linked list into an array (for easy visualization/debugging)
-  toArray(): T[] {
-    const elements: T[] = [];
-    let current = this.head;
-
-    while (current) {
-      elements.push(current.value);
-      current = current.next;
-    }
-
-    return elements;
-  }
-}
-
-// Usage example:
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.prepend(5);
-console.log(list.toArray()); // [5, 10, 20]
-console.log(list.find(10)); // Node { value: 10, next: Node { value: 20, next: null } }
-console.log(list.find(30)); // null
+const str3 = "hello";
+const str4 = "world";
+console.log(areAnagrams(str3, str4)); // Output: false
