@@ -1,36 +1,38 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Graph = { [key: string]: string[] };
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+function bfs(graph: Graph, startNode: string): void {
+    const queue: string[] = [startNode]; // Initialize the queue with the starting node.
+    const visited: Set<string> = new Set(); // Keep track of visited nodes.
+    
+    visited.add(startNode); // Mark the start node as visited.
 
-function hasCycle(head: ListNode | null): boolean {
-    if (head === null) return false;
+    while (queue.length > 0) {
+        const node = queue.shift(); // Dequeue a node from the queue.
 
-    let slow: ListNode | null = head; // Tortoise
-    let fast: ListNode | null = head; // Hare
+        if (node === undefined) {
+            continue; // In case the queue is empty and gives us undefined.
+        }
+        
+        console.log(node); // Process the current node (for example, print it).
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next;               // Move tortoise one step
-        fast = fast.next.next;         // Move hare two steps
-
-        if (slow === fast) {
-            return true;                // Cycle detected
+        // Enqueue all unvisited neighbors.
+        for (const neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor); // Mark the neighbor as visited.
+                queue.push(neighbor); // Enqueue the neighbor.
+            }
         }
     }
-
-    return false; // No cycle found
 }
 
-// Example usage
-const head = new ListNode(3);
-head.next = new ListNode(2);
-head.next.next = new ListNode(0);
-head.next.next.next = new ListNode(-4);
-head.next.next.next.next = head.next; // Create a cycle
+// Example usage:
+const graph: Graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E'],
+};
 
-console.log(hasCycle(head)); // Expected output: true
+bfs(graph, 'A'); // Output: A, B, C, D, E, F in some order.
