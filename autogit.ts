@@ -1,53 +1,51 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
+function rabinKarp(text: string, pattern: string): number {
+    const d = 256; // number of characters in the input alphabet
+    const q = 101; // a prime number to use for hashing
+    const m = pattern.length;
+    const n = text.length;
+    const h = Math.pow(d, m - 1) % q; // The highest power of d
+    let p = 0; // hash value for pattern
+    let t = 0; // hash value for text
+    let i, j;
 
-  constructor(val?: number, next?: ListNode | null) {
-    this.val = (val === undefined ? 0 : val);
-    this.next = (next === undefined ? null : next);
-  }
+    // Pre-compute the hash values of the pattern and the first window of the text
+    for (i = 0; i < m; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % q;
+        t = (d * t + text.charCodeAt(i)) % q;
+    }
+
+    // Slide the pattern over the text one by one
+    for (i = 0; i <= n - m; i++) {
+        // Check if the hash values match
+        if (p === t) {
+            // If the hash values match, we need to check for the actual characters
+            let match = true;
+            for (j = 0; j < m; j++) {
+                if (text.charAt(i + j) !== pattern.charAt(j)) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                console.log(`Pattern found at index ${i}`);
+            }
+        }
+
+        // Calculate hash value for the next window of text
+        if (i < n - m) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+
+            // We might get a negative value of t, converting it to positive
+            if (t < 0) {
+                t = (t + q);
+            }
+        }
+    }
+
+    return -1; // If no match is found
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-  if (!head || !head.next) return true;
-
-  // Find the end of first half
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head;
-  while (fast.next && fast.next.next) {
-    slow = slow!.next;
-    fast = fast.next.next;
-  }
-
-  // Reverse second half
-  let secondHalfStart = reverseList(slow!.next);
-  let firstHalfStart = head;
-  
-  // Check palindrome
-  let p1 = firstHalfStart;
-  let p2 = secondHalfStart;
-  let result = true;
-  while (result && p2 !== null) {
-    if (p1!.val !== p2.val) result = false;
-    p1 = p1!.next;
-    p2 = p2.next;
-  }
-
-  // Restore the list (optional)
-  slow!.next = reverseList(secondHalfStart);
-
-  return result;
-}
-
-function reverseList(head: ListNode | null): ListNode | null {
-  let prev: ListNode | null = null;
-  let curr = head;
-
-  while (curr !== null) {
-    let nextTemp = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = nextTemp;
-  }
-  return prev;
-}
+// Example Usage
+const text = "ABCCDDAEFG";
+const pattern = "CDD";
+rabinKarp(text, pattern);
