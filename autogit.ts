@@ -1,20 +1,22 @@
-function calculateTriangleArea(base: number, height: number): number {
-    return 0.5 * base * height;
+function isPrime(num: number): boolean {
+    // Check for edge cases
+    if (num <= 1) return false; // 0 and 1 are not prime numbers
+    if (num <= 3) return true;  // 2 and 3 are prime numbers
+
+    // Check for even numbers and multiples of 3
+    if (num % 2 === 0 || num % 3 === 0) return false;
+
+    // Use 6k ± 1 rule to check for factors
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
-// Example usage:
-const base = 10;
-const height = 5;
-const area = calculateTriangleArea(base, height);
-console.log(`The area of the triangle is ${area}`);  // Output: The area of the triangle is 25
-function calculateTriangleAreaHeron(a: number, b: number, c: number): number {
-    const s = (a + b + c) / 2;  // semiperimeter
-    return Math.sqrt(s * (s - a) * (s - b) * (s - c));
-}
-
-// Example usage:
-const sideA = 5;
-const sideB = 6;
-const sideC = 7;
-const areaHeron = calculateTriangleAreaHeron(sideA, sideB, sideC);
-console.log(`The area of the triangle is ${areaHeron}`);
+// Example usage
+console.log(isPrime(7));   // true
+console.log(isPrime(10));  // false
+console.log(isPrime(17));  // true
+console.log(isPrime(1));   // false
