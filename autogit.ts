@@ -1,29 +1,59 @@
-function countingSort(arr: number[], maxValue: number): number[] {
-    // Create a count array with a size of maxValue + 1
-    const count: number[] = new Array(maxValue + 1).fill(0);
-    const output: number[] = new Array(arr.length);
+type State = string; // Example: a string sequence
+type ScoredState = { state: State; score: number };
 
-    // Count occurrences of each element
-    for (let i = 0; i < arr.length; i++) {
-        count[arr[i]]++;
+// Function that, given a state, generates next possible states with their scores
+type NextStatesGenerator = (current: State) => ScoredState[];
+
+/**
+ * Beam search algorithm
+ * @param start Starting state
+ * @param generateNext Function to generate next states with scores
+ * @param beamWidth Number of sequences to keep at each step
+ * @param maxSteps Maximum sequence length (or max iterations)
+ * @returns The best sequences found within the beam
+ */
+function beamSearch(
+  start: State,
+  generateNext: NextStatesGenerator,
+  beamWidth: number,
+  maxSteps: number
+): ScoredState[] {
+  let beam: ScoredState[] = [{ state: start, score: 0 }]; // Initialize beam with start state
+
+  for (let step = 0; step < maxSteps; step++) {
+    const allCandidates: ScoredState[] = [];
+
+    // Expand each state in the beam
+    for (const candidate of beam) {
+      const nextStates = generateNext(candidate.state);
+
+      for (const next of nextStates) {
+        // Aggregate scores: here we add scores, but you can choose other ways (e.g., multiply probabilities)
+        allCandidates.push({ state: next.state, score: candidate.score + next.score });
+      }
     }
 
-    // Update the count array to have the actual position of elements in the output
-    for (let i = 1; i <= maxValue; i++) {
-        count[i] += count[i - 1];
-    }
+    // Sort candidates by score descending (assuming higher is better)
+    allCandidates.sort((a, b) => b.score - a.score);
 
-    // Build the output array
-    for (let i = arr.length - 1; i >= 0; i--) {
-        output[count[arr[i]] - 1] = arr[i];
-        count[arr[i]]--;
-    }
+    // Prune to keep the beam width
+    beam = allCandidates.slice(0, beamWidth);
 
-    return output;
+    // Optional: stop early if all sequences ended or some condition met
+    // For example, if nextStates returns empty list, meaning no expansions possible
+    if (beam.length === 0) break;
+  }
+
+  return beam;
 }
+const generateNextExample: NextStatesGenerator = (current) => {
+  if (current.length >= 3) return [];
+  const chars = ['a', 'b', 'c'];
+  return chars.map((ch) => ({ state: current + ch, score: 1 })); // uniform score
+};
 
-// Example usage
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const maxValue = Math.max(...arr); // Determine the maximum value in the array
-const sortedArr = countingSort(arr, maxValue);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const results = beamSearch("", generateNextExample, 2, 3);
+
+console.log(results);
+// Might output sequences like:
+// [{ state: 'aaa', score: 3 }, { state: 'aab', score: 3 }]
