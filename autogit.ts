@@ -1,69 +1,74 @@
-type Token = string;
-type Sequence = { tokens: Token[]; score: number };
+class TarjanSCC {
+  private graph: number[][];
+  private index: number;
+  private stack: number[];
+  private indices: number[];
+  private lowLinks: number[];
+  private onStack: boolean[];
+  private sccs: number[][];
 
-// Example next step function signature:
-// It takes a sequence and returns possible next tokens with their log-probabilities
-type NextStepFn = (sequence: Token[]) => { token: Token; score: number }[];
-
-function beamSearch(
-  startSequence: Token[],
-  nextStep: NextStepFn,
-  beamWidth: number,
-  maxSteps: number,
-  endToken: Token
-): Sequence[] {
-  // Initialize beam with the start sequence at score 0 (log-prob = 0)
-  let beam: Sequence[] = [{ tokens: startSequence, score: 0 }];
-
-  for (let step = 0; step < maxSteps; step++) {
-    const candidates: Sequence[] = [];
-
-    for (const seq of beam) {
-      // If the last token is the end token, carry the sequence forward
-      if (seq.tokens[seq.tokens.length - 1] === endToken) {
-        candidates.push(seq);
-        continue;
-      }
-
-      // Get next possible tokens with their scores
-      const nextTokens = nextStep(seq.tokens);
-
-      for (const next of nextTokens) {
-        candidates.push({
-          tokens: [...seq.tokens, next.token],
-          // Add log-probabilities, because scores are usually additive in log space
-          score: seq.score + next.score,
-        });
-      }
-    }
-
-    // Sort candidates by score descending (higher score = better)
-    candidates.sort((a, b) => b.score - a.score);
-
-    // Keep top beamWidth candidates only
-    beam = candidates.slice(0, beamWidth);
-
-    // Optionally break early if all candidates ended with endToken
-    if (beam.every(seq => seq.tokens[seq.tokens.length - 1] === endToken)) {
-      break;
-    }
+  constructor(graph: number[][]) {
+    this.graph = graph;
+    const n = graph.length;
+    this.index = 0;
+    this.stack = [];
+    this.indices = new Array(n).fill(-1);
+    this.lowLinks = new Array(n).fill(-1);
+    this.onStack = new Array(n).fill(false);
+    this.sccs = [];
   }
 
-  return beam;
+  public run(): number[][] {
+    for (let v = 0; v < this.graph.length; v++) {
+      if (this.indices[v] === -1) {
+        this.strongConnect(v);
+      }
+    }
+    return this.sccs;
+  }
+
+  private strongConnect(v: number): void {
+    this.indices[v] = this.index;
+    this.lowLinks[v] = this.index;
+    this.index++;
+    this.stack.push(v);
+    this.onStack[v] = true;
+
+    for (const w of this.graph[v]) {
+      if (this.indices[w] === -1) {
+        this.strongConnect(w);
+        this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
+      } else if (this.onStack[w]) {
+        this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
+      }
+    }
+
+    if (this.lowLinks[v] === this.indices[v]) {
+      const scc: number[] = [];
+      let w;
+      do {
+        w = this.stack.pop()!;
+        this.onStack[w] = false;
+        scc.push(w);
+      } while (w !== v);
+      this.sccs.push(scc);
+    }
+  }
 }
-const vocab = ["a", "b", "c", "<end>"];
 
-// Dummy next step function: just pick randomly for demo purposes
-const nextStep: NextStepFn = (sequence) => {
-  // For demo: assign random log probabilities to each token
-  return vocab.map(token => ({
-    token,
-    score: Math.log(Math.random()),
-  }));
-};
+// Example usage:
+const graph = [
+  [1],
+  [2, 4, 5],
+  [3, 6],
+  [2, 7],
+  [0, 5],
+  [6],
+  [5],
+  [3, 6],
+];
 
-const results = beamSearch(["<start>"], nextStep, 3, 5, "<end>");
-
-results.forEach((seq, i) => {
-  console.log(`Sequence ${i + 1}: ${seq.tokens.join(" ")} (score: ${seq.score.toFixed(2)})`);
-});
+const tarjan = new TarjanSCC(graph);
+const sccs = tarjan.run();
+console.log(sccs);
+// Output might be something like: [ [ 6, 5 ], [ 7, 3, 2 ], [ 1, 4, 0 ] ]
