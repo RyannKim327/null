@@ -1,74 +1,41 @@
-class TarjanSCC {
-  private graph: number[][];
-  private index: number;
-  private stack: number[];
-  private indices: number[];
-  private lowLinks: number[];
-  private onStack: boolean[];
-  private sccs: number[][];
+function kthSmallest(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined; // invalid k
 
-  constructor(graph: number[][]) {
-    this.graph = graph;
-    const n = graph.length;
-    this.index = 0;
-    this.stack = [];
-    this.indices = new Array(n).fill(-1);
-    this.lowLinks = new Array(n).fill(-1);
-    this.onStack = new Array(n).fill(false);
-    this.sccs = [];
-  }
-
-  public run(): number[][] {
-    for (let v = 0; v < this.graph.length; v++) {
-      if (this.indices[v] === -1) {
-        this.strongConnect(v);
-      }
-    }
-    return this.sccs;
-  }
-
-  private strongConnect(v: number): void {
-    this.indices[v] = this.index;
-    this.lowLinks[v] = this.index;
-    this.index++;
-    this.stack.push(v);
-    this.onStack[v] = true;
-
-    for (const w of this.graph[v]) {
-      if (this.indices[w] === -1) {
-        this.strongConnect(w);
-        this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
-      } else if (this.onStack[w]) {
-        this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
-      }
-    }
-
-    if (this.lowLinks[v] === this.indices[v]) {
-      const scc: number[] = [];
-      let w;
-      do {
-        w = this.stack.pop()!;
-        this.onStack[w] = false;
-        scc.push(w);
-      } while (w !== v);
-      this.sccs.push(scc);
+  const sorted = [...arr].sort((a, b) => a - b);
+  return sorted[k - 1];
+}
+function partition(arr: number[], low: number, high: number): number {
+  const pivot = arr[high];
+  let i = low;
+  for (let j = low; j < high; j++) {
+    if (arr[j] <= pivot) {
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      i++;
     }
   }
+  [arr[i], arr[high]] = [arr[high], arr[i]];
+  return i;
 }
 
-// Example usage:
-const graph = [
-  [1],
-  [2, 4, 5],
-  [3, 6],
-  [2, 7],
-  [0, 5],
-  [6],
-  [5],
-  [3, 6],
-];
+function quickSelect(arr: number[], low: number, high: number, k: number): number | undefined {
+  if (low <= high) {
+    const pi = partition(arr, low, high);
 
-const tarjan = new TarjanSCC(graph);
-const sccs = tarjan.run();
-console.log(sccs);
-// Output might be something like: [ [ 6, 5 ], [ 7, 3, 2 ], [ 1, 4, 0 ] ]
+    if (pi === k) {
+      return arr[pi];
+    } else if (pi > k) {
+      return quickSelect(arr, low, pi - 1, k);
+    } else {
+      return quickSelect(arr, pi + 1, high, k);
+    }
+  }
+  return undefined;
+}
+
+function kthSmallest(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;
+
+  // Make a copy to avoid mutating original array
+  const arrCopy = [...arr];
+  return quickSelect(arrCopy, 0, arrCopy.length - 1, k - 1);
+}
