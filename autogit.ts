@@ -1,47 +1,49 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
-  constructor(val: number, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
-  }
+function lengthOfLIS(nums: number[]): number {
+    const n = nums.length;
+    const dp = Array(n).fill(1);
+
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
+    }
+
+    return Math.max(...dp);
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-  if (!headA || !headB) return null;
+// Example usage:
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(lengthOfLIS(arr));  // Outputs: 4
+function lengthOfLIS(nums: number[]): number {
+    const tails: number[] = [];
 
-  // Helper to get length of list
-  const getLength = (head: ListNode | null): number => {
-    let length = 0;
-    while (head) {
-      length++;
-      head = head.next;
+    for (const num of nums) {
+        let left = 0;
+        let right = tails.length;
+
+        // Binary search for the insertion point of num in tails
+        while (left < right) {
+            const mid = (left + right) >> 1;
+            if (tails[mid] < num) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+
+        // If num is larger than all tails, append it
+        if (left === tails.length) {
+            tails.push(num);
+        } else {
+            tails[left] = num;
+        }
     }
-    return length;
-  }
 
-  let lenA = getLength(headA);
-  let lenB = getLength(headB);
-
-  // Align both pointers at the same remaining distance from the tail
-  while (lenA > lenB) {
-    headA = headA!.next;
-    lenA--;
-  }
-  while (lenB > lenA) {
-    headB = headB!.next;
-    lenB--;
-  }
-
-  // Move both pointers in tandem to find intersection
-  while (headA && headB) {
-    if (headA === headB) {
-      return headA;
-    }
-    headA = headA.next;
-    headB = headB.next;
-  }
-
-  // No intersection found
-  return null;
+    return tails.length;
 }
+
+// Example usage:
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(lengthOfLIS(arr));  // Outputs: 4
