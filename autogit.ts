@@ -1,34 +1,36 @@
-type Graph = { [node: string]: string[] };
+type Graph = Map<string, string[]>;
 
-function bfs(graph: Graph, start: string): string[] {
-  const visited = new Set<string>();
-  const queue: string[] = [];
-  const result: string[] = [];
+function depthLimitedSearch(
+  graph: Graph,
+  start: string,
+  target: string,
+  limit: number
+): boolean {
+  function recursiveDLS(current: string, depth: number): boolean {
+    if (current === target) return true;
+    if (depth === 0) return false;
 
-  visited.add(start);
-  queue.push(start);
-
-  while (queue.length > 0) {
-    const node = queue.shift()!;
-    result.push(node);
-
-    for (const neighbor of graph[node] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
+    const neighbors = graph.get(current) || [];
+    for (const neighbor of neighbors) {
+      if (recursiveDLS(neighbor, depth - 1)) {
+        return true;
       }
     }
+    return false;
   }
 
-  return result;
+  return recursiveDLS(start, limit);
 }
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: []
-};
 
-console.log(bfs(graph, 'A'));  // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+// Example usage:
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D', 'E']],
+  ['C', ['F']],
+  ['D', []],
+  ['E', []],
+  ['F', []]
+]);
+
+console.log(depthLimitedSearch(graph, 'A', 'E', 2)); // true
+console.log(depthLimitedSearch(graph, 'A', 'F', 1)); // false because limit is 1
