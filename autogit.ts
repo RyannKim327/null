@@ -1,51 +1,55 @@
-type Graph = { [key: string]: string[] };
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    // Ensure nums1 is the smaller array
+    if (nums1.length > nums2.length) return findMedianSortedArrays(nums2, nums1);
 
-function bfs(graph: Graph, start: string, target: string | null = null): string[] | null {
-  const queue: string[] = [start];
-  const visited = new Set<string>([start]);
-  const predecessor: { [key: string]: string | null } = {};
-  predecessor[start] = null;
+    const m = nums1.length;
+    const n = nums2.length;
+    const halfLen = Math.floor((m + n + 1) / 2);
 
-  while (queue.length > 0) {
-    const node = queue.shift()!;
-    // If looking for a specific target node:
-    if (target !== null && node === target) {
-      // Reconstruct path
-      const path: string[] = [];
-      let current: string | null = node;
-      while (current !== null) {
-        path.unshift(current);
-        current = predecessor[current];
-      }
-      return path;
+    let imin = 0, imax = m;
+
+    while (imin <= imax) {
+        const i = Math.floor((imin + imax) / 2);
+        const j = halfLen - i;
+
+        if (i < m && nums2[j - 1] > nums1[i]) {
+            // i is too small, must increase it
+            imin = i + 1;
+        } else if (i > 0 && nums1[i - 1] > nums2[j]) {
+            // i is too big, must decrease it
+            imax = i - 1;
+        } else {
+            // i is perfect
+            let maxLeft = 0;
+            if (i === 0) {
+                maxLeft = nums2[j - 1];
+            } else if (j === 0) {
+                maxLeft = nums1[i - 1];
+            } else {
+                maxLeft = Math.max(nums1[i - 1], nums2[j - 1]);
+            }
+
+            if ((m + n) % 2 === 1) {
+                return maxLeft;
+            }
+
+            let minRight = 0;
+            if (i === m) {
+                minRight = nums2[j];
+            } else if (j === n) {
+                minRight = nums1[i];
+            } else {
+                minRight = Math.min(nums1[i], nums2[j]);
+            }
+
+            return (maxLeft + minRight) / 2;
+        }
     }
 
-    for (const neighbor of graph[node] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        predecessor[neighbor] = node;
-        queue.push(neighbor);
-      }
-    }
-  }
-
-  // If target was specified and not found:
-  if (target !== null) {
-    return null;
-  }
-
-  // If no target specified, return the order of visited nodes:
-  return Array.from(visited);
+    throw new Error("Input arrays are not sorted or invalid");
 }
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: [],
-};
 
-console.log(bfs(graph, 'A')); // ['A', 'B', 'C', 'D', 'E', 'F']
-console.log(bfs(graph, 'A', 'E')); // ['A', 'B', 'E']
-console.log(bfs(graph, 'A', 'Z')); // null (Z not in graph)
+// Example usage:
+const arr1 = [1, 3];
+const arr2 = [2];
+console.log(findMedianSortedArrays(arr1, arr2));  // Output: 2
