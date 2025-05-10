@@ -1,26 +1,31 @@
-function interpolationSearch(arr: number[], target: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+import axios from 'axios';
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      return arr[low] === target ? low : -1;
-    }
+// Define the interface for the User
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
 
-    // Estimate the position of the target value
-    const pos = low + Math.floor(
-      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
+// Function to fetch users
+const fetchUsers = async (): Promise<void> => {
+  try {
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    const users = response.data;
 
-    if (arr[pos] === target) {
-      return pos;
-    }
-    if (arr[pos] < target) {
-      low = pos + 1;
+    // Log the users to the console
+    console.log('Fetched Users:', users);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Error message:', error.message);
     } else {
-      high = pos - 1;
+      console.error('Unexpected error:', error);
     }
   }
+};
 
-  return -1; // Target not found
-}
+// Call the fetchUsers function
+fetchUsers();
+npm install axios typescript
+npx tsc yourFile.ts && node yourFile.js
