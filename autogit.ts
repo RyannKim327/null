@@ -1,43 +1,19 @@
-class Node<T> {
-  value: T;
-  next: Node<T> | null;
+function firstNonRepeatingChar(str: string): string | null {
+  const charCount: Record<string, number> = {};
 
-  constructor(value: T) {
-    this.value = value;
-    this.next = null;
+  // Count occurrences of each character
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
   }
-}
 
-class LinkedList<T> {
-  head: Node<T> | null = null;
-
-  // Method to add a node for testing purposes
-  append(value: T) {
-    const newNode = new Node(value);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
+  // Find the first character that occurs only once
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
     }
   }
 
-  length(): number {
-    let count = 0;
-    let current = this.head;
-    while (current) {
-      count++;
-      current = current.next;
-    }
-    return count;
-  }
+  return null; // in case every character repeats
 }
-const list = new LinkedList<number>();
-list.append(5);
-list.append(10);
-list.append(15);
-
-console.log(list.length()); // Output: 3
+console.log(firstNonRepeatingChar("swiss"));  // Output: "w"
+console.log(firstNonRepeatingChar("aabbcc")); // Output: null
