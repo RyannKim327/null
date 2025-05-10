@@ -1,29 +1,25 @@
-npm install node-cron
-npm install --save-dev typescript @types/node
-import cron from 'node-cron';
+import axios from 'axios';
 
-// Function to be executed by the cron job
-const scheduledTask = () => {
-    const now = new Date();
-    console.log(`Task executed at: ${now.toLocaleTimeString()}`);
-};
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
 
-// Schedule the task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    scheduledTask();
-});
+async function fetchUsers(): Promise<User[]> {
+  try {
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    return [];
+  }
+}
 
-// Start the cron job
-task.start();
-
-// Test logging to confirm script is running
-console.log('Cron job has been started. It will log the current time every minute.');
-
-// Handle graceful shutdown
-process.on('SIGINT', () => {
-    console.log('Stopping the cron job...');
-    task.stop();
-    process.exit(0);
-});
-npx tsc cronJob.ts
-node cronJob.js
+(async () => {
+  const users = await fetchUsers();
+  users.forEach(user => {
+    console.log(`${user.name} (${user.username}) - ${user.email}`);
+  });
+})();
