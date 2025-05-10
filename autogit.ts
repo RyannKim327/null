@@ -1,36 +1,28 @@
-type Graph = { [key: string]: string[] };
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-function bfs(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const queue: string[] = [];
-  const result: string[] = [];
-
-  visited.add(startNode);
-  queue.push(startNode);
-
-  while (queue.length > 0) {
-    const node = queue.shift()!;
-    result.push(node);
-
-    for (const neighbor of graph[node] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
+    // Dividing by 2 until n is odd
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
-  }
 
-  return result;
+    // Check for odd factors from 3 to sqrt(n)
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // If n is still greater than 2, then n itself is a prime number
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
-// Example graph
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: []
-};
-
-console.log(bfs(graph, 'A'));  // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+// Example usage:
+const number = 13195; // Change this to the number you want to check
+console.log(`The largest prime factor of ${number} is: ${largestPrimeFactor(number)}`);
