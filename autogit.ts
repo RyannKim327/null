@@ -1,29 +1,60 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
+class HashTable<K, V> {
+  private buckets: Array<Array<[K, V]>>;
+  private capacity: number;
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
+  constructor(capacity: number = 50) {
+    this.capacity = capacity;
+    this.buckets = new Array(capacity).fill(null).map(() => []);
+  }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.reduce((accumulator, current) => {
-    if (!accumulator.includes(current)) {
-        accumulator.push(current);
+  // Simple hash function for string keys
+  private hash(key: K): number {
+    let hash = 0;
+    const keyStr = String(key);
+    for (let i = 0; i < keyStr.length; i++) {
+      hash = (hash + keyStr.charCodeAt(i) * i) % this.capacity;
     }
-    return accumulator;
-}, [] as number[]); // Specify type if needed
+    return hash;
+  }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-const seen: { [key: number]: boolean } = {};
-const uniqueArray: number[] = [];
-
-array.forEach(value => {
-    if (!seen[value]) {
-        seen[value] = true;
-        uniqueArray.push(value);
+  set(key: K, value: V): void {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+    
+    // Check if key already exists and update
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        bucket[i][1] = value;
+        return;
+      }
     }
-});
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+    // If key doesn't exist, add it to the bucket
+    bucket.push([key, value]);
+  }
+
+  get(key: K): V | undefined {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        return bucket[i][1];
+      }
+    }
+    return undefined;
+  }
+
+  remove(key: K): boolean {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        bucket.splice(i, 1);
+        return true;
+      }
+    }
+    return false;
+  }
+}
