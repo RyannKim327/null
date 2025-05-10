@@ -1,26 +1,27 @@
-function isSorted(arr: number[]): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < arr[i - 1]) return false;
-  }
-  return true;
-}
+function longestCommonSubstring(s1: string, s2: string): string {
+  const m = s1.length;
+  const n = s2.length;
 
-function shuffle(arr: number[]): void {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
+  // Create a 2D array filled with zeros
+  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+  let maxLength = 0;     // Max length of common substring found
+  let maxEndIndex = 0;   // Ending index of the longest common substring in s1
 
-function randomSort(arr: number[]): number[] {
-  const result = [...arr];
-  while (!isSorted(result)) {
-    shuffle(result);
-  }
-  return result;
-}
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (s1[i - 1] === s2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
 
-// Example usage:
-const nums = [3, 1, 4, 1, 5];
-console.log('Before:', nums);
-console.log('After randomSort:', randomSort(nums));
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          maxEndIndex = i;  // Store the end index in s1
+        }
+      }
+    }
+  }
+
+  // Extract the longest common substring from s1 using maxLength and maxEndIndex
+  return s1.substring(maxEndIndex - maxLength, maxEndIndex);
+}
+console.log(longestCommonSubstring("abcde", "abfce"));  // Output: "bc"
+console.log(longestCommonSubstring("abcdef", "zabcf")); // Output: "abc"
