@@ -1,64 +1,20 @@
-class Node<T> {
-  value: T;
-  next: Node<T> | null = null;
-
-  constructor(value: T) {
-    this.value = value;
+function quicksort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr; // Base case: already sorted
   }
-}
 
-class Queue<T> {
-  private head: Node<T> | null = null;
-  private tail: Node<T> | null = null;
-  private size: number = 0;
+  const pivot = arr[arr.length - 1]; // Choose last element as pivot
+  const left: number[] = [];
+  const right: number[] = [];
 
-  enqueue(value: T): void {
-    const newNode = new Node(value);
-    if (!this.tail) {
-      // Queue is empty
-      this.head = newNode;
-      this.tail = newNode;
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] < pivot) {
+      left.push(arr[i]);
     } else {
-      // Append to the end and update tail
-      this.tail.next = newNode;
-      this.tail = newNode;
+      right.push(arr[i]);
     }
-    this.size++;
   }
 
-  dequeue(): T | null {
-    if (!this.head) {
-      // Queue is empty
-      return null;
-    }
-    const dequeuedValue = this.head.value;
-    this.head = this.head.next;
-    if (!this.head) {
-      // If queue becomes empty, reset tail as well
-      this.tail = null;
-    }
-    this.size--;
-    return dequeuedValue;
-  }
-
-  peek(): T | null {
-    return this.head ? this.head.value : null;
-  }
-
-  isEmpty(): boolean {
-    return this.size === 0;
-  }
-
-  getSize(): number {
-    return this.size;
-  }
+  // Recursively sort left and right, then concatenate with pivot
+  return [...quicksort(left), pivot, ...quicksort(right)];
 }
-const queue = new Queue<number>();
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
-
-console.log(queue.dequeue()); // 10
-console.log(queue.peek());    // 20
-console.log(queue.getSize()); // 2
-console.log(queue.isEmpty()); // false
