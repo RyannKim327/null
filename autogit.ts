@@ -1,54 +1,40 @@
-function mergeSort(arr: number[]): number[] {
-    const n = arr.length;
-    // Create a temporary array to hold the sorted elements
-    const temp: number[] = new Array(n);
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    // Start with a subarray size of 1
-    for (let size = 1; size < n; size *= 2) {
-        // Iterate over the array and merge subarrays of the current size
-        for (let leftStart = 0; leftStart < n; leftStart += 2 * size) {
-            // Find the middle and end indices for merging
-            const mid = Math.min(leftStart + size, n);
-            const rightEnd = Math.min(leftStart + 2 * size, n);
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-            // Merge the two subarrays
-            merge(arr, temp, leftStart, mid, rightEnd);
-        }
-        // Copy the sorted elements back to the original array
-        for (let i = 0; i < n; i++) {
-            arr[i] = temp[i];
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Characters do not match
+            }
         }
     }
 
-    return arr;
-}
-
-function merge(arr: number[], temp: number[], leftStart: number, mid: number, rightEnd: number): void {
-    let left = leftStart;    // Starting index for left subarray
-    let right = mid;         // Starting index for right subarray
-    let index = leftStart;   // Starting index to be merged
-
-    // Merge while there are elements in both subarrays
-    while (left < mid && right < rightEnd) {
-        if (arr[left] <= arr[right]) {
-            temp[index++] = arr[left++];
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Add this character to the LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up in the dp table
         } else {
-            temp[index++] = arr[right++];
+            j--; // Move left in the dp table
         }
     }
 
-    // Copy the remaining elements from the left subarray, if any
-    while (left < mid) {
-        temp[index++] = arr[left++];
-    }
-
-    // Copy the remaining elements from the right subarray, if any
-    while (right < rightEnd) {
-        temp[index++] = arr[right++];
-    }
+    return lcs;
 }
 
-// Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(array);
-console.log(sortedArray); // Outputs: [3, 9, 10, 27, 38, 43, 82]
+// Example usage:
+const str1 = "ABCBDAB";
+const str2 = "BDCAB";
+console.log(longestCommonSubsequence(str1, str2)); // Output: "BCAB"
