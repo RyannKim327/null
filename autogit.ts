@@ -1,46 +1,73 @@
-function heapSort(arr: number[]): number[] {
-  const n = arr.length;
+type Key = string | number;
 
-  // Build a max heap
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
+class HashTable<V> {
+  private buckets: Array<Array<[Key, V]>>;
+  private capacity: number;
+
+  constructor(capacity = 50) {
+    this.capacity = capacity;
+    this.buckets = new Array(capacity).fill(null).map(() => []);
   }
 
-  // Extract elements from heap one by one
-  for (let i = n - 1; i >= 0; i--) {
-    // Move current root (largest) to the end
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-
-    // Call max heapify on the reduced heap
-    heapify(arr, i, 0);
+  private hash(key: Key): number {
+    // Simple hash function (djb2 variant)
+    let hash = 5381;
+    const strKey = key.toString();
+    for (let i = 0; i < strKey.length; i++) {
+      hash = (hash * 33) ^ strKey.charCodeAt(i);
+    }
+    return Math.abs(hash) % this.capacity;
   }
 
-  return arr;
+  set(key: Key, value: V): void {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    // Check if key exists, update value
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        bucket[i][1] = value;
+        return;
+      }
+    }
+
+    // If key doesn't exist, add new pair
+    bucket.push([key, value]);
+  }
+
+  get(key: Key): V | undefined {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    for (const [k, v] of bucket) {
+      if (k === key) return v;
+    }
+
+    return undefined;
+  }
+
+  delete(key: Key): boolean {
+    const index = this.hash(key);
+    const bucket = this.buckets[index];
+
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        bucket.splice(i, 1);
+        return true;
+      }
+    }
+
+    return false;
+  }
 }
+const hashTable = new HashTable<number>();
 
-function heapify(arr: number[], heapSize: number, rootIndex: number) {
-  let largest = rootIndex;
-  const left = 2 * rootIndex + 1;
-  const right = 2 * rootIndex + 2;
+hashTable.set("apple", 10);
+hashTable.set("banana", 20);
 
-  // If left child exists and is greater than root
-  if (left < heapSize && arr[left] > arr[largest]) {
-    largest = left;
-  }
+console.log(hashTable.get("apple"));  // 10
+console.log(hashTable.get("banana")); // 20
+console.log(hashTable.get("orange")); // undefined
 
-  // If right child exists and is greater than largest so far
-  if (right < heapSize && arr[right] > arr[largest]) {
-    largest = right;
-  }
-
-  // If largest is not root
-  if (largest !== rootIndex) {
-    [arr[rootIndex], arr[largest]] = [arr[largest], arr[rootIndex]];
-    // Recursively heapify the affected subtree
-    heapify(arr, heapSize, largest);
-  }
-}
-
-// Example usage:
-const data = [12, 11, 13, 5, 6, 7];
-console.log('Sorted array:', heapSort(data));
+hashTable.delete("banana");
+console.log(hashTable.get("banana")); // undefined
