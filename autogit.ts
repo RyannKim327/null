@@ -1,44 +1,61 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+type Edge = {
+  from: number;
+  to: number;
+  weight: number;
+};
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function bellmanFord(
+  verticesCount: number,
+  edges: Edge[],
+  source: number
+): { distances: number[]; hasNegativeCycle: boolean } {
+  // Step 1: Initialize distances array with Infinity for all vertices except the source.
+  const distances = Array(verticesCount).fill(Infinity);
+  distances[source] = 0;
+
+  // Step 2: Relax edges repeatedly (|V| - 1 times)
+  for (let i = 0; i < verticesCount - 1; i++) {
+    let updated = false;
+    for (const edge of edges) {
+      if (
+        distances[edge.from] !== Infinity &&
+        distances[edge.from] + edge.weight < distances[edge.to]
+      ) {
+        distances[edge.to] = distances[edge.from] + edge.weight;
+        updated = true;
+      }
     }
-}
+    // Optimization: If no update happened in this pass, we can stop early.
+    if (!updated) break;
+  }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    let maxDiameter = 0;
-
-    function height(node: TreeNode | null): number {
-        if (!node) {
-            return 0;
-        }
-
-        // Recursively find the height of the left and right subtrees
-        const leftHeight = height(node.left);
-        const rightHeight = height(node.right);
-
-        // Update the maximum diameter found so far
-        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
+  // Step 3: Check for negative-weight cycles
+  for (const edge of edges) {
+    if (
+      distances[edge.from] !== Infinity &&
+      distances[edge.from] + edge.weight < distances[edge.to]
+    ) {
+      return { distances, hasNegativeCycle: true };
     }
+  }
 
-    height(root);
-    return maxDiameter;
+  return { distances, hasNegativeCycle: false };
 }
+const edges: Edge[] = [
+  { from: 0, to: 1, weight: 5 },
+  { from: 0, to: 2, weight: 4 },
+  { from: 1, to: 3, weight: 3 },
+  { from: 2, to: 1, weight: 6 },
+  { from: 3, to: 2, weight: -2 }
+];
 
-// Example Usage:
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+const verticesCount = 4;
+const source = 0;
 
-const diameter = diameterOfBinaryTree(root);
-console.log("Diameter of the binary tree is:", diameter); // Output: 3
+const result = bellmanFord(verticesCount, edges, source);
+
+if (result.hasNegativeCycle) {
+  console.log("Graph contains a negative weight cycle");
+} else {
+  console.log("Shortest distances from source:", result.distances);
+}
