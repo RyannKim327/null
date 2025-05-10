@@ -1,72 +1,73 @@
-class TarjanSCC {
-  private graph: Map<number, number[]>;
-  private index: number;
-  private stack: number[];
-  private indices: Map<number, number>;
-  private lowlink: Map<number, number>;
-  private onStack: Set<number>;
-  private sccs: number[][];
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null = null;
 
-  constructor(graph: Map<number, number[]>) {
-    this.graph = graph;
-    this.index = 0;
-    this.stack = [];
-    this.indices = new Map();
-    this.lowlink = new Map();
-    this.onStack = new Set();
-    this.sccs = [];
-  }
-
-  public findSCCs(): number[][] {
-    for (const node of this.graph.keys()) {
-      if (!this.indices.has(node)) {
-        this.strongConnect(node);
-      }
-    }
-    return this.sccs;
-  }
-
-  private strongConnect(v: number): void {
-    this.indices.set(v, this.index);
-    this.lowlink.set(v, this.index);
-    this.index++;
-    this.stack.push(v);
-    this.onStack.add(v);
-
-    for (const w of this.graph.get(v) || []) {
-      if (!this.indices.has(w)) {
-        // Successor w has not yet been visited; recurse on it
-        this.strongConnect(w);
-        this.lowlink.set(v, Math.min(this.lowlink.get(v)!, this.lowlink.get(w)!));
-      } else if (this.onStack.has(w)) {
-        // Successor w is in stack and hence in the current SCC
-        this.lowlink.set(v, Math.min(this.lowlink.get(v)!, this.indices.get(w)!));
-      }
-    }
-
-    // If v is a root node, pop the stack and generate an SCC
-    if (this.lowlink.get(v) === this.indices.get(v)) {
-      const scc: number[] = [];
-      let w: number;
-      do {
-        w = this.stack.pop()!;
-        this.onStack.delete(w);
-        scc.push(w);
-      } while (w !== v);
-      this.sccs.push(scc);
-    }
+  constructor(value: T) {
+    this.value = value;
   }
 }
-// Graph representation as adjacency list
-const graph = new Map<number, number[]>();
-graph.set(0, [1]);
-graph.set(1, [2]);
-graph.set(2, [0, 3]);
-graph.set(3, [4]);
-graph.set(4, []);
+class LinkedList<T> {
+  private head: ListNode<T> | null = null;
+  private tail: ListNode<T> | null = null;
+  private length = 0;
 
-const tarjan = new TarjanSCC(graph);
-const sccs = tarjan.findSCCs();
+  // Add to the end
+  append(value: T): void {
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      this.tail!.next = newNode;
+      this.tail = newNode;
+    }
+    this.length++;
+  }
 
-console.log(sccs);
-// Output might be: [ [ 4 ], [ 3 ], [ 0, 2, 1 ] ]
+  // Add to the start
+  prepend(value: T): void {
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
+      this.tail = newNode;
+    } else {
+      newNode.next = this.head;
+      this.head = newNode;
+    }
+    this.length++;
+  }
+
+  // Remove the first node
+  removeFirst(): T | null {
+    if (!this.head) return null;
+    const value = this.head.value;
+    this.head = this.head.next;
+    if (!this.head) this.tail = null; // List became empty
+    this.length--;
+    return value;
+  }
+
+  // Convert list to array for easy visualization
+  toArray(): T[] {
+    const result: T[] = [];
+    let current = this.head;
+    while (current) {
+      result.push(current.value);
+      current = current.next;
+    }
+    return result;
+  }
+
+  size(): number {
+    return this.length;
+  }
+}
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.prepend(5);
+
+console.log(list.toArray()); // [5, 10, 20]
+console.log('Removed:', list.removeFirst()); // Removed: 5
+console.log(list.toArray()); // [10, 20]
+console.log('Size:', list.size()); // Size: 2
