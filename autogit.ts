@@ -1,27 +1,25 @@
-function countingSort(arr: number[]): number[] {
-  if (arr.length === 0) return [];
-
-  // Find the max value to know the range of counts
-  const maxVal = Math.max(...arr);
-
-  // Initialize the count array with zeros
-  const count = new Array(maxVal + 1).fill(0);
-
-  // Count how many times each number appears
-  for (const num of arr) {
-    count[num]++;
+function binarySearch(
+  arr: number[],
+  target: number,
+  left = 0,
+  right = arr.length - 1
+): number {
+  if (left > right) {
+    return -1; // target not found
   }
 
-  // Reconstruct the sorted array
-  const sortedArr: number[] = [];
-  for (let num = 0; num <= maxVal; num++) {
-    for (let i = 0; i < count[num]; i++) {
-      sortedArr.push(num);
-    }
-  }
+  const mid = Math.floor((left + right) / 2);
 
-  return sortedArr;
+  if (arr[mid] === target) {
+    return mid; // target found
+  } else if (arr[mid] > target) {
+    return binarySearch(arr, target, left, mid - 1); // search left half
+  } else {
+    return binarySearch(arr, target, mid + 1, right); // search right half
+  }
 }
-const unsorted = [4, 2, 2, 8, 3, 3, 1];
-const sorted = countingSort(unsorted);
-console.log(sorted);  // Output: [1, 2, 2, 3, 3, 4, 8]
+const sortedArray = [1, 3, 5, 7, 9, 11];
+const target = 7;
+
+const index = binarySearch(sortedArray, target);
+console.log(index); // Output: 3 (index of number 7)
