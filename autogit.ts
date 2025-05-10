@@ -1,22 +1,24 @@
-function bubbleSort(arr: number[]): number[] {
-    let n = arr.length;
-    let swapped: boolean;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-    do {
-        swapped = false;
-        for (let i = 1; i < n; i++) {
-            if (arr[i - 1] > arr[i]) {
-                // Swap elements
-                [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
-                swapped = true;
-            }
-        }
-        // After each pass, the largest element is bubbled to the end,
-        // so we can reduce the range of the next loop by 1
-        n--;
-    } while (swapped);
-
-    return arr;
+function validateEmail(email: string): boolean {
+    return emailRegex.test(email);
 }
-const numbers = [64, 34, 25, 12, 22, 11, 90];
-console.log(bubbleSort(numbers)); // Output: [11, 12, 22, 25, 34, 64, 90]
+
+// Example usage:
+const email1 = "example@example.com";
+const email2 = "invalid-email.com";
+
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
+const complexEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
+
+function validateComplexEmail(email: string): boolean {
+    return complexEmailRegex.test(email);
+}
+
+// Example usage:
+const complexEmail1 = "example.name+tag@sub.domain.com";
+const complexEmail2 = "invalid.email@.com";
+
+console.log(validateComplexEmail(complexEmail1)); // true
+console.log(validateComplexEmail(complexEmail2)); // false
