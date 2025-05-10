@@ -1,31 +1,69 @@
-function mergeSort(arr: number[]): number[] {
-  if (arr.length <= 1) return arr;
+// Define the node structure
+class Node<T> {
+  value: T;
+  next: Node<T> | null = null;
 
-  const mid = Math.floor(arr.length / 2);
-  const left = mergeSort(arr.slice(0, mid));
-  const right = mergeSort(arr.slice(mid));
-
-  return merge(left, right);
+  constructor(value: T) {
+    this.value = value;
+  }
 }
 
-function merge(left: number[], right: number[]): number[] {
-  const result: number[] = [];
-  let i = 0, j = 0;
+// Queue implemented using a linked list
+class Queue<T> {
+  private front: Node<T> | null = null;
+  private rear: Node<T> | null = null;
+  private size: number = 0;
 
-  // Merge while both arrays have elements
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i++]);
+  // Add an element to the rear of the queue
+  enqueue(value: T): void {
+    const newNode = new Node(value);
+    if (!this.rear) {
+      // Queue is empty
+      this.front = newNode;
+      this.rear = newNode;
     } else {
-      result.push(right[j++]);
+      this.rear.next = newNode;
+      this.rear = newNode;
     }
+    this.size++;
   }
 
-  // Append leftover elements
-  return result.concat(left.slice(i)).concat(right.slice(j));
+  // Remove and return the element at the front of the queue
+  dequeue(): T | null {
+    if (!this.front) return null;
+    const removedValue = this.front.value;
+    this.front = this.front.next;
+    if (!this.front) {
+      // Queue became empty
+      this.rear = null;
+    }
+    this.size--;
+    return removedValue;
+  }
+
+  // Look at the front element without removing it
+  peek(): T | null {
+    return this.front ? this.front.value : null;
+  }
+
+  // Return the number of elements in queue
+  getSize(): number {
+    return this.size;
+  }
+
+  // Check if the queue is empty
+  isEmpty(): boolean {
+    return this.size === 0;
+  }
 }
 
 // Example usage:
-const unsorted = [38, 27, 43, 3, 9, 82, 10];
-const sorted = mergeSort(unsorted);
-console.log(sorted);
+const queue = new Queue<number>();
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.dequeue()); // 10
+console.log(queue.peek());    // 20
+console.log(queue.getSize()); // 2
+console.log(queue.isEmpty()); // false
