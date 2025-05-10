@@ -1,43 +1,22 @@
-function longestCommonSubsequence(a: string, b: string): string {
-  const m = a.length;
-  const n = b.length;
+function bubbleSort(arr: number[]): number[] {
+    let n = arr.length;
+    let swapped: boolean;
 
-  // Create a DP table with (m+1) x (n+1), initialized to 0
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    new Array(n + 1).fill(0)
-  );
+    do {
+        swapped = false;
+        for (let i = 1; i < n; i++) {
+            if (arr[i - 1] > arr[i]) {
+                // Swap elements
+                [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+                swapped = true;
+            }
+        }
+        // After each pass, the largest element is bubbled to the end,
+        // so we can reduce the range of the next loop by 1
+        n--;
+    } while (swapped);
 
-  // Fill dp table, dp[i][j] = length of LCS of a[0..i-1], b[0..j-1]
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (a[i - 1] === b[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-      }
-    }
-  }
-
-  // Reconstruct the LCS from dp table
-  let i = m;
-  let j = n;
-  let lcs = [];
-  while (i > 0 && j > 0) {
-    if (a[i - 1] === b[j - 1]) {
-      lcs.push(a[i - 1]);
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs.reverse().join('');
+    return arr;
 }
-
-// Example usage:
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
+const numbers = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(numbers)); // Output: [11, 12, 22, 25, 34, 64, 90]
