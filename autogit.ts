@@ -1,49 +1,58 @@
-function lengthOfLIS(nums: number[]): number {
-  const n = nums.length;
-  if (n === 0) return 0;
+class ListNode {
+  val: number;
+  next: ListNode | null;
 
-  const dp = new Array(n).fill(1);
-
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (nums[j] < nums[i]) {
-        dp[i] = Math.max(dp[i], dp[j] + 1);
-      }
-    }
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
   }
-
-  return Math.max(...dp);
 }
 
-// Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(arr)); // Output: 4 (The LIS is [2,3,7,101])
-function lengthOfLIS(nums: number[]): number {
-  const tails: number[] = [];
+function isPalindrome(head: ListNode | null): boolean {
+  if (!head || !head.next) return true;
 
-  for (const num of nums) {
-    let left = 0, right = tails.length;
+  // Find the midpoint (slow will point to middle)
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
 
-    // Binary search for the insertion point
-    while (left < right) {
-      const mid = Math.floor((left + right) / 2);
-      if (tails[mid] < num) {
-        left = mid + 1;
-      } else {
-        right = mid;
-      }
-    }
-
-    if (left < tails.length) {
-      tails[left] = num;
-    } else {
-      tails.push(num);
-    }
+  while (fast && fast.next) {
+    slow = slow!.next;
+    fast = fast.next.next;
   }
 
-  return tails.length;
+  // Reverse the second half
+  let secondHalfHead = reverseList(slow);
+
+  // Compare the two halves
+  let firstHalfHead = head;
+  let secondHalfIter = secondHalfHead;
+  let palindrome = true;
+
+  while (secondHalfIter) {
+    if (firstHalfHead!.val !== secondHalfIter.val) {
+      palindrome = false;
+      break;
+    }
+    firstHalfHead = firstHalfHead!.next;
+    secondHalfIter = secondHalfIter.next;
+  }
+
+  // (Optional) Restore the list
+  reverseList(secondHalfHead);
+
+  return palindrome;
 }
 
-// Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(arr)); // 4
+function reverseList(head: ListNode | null): ListNode | null {
+  let prev: ListNode | null = null;
+  let curr = head;
+
+  while (curr) {
+    let nextTemp = curr.next;
+    curr.next = prev;
+    prev = curr;
+    curr = nextTemp;
+  }
+
+  return prev;
+}
