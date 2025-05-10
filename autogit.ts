@@ -1,39 +1,51 @@
-function mergeSort(arr: number[]): number[] {
-  if (arr.length <= 1) {
-    return arr; // Base case: arrays with 0 or 1 element are already sorted
+class ListNode {
+  val: number;
+  next: ListNode | null;
+  
+  constructor(val: number) {
+    this.val = val;
+    this.next = null;
   }
-
-  const mid = Math.floor(arr.length / 2);
-  const left = arr.slice(0, mid);
-  const right = arr.slice(mid);
-
-  // Recursively sort left and right halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
-
-  // Merge the sorted halves
-  return merge(sortedLeft, sortedRight);
 }
 
-function merge(left: number[], right: number[]): number[] {
-  const result: number[] = [];
-  let i = 0;
-  let j = 0;
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+  if (!headA || !headB) return null;
 
-  // Merge while both arrays have elements
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
+  let lenA = 0, lenB = 0;
+  let currA: ListNode | null = headA;
+  let currB: ListNode | null = headB;
+
+  // Compute lengths of both lists
+  while (currA) {
+    lenA++;
+    currA = currA.next;
+  }
+  while (currB) {
+    lenB++;
+    currB = currB.next;
+  }
+
+  // Reset pointers to heads
+  currA = headA;
+  currB = headB;
+
+  // Advance the longer list by the difference in lengths
+  if (lenA > lenB) {
+    for (let i = 0; i < lenA - lenB; i++) {
+      currA = currA!.next;
+    }
+  } else {
+    for (let i = 0; i < lenB - lenA; i++) {
+      currB = currB!.next;
     }
   }
 
-  // Append any remaining elements
-  return result.concat(left.slice(i)).concat(right.slice(j));
+  // Move both pointers until they meet or reach the end
+  while (currA && currB) {
+    if (currA === currB) return currA;
+    currA = currA.next;
+    currB = currB.next;
+  }
+
+  return null;
 }
-const unsorted = [38, 27, 43, 3, 9, 82, 10];
-const sorted = mergeSort(unsorted);
-console.log(sorted); // [3, 9, 10, 27, 38, 43, 82]
