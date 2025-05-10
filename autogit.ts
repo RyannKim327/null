@@ -1,23 +1,16 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+function firstRepeatedCharacter(str: string): string | null {
+    const seen = new Set<string>();
 
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+    for (const char of str) {
+        if (seen.has(char)) {
+            return char; // Found the first repeated character
+        }
+        seen.add(char);
+    }
+
+    return null; // No repeated character found
 }
 
-function reverseLinkedList<T>(head: ListNode<T> | null): ListNode<T> | null {
-  let prev: ListNode<T> | null = null;
-  let current = head;
-
-  while (current !== null) {
-    const nextTemp = current.next; // store the next node
-    current.next = prev;           // reverse the pointer
-    prev = current;                // move prev up
-    current = nextTemp;            // move current up
-  }
-
-  return prev; // prev will be the new head at the end
-}
+// Example usage:
+console.log(firstRepeatedCharacter("swiss")); // Output: "s"
+console.log(firstRepeatedCharacter("abcdef")); // Output: null
