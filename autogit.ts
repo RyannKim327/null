@@ -1,28 +1,26 @@
-function shellSort(arr: number[]): number[] {
-    const n = arr.length;
+function interpolationSearch(arr: number[], target: number): number {
+  let low = 0;
+  let high = arr.length - 1;
 
-    // Start with a big gap, then reduce the gap
-    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        
-        // Do a gapped insertion sort for this gap size.
-        for (let i = gap; i < n; i++) {
-            const temp = arr[i];
-            let j = i;
-
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    if (low === high) {
+      return arr[low] === target ? low : -1;
     }
 
-    return arr;
+    // Estimate the position of the target value
+    const pos = low + Math.floor(
+      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+    );
+
+    if (arr[pos] === target) {
+      return pos;
+    }
+    if (arr[pos] < target) {
+      low = pos + 1;
+    } else {
+      high = pos - 1;
+    }
+  }
+
+  return -1; // Target not found
 }
-const numbers = [19, 2, 31, 45, 6, 11, 121, 27];
-const sorted = shellSort(numbers);
-console.log(sorted);
-// Output: [2, 6, 11, 19, 27, 31, 45, 121]
