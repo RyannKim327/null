@@ -1,36 +1,45 @@
-type Graph = Map<string, string[]>;
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const m = pattern.length;
+    const n = text.length;
 
-function depthLimitedSearch(
-  graph: Graph,
-  start: string,
-  target: string,
-  limit: number
-): boolean {
-  function recursiveDLS(current: string, depth: number): boolean {
-    if (current === target) return true;
-    if (depth === 0) return false;
+    if (m > n) return -1; // pattern longer than text can't match
 
-    const neighbors = graph.get(current) || [];
-    for (const neighbor of neighbors) {
-      if (recursiveDLS(neighbor, depth - 1)) {
-        return true;
-      }
+    // Build the bad match table
+    const skipTable = new Map<string, number>();
+
+    // For all characters except last in pattern, assign shift values
+    for (let i = 0; i < m - 1; i++) {
+        skipTable.set(pattern[i], m - 1 - i);
     }
-    return false;
-  }
 
-  return recursiveDLS(start, limit);
+    let i = 0; // index in text
+
+    while (i <= n - m) {
+        let j = m - 1; // index in pattern starting from end
+
+        // Compare pattern from end to start
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // pattern found at position i
+            return i;
+        } else {
+            // Calculate the skip value, default to full pattern length if char not found
+            const skip = skipTable.get(text[i + m - 1]) ?? m;
+            i += skip;
+        }
+    }
+
+    return -1; // no match found
 }
+const text = "here is a simple example";
+const pattern = "example";
 
-// Example usage:
-const graph: Graph = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['D', 'E']],
-  ['C', ['F']],
-  ['D', []],
-  ['E', []],
-  ['F', []]
-]);
-
-console.log(depthLimitedSearch(graph, 'A', 'E', 2)); // true
-console.log(depthLimitedSearch(graph, 'A', 'F', 1)); // false because limit is 1
+const pos = boyerMooreHorspool(text, pattern);
+if (pos !== -1) {
+    console.log(`Pattern found at index: ${pos}`);
+} else {
+    console.log("Pattern not found");
+}
