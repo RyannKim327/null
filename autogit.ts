@@ -1,36 +1,7 @@
-type Graph = { [key: string]: string[] };
-
-function bfs(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const queue: string[] = [];
-  const result: string[] = [];
-
-  queue.push(startNode);
-  visited.add(startNode);
-
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    result.push(current);
-
-    for (const neighbor of graph[current] || []) {
-      if (!visited.has(neighbor)) {
-        visited.add(neighbor);
-        queue.push(neighbor);
-      }
-    }
+function factorial(n: number): number {
+  if (n <= 1) {
+    return 1; // Base case: factorial of 0 or 1 is 1
   }
-
-  return result;
+  return n * factorial(n - 1); // Recursive call
 }
-
-// Example usage
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: [],
-};
-
-console.log(bfs(graph, 'A'));  // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+console.log(factorial(5)); // Outputs 120
