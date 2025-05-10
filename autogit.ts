@@ -1,40 +1,55 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-
-    // Create a 2D array to store lengths of longest common subsequence
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Build the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Characters do not match
-            }
-        }
-    }
-
-    // Backtrack to find the LCS
-    let lcs = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // Add this character to the LCS
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move up in the dp table
-        } else {
-            j--; // Move left in the dp table
-        }
-    }
-
-    return lcs;
+interface Node {
+    state: any; // Replace "any" with the appropriate type for your state
+    score: number; // This is how we rank the nodes
 }
 
-// Example usage:
-const str1 = "ABCBDAB";
-const str2 = "BDCAB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "BCAB"
+// This function would generate child nodes based on the current node's state
+function expandNode(node: Node): Node[] {
+    // Placeholder for generating new child nodes
+    // Replace with your own logic
+    const children: Node[] = [];
+    
+    // Example: creating dummy child nodes for illustration
+    for (let i = 0; i < 3; i++) {
+        const newState = { ...node.state, expanded: i }; // Replace with actual state expansion logic
+        const score = Math.random(); // Replace with actual scoring logic
+        children.push({ state: newState, score });
+    }
+    
+    return children;
+}
+
+// This function performs the beam search
+function beamSearch(initialNode: Node, beamWidth: number, maxIterations: number): Node | null {
+    let currentLevel: Node[] = [initialNode];
+
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
+        let candidates: Node[] = [];
+
+        // Expand all nodes in the current level
+        for (const node of currentLevel) {
+            const children = expandNode(node);
+            candidates = candidates.concat(children);
+        }
+
+        // Sort the candidates by score (descending) and prune to beam width
+        candidates.sort((a, b) => b.score - a.score);
+        currentLevel = candidates.slice(0, beamWidth);
+
+        // Optional: Check if you found a satisfactory state and return it
+        // if (checkForGoalState(currentLevel)) {
+        //     return currentLevel.find(isGoalNode); // Or however you define the goal node
+        // }
+    }
+
+    // Return the best node found after max iterations
+    return currentLevel.length > 0 ? currentLevel[0] : null;
+}
+
+// Usage
+const initialNode: Node = { state: { /* your initial state */ }, score: 0 };
+const beamWidth = 2; // Set the desired beam width
+const maxIterations = 10; // Set the max number of iterations
+
+const resultNode = beamSearch(initialNode, beamWidth, maxIterations);
+console.log(resultNode);
