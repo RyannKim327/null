@@ -1,15 +1,27 @@
-import cron from 'node-cron';
+function countingSort(arr: number[]): number[] {
+  if (arr.length === 0) return [];
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-  console.log('This task runs every minute!');
-});
+  // Find the max value to know the range of counts
+  const maxVal = Math.max(...arr);
 
-// Start the scheduled task
-task.start();
+  // Initialize the count array with zeros
+  const count = new Array(maxVal + 1).fill(0);
 
-// Optionally, stop the task after 5 minutes
-setTimeout(() => {
-  task.stop();
-  console.log('Task stopped after 5 minutes');
-}, 5 * 60 * 1000);
+  // Count how many times each number appears
+  for (const num of arr) {
+    count[num]++;
+  }
+
+  // Reconstruct the sorted array
+  const sortedArr: number[] = [];
+  for (let num = 0; num <= maxVal; num++) {
+    for (let i = 0; i < count[num]; i++) {
+      sortedArr.push(num);
+    }
+  }
+
+  return sortedArr;
+}
+const unsorted = [4, 2, 2, 8, 3, 3, 1];
+const sorted = countingSort(unsorted);
+console.log(sorted);  // Output: [1, 2, 2, 3, 3, 4, 8]
