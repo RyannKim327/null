@@ -1,7 +1,34 @@
-const arr = [1, 2, 3, 4, 5];
-arr.reverse();
-console.log(arr); // Output: [5, 4, 3, 2, 1]
-const arr = [1, 2, 3, 4, 5];
-const reversedArr = arr.slice().reverse();
-console.log(reversedArr); // [5, 4, 3, 2, 1]
-console.log(arr); // [1, 2, 3, 4, 5] (original stays intact)
+type Graph = { [node: string]: string[] };
+
+function bfs(graph: Graph, start: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [];
+  const result: string[] = [];
+
+  visited.add(start);
+  queue.push(start);
+
+  while (queue.length > 0) {
+    const node = queue.shift()!;
+    result.push(node);
+
+    for (const neighbor of graph[node] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return result;
+}
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
+
+console.log(bfs(graph, 'A'));  // Output: ['A', 'B', 'C', 'D', 'E', 'F']
