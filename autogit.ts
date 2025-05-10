@@ -1,71 +1,46 @@
-class Tarjan {
-    private index: number = 0;
-    private stack: number[] = [];
-    private onStack: boolean[] = [];
-    private indices: number[] = [];
-    private lowLinks: number[] = [];
-    private sccs: number[][] = [];
+function heapSort(arr: number[]): number[] {
+  const n = arr.length;
 
-    constructor(private graph: Map<number, number[]>) {}
+  // Build a max heap
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    heapify(arr, n, i);
+  }
 
-    public findSCCs(): number[][] {
-        const nodes = Array.from(this.graph.keys());
-        
-        nodes.forEach(node => {
-            if (this.indices[node] === undefined) {
-                this.strongConnect(node);
-            }
-        });
+  // Extract elements from heap one by one
+  for (let i = n - 1; i >= 0; i--) {
+    // Move current root (largest) to the end
+    [arr[0], arr[i]] = [arr[i], arr[0]];
 
-        return this.sccs;
-    }
+    // Call max heapify on the reduced heap
+    heapify(arr, i, 0);
+  }
 
-    private strongConnect(v: number): void {
-        // Set the depth index for v to the smallest unused index
-        this.indices[v] = this.index;
-        this.lowLinks[v] = this.index;
-        this.index++;
-        this.stack.push(v);
-        this.onStack[v] = true;
+  return arr;
+}
 
-        // Consider successors of v
-        const neighbors = this.graph.get(v) || [];
-        for (const w of neighbors) {
-            if (this.indices[w] === undefined) {
-                // Successor w has not yet been visited; recurse on it
-                this.strongConnect(w);
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
-            } else if (this.onStack[w]) {
-                // Successor w is in stack and hence in the current SCC
-                this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
-            }
-        }
+function heapify(arr: number[], heapSize: number, rootIndex: number) {
+  let largest = rootIndex;
+  const left = 2 * rootIndex + 1;
+  const right = 2 * rootIndex + 2;
 
-        // After visiting all the neighbors, if v is a root node
-        if (this.lowLinks[v] === this.indices[v]) {
-            // Start a new strongly connected component
-            const scc = [];
-            let w: number;
-            do {
-                w = this.stack.pop()!;
-                this.onStack[w] = false;
-                scc.push(w);
-            } while (w !== v);
-            this.sccs.push(scc);
-        }
-    }
+  // If left child exists and is greater than root
+  if (left < heapSize && arr[left] > arr[largest]) {
+    largest = left;
+  }
+
+  // If right child exists and is greater than largest so far
+  if (right < heapSize && arr[right] > arr[largest]) {
+    largest = right;
+  }
+
+  // If largest is not root
+  if (largest !== rootIndex) {
+    [arr[rootIndex], arr[largest]] = [arr[largest], arr[rootIndex]];
+    // Recursively heapify the affected subtree
+    heapify(arr, heapSize, largest);
+  }
 }
 
 // Example usage:
-const graph = new Map<number, number[]>([
-    [0, [1]],
-    [1, [2]],
-    [2, [0, 3]],
-    [3, [4]],
-    [4, [5]],
-    [5, [3]],
-]);
-
-const tarjan = new Tarjan(graph);
-const sccs = tarjan.findSCCs();
-console.log(sccs);
+const data = [12, 11, 13, 5, 6, 7];
+console.log('Sorted array:', heapSort(data));
