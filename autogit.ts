@@ -1,79 +1,20 @@
-function buildBadCharTable(pattern: string): number[] {
-  const table = new Array(256).fill(-1); // ASCII size
-  for (let i = 0; i < pattern.length; i++) {
-    table[pattern.charCodeAt(i)] = i;
-  }
-  return table;
-}
+function areAnagrams(str1: string, str2: string): boolean {
+    // Remove spaces and convert to lowercase
+    const cleanStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const cleanStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-function buildGoodSuffixTable(pattern: string): number[] {
-  const m = pattern.length;
-  const goodSuffix = new Array(m).fill(0);
-  const borderPos = new Array(m + 1).fill(0);
-
-  let i = m;
-  let j = m + 1;
-  borderPos[i] = j;
-
-  // Preprocessing to create border positions
-  while (i > 0) {
-    while (j <= m && pattern[i - 1] !== pattern[j - 1]) {
-      if (goodSuffix[j] === 0) goodSuffix[j] = j - i;
-      j = borderPos[j];
-    }
-    i--;
-    j--;
-    borderPos[i] = j;
-  }
-
-  // Preprocessing to fill good suffix table
-  j = borderPos[0];
-  for (i = 0; i <= m; i++) {
-    if (goodSuffix[i] === 0) goodSuffix[i] = j;
-    if (i === j) j = borderPos[j];
-  }
-
-  return goodSuffix;
-}
-
-function boyerMooreSearch(text: string, pattern: string): number[] {
-  const n = text.length;
-  const m = pattern.length;
-  if (m === 0) return [];
-
-  const badChar = buildBadCharTable(pattern);
-  const goodSuffix = buildGoodSuffixTable(pattern);
-
-  const results: number[] = [];
-  let s = 0; // shift of the pattern with respect to text
-
-  while (s <= n - m) {
-    let j = m - 1;
-
-    // Move from right to left checking for mismatch
-    while (j >= 0 && pattern[j] === text[s + j]) {
-      j--;
+    // Check if lengths are different
+    if (cleanStr1.length !== cleanStr2.length) {
+        return false;
     }
 
-    if (j < 0) {
-      // Match found at s
-      results.push(s);
+    // Sort characters and compare
+    const sortedStr1 = cleanStr1.split('').sort().join('');
+    const sortedStr2 = cleanStr2.split('').sort().join('');
 
-      // Shift pattern so that next character in text aligns with last occurrence in pattern
-      s += goodSuffix[0];
-    } else {
-      // Calculate shifts from both heuristics and take the max
-      const badCharShift = j - badChar[text.charCodeAt(s + j)];
-      const goodSuffixShift = goodSuffix[j + 1];
-      s += Math.max(badCharShift, goodSuffixShift);
-    }
-  }
-
-  return results;
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage
-const text = "ABAAABCD";
-const pattern = "ABC";
-const positions = boyerMooreSearch(text, pattern);
-console.log("Pattern found at indices:", positions);
+console.log(areAnagrams("Listen", "Silent")); // true
+console.log(areAnagrams("Hello", "World"));   // false
