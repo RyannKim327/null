@@ -1,22 +1,7 @@
-type Graph = { [key: string]: string[] };
-
-function dfs(graph: Graph, start: string, visited = new Set<string>()): void {
-  if (visited.has(start)) return;
-  visited.add(start);
-  console.log(start);  // Process the node (here, just print it)
-
-  for (const neighbor of graph[start] || []) {
-    dfs(graph, neighbor, visited);
-  }
-}
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D'],
-  C: ['E', 'F'],
-  D: [],
-  E: [],
-  F: []
-};
-
-dfs(graph, 'A');
-// Output: A B D C E F
+const arr = [1, 2, 3, 4, 5];
+arr.reverse();
+console.log(arr); // Output: [5, 4, 3, 2, 1]
+const arr = [1, 2, 3, 4, 5];
+const reversedArr = arr.slice().reverse();
+console.log(reversedArr); // [5, 4, 3, 2, 1]
+console.log(arr); // [1, 2, 3, 4, 5] (original stays intact)
