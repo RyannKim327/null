@@ -1,65 +1,71 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Tarjan {
+    private index: number = 0;
+    private stack: number[] = [];
+    private onStack: boolean[] = [];
+    private indices: number[] = [];
+    private lowLinks: number[] = [];
+    private sccs: number[][] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(private graph: Map<number, number[]>) {}
+
+    public findSCCs(): number[][] {
+        const nodes = Array.from(this.graph.keys());
+        
+        nodes.forEach(node => {
+            if (this.indices[node] === undefined) {
+                this.strongConnect(node);
+            }
+        });
+
+        return this.sccs;
     }
-}
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: if the node is null, depth is 0
-    }
-    // Calculate the depth of each subtree
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-    // Return the maximum of the two depths plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+    private strongConnect(v: number): void {
+        // Set the depth index for v to the smallest unused index
+        this.indices[v] = this.index;
+        this.lowLinks[v] = this.index;
+        this.index++;
+        this.stack.push(v);
+        this.onStack[v] = true;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: if the node is null, depth is 0
-    }
-    const queue: Array<{ node: TreeNode, depth: number }> = [{ node: root, depth: 1 }];
-    let maxDepth = 0;
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
-
-        // Update maxDepth if we find a greater depth
-        maxDepth = Math.max(maxDepth, depth);
-
-        // Add child nodes to the queue
-        if (node.left) {
-            queue.push({ node: node.left, depth: depth + 1 });
+        // Consider successors of v
+        const neighbors = this.graph.get(v) || [];
+        for (const w of neighbors) {
+            if (this.indices[w] === undefined) {
+                // Successor w has not yet been visited; recurse on it
+                this.strongConnect(w);
+                this.lowLinks[v] = Math.min(this.lowLinks[v], this.lowLinks[w]);
+            } else if (this.onStack[w]) {
+                // Successor w is in stack and hence in the current SCC
+                this.lowLinks[v] = Math.min(this.lowLinks[v], this.indices[w]);
+            }
         }
-        if (node.right) {
-            queue.push({ node: node.right, depth: depth + 1 });
+
+        // After visiting all the neighbors, if v is a root node
+        if (this.lowLinks[v] === this.indices[v]) {
+            // Start a new strongly connected component
+            const scc = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack[w] = false;
+                scc.push(w);
+            } while (w !== v);
+            this.sccs.push(scc);
         }
     }
-
-    return maxDepth;
 }
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-console.log(maxDepth(root)); // Output: 3
+// Example usage:
+const graph = new Map<number, number[]>([
+    [0, [1]],
+    [1, [2]],
+    [2, [0, 3]],
+    [3, [4]],
+    [4, [5]],
+    [5, [3]],
+]);
+
+const tarjan = new Tarjan(graph);
+const sccs = tarjan.findSCCs();
+console.log(sccs);
