@@ -1,22 +1,30 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+function countingSort(arr: number[]): number[] {
+  if (arr.length === 0) return [];
 
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the current position is the minimum
-        let minIndex = i;
+  // Find the maximum value in the array to know the range
+  const maxVal = Math.max(...arr);
 
-        // Find the index of the minimum element in the unsorted portion
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
+  // Initialize count array with zeros
+  const count = new Array(maxVal + 1).fill(0);
 
-        // Swap the found minimum element with the first unsorted element
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-        }
-    }
+  // Count occurrences of each number
+  for (const num of arr) {
+    count[num]++;
+  }
 
-    return arr;
+  // Modify count array to store cumulative counts
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Build the output array
+  const output = new Array(arr.length);
+  // Iterate from the end for stability
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const num = arr[i];
+    output[count[num] - 1] = num;
+    count[num]--;
+  }
+
+  return output;
 }
