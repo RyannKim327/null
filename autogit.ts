@@ -1,62 +1,30 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+import axios from 'axios';
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-function sumOfNodes(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: if the node is null, its contribution to sum is 0
-    }
-
-    // Recursive case: node's value + sum of left child + sum of right child
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
-// Example usage:
-
-// Create the binary tree
-const root = new TreeNode(10);
-root.left = new TreeNode(5);
-root.right = new TreeNode(15);
-root.left.left = new TreeNode(2);
-root.left.right = new TreeNode(7);
-root.right.right = new TreeNode(20);
-
-// Calculate the sum of all nodes
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`);
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+// Define an interface for the data we expect from the API
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-function sumOfNodes(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
+async function fetchUsers(): Promise<User[]> {
+  try {
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
     }
-
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+    return [];
+  }
 }
 
-// Example usage
-const root = new TreeNode(10);
-root.left = new TreeNode(5);
-root.right = new TreeNode(15);
-root.left.left = new TreeNode(2);
-root.left.right = new TreeNode(7);
-root.right.right = new TreeNode(20);
-
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`);
+(async () => {
+  const users = await fetchUsers();
+  users.forEach(user => {
+    console.log(`${user.name} (${user.username}) - Email: ${user.email}`);
+  });
+})();
