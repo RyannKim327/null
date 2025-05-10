@@ -1,7 +1,8 @@
-function removeVowels(input: string): string {
-    return input.replace(/[aeiouAEIOU]/g, '');
+function reverseString(str: string): string {
+    return str.split('').reverse().join('');
 }
 
-const originalString = "Hello, how are you?";
-const stringWithoutVowels = removeVowels(originalString);
-console.log(stringWithoutVowels); // "Hll, hw r y?"
+// Example usage:
+const originalString = "Hello, TypeScript!";
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Output: "!tpircSeyT ,olleH"
