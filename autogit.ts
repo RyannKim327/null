@@ -1,18 +1,20 @@
-function getStringLength(str: string): number {
-  let count = 0;
-  for (const _ of str) {
-    count++;
+function factorial(n: number): number {
+  if (n < 0) {
+    throw new Error('Factorial is not defined for negative numbers');
   }
-  return count;
-}
-
-// Usage:
-const length = getStringLength("hello");
-console.log(length); // Outputs: 5
-function getStringLength(str: string): number {
-  let count = 0;
-  while (str[count] !== undefined) {
-    count++;
+  if (n === 0 || n === 1) {
+    return 1;
   }
-  return count;
+  return n * factorial(n - 1);
 }
+function factorial(n: number): number {
+  if (n < 0) {
+    throw new Error('Factorial is not defined for negative numbers');
+  }
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
+}
+console.log(factorial(5)); // 120
