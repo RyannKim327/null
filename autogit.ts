@@ -1,29 +1,23 @@
-function longestCommonSubstring(s1: string, s2: string): string {
-  const m = s1.length;
-  const n = s2.length;
-  // Create a 2D array to store lengths of longest common suffixes
-  const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+function longestCommonPrefix(strs: string[]): string {
+  if (strs.length === 0) return "";
 
-  let maxLength = 0;
-  let endIndex = 0; // end index of longest common substring in s1
+  // Find the shortest string length, so we don't go out of bounds
+  let minLength = Math.min(...strs.map(s => s.length));
 
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (s1[i - 1] === s2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i;
-        }
-      }
+  let prefix = "";
+  for (let i = 0; i < minLength; i++) {
+    // Take the current character of the first string as reference
+    const char = strs[0][i];
+
+    // Check if this char is common in all strings at position i
+    if (strs.every(s => s[i] === char)) {
+      prefix += char; // Add this character to the prefix
+    } else {
+      break; // Stop at the first mismatch
     }
   }
 
-  return s1.substring(endIndex - maxLength, endIndex);
+  return prefix;
 }
-
-// Example usage:
-const str1 = "abcdef";
-const str2 = "zabcf";
-const lcs = longestCommonSubstring(str1, str2);
-console.log(lcs); // Output: "abc"
+const words = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(words));  // Output: "fl"
