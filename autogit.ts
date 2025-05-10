@@ -1,57 +1,31 @@
-class TrieNode {
-  children: Map<string, TrieNode>;
-  isEndOfWord: boolean;
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) return arr;
 
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
-  }
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+
+  return merge(left, right);
 }
-class Trie {
-  root: TrieNode;
 
-  constructor() {
-    this.root = new TrieNode();
-  }
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0, j = 0;
 
-  insert(word: string): void {
-    let node = this.root;
-    for (const char of word) {
-      if (!node.children.has(char)) {
-        node.children.set(char, new TrieNode());
-      }
-      node = node.children.get(char)!; // '!' because we just set it, so safe
+  // Merge while both arrays have elements
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i++]);
+    } else {
+      result.push(right[j++]);
     }
-    node.isEndOfWord = true;
   }
 
-  search(word: string): boolean {
-    let node = this.root;
-    for (const char of word) {
-      if (!node.children.has(char)) {
-        return false;
-      }
-      node = node.children.get(char)!;
-    }
-    return node.isEndOfWord;
-  }
-
-  // Optional: Check if there's any word in the trie that starts with the given prefix
-  startsWith(prefix: string): boolean {
-    let node = this.root;
-    for (const char of prefix) {
-      if (!node.children.has(char)) {
-        return false;
-      }
-      node = node.children.get(char)!;
-    }
-    return true;
-  }
+  // Append leftover elements
+  return result.concat(left.slice(i)).concat(right.slice(j));
 }
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));   // true
-console.log(trie.search("app"));     // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app"));     // true
+
+// Example usage:
+const unsorted = [38, 27, 43, 3, 9, 82, 10];
+const sorted = mergeSort(unsorted);
+console.log(sorted);
