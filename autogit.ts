@@ -1,49 +1,57 @@
-function lengthOfLIS(nums: number[]): number {
-    const n = nums.length;
-    const dp = Array(n).fill(1);
+class TrieNode {
+  children: Map<string, TrieNode>;
+  isEndOfWord: boolean;
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-    }
-
-    return Math.max(...dp);
+  constructor() {
+    this.children = new Map();
+    this.isEndOfWord = false;
+  }
 }
+class Trie {
+  root: TrieNode;
 
-// Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(arr));  // Outputs: 4
-function lengthOfLIS(nums: number[]): number {
-    const tails: number[] = [];
+  constructor() {
+    this.root = new TrieNode();
+  }
 
-    for (const num of nums) {
-        let left = 0;
-        let right = tails.length;
-
-        // Binary search for the insertion point of num in tails
-        while (left < right) {
-            const mid = (left + right) >> 1;
-            if (tails[mid] < num) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-
-        // If num is larger than all tails, append it
-        if (left === tails.length) {
-            tails.push(num);
-        } else {
-            tails[left] = num;
-        }
+  insert(word: string): void {
+    let node = this.root;
+    for (const char of word) {
+      if (!node.children.has(char)) {
+        node.children.set(char, new TrieNode());
+      }
+      node = node.children.get(char)!; // '!' because we just set it, so safe
     }
+    node.isEndOfWord = true;
+  }
 
-    return tails.length;
+  search(word: string): boolean {
+    let node = this.root;
+    for (const char of word) {
+      if (!node.children.has(char)) {
+        return false;
+      }
+      node = node.children.get(char)!;
+    }
+    return node.isEndOfWord;
+  }
+
+  // Optional: Check if there's any word in the trie that starts with the given prefix
+  startsWith(prefix: string): boolean {
+    let node = this.root;
+    for (const char of prefix) {
+      if (!node.children.has(char)) {
+        return false;
+      }
+      node = node.children.get(char)!;
+    }
+    return true;
+  }
 }
-
-// Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(arr));  // Outputs: 4
+const trie = new Trie();
+trie.insert("apple");
+console.log(trie.search("apple"));   // true
+console.log(trie.search("app"));     // false
+console.log(trie.startsWith("app")); // true
+trie.insert("app");
+console.log(trie.search("app"));     // true
