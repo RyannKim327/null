@@ -1,31 +1,28 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function burrowsWheelerTransform(input: string): string {
+    const len = input.length;
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
-function countLeafNodes(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-  if (root.left === null && root.right === null) {
-    // It's a leaf node
-    return 1;
-  }
-  // Recursively count leaf nodes in left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
-const tree = new TreeNode(1,
-  new TreeNode(2,
-    new TreeNode(4),
-    new TreeNode(5)
-  ),
-  new TreeNode(3)
-);
+    // Create an array to store the cyclic shifts
+    const cyclicShifts: string[] = [];
+    
+    // Generate all cyclic shifts
+    for (let i = 0; i < len; i++) {
+        const shifted = input.slice(i) + input.slice(0, i);
+        cyclicShifts.push(shifted);
+    }
 
-console.log(countLeafNodes(tree)); // Output: 3 (nodes 4, 5, and 3 are leaves)
+    // Sort the array of cyclic shifts
+    cyclicShifts.sort();
+
+    // Generate the BWT output from the sorted shifts
+    let bwtOutput = '';
+    for (const shift of cyclicShifts) {
+        bwtOutput += shift[len - 1]; // Take the last character of each sorted shift
+    }
+
+    return bwtOutput;
+}
+
+// Example Usage:
+const inputString = "BANANA";
+const bwtResult = burrowsWheelerTransform(inputString);
+console.log(bwtResult); // Expected output (for "BANANA"): "BNNAA$"
