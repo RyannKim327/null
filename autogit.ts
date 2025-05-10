@@ -1,44 +1,100 @@
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const m = pattern.length;
-    const n = text.length;
+// Node class to represent each element in the linked list
+class Node<T> {
+    data: T;
+    next: Node<T> | null;
 
-    if (m === 0) return 0; // empty pattern matches at index 0
-    if (m > n) return -1;  // pattern longer than text can't match
+    constructor(data: T) {
+        this.data = data;
+        this.next = null;
+    }
+}
 
-    // Preprocessing: Build the bad character shift table
-    const skipTable = new Map<string, number>();
+// LinkedList class
+class LinkedList<T> {
+    head: Node<T> | null;
 
-    for (let i = 0; i < m - 1; i++) {
-        skipTable.set(pattern[i], m - 1 - i);
+    constructor() {
+        this.head = null;
     }
 
-    const defaultSkip = m; // If character not in pattern, skip whole pattern length
-
-    let i = 0;
-    while (i <= n - m) {
-        let j = m - 1;
-
-        // Compare pattern from right to left with substring in text
-        while (j >= 0 && text[i + j] === pattern[j]) {
-            j--;
+    // Add a new node at the end of the list
+    append(data: T): void {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-
-        if (j < 0) {
-            // Match found at index i
-            return i;
-        } else {
-            // Get skip value for text[i + m - 1] or default
-            const skip = skipTable.get(text[i + m - 1]) ?? defaultSkip;
-            i += skip;
+        
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
         }
+        current.next = newNode;
     }
 
-    // No match found
-    return -1;
+    // Add a new node at the start of the list
+    prepend(data: T): void {
+        const newNode = new Node(data);
+        newNode.next = this.head;
+        this.head = newNode;
+    }
+
+    // Print the linked list
+    printList(): void {
+        let current = this.head;
+        let output = '';
+        
+        while (current) {
+            output += `${current.data} -> `;
+            current = current.next;
+        }
+        output += 'null'; // signify end of the list
+        console.log(output);
+    }
+
+    // Remove a node by value
+    remove(data: T): boolean {
+        if (!this.head) return false;
+
+        // If the node to be removed is the head
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            return true;
+        }
+
+        let current = this.head;
+        while (current.next) {
+            if (current.next.data === data) {
+                current.next = current.next.next;
+                return true;
+            }
+            current = current.next;
+        }
+        return false; // Node not found
+    }
+
+    // Find a node by value
+    find(data: T): Node<T> | null {
+        let current = this.head;
+        while (current) {
+            if (current.data === data) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null; // Not found
+    }
 }
 
 // Example usage:
-const text = "Here is a simple example";
-const pattern = "example";
-const index = boyerMooreHorspool(text, pattern);
-console.log(`Pattern found at index: ${index}`);
+const linkedList = new LinkedList<number>();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.prepend(0);
+linkedList.printList();  // Output: 0 -> 1 -> 2 -> null
+
+linkedList.remove(1);
+linkedList.printList();  // Output: 0 -> 2 -> null
+
+const node = linkedList.find(2);
+console.log(node);  // Output: Node { data: 2, next: null }
