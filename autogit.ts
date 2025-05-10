@@ -1,50 +1,44 @@
-class Node<T> {
-  value: T;
-  next: Node<T> | null = null;
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-  constructor(value: T) {
-    this.value = value;
-  }
+const newArray = array.filter(item => item !== valueToRemove);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = 2; // Index of the element you want to remove (3 in this case)
+
+if (indexToRemove > -1) {
+    array.splice(indexToRemove, 1);
 }
 
-class Queue<T> {
-  private head: Node<T> | null = null; // front of the queue
-  private tail: Node<T> | null = null; // end of the queue
-  private size = 0;
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-  enqueue(value: T): void {
-    const newNode = new Node(value);
-    if (!this.tail) {
-      // If queue is empty, head and tail both point to the new node
-      this.head = this.tail = newNode;
-    } else {
-      this.tail.next = newNode;
-      this.tail = newNode;
-    }
-    this.size++;
-  }
+const indexToRemove = array.indexOf(valueToRemove);
 
-  dequeue(): T | null {
-    if (!this.head) return null; // queue is empty
-    const dequeuedValue = this.head.value;
-    this.head = this.head.next;
-    if (!this.head) {
-      // If the queue became empty, tail should also be null
-      this.tail = null;
-    }
-    this.size--;
-    return dequeuedValue;
-  }
-
-  peek(): T | null {
-    return this.head ? this.head.value : null;
-  }
-
-  isEmpty(): boolean {
-    return this.size === 0;
-  }
-
-  getSize(): number {
-    return this.size;
-  }
+if (indexToRemove > -1) {
+    array.splice(indexToRemove, 1);
 }
+
+console.log(array); // Output: [1, 2, 4, 5]
+interface Item {
+    id: number;
+    name: string;
+}
+
+const array: Item[] = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+    { id: 3, name: 'Charlie' },
+];
+
+const idToRemove = 2;
+
+const indexToRemove = array.findIndex(item => item.id === idToRemove);
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1);
+}
+
+console.log(array); // Output: [{ id: 1, name: 'Alice' }, { id: 3, name: 'Charlie' }]
