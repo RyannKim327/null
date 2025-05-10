@@ -1,51 +1,31 @@
-import https from 'https';
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-// Define the Post interface
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
 }
+function countLeafNodes(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
+  if (root.left === null && root.right === null) {
+    // It's a leaf node
+    return 1;
+  }
+  // Recursively count leaf nodes in left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
+const tree = new TreeNode(1,
+  new TreeNode(2,
+    new TreeNode(4),
+    new TreeNode(5)
+  ),
+  new TreeNode(3)
+);
 
-// Function to fetch posts from the API
-const fetchPosts = (): Promise<Post[]> => {
-    return new Promise((resolve, reject) => {
-        https.get('https://jsonplaceholder.typicode.com/posts', (res) => {
-            let data: string = '';
-
-            // A chunk of data has been received.
-            res.on('data', (chunk) => {
-                data += chunk;
-            });
-
-            // The whole response has been received.
-            res.on('end', () => {
-                try {
-                    const posts: Post[] = JSON.parse(data);
-                    resolve(posts);
-                } catch (error) {
-                    reject(`Error parsing JSON: ${error.message}`);
-                }
-            });
-        }).on('error', (e) => {
-            reject(`Request error: ${e.message}`);
-        });
-    });
-};
-
-// Function to display the posts
-const displayPosts = async () => {
-    try {
-        const posts = await fetchPosts();
-        console.log('Posts fetched from API:');
-        posts.forEach((post) => {
-            console.log(`ID: ${post.id}, Title: ${post.title}`);
-        });
-    } catch (error) {
-        console.error(error);
-    }
-};
-
-// Call the display function
-displayPosts();
+console.log(countLeafNodes(tree)); // Output: 3 (nodes 4, 5, and 3 are leaves)
