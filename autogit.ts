@@ -1,73 +1,44 @@
-type Key = string | number;
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const m = pattern.length;
+    const n = text.length;
 
-class HashTable<V> {
-  private buckets: Array<Array<[Key, V]>>;
-  private capacity: number;
+    if (m === 0) return 0; // empty pattern matches at index 0
+    if (m > n) return -1;  // pattern longer than text can't match
 
-  constructor(capacity = 50) {
-    this.capacity = capacity;
-    this.buckets = new Array(capacity).fill(null).map(() => []);
-  }
+    // Preprocessing: Build the bad character shift table
+    const skipTable = new Map<string, number>();
 
-  private hash(key: Key): number {
-    // Simple hash function (djb2 variant)
-    let hash = 5381;
-    const strKey = key.toString();
-    for (let i = 0; i < strKey.length; i++) {
-      hash = (hash * 33) ^ strKey.charCodeAt(i);
-    }
-    return Math.abs(hash) % this.capacity;
-  }
-
-  set(key: Key, value: V): void {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-
-    // Check if key exists, update value
-    for (let i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === key) {
-        bucket[i][1] = value;
-        return;
-      }
+    for (let i = 0; i < m - 1; i++) {
+        skipTable.set(pattern[i], m - 1 - i);
     }
 
-    // If key doesn't exist, add new pair
-    bucket.push([key, value]);
-  }
+    const defaultSkip = m; // If character not in pattern, skip whole pattern length
 
-  get(key: Key): V | undefined {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
+    let i = 0;
+    while (i <= n - m) {
+        let j = m - 1;
 
-    for (const [k, v] of bucket) {
-      if (k === key) return v;
+        // Compare pattern from right to left with substring in text
+        while (j >= 0 && text[i + j] === pattern[j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // Match found at index i
+            return i;
+        } else {
+            // Get skip value for text[i + m - 1] or default
+            const skip = skipTable.get(text[i + m - 1]) ?? defaultSkip;
+            i += skip;
+        }
     }
 
-    return undefined;
-  }
-
-  delete(key: Key): boolean {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-
-    for (let i = 0; i < bucket.length; i++) {
-      if (bucket[i][0] === key) {
-        bucket.splice(i, 1);
-        return true;
-      }
-    }
-
-    return false;
-  }
+    // No match found
+    return -1;
 }
-const hashTable = new HashTable<number>();
 
-hashTable.set("apple", 10);
-hashTable.set("banana", 20);
-
-console.log(hashTable.get("apple"));  // 10
-console.log(hashTable.get("banana")); // 20
-console.log(hashTable.get("orange")); // undefined
-
-hashTable.delete("banana");
-console.log(hashTable.get("banana")); // undefined
+// Example usage:
+const text = "Here is a simple example";
+const pattern = "example";
+const index = boyerMooreHorspool(text, pattern);
+console.log(`Pattern found at index: ${index}`);
