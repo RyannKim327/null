@@ -1,20 +1,22 @@
-function bubbleSort(arr: number[]): number[] {
+function selectionSort(arr: number[]): number[] {
     const n = arr.length;
-    // Make a copy so the original array isn't mutated
-    let result = [...arr];
 
     for (let i = 0; i < n - 1; i++) {
-        // After each pass, the largest element settles at the end, so we can reduce the inner loop range
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (result[j] > result[j + 1]) {
-                // Swap elements
-                [result[j], result[j + 1]] = [result[j + 1], result[j]];
+        // Assume the current position is the minimum
+        let minIndex = i;
+
+        // Find the index of the minimum element in the unsorted portion
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
             }
+        }
+
+        // Swap the found minimum element with the first unsorted element
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
         }
     }
 
-    return result;
+    return arr;
 }
-const unsorted = [64, 34, 25, 12, 22, 11, 90];
-const sorted = bubbleSort(unsorted);
-console.log(sorted);  // [11, 12, 22, 25, 34, 64, 90]
