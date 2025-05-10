@@ -1,29 +1,16 @@
-const numbers: number[] = [5, 3, 8, 1, 4];
+import cron from 'node-cron';
 
-// Sort in ascending order
-numbers.sort((a, b) => a - b);
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+  const now = new Date();
+  console.log(`[${now.toISOString()}] Running the scheduled task...`);
+});
 
-console.log(numbers); // Output: [1, 3, 4, 5, 8]
-const numbers: number[] = [5, 3, 8, 1, 4];
+// Start the scheduled task
+task.start();
 
-// Sort in descending order
-numbers.sort((a, b) => b - a);
-
-console.log(numbers); // Output: [8, 5, 4, 3, 1]
-function sortNumbersAsc(numbers: number[]): number[] {
-    return numbers.sort((a, b) => a - b);
-}
-
-function sortNumbersDesc(numbers: number[]): number[] {
-    return numbers.sort((a, b) => b - a);
-}
-
-const numbers = [5, 3, 8, 1, 4];
-
-const sortedAsc = sortNumbersAsc(numbers);
-console.log('Sorted Ascending:', sortedAsc); // Output: [1, 3, 4, 5, 8]
-
-const sortedDesc = sortNumbersDesc(numbers);
-console.log('Sorted Descending:', sortedDesc); // Output: [8, 5, 4, 3, 1]
-const originalNumbers = [5, 3, 8, 1, 4];
-const sortedNumbers = [...originalNumbers].sort((a, b) => a - b);
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+  task.stop();
+  console.log('Task stopped.');
+}, 5 * 60 * 1000);
