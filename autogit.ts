@@ -1,20 +1,36 @@
-function isPalindrome(s: string): boolean {
-  // Normalize string: remove non-alphanumeric chars and convert to lowercase
-  const cleaned = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-  
-  // Check palindrome by comparing characters from start and end
-  let left = 0;
-  let right = cleaned.length - 1;
-  
-  while (left < right) {
-    if (cleaned[left] !== cleaned[right]) {
-      return false;
+type Graph = { [key: string]: string[] };
+
+function bfs(graph: Graph, startNode: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [];
+  const result: string[] = [];
+
+  visited.add(startNode);
+  queue.push(startNode);
+
+  while (queue.length > 0) {
+    const node = queue.shift()!;
+    result.push(node);
+
+    for (const neighbor of graph[node] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
     }
-    left++;
-    right--;
   }
-  
-  return true;
+
+  return result;
 }
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+
+// Example graph
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
+
+console.log(bfs(graph, 'A'));  // Output: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
