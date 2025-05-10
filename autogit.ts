@@ -1,73 +1,23 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null = null;
+const arr = [1, 2, 3, 4, 2];
+const valueToRemove = 2;
 
-  constructor(value: T) {
-    this.value = value;
-  }
+const index = arr.indexOf(valueToRemove);
+if (index !== -1) {
+  arr.splice(index, 1);
 }
-class LinkedList<T> {
-  private head: ListNode<T> | null = null;
-  private tail: ListNode<T> | null = null;
-  private length = 0;
 
-  // Add to the end
-  append(value: T): void {
-    const newNode = new ListNode(value);
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      this.tail!.next = newNode;
-      this.tail = newNode;
-    }
-    this.length++;
-  }
+console.log(arr); // [1, 3, 4, 2]
+const arr = [1, 2, 3, 4, 2];
+const valueToRemove = 2;
 
-  // Add to the start
-  prepend(value: T): void {
-    const newNode = new ListNode(value);
-    if (!this.head) {
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      newNode.next = this.head;
-      this.head = newNode;
-    }
-    this.length++;
-  }
+const filteredArr = arr.filter(item => item !== valueToRemove);
 
-  // Remove the first node
-  removeFirst(): T | null {
-    if (!this.head) return null;
-    const value = this.head.value;
-    this.head = this.head.next;
-    if (!this.head) this.tail = null; // List became empty
-    this.length--;
-    return value;
-  }
+console.log(filteredArr); // [1, 3, 4]
+const arr = [1, 2, 3, 4, 5];
+const indexToRemove = 2; // zero-based index
 
-  // Convert list to array for easy visualization
-  toArray(): T[] {
-    const result: T[] = [];
-    let current = this.head;
-    while (current) {
-      result.push(current.value);
-      current = current.next;
-    }
-    return result;
-  }
-
-  size(): number {
-    return this.length;
-  }
+if (indexToRemove > -1 && indexToRemove < arr.length) {
+  arr.splice(indexToRemove, 1);
 }
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.prepend(5);
 
-console.log(list.toArray()); // [5, 10, 20]
-console.log('Removed:', list.removeFirst()); // Removed: 5
-console.log(list.toArray()); // [10, 20]
-console.log('Size:', list.size()); // Size: 2
+console.log(arr); // [1, 2, 4, 5]
