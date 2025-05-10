@@ -1,26 +1,35 @@
-function majorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
+type Graph = { [node: string]: string[] };
 
-    // Phase 1: Find a candidate for majority element
-    for (let num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
+function bfs(graph: Graph, startNode: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [];
+  const result: string[] = [];
+
+  queue.push(startNode);
+  visited.add(startNode);
+
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    result.push(current);
+
+    for (const neighbor of graph[current] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
     }
+  }
 
-    // Phase 2: Verify the candidate is actually the majority element
-    if (candidate !== null) {
-        const occurrence = nums.filter(num => num === candidate).length;
-        if (occurrence > Math.floor(nums.length / 2)) {
-            return candidate;
-        }
-    }
-
-    return null; // No majority element found
+  return result;
 }
+const graph = {
+  A: ["B", "C"],
+  B: ["D", "E"],
+  C: ["F"],
+  D: [],
+  E: ["F"],
+  F: []
+};
 
-// Example:
-const arr = [2, 2, 1, 1, 1, 2, 2];
-console.log(majorityElement(arr)); // Output: 2
+console.log(bfs(graph, "A")); 
+// Output: ["A", "B", "C", "D", "E", "F"]
