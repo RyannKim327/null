@@ -1,20 +1,29 @@
-function quicksort(arr: number[]): number[] {
-  if (arr.length <= 1) {
-    return arr; // Base case: already sorted
-  }
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
 
-  const pivot = arr[arr.length - 1]; // Choose last element as pivot
-  const left: number[] = [];
-  const right: number[] = [];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.filter((value, index) => array.indexOf(value) === index);
 
-  for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = array.reduce((accumulator, current) => {
+    if (!accumulator.includes(current)) {
+        accumulator.push(current);
     }
-  }
+    return accumulator;
+}, [] as number[]); // Specify type if needed
 
-  // Recursively sort left and right, then concatenate with pivot
-  return [...quicksort(left), pivot, ...quicksort(right)];
-}
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+const seen: { [key: number]: boolean } = {};
+const uniqueArray: number[] = [];
+
+array.forEach(value => {
+    if (!seen[value]) {
+        seen[value] = true;
+        uniqueArray.push(value);
+    }
+});
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
