@@ -1,24 +1,17 @@
-const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-function validateEmail(email: string): boolean {
-    return emailRegex.test(email);
+function factorial(n: number): number {
+  if (n < 0) throw new Error("Factorial is not defined for negative numbers");
+  if (n === 0 || n === 1) return 1;
+  return n * factorial(n - 1);
 }
 
-// Example usage:
-const email1 = "example@example.com";
-const email2 = "invalid-email.com";
-
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
-const complexEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}$/;
-
-function validateComplexEmail(email: string): boolean {
-    return complexEmailRegex.test(email);
+console.log(factorial(5)); // 120
+function factorialIterative(n: number): number {
+  if (n < 0) throw new Error("Factorial is not defined for negative numbers");
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
+  }
+  return result;
 }
 
-// Example usage:
-const complexEmail1 = "example.name+tag@sub.domain.com";
-const complexEmail2 = "invalid.email@.com";
-
-console.log(validateComplexEmail(complexEmail1)); // true
-console.log(validateComplexEmail(complexEmail2)); // false
+console.log(factorialIterative(5)); // 120
