@@ -1,30 +1,55 @@
-import axios from 'axios';
+function computeLPSArray(pattern: string): number[] {
+  const lps = new Array(pattern.length).fill(0);
+  let length = 0;  // length of the previous longest prefix suffix
+  let i = 1;
 
-// Define an interface for the data we expect from the API
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
-async function fetchUsers(): Promise<User[]> {
-  try {
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error('Axios error:', error.message);
+  while (i < pattern.length) {
+    if (pattern[i] === pattern[length]) {
+      length++;
+      lps[i] = length;
+      i++;
     } else {
-      console.error('Unexpected error:', error);
+      if (length !== 0) {
+        length = lps[length - 1];
+      } else {
+        lps[i] = 0;
+        i++;
+      }
     }
-    return [];
   }
+  return lps;
 }
 
-(async () => {
-  const users = await fetchUsers();
-  users.forEach(user => {
-    console.log(`${user.name} (${user.username}) - Email: ${user.email}`);
-  });
-})();
+function kmpSearch(text: string, pattern: string): number[] {
+  const lps = computeLPSArray(pattern);
+  const result: number[] = [];
+
+  let i = 0; // index for text
+  let j = 0; // index for pattern
+
+  while (i < text.length) {
+    if (pattern[j] === text[i]) {
+      i++;
+      j++;
+    }
+
+    if (j === pattern.length) {
+      // Found pattern at index i - j
+      result.push(i - j);
+      j = lps[j - 1];
+    } else if (i < text.length && pattern[j] !== text[i]) {
+      if (j !== 0) {
+        j = lps[j - 1];
+      } else {
+        i++;
+      }
+    }
+  }
+
+  return result;
+}
+
+// Example usage:
+const text = "ababcabcabababd";
+const pattern = "ababd";
+console.log(kmpSearch(text, pattern)); // Output: [10]
