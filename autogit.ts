@@ -1,44 +1,29 @@
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
+const numbers: number[] = [5, 3, 8, 1, 4];
 
-const newArray = array.filter(item => item !== valueToRemove);
+// Sort in ascending order
+numbers.sort((a, b) => a - b);
 
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = 2; // Index of the element you want to remove (3 in this case)
+console.log(numbers); // Output: [1, 3, 4, 5, 8]
+const numbers: number[] = [5, 3, 8, 1, 4];
 
-if (indexToRemove > -1) {
-    array.splice(indexToRemove, 1);
+// Sort in descending order
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [8, 5, 4, 3, 1]
+function sortNumbersAsc(numbers: number[]): number[] {
+    return numbers.sort((a, b) => a - b);
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
-
-const indexToRemove = array.indexOf(valueToRemove);
-
-if (indexToRemove > -1) {
-    array.splice(indexToRemove, 1);
+function sortNumbersDesc(numbers: number[]): number[] {
+    return numbers.sort((a, b) => b - a);
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-interface Item {
-    id: number;
-    name: string;
-}
+const numbers = [5, 3, 8, 1, 4];
 
-const array: Item[] = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' },
-    { id: 3, name: 'Charlie' },
-];
+const sortedAsc = sortNumbersAsc(numbers);
+console.log('Sorted Ascending:', sortedAsc); // Output: [1, 3, 4, 5, 8]
 
-const idToRemove = 2;
-
-const indexToRemove = array.findIndex(item => item.id === idToRemove);
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1);
-}
-
-console.log(array); // Output: [{ id: 1, name: 'Alice' }, { id: 3, name: 'Charlie' }]
+const sortedDesc = sortNumbersDesc(numbers);
+console.log('Sorted Descending:', sortedDesc); // Output: [8, 5, 4, 3, 1]
+const originalNumbers = [5, 3, 8, 1, 4];
+const sortedNumbers = [...originalNumbers].sort((a, b) => a - b);
