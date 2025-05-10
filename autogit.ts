@@ -1,59 +1,26 @@
-class TrieNode {
-  children: Map<string, TrieNode>;
-  isEndOfWord: boolean;
+function isSorted(arr: number[]): boolean {
+  for (let i = 1; i < arr.length; i++) {
+    if (arr[i] < arr[i - 1]) return false;
+  }
+  return true;
+}
 
-  constructor() {
-    this.children = new Map();
-    this.isEndOfWord = false;
+function shuffle(arr: number[]): void {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
   }
 }
 
-class Trie {
-  root: TrieNode;
-
-  constructor() {
-    this.root = new TrieNode();
+function randomSort(arr: number[]): number[] {
+  const result = [...arr];
+  while (!isSorted(result)) {
+    shuffle(result);
   }
-
-  insert(word: string): void {
-    let node = this.root;
-    for (const char of word) {
-      if (!node.children.has(char)) {
-        node.children.set(char, new TrieNode());
-      }
-      node = node.children.get(char)!;
-    }
-    node.isEndOfWord = true;
-  }
-
-  search(word: string): boolean {
-    let node = this.root;
-    for (const char of word) {
-      if (!node.children.has(char)) {
-        return false;
-      }
-      node = node.children.get(char)!;
-    }
-    return node.isEndOfWord;
-  }
-
-  startsWith(prefix: string): boolean {
-    let node = this.root;
-    for (const char of prefix) {
-      if (!node.children.has(char)) {
-        return false;
-      }
-      node = node.children.get(char)!;
-    }
-    return true;
-  }
+  return result;
 }
 
-// Usage
-const trie = new Trie();
-trie.insert("apple");
-console.log(trie.search("apple"));   // true
-console.log(trie.search("app"));     // false
-console.log(trie.startsWith("app")); // true
-trie.insert("app");
-console.log(trie.search("app"));     // true
+// Example usage:
+const nums = [3, 1, 4, 1, 5];
+console.log('Before:', nums);
+console.log('After randomSort:', randomSort(nums));
