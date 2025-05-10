@@ -1,26 +1,11 @@
-// Define a User interface to type the response data
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
+import * as readline from 'readline';
 
-// Async function to fetch users from the API
-async function fetchUsers(): Promise<void> {
-  try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/users');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const users: User[] = await response.json();
-    users.forEach(user => {
-      console.log(user.name);
-    });
-  } catch (error) {
-    console.error('Failed to fetch users:', error);
-  }
-}
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
-// Call the function
-fetchUsers();
+rl.question('Enter your name: ', (name: string) => {
+  console.log(`Hello, ${name}! Welcome to TypeScript.`);
+  rl.close();
+});
