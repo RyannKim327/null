@@ -1,21 +1,20 @@
-function firstRepeatedCharacter(str: string): string | null {
-    const seenChars: Set<string> = new Set();
-
-    for (const char of str) {
-        if (seenChars.has(char)) {
-            return char; // Return the first repeated character
-        }
-        seenChars.add(char); // Add the character to the set
+function isPalindrome(s: string): boolean {
+  // Normalize string: remove non-alphanumeric chars and convert to lowercase
+  const cleaned = s.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+  
+  // Check palindrome by comparing characters from start and end
+  let left = 0;
+  let right = cleaned.length - 1;
+  
+  while (left < right) {
+    if (cleaned[left] !== cleaned[right]) {
+      return false;
     }
-
-    return null; // Return null if no repeated character is found
+    left++;
+    right--;
+  }
+  
+  return true;
 }
-
-// Example usage
-const input = "abcdefga";
-const result = firstRepeatedCharacter(input);
-if (result) {
-    console.log(`The first repeated character is: '${result}'`);
-} else {
-    console.log("No repeated characters found.");
-}
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
