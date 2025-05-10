@@ -1,54 +1,32 @@
-function mergeSort(array: number[]): number[] {
-    // Base case: if the array has 0 or 1 elements, it is already sorted
-    if (array.length <= 1) {
-        return array;
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+  const n = input.length;
+  const rotations: string[] = [];
+
+  // Generate all rotations of the input string
+  for (let i = 0; i < n; i++) {
+    rotations.push(input.slice(i) + input.slice(0, i));
+  }
+
+  // Sort the rotations lexicographically
+  rotations.sort();
+
+  // Build the transformed string by taking the last char from each rotation
+  let transformed = '';
+  let index = 0;
+
+  for (let i = 0; i < n; i++) {
+    transformed += rotations[i][n - 1];
+    if (rotations[i] === input) {
+      index = i;  // Save the index of the original string
     }
+  }
 
-    // Step 1: Split the array into halves
-    const middle = Math.floor(array.length / 2);
-    const leftHalf = array.slice(0, middle);
-    const rightHalf = array.slice(middle);
-
-    // Step 2: Recursively sort both halves
-    const sortedLeft = mergeSort(leftHalf);
-    const sortedRight = mergeSort(rightHalf);
-
-    // Step 3: Merge the sorted halves
-    return merge(sortedLeft, sortedRight);
-}
-
-function merge(left: number[], right: number[]): number[] {
-    const sortedArray: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
-
-    // Merge the two sorted arrays
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            sortedArray.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            sortedArray.push(right[rightIndex]);
-            rightIndex++;
-        }
-    }
-
-    // If there are remaining elements in left, add them to sortedArray
-    while (leftIndex < left.length) {
-        sortedArray.push(left[leftIndex]);
-        leftIndex++;
-    }
-
-    // If there are remaining elements in right, add them to sortedArray
-    while (rightIndex < right.length) {
-        sortedArray.push(right[rightIndex]);
-        rightIndex++;
-    }
-
-    return sortedArray;
+  return { transformed, index };
 }
 
 // Example usage:
-const arrayToSort = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(arrayToSort);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+const inputString = "banana";
+const result = burrowsWheelerTransform(inputString);
+console.log(`Transformed: ${result.transformed}, Index: ${result.index}`);
+// Output: Transformed: annb$aa, Index: 3 (if you append a terminator symbol like $)
+const result = burrowsWheelerTransform(inputString + '$');
