@@ -1,17 +1,67 @@
-function factorial(n: number): number {
-  if (n < 0) throw new Error("Factorial is not defined for negative numbers");
-  if (n === 0 || n === 1) return 1;
-  return n * factorial(n - 1);
-}
+type Neighbor = {
+  node: string;
+  weight: number;
+};
 
-console.log(factorial(5)); // 120
-function factorialIterative(n: number): number {
-  if (n < 0) throw new Error("Factorial is not defined for negative numbers");
-  let result = 1;
-  for (let i = 2; i <= n; i++) {
-    result *= i;
+type Graph = Map<string, Neighbor[]>;
+
+function dijkstra(graph: Graph, start: string): Map<string, number> {
+  // Distance from start to each node
+  const distances = new Map<string, number>();
+  const visited = new Set<string>();
+
+  // Initialize distances to infinity, except start node = 0
+  for (const node of graph.keys()) {
+    distances.set(node, Infinity);
   }
-  return result;
+  distances.set(start, 0);
+
+  while (visited.size < graph.size) {
+    // Pick the unvisited node with the smallest distance
+    let currentNode: string | null = null;
+    let currentDistance = Infinity;
+
+    for (const [node, distance] of distances) {
+      if (!visited.has(node) && distance < currentDistance) {
+        currentDistance = distance;
+        currentNode = node;
+      }
+    }
+
+    if (currentNode === null) {
+      // Remaining nodes are inaccessible from start
+      break;
+    }
+
+    visited.add(currentNode);
+
+    // Update distances to neighbors
+    const neighbors = graph.get(currentNode) ?? [];
+    for (const { node: neighbor, weight } of neighbors) {
+      if (!visited.has(neighbor)) {
+        const newDist = currentDistance + weight;
+        if (newDist < (distances.get(neighbor) ?? Infinity)) {
+          distances.set(neighbor, newDist);
+        }
+      }
+    }
+  }
+
+  return distances;
 }
 
-console.log(factorialIterative(5)); // 120
+// Example usage:
+
+const graph: Graph = new Map([
+  ['A', [{ node: 'B', weight: 1 }, { node: 'C', weight: 4 }]],
+  ['B', [{ node: 'A', weight: 1 }, { node: 'C', weight: 2 }, { node: 'D', weight: 5 }]],
+  ['C', [{ node: 'A', weight: 4 }, { node: 'B', weight: 2 }, { node: 'D', weight: 1 }]],
+  ['D', [{ node: 'B', weight: 5 }, { node: 'C', weight: 1 }]],
+]);
+
+const distances = dijkstra(graph, 'A');
+
+console.log("Shortest distances from A:");
+for (const [node, distance] of distances) {
+  console.log(`${node}: ${distance}`);
+}
