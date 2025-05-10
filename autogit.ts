@@ -1,31 +1,27 @@
-function radixSort(arr: number[]): number[] {
-  if (arr.length === 0) return arr;
+function shellSort(arr: number[]): number[] {
+  const n = arr.length;
+  
+  // Start with a big gap, then reduce the gap
+  for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+    // Do a gapped insertion sort for this gap size
+    for (let i = gap; i < n; i++) {
+      const temp = arr[i];
+      let j = i;
 
-  // Find the maximum number to know the number of digits
-  const maxNum = Math.max(...arr);
+      // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+      while (j >= gap && arr[j - gap] > temp) {
+        arr[j] = arr[j - gap];
+        j -= gap;
+      }
 
-  let exp = 1; // 10^i where i is the current digit index
-  let output = [...arr];
-
-  while (Math.floor(maxNum / exp) > 0) {
-    // Create buckets for each digit (0 to 9)
-    const buckets: number[][] = Array.from({ length: 10 }, () => []);
-
-    // Place elements into buckets based on current digit
-    for (const num of output) {
-      const digit = Math.floor((num / exp) % 10);
-      buckets[digit].push(num);
+      // Put temp (the original arr[i]) in its correct location
+      arr[j] = temp;
     }
-
-    // Flatten the buckets back into the output array
-    output = ([] as number[]).concat(...buckets);
-
-    exp *= 10; // Move to next digit
   }
 
-  return output;
+  return arr;
 }
 
-// Example usage:
-const nums = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(nums)); // [2, 24, 45, 66, 75, 90, 170, 802]
+// Example use:
+const array = [23, 12, 1, 8, 34, 54, 2, 3];
+console.log(shellSort(array));  // Sorted output
