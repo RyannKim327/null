@@ -1,10 +1,36 @@
-function getRandomInt(min: number, max: number): number {
-  // Make sure min and max are integers
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  // Generate random int
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+type Graph = { [key: string]: string[] };
+
+function bfs(graph: Graph, startNode: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [];
+  const result: string[] = [];
+
+  queue.push(startNode);
+  visited.add(startNode);
+
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    result.push(current);
+
+    for (const neighbor of graph[current] || []) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return result;
 }
-function getRandomFloat(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
-}
+
+// Example usage
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: [],
+};
+
+console.log(bfs(graph, 'A'));  // Output: ['A', 'B', 'C', 'D', 'E', 'F']
