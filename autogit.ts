@@ -1,15 +1,8 @@
-const str = "Hello, world!";
-const substring = "world";
-
-if (str.includes(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found.");
+function isPalindrome(str: string): boolean {
+  const cleaned = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const reversed = cleaned.split('').reverse().join('');
+  return cleaned === reversed;
 }
-if (str.indexOf(substring) !== -1) {
-  console.log("Substring found!");
-}
-const regex = new RegExp(substring);
-if (regex.test(str)) {
-  console.log("Substring found!");
-}
+console.log(isPalindrome("Racecar"));    // true
+console.log(isPalindrome("A man, a plan, a canal: Panama"));  // true
+console.log(isPalindrome("Hello"));      // false
