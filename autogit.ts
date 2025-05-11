@@ -1,10 +1,10 @@
-function calculateTriangleArea(base: number, height: number): number {
-  return 0.5 * base * height;
+function factorial(n: number): number {
+  if (n <= 1) {
+    return 1; // base case: factorial of 0 or 1 is 1
+  } else {
+    return n * factorial(n - 1); // recursive case
+  }
 }
 
 // Example usage:
-const base = 10;
-const height = 5;
-const area = calculateTriangleArea(base, height);
-
-console.log(`The area of the triangle is ${area}`);
+console.log(factorial(5)); // Output: 120
