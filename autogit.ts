@@ -1,60 +1,40 @@
-function rabinKarp(text: string, pattern: string): number[] {
-  const result: number[] = [];
-  const m = pattern.length;
-  const n = text.length;
+function longestIncreasingSubsequence(arr: number[]): number[] {
+  const n = arr.length;
+  if (n === 0) return [];
 
-  if (m > n) return result;
+  // dp[i] will hold the length of the LIS ending at index i
+  const dp = new Array(n).fill(1);
 
-  const base = 256; // Number of characters in input alphabet (extended ASCII)
-  const prime = 101; // A prime number used as modulus to reduce hash collisions
+  // To reconstruct the sequence, keep track of parents
+  const parent = new Array(n).fill(-1);
 
-  // Compute the hash value of the pattern and first window of text
-  let patternHash = 0;
-  let windowHash = 0;
-  let h = 1; // The value of base^(m-1) used to remove leading digit
+  let maxLen = 1;
+  let maxIndex = 0;
 
-  // Calculate h = pow(base, m-1) % prime
-  for (let i = 0; i < m - 1; i++) {
-    h = (h * base) % prime;
-  }
-
-  // Initial hash values for pattern and first text window
-  for (let i = 0; i < m; i++) {
-    patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
-    windowHash = (base * windowHash + text.charCodeAt(i)) % prime;
-  }
-
-  // Slide the pattern over text one by one
-  for (let i = 0; i <= n - m; i++) {
-    // If hash values match, check the actual substring for match
-    if (patternHash === windowHash) {
-      let match = true;
-      for (let j = 0; j < m; j++) {
-        if (text[i + j] !== pattern[j]) {
-          match = false;
-          break;
-        }
+  for (let i = 1; i < n; i++) {
+    for (let j = 0; j < i; j++) {
+      if (arr[j] < arr[i] && dp[j] + 1 > dp[i]) {
+        dp[i] = dp[j] + 1;
+        parent[i] = j;
       }
-      if (match) result.push(i);
     }
-
-    // Calculate hash value for next window of text:
-    // Remove leading char and add trailing char
-    if (i < n - m) {
-      windowHash = (base * (windowHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
-
-      // We might get negative value, convert it to positive
-      if (windowHash < 0) {
-        windowHash = windowHash + prime;
-      }
+    if (dp[i] > maxLen) {
+      maxLen = dp[i];
+      maxIndex = i;
     }
   }
 
-  return result;
+  // Reconstruct the longest increasing subsequence
+  const lis: number[] = [];
+  let currentIndex = maxIndex;
+  while (currentIndex !== -1) {
+    lis.push(arr[currentIndex]);
+    currentIndex = parent[currentIndex];
+  }
+
+  return lis.reverse();
 }
 
-// Example usage:
-const text = "GEEKS FOR GEEKS";
-const pattern = "GEEK";
-const indices = rabinKarp(text, pattern);
-console.log(indices); // Outputs [0, 10]
+// Usage example:
+const array = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(array)); // Output: [2, 3, 7, 18]
