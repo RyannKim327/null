@@ -1,35 +1,35 @@
-type Graph = { [key: string]: string[] };
+function radixSort(arr: number[]): number[] {
+    if (arr.length === 0) return arr;
 
-function bfs(graph: Graph, startNode: string): string[] {
-    const visited = new Set<string>();
-    const queue: string[] = [];
-    const order: string[] = [];
+    // Find the maximum number to know number of digits
+    const maxNum = Math.max(...arr);
 
-    visited.add(startNode);
-    queue.push(startNode);
+    // Helper function to get digit at given place value
+    const getDigit = (num: number, place: number): number => {
+        return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+    };
 
-    while (queue.length > 0) {
-        const current = queue.shift()!;
-        order.push(current);
+    // Determine how many digits the largest number has
+    const maxDigits = Math.floor(Math.log10(maxNum)) + 1;
 
-        for (const neighbor of graph[current] || []) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push(neighbor);
-            }
+    for (let k = 0; k < maxDigits; k++) {
+        // Create buckets for each digit 0-9
+        const buckets: number[][] = Array.from({ length: 10 }, () => []);
+
+        // Distribute numbers into buckets based on kth digit
+        for (const num of arr) {
+            const digit = getDigit(num, k);
+            buckets[digit].push(num);
         }
+
+        // Flatten buckets back into array
+        arr = ([] as number[]).concat(...buckets);
     }
 
-    return order;
+    return arr;
 }
-const graph: Graph = {
-    'A': ['B', 'C'],
-    'B': ['A', 'D', 'E'],
-    'C': ['A', 'F'],
-    'D': ['B'],
-    'E': ['B', 'F'],
-    'F': ['C', 'E']
-};
 
-const traversalOrder = bfs(graph, 'A');
-console.log(traversalOrder); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+// Example usage:
+const unsorted = [170, 45, 75, 90, 802, 24, 2, 66];
+const sorted = radixSort(unsorted);
+console.log(sorted); // [2, 24, 45, 66, 75, 90, 170, 802]
