@@ -1,23 +1,30 @@
-function binarySearch(arr: number[], target: number): number {
-  let left = 0;
-  let right = arr.length - 1;
+function triangleArea(base: number, height: number): number {
+  return 0.5 * base * height;
+}
 
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
+// Example usage:
+const base = 10;
+const height = 5;
+console.log(`The area of the triangle is ${triangleArea(base, height)}`);
+function triangleAreaHeron(a: number, b: number, c: number): number | null {
+  const s = (a + b + c) / 2;
+  const areaSquared = s * (s - a) * (s - b) * (s - c);
 
-    if (arr[mid] === target) {
-      return mid;
-    } else if (arr[mid] < target) {
-      left = mid + 1;
-    } else {
-      right = mid - 1;
-    }
+  if (areaSquared < 0) {
+    // Invalid triangle side lengths
+    return null;
   }
 
-  return -1; // target not found
+  return Math.sqrt(areaSquared);
 }
-const numbers = [1, 3, 5, 7, 9, 11];
-const target = 7;
 
-const index = binarySearch(numbers, target);
-console.log(index); // Output: 3
+// Example usage:
+const a = 7;
+const b = 8;
+const c = 9;
+const area = triangleAreaHeron(a, b, c);
+if (area !== null) {
+  console.log(`Area calculated with Heron's formula: ${area}`);
+} else {
+  console.log("Invalid triangle side lengths.");
+}
