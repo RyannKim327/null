@@ -1,100 +1,105 @@
 class PriorityQueue<T> {
-  private heap: T[] = [];
-  private comparator: (a: T, b: T) => number;
+  private heap: { priority: number; item: T }[] = [];
 
-  constructor(comparator: (a: T, b: T) => number) {
-    this.comparator = comparator;
-  }
-
-  private parent(index: number): number {
-    return Math.floor((index - 1) / 2);
-  }
-
-  private leftChild(index: number): number {
-    return 2 * index + 1;
-  }
-
-  private rightChild(index: number): number {
-    return 2 * index + 2;
-  }
-
-  private swap(i: number, j: number): void {
+  private swap(i: number, j: number) {
     [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
   }
 
-  private siftUp(index: number): void {
-    let parent = this.parent(index);
-    while (
-      index > 0 &&
-      this.comparator(this.heap[index], this.heap[parent]) < 0
-    ) {
-      this.swap(index, parent);
-      index = parent;
-      parent = this.parent(index);
+  private bubbleUp(index: number) {
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      if (this.heap[parentIndex].priority <= this.heap[index].priority) break;
+      this.swap(parentIndex, index);
+      index = parentIndex;
     }
   }
 
-  private siftDown(index: number): void {
-    let left = this.leftChild(index);
-    let right = this.rightChild(index);
-    let smallest = index;
+  private bubbleDown(index: number) {
+    const lastIndex = this.heap.length - 1;
+    while (true) {
+      const leftChildIndex = 2 * index + 1;
+      const rightChildIndex = 2 * index + 2;
+      let smallestIndex = index;
 
-    if (
-      left < this.heap.length &&
-      this.comparator(this.heap[left], this.heap[smallest]) < 0
-    ) {
-      smallest = left;
-    }
+      if (
+        leftChildIndex <= lastIndex &&
+        this.heap[leftChildIndex].priority < this.heap[smallestIndex].priority
+      ) {
+        smallestIndex = leftChildIndex;
+      }
+      if (
+        rightChildIndex <= lastIndex &&
+        this.heap[rightChildIndex].priority < this.heap[smallestIndex].priority
+      ) {
+        smallestIndex = rightChildIndex;
+      }
 
-    if (
-      right < this.heap.length &&
-      this.comparator(this.heap[right], this.heap[smallest]) < 0
-    ) {
-      smallest = right;
-    }
+      if (smallestIndex === index) break;
 
-    if (smallest !== index) {
-      this.swap(index, smallest);
-      this.siftDown(smallest);
+      this.swap(index, smallestIndex);
+      index = smallestIndex;
     }
   }
 
-  enqueue(value: T): void {
-    this.heap.push(value);
-    this.siftUp(this.heap.length - 1);
+  enqueue(item: T, priority: number): void {
+    this.heap.push({ item, priority });
+    this.bubbleUp(this.heap.length - 1);
   }
 
   dequeue(): T | undefined {
-    if (this.isEmpty()) return undefined;
-    const top = this.heap[0];
+    if (this.heap.length === 0) return undefined;
+    const root = this.heap[0].item;
     const end = this.heap.pop()!;
     if (this.heap.length > 0) {
       this.heap[0] = end;
-      this.siftDown(0);
+      this.bubbleDown(0);
     }
-    return top;
-  }
-
-  peek(): T | undefined {
-    return this.heap[0];
-  }
-
-  size(): number {
-    return this.heap.length;
+    return root;
   }
 
   isEmpty(): boolean {
     return this.heap.length === 0;
   }
 }
-// Min-heap: smaller number = higher priority
-const pq = new PriorityQueue<number>((a, b) => a - b);
 
-pq.enqueue(5);
-pq.enqueue(1);
-pq.enqueue(3);
+// Graph represented as adjacency list: node -> Array<[neighbor, weight]>
+type Graph = Map<string, Array<[string, number]>>;
 
-console.log(pq.peek());    // 1
-console.log(pq.dequeue()); // 1
-console.log(pq.dequeue()); // 3
-console.log(pq.size());    // 1
+function dijkstra(graph: Graph, start: string): Map<string, number> {
+  const distances = new Map<string, number>();
+  const pq = new PriorityQueue<string>();
+
+  // Initialize distances to infinity and start node to 0
+  graph.forEach((_, node) => distances.set(node, Infinity));
+  distances.set(start, 0);
+
+  pq.enqueue(start, 0);
+
+  while (!pq.isEmpty()) {
+    const current = pq.dequeue()!;
+    const currentDistance = distances.get(current)!;
+
+    for (const [neighbor, weight] of graph.get(current) || []) {
+      const distance = currentDistance + weight;
+      if (distance < distances.get(neighbor)!) {
+        distances.set(neighbor, distance);
+        pq.enqueue(neighbor, distance);
+      }
+    }
+  }
+
+  return distances;
+}
+
+// Example usage:
+const graph: Graph = new Map([
+  ['A', [['B', 5], ['C', 1]]],
+  ['B', [['A', 5], ['C', 2], ['D', 1]]],
+  ['C', [['A', 1], ['B', 2], ['D', 4], ['E', 8]]],
+  ['D', [['B', 1], ['C', 4], ['E', 3], ['F', 6]]],
+  ['E', [['C', 8], ['D', 3]]],
+  ['F', [['D', 6]]]
+]);
+
+const distances = dijkstra(graph, 'A');
+console.log(distances); // Map with shortest distances from 'A' to each node
