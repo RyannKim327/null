@@ -1,23 +1,23 @@
-function bubbleSort(arr: number[]): number[] {
-  let n = arr.length;
-  let swapped: boolean;
+type User = {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+};
 
-  do {
-    swapped = false;
-    for (let i = 1; i < n; i++) {
-      if (arr[i - 1] > arr[i]) {
-        // Swap elements
-        [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
-        swapped = true;
-      }
+async function fetchUsers(): Promise<void> {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/users');
+    if (!response.ok) {
+      throw new Error(`Network error: ${response.status}`);
     }
-    // After each pass, the largest element is at the end
-    n--;
-  } while (swapped);
-
-  return arr;
+    const users: User[] = await response.json();
+    users.forEach(user => {
+      console.log(`User: ${user.name} (username: ${user.username})`);
+    });
+  } catch (error) {
+    console.error('Fetch failed:', error);
+  }
 }
 
-// Example usage:
-const nums = [5, 3, 8, 4, 2];
-console.log(bubbleSort(nums));  // Output: [2, 3, 4, 5, 8]
+fetchUsers();
