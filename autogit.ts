@@ -1,10 +1,13 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  const normalize = (str: string) =>
-    str.toLowerCase().replace(/\s+/g, '').split('').sort().join('');
-  
-  return normalize(str1) === normalize(str2);
-}
+function isPrime(num: number): boolean {
+  if (num <= 1) return false; // 0 and 1 aren't prime
+  if (num <= 3) return true;  // 2 and 3 are prime
 
-// Usage:
-console.log(areAnagrams('listen', 'silent'));  // true
-console.log(areAnagrams('hello', 'world'));    // false
+  if (num % 2 === 0 || num % 3 === 0) return false; // eliminate multiples of 2 and 3
+
+  // Check divisors up to the square root of num
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
+  }
+
+  return true;
+}
