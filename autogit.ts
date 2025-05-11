@@ -1,13 +1,32 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-const commonElements = array1.filter(item => array2.includes(item));
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
 
-console.log(commonElements); // Output: [3, 4, 5]
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+function sumTree(root: TreeNode | null): number {
+  if (root === null) return 0;
+  return root.val + sumTree(root.left) + sumTree(root.right);
+}
+function sumTreeIterative(root: TreeNode | null): number {
+  if (root === null) return 0;
+  
+  let sum = 0;
+  const stack: TreeNode[] = [root];
 
-const set2 = new Set(array2);
-const commonElements = array1.filter(item => set2.has(item));
+  while (stack.length) {
+    const node = stack.pop()!;
+    sum += node.val;
+    
+    if (node.right) stack.push(node.right);
+    if (node.left) stack.push(node.left);
+  }
 
-console.log(commonElements); // Output: [3, 4, 5]
+  return sum;
+}
