@@ -1,24 +1,40 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator } from 'react-native';
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
-function countLeafNodes(root: TreeNode | null): number {
-  if (root === null) {
-    return 0; // empty tree has no leaves
-  }
+const AsyncDataFetcher: React.FC = () => {
+  const [data, setData] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // if both left and right are null, this is a leaf node
-  if (root.left === null && root.right === null) {
-    return 1;
-  }
+  // Async task to fetch data
+  const fetchData = async () => {
+    try {
+      const response = await fetch('https://jsonplaceholder.typicode.com/todos/1');
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const json = await response.json();
+      setData(JSON.stringify(json));
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // recursively count in left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) return <ActivityIndicator size="large" color="#0000ff" />;
+  if (error) return <Text>Error: {error}</Text>;
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>Fetched Data:</Text>
+      <Text>{data}</Text>
+    </View>
+  );
+};
+
+export default AsyncDataFetcher;
