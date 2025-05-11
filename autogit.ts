@@ -1,46 +1,12 @@
-type Graph = Record<string, string[]>;
+function isPrime(num: number): boolean {
+  if (num <= 1) return false; // 0 and 1 are not prime numbers
+  if (num <= 3) return true;  // 2 and 3 are prime
 
-interface StackItem {
-  node: string;
-  depth: number;
-}
+  if (num % 2 === 0 || num % 3 === 0) return false; // multiples of 2 and 3 are not prime
 
-function depthLimitedSearch(graph: Graph, start: string, limit: number, goal?: string): string | null {
-  const stack: StackItem[] = [{ node: start, depth: 0 }];
-  const visited = new Set<string>();
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop()!;
-    if (visited.has(node)) continue;
-    visited.add(node);
-
-    // Check if current node is the goal (if provided)
-    if (goal !== undefined && node === goal) {
-      return node;
-    }
-
-    // Only expand if we have not reached the depth limit
-    if (depth < limit) {
-      for (const neighbor of graph[node] || []) {
-        if (!visited.has(neighbor)) {
-          stack.push({ node: neighbor, depth: depth + 1 });
-        }
-      }
-    }
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
   }
 
-  return null; // goal not found within depth limit or traversal ended
+  return true;
 }
-
-// Example usage:
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: [],
-};
-
-console.log(depthLimitedSearch(graph, 'A', 2, 'F')); // Output: 'F' (found at depth <= 2)
-console.log(depthLimitedSearch(graph, 'A', 1, 'F')); // Output: null (not found at depth <= 1)
