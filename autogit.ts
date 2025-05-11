@@ -1,11 +1,36 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+  
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
 
-const commonElements = array1.filter(element => array2.includes(element));
+function countLeafNodes(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
 
-console.log(commonElements); // Output: [3, 4, 5]
-const set2 = new Set(array2);
+  // If both left and right children are null, this is a leaf node
+  if (root.left === null && root.right === null) {
+    return 1;
+  }
 
-const commonElements = array1.filter(element => set2.has(element));
+  // Otherwise, recursively count leaf nodes in left and right subtrees
+  return countLeafNodes(root.left) + countLeafNodes(root.right);
+}
 
-console.log(commonElements); // Output: [3, 4, 5]
+// Example usage:
+const tree = new TreeNode(1,
+  new TreeNode(2,
+    new TreeNode(4),
+    null
+  ),
+  new TreeNode(3)
+);
+
+console.log(countLeafNodes(tree));  // Output: 2
