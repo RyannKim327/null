@@ -1,31 +1,14 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+function isPalindrome(s: string): boolean {
+  let left = 0;
+  let right = s.length - 1;
 
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
-
-function nthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
-  if (!head || n <= 0) return null;
-
-  let fast: ListNode<T> | null = head;
-  let slow: ListNode<T> | null = head;
-
-  // Move fast pointer n steps ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) return null; // n is greater than the length of the list
-    fast = fast.next;
+  while (left < right) {
+    if (s[left] !== s[right]) {
+      return false;
+    }
+    left++;
+    right--;
   }
 
-  // Move both pointers until fast reaches the end
-  while (fast !== null) {
-    fast = fast.next;
-    slow = slow!.next;
-  }
-
-  // slow is now pointing to the nth node from the end
-  return slow;
+  return true;
 }
