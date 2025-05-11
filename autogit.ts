@@ -1,41 +1,17 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    // Make sure nums1 is the smaller array to minimize binary search range
-    if (nums1.length > nums2.length) {
-        return findMedianSortedArrays(nums2, nums1);
-    }
+const arr = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArr = Array.from(new Set(arr));
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
+const uniqueArr = [...new Set(arr)];
+const uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
+const arr = [
+  { id: 1, name: 'a' },
+  { id: 2, name: 'b' },
+  { id: 1, name: 'a' }
+];
 
-    const m = nums1.length;
-    const n = nums2.length;
-    let left = 0;
-    let right = m;
+const uniqueArr = Array.from(
+  new Map(arr.map(item => [item.id, item])).values()
+);
 
-    while (left <= right) {
-        const partitionX = Math.floor((left + right) / 2);
-        const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
-
-        // If partitionX is 0 it means nothing is there on left side. Use -Infinity for maxLeftX
-        // If partitionX is length of input then there is nothing on right side. Use +Infinity for minRightX
-        const maxLeftX = partitionX === 0 ? Number.NEGATIVE_INFINITY : nums1[partitionX - 1];
-        const minRightX = partitionX === m ? Number.POSITIVE_INFINITY : nums1[partitionX];
-
-        const maxLeftY = partitionY === 0 ? Number.NEGATIVE_INFINITY : nums2[partitionY - 1];
-        const minRightY = partitionY === n ? Number.POSITIVE_INFINITY : nums2[partitionY];
-
-        if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
-            // We have partitioned array at correct place
-            if ((m + n) % 2 === 0) {
-                return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
-            } else {
-                return Math.max(maxLeftX, maxLeftY);
-            }
-        } else if (maxLeftX > minRightY) {
-            // Move towards left in nums1
-            right = partitionX - 1;
-        } else {
-            // Move towards right in nums1
-            left = partitionX + 1;
-        }
-    }
-
-    throw new Error("Input arrays are not sorted");
-}
+console.log(uniqueArr);
+// [{ id: 1, name: 'a' }, { id: 2, name: 'b' }]
