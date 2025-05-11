@@ -1,20 +1,24 @@
-const array1 = [1, 2, 3, 4];
-const array2 = [3, 4, 5, 6];
+function binarySearch(arr: number[], target: number): number {
+  let left = 0;
+  let right = arr.length - 1;
 
-const commonElements = array1.filter(element => array2.includes(element));
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+    const midValue = arr[mid];
 
-console.log(commonElements); // Output: [3, 4]
-const array1 = [1, 2, 3, 4];
-const array2 = [3, 4, 5, 6];
+    if (midValue === target) {
+      return mid; // Found target, return index
+    } else if (midValue < target) {
+      left = mid + 1; // Search right half
+    } else {
+      right = mid - 1; // Search left half
+    }
+  }
 
-const set2 = new Set(array2);
-const commonElements = array1.filter(element => set2.has(element));
-
-console.log(commonElements); // Output: [3, 4]
-function getCommonElements<T>(arr1: T[], arr2: T[]): T[] {
-  const set2 = new Set(arr2);
-  return arr1.filter(item => set2.has(item));
+  return -1; // Target not found
 }
+const sortedArray = [1, 3, 5, 7, 9, 11];
+const target = 7;
+const index = binarySearch(sortedArray, target);
 
-const result = getCommonElements([1, 2, 3], [2, 3, 4]);
-console.log(result); // [2, 3]
+console.log(index); // Output: 3
