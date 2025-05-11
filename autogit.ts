@@ -1,138 +1,104 @@
-enum Color {
-  RED,
-  BLACK,
-}
+class PriorityQueue<T> {
+  private heap: T[] = [];
+  private compare: (a: T, b: T) => boolean;
 
-class Node<T> {
-  value: T;
-  color: Color;
-  left: Node<T> | null = null;
-  right: Node<T> | null = null;
-  parent: Node<T> | null = null;
-
-  constructor(value: T, color: Color) {
-    this.value = value;
-    this.color = color;
-  }
-}
-
-class RedBlackTree<T> {
-  private root: Node<T> | null = null;
-
-  private rotateLeft(x: Node<T>) {
-    const y = x.right!;
-    x.right = y.left;
-    if (y.left !== null) y.left.parent = x;
-    y.parent = x.parent;
-
-    if (x.parent === null) {
-      this.root = y;
-    } else if (x === x.parent.left) {
-      x.parent.left = y;
-    } else {
-      x.parent.right = y;
-    }
-    y.left = x;
-    x.parent = y;
+  constructor(compareFn?: (a: T, b: T) => boolean) {
+    // Default comparison for min-heap (a < b)
+    this.compare = compareFn || ((a, b) => a < b);
   }
 
-  private rotateRight(y: Node<T>) {
-    const x = y.left!;
-    y.left = x.right;
-    if (x.right !== null) x.right.parent = y;
-    x.parent = y.parent;
-
-    if (y.parent === null) {
-      this.root = x;
-    } else if (y === y.parent.right) {
-      y.parent.right = x;
-    } else {
-      y.parent.left = x;
-    }
-    x.right = y;
-    y.parent = x;
+  private parent(index: number): number {
+    return Math.floor((index - 1) / 2);
   }
 
-  insert(value: T) {
-    let node = new Node(value, Color.RED);
-    let y: Node<T> | null = null;
-    let x = this.root;
+  private leftChild(index: number): number {
+    return 2 * index + 1;
+  }
 
-    // BST insert
-    while (x !== null) {
-      y = x;
-      if (node.value < x.value) {
-        x = x.left;
+  private rightChild(index: number): number {
+    return 2 * index + 2;
+  }
+
+  private swap(i: number, j: number): void {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+  }
+
+  private bubbleUp(index: number): void {
+    while (index > 0) {
+      let parentIndex = this.parent(index);
+      if (this.compare(this.heap[index], this.heap[parentIndex])) {
+        this.swap(index, parentIndex);
+        index = parentIndex;
       } else {
-        x = x.right;
+        break;
       }
     }
-    node.parent = y;
-
-    if (y === null) {
-      this.root = node;
-    } else if (node.value < y.value) {
-      y.left = node;
-    } else {
-      y.right = node;
-    }
-
-    this.fixInsert(node);
   }
 
-  private fixInsert(k: Node<T>) {
-    let current = k;
-    while (current.parent && current.parent.color === Color.RED) {
-      if (current.parent === current.parent.parent?.left) {
-        let uncle = current.parent.parent.right;
-        if (uncle && uncle.color === Color.RED) {
-          // Case 1: Uncle red
-          current.parent.color = Color.BLACK;
-          uncle.color = Color.BLACK;
-          current.parent.parent.color = Color.RED;
-          current = current.parent.parent;
-        } else {
-          if (current === current.parent.right) {
-            // Case 2: current is right child
-            current = current.parent;
-            this.rotateLeft(current);
-          }
-          // Case 3: current is left child
-          current.parent!.color = Color.BLACK;
-          current.parent!.parent!.color = Color.RED;
-          this.rotateRight(current.parent!.parent!);
-        }
+  private bubbleDown(index: number): void {
+    const length = this.heap.length;
+    while (true) {
+      let left = this.leftChild(index);
+      let right = this.rightChild(index);
+      let smallest = index;
+
+      if (left < length && this.compare(this.heap[left], this.heap[smallest])) {
+        smallest = left;
+      }
+
+      if (right < length && this.compare(this.heap[right], this.heap[smallest])) {
+        smallest = right;
+      }
+
+      if (smallest !== index) {
+        this.swap(index, smallest);
+        index = smallest;
       } else {
-        // Symmetric cases with left and right swapped
-        let uncle = current.parent.parent?.left;
-        if (uncle && uncle.color === Color.RED) {
-          current.parent.color = Color.BLACK;
-          uncle.color = Color.BLACK;
-          current.parent.parent!.color = Color.RED;
-          current = current.parent.parent!;
-        } else {
-          if (current === current.parent.left) {
-            current = current.parent;
-            this.rotateRight(current);
-          }
-          current.parent!.color = Color.BLACK;
-          current.parent!.parent!.color = Color.RED;
-          this.rotateLeft(current.parent!.parent!);
-        }
+        break;
       }
     }
-
-    this.root!.color = Color.BLACK;
   }
 
-  // Optional: method to print or traverse tree for testing
-  inorderTraversal(node: Node<T> | null = this.root) {
-    if (!node) return;
-    this.inorderTraversal(node.left);
-    console.log(`${node.value} (${node.color === Color.RED ? 'R' : 'B'})`);
-    this.inorderTraversal(node.right);
+  enqueue(item: T): void {
+    this.heap.push(item);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  dequeue(): T | undefined {
+    if (this.heap.length === 0) return undefined;
+
+    const root = this.heap[0];
+    const last = this.heap.pop();
+
+    if (this.heap.length > 0 && last !== undefined) {
+      this.heap[0] = last;
+      this.bubbleDown(0);
+    }
+
+    return root;
+  }
+
+  peek(): T | undefined {
+    return this.heap[0];
+  }
+
+  size(): number {
+    return this.heap.length;
+  }
+
+  isEmpty(): boolean {
+    return this.heap.length === 0;
   }
 }
-const rbt = new RedBlackTree<number>();
-[10, 20, 30, 15, 25, 5].forEach(num => rbt.insert(num));
-rbt.inorderTraversal();
+
+// Example Usage:
+const pq = new PriorityQueue<number>();
+
+pq.enqueue(5);
+pq.enqueue(3);
+pq.enqueue(7);
+pq.enqueue(1);
+
+while (!pq.isEmpty()) {
+  console.log(pq.dequeue()); // 1, 3, 5, 7 in order
+}
