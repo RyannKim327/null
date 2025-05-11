@@ -1,42 +1,86 @@
-function getDigit(num: number, place: number): number {
-  // Extracts digit at the given place value (0 for ones, 1 for tens, etc.)
-  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+type Node = string | number;
+type Graph = Map<Node, Node[]>;  // Adjacency list representation
+function bidirectionalSearch(graph: Graph, start: Node, goal: Node): Node[] | null {
+    if (start === goal) return [start];
 
-function digitCount(num: number): number {
-  // Returns number of digits in num
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
+    // Frontiers for search from start and goal
+    const frontierStart = new Set<Node>([start]);
+    const frontierGoal = new Set<Node>([goal]);
 
-function mostDigits(nums: number[]): number {
-  // Find the maximum number of digits in the largest number
-  let maxDigits = 0;
-  for (const num of nums) {
-    maxDigits = Math.max(maxDigits, digitCount(num));
-  }
-  return maxDigits;
-}
+    // Visited maps to keep track of paths
+    const visitedStart = new Map<Node, Node | null>([[start, null]]);
+    const visitedGoal = new Map<Node, Node | null>([[goal, null]]);
 
-function radixSort(nums: number[]): number[] {
-  const maxDigitCount = mostDigits(nums);
+    while (frontierStart.size > 0 && frontierGoal.size > 0) {
+        // Expand from the start side
+        const meetNode = expandFrontier(graph, frontierStart, visitedStart, visitedGoal);
+        if (meetNode !== null) {
+            return constructPath(meetNode, visitedStart, visitedGoal);
+        }
 
-  for (let k = 0; k < maxDigitCount; k++) {
-    // Create buckets for each digit 0-9
-    const digitBuckets: number[][] = Array.from({ length: 10 }, () => []);
-
-    for (const num of nums) {
-      const digit = getDigit(num, k);
-      digitBuckets[digit].push(num);
+        // Expand from the goal side
+        const meetNodeReverse = expandFrontier(graph, frontierGoal, visitedGoal, visitedStart);
+        if (meetNodeReverse !== null) {
+            return constructPath(meetNodeReverse, visitedStart, visitedGoal);
+        }
     }
 
-    // Flatten the buckets back into nums
-    nums = [].concat(...digitBuckets);
-  }
-
-  return nums;
+    // No path found
+    return null;
 }
+function expandFrontier(
+    graph: Graph,
+    frontier: Set<Node>,
+    visitedThisSide: Map<Node, Node | null>,
+    visitedOtherSide: Map<Node, Node | null>
+): Node | null {
+    const nextFrontier = new Set<Node>();
+    for (const current of frontier) {
+        const neighbors = graph.get(current) || [];
+        for (const neighbor of neighbors) {
+            if (!visitedThisSide.has(neighbor)) {
+                visitedThisSide.set(neighbor, current);
+                if (visitedOtherSide.has(neighbor)) {
+                    // Meeting point found
+                    return neighbor;
+                }
+                nextFrontier.add(neighbor);
+            }
+        }
+    }
+    frontier.clear();
+    for (const node of nextFrontier) frontier.add(node);
+    return null;
+}
+function constructPath(
+    meetNode: Node,
+    visitedStart: Map<Node, Node | null>,
+    visitedGoal: Map<Node, Node | null>
+): Node[] {
+    const pathStart = [];
+    let current: Node | null = meetNode;
+    while (current !== null) {
+        pathStart.push(current);
+        current = visitedStart.get(current) || null;
+    }
+    pathStart.reverse();
 
-// Example usage:
-const exampleArray = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(exampleArray)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+    const pathGoal = [];
+    current = visitedGoal.get(meetNode) || null;
+    while (current !== null) {
+        pathGoal.push(current);
+        current = visitedGoal.get(current) || null;
+    }
+
+    return pathStart.concat(pathGoal);
+}
+const graph: Graph = new Map([
+    ['A', ['B', 'C']],
+    ['B', ['A', 'D']],
+    ['C', ['A', 'D']],
+    ['D', ['B', 'C', 'E']],
+    ['E', ['D']]
+]);
+
+const path = bidirectionalSearch(graph, 'A', 'E');
+console.log(path);  // Output: ['A', 'B', 'D', 'E'] (or similar shortest path)
