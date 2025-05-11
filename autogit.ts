@@ -1,17 +1,13 @@
-const str = "Hello, world!";
-const substring = "world";
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-if (str.includes(substring)) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
-}
-if (str.indexOf(substring) !== -1) {
-  console.log("Substring found!");
-} else {
-  console.log("Substring not found!");
-}
-const regex = /world/;
-if (regex.test(str)) {
-  console.log("Substring found!");
-}
+const commonElements = array1.filter(item => array2.includes(item));
+
+console.log(commonElements); // Output: [3, 4, 5]
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+
+const set2 = new Set(array2);
+const commonElements = array1.filter(item => set2.has(item));
+
+console.log(commonElements); // Output: [3, 4, 5]
