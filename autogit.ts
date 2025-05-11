@@ -1,12 +1,30 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  // Normalize by lowercasing and removing non-alphanumeric characters (optional)
-  const normalize = (str: string) =>
-    str.toLowerCase().replace(/[^a-z0-9]/g, '').split('').sort().join('');
-  
-  return normalize(str1) === normalize(str2);
+// Define the node structure
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
+
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("triangle", "integral")); // true
-console.log(areAnagrams("apple", "pale")); // false
+// Function to find the length of the linked list
+function getLength<T>(head: ListNode<T> | null): number {
+  let count = 0;
+  let current = head;
+
+  while (current !== null) {
+    count++;
+    current = current.next;
+  }
+
+  return count;
+}
+
+// Example usage
+const node3 = new ListNode(3);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+
+console.log(getLength(node1)); // Output: 3
