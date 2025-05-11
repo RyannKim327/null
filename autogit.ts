@@ -1,45 +1,51 @@
-class ListNode {
-  value: any;
-  next: ListNode | null;
+type Graph = Map<string, string[]>;
 
-  constructor(value: any, next: ListNode | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+interface SearchResult {
+  found: boolean;
+  path?: string[];
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-  if (!head || !head.next) return true;
+function breadthLimitedSearch(
+  graph: Graph,
+  start: string,
+  goal: string,
+  limit: number
+): SearchResult {
+  // Each queue element will hold the node and the path taken to reach it
+  const queue: Array<{ node: string; path: string[] }> = [];
+  queue.push({ node: start, path: [start] });
 
-  // Step 1: Find the middle using slow and fast pointers
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head;
+  while (queue.length > 0) {
+    const { node, path } = queue.shift()!;
 
-  while (fast && fast.next) {
-    slow = slow!.next;
-    fast = fast.next.next;
+    if (node === goal) {
+      return { found: true, path };
+    }
+
+    if (path.length - 1 < limit) {
+      const neighbors = graph.get(node) || [];
+      for (const neighbor of neighbors) {
+        if (!path.includes(neighbor)) {
+          queue.push({ node: neighbor, path: [...path, neighbor] });
+        }
+      }
+    }
   }
 
-  // Step 2: Reverse the second half
-  let prev: ListNode | null = null;
-  let curr: ListNode | null = slow;
+  return { found: false };
+}
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D', 'E']],
+  ['C', ['F']],
+  ['D', []],
+  ['E', ['F']],
+  ['F', []],
+]);
 
-  while (curr) {
-    const next = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = next;
-  }
-
-  // Step 3: Compare the first half and reversed second half
-  let left: ListNode | null = head;
-  let right: ListNode | null = prev;
-
-  while (right) {
-    if (left!.value !== right.value) return false;
-    left = left!.next;
-    right = right.next;
-  }
-
-  return true;
+const result = breadthLimitedSearch(graph, 'A', 'F', 2);
+if (result.found) {
+  console.log('Found path:', result.path);
+} else {
+  console.log('Path not found within depth limit');
 }
