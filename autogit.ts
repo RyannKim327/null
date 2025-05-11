@@ -1,9 +1,24 @@
-const str = "123";
-const num = parseInt(str, 10); // 10 is the radix (decimal base)
-console.log(num); // 123
-const str = "123";
-const num = +str;
-console.log(num); // 123
-const str = "123";
-const num = Number(str);
-console.log(num); // 123
+class ListNode {
+  value: any;
+  next: ListNode | null;
+
+  constructor(value: any, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
+
+function hasCycle(head: ListNode | null): boolean {
+  if (!head) return false;
+
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head.next;
+
+  while (fast && fast.next) {
+    if (slow === fast) return true;
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  return false;
+}
