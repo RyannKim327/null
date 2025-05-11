@@ -1,52 +1,26 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
-  
-  constructor(val: number, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
+function burrowsWheelerTransform(input: string): { transformed: string; index: number } {
+  const length = input.length;
+  const rotations = [];
 
-function isPalindrome(head: ListNode | null): boolean {
-  if (!head || !head.next) return true;
-
-  // Find midpoint using slow & fast pointers
-  let slow = head;
-  let fast = head;
-
-  while (fast && fast.next) {
-    slow = slow.next!;
-    fast = fast.next.next!;
+  // Generate all rotations of the input string
+  for (let i = 0; i < length; i++) {
+    // Rotation by slicing and concatenating
+    const rotation = input.slice(i) + input.slice(0, i);
+    rotations.push(rotation);
   }
 
-  // Reverse second half of the list
-  let secondHalf = reverseList(slow);
+  // Sort the rotations lexicographically
+  rotations.sort();
 
-  // Compare first and second half
-  let firstHalf = head;
-  let secondHalfCopy = secondHalf; // To restore later if needed
-
-  while (secondHalf) {
-    if (firstHalf.val !== secondHalf.val) return false;
-    firstHalf = firstHalf.next!;
-    secondHalf = secondHalf.next!;
+  // Build the transformed string by taking the last char of each rotation
+  let transformed = '';
+  let originalIndex = -1;
+  for (let i = 0; i < length; i++) {
+    transformed += rotations[i][length - 1];
+    if (rotations[i] === input) {
+      originalIndex = i;
+    }
   }
 
-  // Optional: Restore second half to original
-  reverseList(secondHalfCopy);
-
-  return true;
-}
-
-function reverseList(head: ListNode | null): ListNode | null {
-  let prev: ListNode | null = null;
-  let curr = head;
-  while (curr) {
-    const nextTemp = curr.next;
-    curr.next = prev;
-    prev = curr;
-    curr = nextTemp;
-  }
-  return prev;
+  return { transformed, index: originalIndex };
 }
