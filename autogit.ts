@@ -1,21 +1,23 @@
-function firstNonRepeatingChar(str: string): string | null {
-  const charCount: Record<string, number> = {};
+const mainString = "Hello, world!";
+const substring = "world";
 
-  // Count occurrences of each character
-  for (const char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
-  }
-
-  // Find the first character with count 1
-  for (const char of str) {
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  return null; // No non-repeating character found
+if (mainString.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
 }
+if (mainString.indexOf(substring) !== -1) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
+}
+const regex = /world/;
 
-// Example usage:
-console.log(firstNonRepeatingChar("swiss"));  // Output: w
-console.log(firstNonRepeatingChar("aabbcc")); // Output: null
+if (regex.test(mainString)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
+}
+if (mainString.toLowerCase().includes(substring.toLowerCase())) {
+  console.log("Substring found (case-insensitive)!");
+}
