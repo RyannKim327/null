@@ -1,24 +1,16 @@
-class ListNode {
-  value: any;
-  next: ListNode | null;
-
-  constructor(value: any, next: ListNode | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+function calculateMean(numbers: number[]): number {
+  const total = numbers.reduce((sum, num) => sum + num, 0);
+  return total / numbers.length;
 }
 
-function hasCycle(head: ListNode | null): boolean {
-  if (!head) return false;
-
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head.next;
-
-  while (fast && fast.next) {
-    if (slow === fast) return true;
-    slow = slow!.next;
-    fast = fast.next.next;
+// Example usage:
+const data = [10, 20, 30, 40, 50];
+const mean = calculateMean(data);
+console.log(mean);  // Output: 30
+function calculateMean(numbers: number[]): number | null {
+  if (numbers.length === 0) {
+    return null; // Or handle empty array as you prefer
   }
-
-  return false;
+  const total = numbers.reduce((sum, num) => sum + num, 0);
+  return total / numbers.length;
 }
