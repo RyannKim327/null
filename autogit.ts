@@ -1,44 +1,46 @@
-function longestCommonSubsequence(s1: string, s2: string): string {
-  const m = s1.length;
-  const n = s2.length;
+type Graph = Record<string, string[]>;
 
-  // dp[i][j] will hold length of LCS of s1[0..i-1] and s2[0..j-1]
-  const dp: number[][] = Array.from({ length: m + 1 }, () =>
-    new Array(n + 1).fill(0)
-  );
+interface StackItem {
+  node: string;
+  depth: number;
+}
 
-  // Build dp table
-  for (let i = 1; i <= m; i++) {
-    for (let j = 1; j <= n; j++) {
-      if (s1[i - 1] === s2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-      } else {
-        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+function depthLimitedSearch(graph: Graph, start: string, limit: number, goal?: string): string | null {
+  const stack: StackItem[] = [{ node: start, depth: 0 }];
+  const visited = new Set<string>();
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop()!;
+    if (visited.has(node)) continue;
+    visited.add(node);
+
+    // Check if current node is the goal (if provided)
+    if (goal !== undefined && node === goal) {
+      return node;
+    }
+
+    // Only expand if we have not reached the depth limit
+    if (depth < limit) {
+      for (const neighbor of graph[node] || []) {
+        if (!visited.has(neighbor)) {
+          stack.push({ node: neighbor, depth: depth + 1 });
+        }
       }
     }
   }
 
-  // Reconstruct LCS from dp table
-  let i = m,
-    j = n;
-  let lcs = '';
-
-  while (i > 0 && j > 0) {
-    if (s1[i - 1] === s2[j - 1]) {
-      lcs = s1[i - 1] + lcs; // prepend the matching character
-      i--;
-      j--;
-    } else if (dp[i - 1][j] > dp[i][j - 1]) {
-      i--;
-    } else {
-      j--;
-    }
-  }
-
-  return lcs;
+  return null; // goal not found within depth limit or traversal ended
 }
 
-// Example usage
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
+// Example usage:
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: [],
+};
+
+console.log(depthLimitedSearch(graph, 'A', 2, 'F')); // Output: 'F' (found at depth <= 2)
+console.log(depthLimitedSearch(graph, 'A', 1, 'F')); // Output: null (not found at depth <= 1)
