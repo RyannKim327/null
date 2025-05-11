@@ -1,30 +1,31 @@
-function triangleArea(base: number, height: number): number {
-  return 0.5 * base * height;
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
+
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
-// Example usage:
-const base = 10;
-const height = 5;
-console.log(`The area of the triangle is ${triangleArea(base, height)}`);
-function triangleAreaHeron(a: number, b: number, c: number): number | null {
-  const s = (a + b + c) / 2;
-  const areaSquared = s * (s - a) * (s - b) * (s - c);
+function nthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
+  if (!head || n <= 0) return null;
 
-  if (areaSquared < 0) {
-    // Invalid triangle side lengths
-    return null;
+  let fast: ListNode<T> | null = head;
+  let slow: ListNode<T> | null = head;
+
+  // Move fast pointer n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (fast === null) return null; // n is greater than the length of the list
+    fast = fast.next;
   }
 
-  return Math.sqrt(areaSquared);
-}
+  // Move both pointers until fast reaches the end
+  while (fast !== null) {
+    fast = fast.next;
+    slow = slow!.next;
+  }
 
-// Example usage:
-const a = 7;
-const b = 8;
-const c = 9;
-const area = triangleAreaHeron(a, b, c);
-if (area !== null) {
-  console.log(`Area calculated with Heron's formula: ${area}`);
-} else {
-  console.log("Invalid triangle side lengths.");
+  // slow is now pointing to the nth node from the end
+  return slow;
 }
