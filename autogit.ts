@@ -1,5 +1,6 @@
-const original = "  Hello  world \n\t ";
-const noWhitespace = original.replace(/\s+/g, '');
-console.log(noWhitespace); // "Helloworld"
-const trimmed = original.trim();
-console.log(trimmed); // "Hello  world"
+function reverseWords(str: string): string {
+  return str.split(' ').reverse().join(' ');
+}
+function reverseWords(str: string): string {
+  return str.trim().split(/\s+/).reverse().join(' ');
+}
