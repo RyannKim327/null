@@ -1,23 +1,17 @@
-function bubbleSort(arr: number[]): number[] {
-  const n = arr.length;
-  // Make a copy if you don't want to mutate the original array
-  const sortedArr = [...arr];
+const originalArray = [1, 2, 3, 4, 3];
+const valueToRemove = 3;
+const newArray = originalArray.filter(element => element !== valueToRemove);
+console.log(newArray); // [1, 2, 4]
+const originalArray = [1, 2, 3, 4, 3];
+const valueToRemove = 3;
 
-  for (let i = 0; i < n - 1; i++) {
-    // Last i elements are already in place
-    for (let j = 0; j < n - i - 1; j++) {
-      if (sortedArr[j] > sortedArr[j + 1]) {
-        // Swap adjacent elements if they are in wrong order
-        const temp = sortedArr[j];
-        sortedArr[j] = sortedArr[j + 1];
-        sortedArr[j + 1] = temp;
-      }
-    }
-  }
-
-  return sortedArr;
+const index = originalArray.indexOf(valueToRemove);
+if (index > -1) {
+  originalArray.splice(index, 1); // modifies original array
 }
+console.log(originalArray); // [1, 2, 4, 3]
+const originalArray = ['a', 'b', 'c', 'd'];
+const indexToRemove = 2;
 
-// Example usage:
-const numbers = [64, 34, 25, 12, 22, 11, 90];
-console.log(bubbleSort(numbers));  // Output: [11, 12, 22, 25, 34, 64, 90]
+originalArray.splice(indexToRemove, 1);
+console.log(originalArray); // ['a', 'b', 'd']
