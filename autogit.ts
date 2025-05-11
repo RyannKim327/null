@@ -1,75 +1,31 @@
-// Define a node in the linked list
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+function longestCommonSubstring(s1: string, s2: string): string {
+  const len1 = s1.length;
+  const len2 = s2.length;
 
-  constructor(value: T) {
-    this.value = value;
-    this.next = null;
+  // Create a 2D array to store lengths of longest common suffixes
+  const dp: number[][] = Array.from({ length: len1 + 1 }, () =>
+    new Array(len2 + 1).fill(0)
+  );
+
+  let maxLength = 0;
+  let endIndex = 0; // track where the max substring ends in s1
+
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      if (s1[i - 1] === s2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i; // update the end index of the substring in s1
+        }
+      }
+    }
   }
+
+  // Extract the longest common substring from s1
+  return s1.substring(endIndex - maxLength, endIndex);
 }
+const s1 = "abcde";
+const s2 = "abfde";
 
-// Define the linked list itself
-class LinkedList<T> {
-  head: ListNode<T> | null = null;
-
-  // Add a new node at the end
-  append(value: T): void {
-    const newNode = new ListNode(value);
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
-
-  // Add a new node at the beginning
-  prepend(value: T): void {
-    const newNode = new ListNode(value);
-    newNode.next = this.head;
-    this.head = newNode;
-  }
-
-  // Delete the first occurrence of a value
-  delete(value: T): void {
-    if (!this.head) return;
-
-    if (this.head.value === value) {
-      this.head = this.head.next;
-      return;
-    }
-
-    let current = this.head;
-    while (current.next && current.next.value !== value) {
-      current = current.next;
-    }
-
-    if (current.next) {
-      current.next = current.next.next;
-    }
-  }
-
-  // Print all values in the list
-  print(): void {
-    let current = this.head;
-    const values: T[] = [];
-    while (current) {
-      values.push(current.value);
-      current = current.next;
-    }
-    console.log(values.join(" -> "));
-  }
-}
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.prepend(0);
-list.print(); // Output: 0 -> 1 -> 2
-
-list.delete(1);
-list.print(); // Output: 0 -> 2
+console.log(longestCommonSubstring(s1, s2)); // Output: "de"
