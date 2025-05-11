@@ -1,27 +1,43 @@
-function selectionSort(arr: number[]): number[] {
-  const n = arr.length;
-  
-  for (let i = 0; i < n - 1; i++) {
-    // Assume the current position is the minimum
-    let minIndex = i;
-
-    // Find the index of the minimum element in the rest of the array
-    for (let j = i + 1; j < n; j++) {
-      if (arr[j] < arr[minIndex]) {
-        minIndex = j;
-      }
-    }
-
-    // Swap the found minimum element with the current element
-    if (minIndex !== i) {
-      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
-    }
+class ListNode {
+  value: number;
+  next: ListNode | null;
+  constructor(value: number, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
   }
-  
-  return arr;
 }
 
-// Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+function getLength(head: ListNode | null): number {
+  let length = 0;
+  while (head) {
+    length++;
+    head = head.next;
+  }
+  return length;
+}
+
+function getIntersectionNode(
+  headA: ListNode | null,
+  headB: ListNode | null
+): ListNode | null {
+  let lenA = getLength(headA);
+  let lenB = getLength(headB);
+
+  // Align start points
+  while (lenA > lenB && headA) {
+    headA = headA.next;
+    lenA--;
+  }
+  while (lenB > lenA && headB) {
+    headB = headB.next;
+    lenB--;
+  }
+
+  // Traverse both lists in tandem
+  while (headA && headB) {
+    if (headA === headB) return headA;
+    headA = headA.next;
+    headB = headB.next;
+  }
+  return null;
+}
