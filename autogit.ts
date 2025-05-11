@@ -1,36 +1,42 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-  
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
+
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
   }
 }
 
-function countLeafNodes(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
+function findNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
+  if (!head || n <= 0) return null;
+
+  let slow: ListNode<T> | null = head;
+  let fast: ListNode<T> | null = head;
+
+  // Move fast n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (fast === null) return null; // n is larger than the list length
+    fast = fast.next;
   }
 
-  // If both left and right children are null, this is a leaf node
-  if (root.left === null && root.right === null) {
-    return 1;
+  // Move both until fast reaches the end
+  while (fast !== null) {
+    slow = slow!.next;
+    fast = fast.next;
   }
 
-  // Otherwise, recursively count leaf nodes in left and right subtrees
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
+  return slow;
 }
+// Build linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))));
 
-// Example usage:
-const tree = new TreeNode(1,
-  new TreeNode(2,
-    new TreeNode(4),
-    null
-  ),
-  new TreeNode(3)
-);
+const n = 2;
+const nthNode = findNthFromEnd(head, n);
 
-console.log(countLeafNodes(tree));  // Output: 2
+if (nthNode) {
+  console.log(`The ${n}th node from the end has value:`, nthNode.value);
+} else {
+  console.log(`The list is shorter than ${n} nodes.`);
+}
+The 2th node from the end has value: 4
