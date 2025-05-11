@@ -1,11 +1,24 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  // Normalize strings: lowercase and remove non-alphabetic characters (optional)
-  const normalize = (str: string) =>
-    str.toLowerCase().replace(/[^a-z]/g, '').split('').sort().join('');
-
-  return normalize(str1) === normalize(str2);
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Usage examples:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("apple", "pale"));   // false
+async function fetchUsers(): Promise<void> {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/users');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const users: User[] = await response.json();
+    users.forEach(user => {
+      console.log(`User: ${user.name} (username: ${user.username}, email: ${user.email})`);
+    });
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+  }
+}
+
+fetchUsers();
