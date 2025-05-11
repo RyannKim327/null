@@ -2,41 +2,29 @@ class ListNode<T> {
   value: T;
   next: ListNode<T> | null;
 
-  constructor(value: T, next: ListNode<T> | null = null) {
+  constructor(value: T) {
     this.value = value;
-    this.next = next;
+    this.next = null;
   }
 }
 
-function findNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
-  if (!head || n <= 0) return null;
+function getLength<T>(head: ListNode<T> | null): number {
+  let count = 0;
+  let current = head;
 
-  let slow: ListNode<T> | null = head;
-  let fast: ListNode<T> | null = head;
-
-  // Move fast n steps ahead
-  for (let i = 0; i < n; i++) {
-    if (fast === null) return null; // n is larger than the list length
-    fast = fast.next;
+  while (current !== null) {
+    count++;
+    current = current.next;
   }
 
-  // Move both until fast reaches the end
-  while (fast !== null) {
-    slow = slow!.next;
-    fast = fast.next;
-  }
-
-  return slow;
+  return count;
 }
-// Build linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))));
 
-const n = 2;
-const nthNode = findNthFromEnd(head, n);
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+node1.next = node2;
+node2.next = node3;
 
-if (nthNode) {
-  console.log(`The ${n}th node from the end has value:`, nthNode.value);
-} else {
-  console.log(`The list is shorter than ${n} nodes.`);
-}
-The 2th node from the end has value: 4
+console.log(getLength(node1)); // Outputs: 3
