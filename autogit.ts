@@ -1,11 +1,15 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+const numbers = [3, 7, 2, 9, 5];
+const max = Math.max(...numbers);
+console.log(max); // 9
+const numbers = [3, 7, 2, 9, 5];
+let max = numbers[0];
 
-const commonElements = array1.filter(element => array2.includes(element));
-console.log(commonElements); // Output: [3, 4, 5]
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
-
-const set2 = new Set(array2);
-const commonElements = array1.filter(element => set2.has(element));
-console.log(commonElements); // Output: [3, 4, 5]
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > max) {
+    max = numbers[i];
+  }
+}
+console.log(max); // 9
+const numbers = [3, 7, 2, 9, 5];
+const max = numbers.reduce((a, b) => (a > b ? a : b));
+console.log(max); // 9
