@@ -1,32 +1,27 @@
-function interpolationSearch(arr: number[], target: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+function selectionSort(arr: number[]): number[] {
+  const n = arr.length;
+  
+  for (let i = 0; i < n - 1; i++) {
+    // Assume the current position is the minimum
+    let minIndex = i;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    if (low === high) {
-      return arr[low] === target ? low : -1;
+    // Find the index of the minimum element in the rest of the array
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
     }
 
-    // Estimate the position to probe
-    const pos = low + Math.floor(
-      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
-
-    if (arr[pos] === target) {
-      return pos;
-    }
-
-    if (arr[pos] < target) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
+    // Swap the found minimum element with the current element
+    if (minIndex !== i) {
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
     }
   }
-
-  return -1; // target not found
+  
+  return arr;
 }
-const data = [10, 20, 30, 40, 50, 60, 70, 80, 90];
-const target = 70;
-const index = interpolationSearch(data, target);
 
-console.log(index); // Output: 6
+// Example usage:
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
