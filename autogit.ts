@@ -1,24 +1,21 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = Array.from(new Set(array));
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-const uniqueArray = [...new Set(array)];
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
-console.log(uniqueArray); // [1, 2, 3, 4, 5]
-interface Person {
-  id: number;
-  name: string;
+function firstNonRepeatingChar(str: string): string | null {
+  const charCount: Record<string, number> = {};
+
+  // Count occurrences of each character
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
+
+  // Find the first character with count 1
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
+    }
+  }
+
+  return null; // No non-repeating character found
 }
 
-const people: Person[] = [
-  { id: 1, name: "Alice" },
-  { id: 2, name: "Bob" },
-  { id: 1, name: "Alice" },
-];
-
-const uniquePeople = people.filter(
-  (person, index, self) =>
-    index === self.findIndex((p) => p.id === person.id)
-);
-
-console.log(uniquePeople);
+// Example usage:
+console.log(firstNonRepeatingChar("swiss"));  // Output: w
+console.log(firstNonRepeatingChar("aabbcc")); // Output: null
