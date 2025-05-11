@@ -1,22 +1,27 @@
-function majorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-    // Phase 1: Find the candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
-    }
-
-    // Phase 2: Verify the candidate (optional if the problem guarantees existence)
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    return count > nums.length / 2 ? candidate : null;
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
+function reverseLinkedList<T>(head: ListNode<T> | null): ListNode<T> | null {
+  let prev: ListNode<T> | null = null;
+  let current = head;
+  while (current !== null) {
+    const next = current.next;  // save next node
+    current.next = prev;        // reverse pointer
+    prev = current;             // move prev forward
+    current = next;             // move current forward
+  }
+  return prev;  // new head of reversed list
+}
+// Create linked list: 1 -> 2 -> 3 -> null
+const node3 = new ListNode(3);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+
+const reversedHead = reverseLinkedList(node1);
+// Now reversedHead points to the list: 3 -> 2 -> 1 -> null
