@@ -1,10 +1,23 @@
-function isPalindrome(s: string): boolean {
-  // Normalize the string: remove non-alphanumeric and convert to lowercase
-  const cleaned = s.toLowerCase().replace(/[^a-z0-9]/g, '');
-  // Check if cleaned string equals its reverse
-  return cleaned === cleaned.split('').reverse().join('');
-}
+function binarySearch(arr: number[], target: number): number {
+  let left = 0;
+  let right = arr.length - 1;
 
-// Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("hello")); // false
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
+
+    if (arr[mid] === target) {
+      return mid;
+    } else if (arr[mid] < target) {
+      left = mid + 1;
+    } else {
+      right = mid - 1;
+    }
+  }
+
+  return -1; // target not found
+}
+const numbers = [1, 3, 5, 7, 9, 11];
+const target = 7;
+
+const index = binarySearch(numbers, target);
+console.log(index); // Output: 3
