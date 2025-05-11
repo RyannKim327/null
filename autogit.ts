@@ -1,31 +1,23 @@
-function longestCommonSubstring(s1: string, s2: string): string {
-  const len1 = s1.length;
-  const len2 = s2.length;
+function bubbleSort(arr: number[]): number[] {
+  const n = arr.length;
+  // Make a copy if you don't want to mutate the original array
+  const sortedArr = [...arr];
 
-  // Create a 2D array to store lengths of longest common suffixes
-  const dp: number[][] = Array.from({ length: len1 + 1 }, () =>
-    new Array(len2 + 1).fill(0)
-  );
-
-  let maxLength = 0;
-  let endIndex = 0; // track where the max substring ends in s1
-
-  for (let i = 1; i <= len1; i++) {
-    for (let j = 1; j <= len2; j++) {
-      if (s1[i - 1] === s2[j - 1]) {
-        dp[i][j] = dp[i - 1][j - 1] + 1;
-        if (dp[i][j] > maxLength) {
-          maxLength = dp[i][j];
-          endIndex = i; // update the end index of the substring in s1
-        }
+  for (let i = 0; i < n - 1; i++) {
+    // Last i elements are already in place
+    for (let j = 0; j < n - i - 1; j++) {
+      if (sortedArr[j] > sortedArr[j + 1]) {
+        // Swap adjacent elements if they are in wrong order
+        const temp = sortedArr[j];
+        sortedArr[j] = sortedArr[j + 1];
+        sortedArr[j + 1] = temp;
       }
     }
   }
 
-  // Extract the longest common substring from s1
-  return s1.substring(endIndex - maxLength, endIndex);
+  return sortedArr;
 }
-const s1 = "abcde";
-const s2 = "abfde";
 
-console.log(longestCommonSubstring(s1, s2)); // Output: "de"
+// Example usage:
+const numbers = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(numbers));  // Output: [11, 12, 22, 25, 34, 64, 90]
