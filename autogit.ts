@@ -1,12 +1,15 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false; // 0 and 1 are not prime numbers
-  if (num <= 3) return true;  // 2 and 3 are prime
+const str = "Hello, world!";
+const substring = "world";
 
-  if (num % 2 === 0 || num % 3 === 0) return false; // multiples of 2 and 3 are not prime
-
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) return false;
-  }
-
-  return true;
+if (str.includes(substring)) {
+  console.log("Substring found!");
+} else {
+  console.log("Substring not found.");
+}
+if (str.indexOf(substring) !== -1) {
+  console.log("Substring found!");
+}
+const regex = new RegExp(substring);
+if (regex.test(str)) {
+  console.log("Substring found!");
 }
