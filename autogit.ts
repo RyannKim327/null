@@ -10,48 +10,53 @@ class Node<T> {
 class Queue<T> {
   private head: Node<T> | null = null;
   private tail: Node<T> | null = null;
-  private length: number = 0;
+  private length = 0;
 
   enqueue(value: T): void {
     const newNode = new Node(value);
-
-    if (!this.tail) {
-      // Queue is empty
-      this.head = newNode;
-      this.tail = newNode;
-    } else {
-      // Link the new node at the tail
+    if (this.tail) {
       this.tail.next = newNode;
-      this.tail = newNode;
+    } else {
+      // Queue was empty
+      this.head = newNode;
     }
-
+    this.tail = newNode;
     this.length++;
   }
 
-  dequeue(): T | null {
-    if (!this.head) return null; // Queue empty
+  dequeue(): T | undefined {
+    if (!this.head) return undefined;
 
     const dequeuedValue = this.head.value;
     this.head = this.head.next;
-
     if (!this.head) {
-      // Queue is empty now, reset tail as well
+      // If queue is now empty, reset tail as well
       this.tail = null;
     }
-
     this.length--;
     return dequeuedValue;
   }
 
-  peek(): T | null {
-    return this.head ? this.head.value : null;
-  }
-
-  isEmpty(): boolean {
-    return this.length === 0;
+  peek(): T | undefined {
+    return this.head?.value;
   }
 
   size(): number {
     return this.length;
   }
+
+  isEmpty(): boolean {
+    return this.length === 0;
+  }
 }
+
+// Example usage:
+const queue = new Queue<number>();
+
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.dequeue()); // 10
+console.log(queue.peek()); // 20
+console.log(queue.size()); // 2
