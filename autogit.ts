@@ -1,17 +1,22 @@
-const arr = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArr = Array.from(new Set(arr));
-console.log(uniqueArr); // [1, 2, 3, 4, 5]
-const uniqueArr = [...new Set(arr)];
-const uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
-const arr = [
-  { id: 1, name: 'a' },
-  { id: 2, name: 'b' },
-  { id: 1, name: 'a' }
-];
+function majorityElement(nums: number[]): number | null {
+    let count = 0;
+    let candidate: number | null = null;
 
-const uniqueArr = Array.from(
-  new Map(arr.map(item => [item.id, item])).values()
-);
+    // Phase 1: Find the candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
+    }
 
-console.log(uniqueArr);
-// [{ id: 1, name: 'a' }, { id: 2, name: 'b' }]
+    // Phase 2: Verify the candidate (optional if the problem guarantees existence)
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    return count > nums.length / 2 ? candidate : null;
+}
