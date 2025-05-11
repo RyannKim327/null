@@ -1,151 +1,125 @@
-class SkipListNode<T> {
-  value: T | null;
-  forwards: SkipListNode<T>[];
+class AVLNode<T> {
+  value: T;
+  height: number;
+  left: AVLNode<T> | null = null;
+  right: AVLNode<T> | null = null;
 
-  constructor(level: number, value: T | null) {
+  constructor(value: T) {
     this.value = value;
-    this.forwards = new Array(level).fill(null);
+    this.height = 1; // height of a new node is 1
   }
 }
 
-class SkipList<T> {
-  private maxLevel: number;
-  private p: number;
-  private level: number;
-  private header: SkipListNode<T>;
-  private compare: (a: T, b: T) => number;
+class AVLTree<T> {
+  root: AVLNode<T> | null = null;
 
-  constructor(maxLevel = 16, p = 0.5, compareFn?: (a: T, b: T) => number) {
-    this.maxLevel = maxLevel;   // maximum number of levels
-    this.p = p;                 // probability of promoting node to higher level
-    this.level = 1;             // current highest level in the list
-    this.header = new SkipListNode<T>(maxLevel, null);
-    this.compare = compareFn || ((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+  private height(node: AVLNode<T> | null): number {
+    return node ? node.height : 0;
   }
 
-  private randomLevel(): number {
-    let lvl = 1;
-    // keep increasing level with probability p up to maxLevel
-    while (Math.random() < this.p && lvl < this.maxLevel) {
-      lvl++;
-    }
-    return lvl;
+  private getBalance(node: AVLNode<T> | null): number {
+    if (!node) return 0;
+    return this.height(node.left) - this.height(node.right);
+  }
+
+  private rightRotate(y: AVLNode<T>): AVLNode<T> {
+    const x = y.left!;
+    const T2 = x.right;
+
+    // Rotation
+    x.right = y;
+    y.left = T2;
+
+    // Update heights
+    y.height = Math.max(this.height(y.left), this.height(y.right)) + 1;
+    x.height = Math.max(this.height(x.left), this.height(x.right)) + 1;
+
+    return x;
+  }
+
+  private leftRotate(x: AVLNode<T>): AVLNode<T> {
+    const y = x.right!;
+    const T2 = y.left;
+
+    // Rotation
+    y.left = x;
+    x.right = T2;
+
+    // Update heights
+    x.height = Math.max(this.height(x.left), this.height(x.right)) + 1;
+    y.height = Math.max(this.height(y.left), this.height(y.right)) + 1;
+
+    return y;
   }
 
   insert(value: T): void {
-    const update = new Array<SkipListNode<T>>(this.maxLevel);
-    let current = this.header;
-
-    // Start from top level, move down to level 0 to find position
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (
-        current.forwards[i] !== null &&
-        this.compare(current.forwards[i].value!, value) < 0
-      ) {
-        current = current.forwards[i];
-      }
-      update[i] = current;
-    }
-    current = current.forwards[0];
-
-    if (current === null || this.compare(current.value!, value) !== 0) {
-      // Insert new node
-      const newLevel = this.randomLevel();
-
-      if (newLevel > this.level) {
-        for (let i = this.level; i < newLevel; i++) {
-          update[i] = this.header;
-        }
-        this.level = newLevel;
-      }
-
-      const newNode = new SkipListNode<T>(newLevel, value);
-      for (let i = 0; i < newLevel; i++) {
-        newNode.forwards[i] = update[i].forwards[i];
-        update[i].forwards[i] = newNode;
-      }
-    }
+    this.root = this._insert(this.root, value);
   }
 
-  search(value: T): T | null {
-    let current = this.header;
+  private _insert(node: AVLNode<T> | null, value: T): AVLNode<T> {
+    if (!node) return new AVLNode(value);
 
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (
-        current.forwards[i] !== null &&
-        this.compare(current.forwards[i].value!, value) < 0
-      ) {
-        current = current.forwards[i];
-      }
+    if (value < node.value) {
+      node.left = this._insert(node.left, value);
+    } else if (value > node.value) {
+      node.right = this._insert(node.right, value);
+    } else {
+      // Duplicate values not allowed
+      return node;
     }
 
-    current = current.forwards[0];
-    if (current !== null && this.compare(current.value!, value) === 0) {
-      return current.value;
+    // Update height
+    node.height = 1 + Math.max(this.height(node.left), this.height(node.right));
+
+    // Get balance factor
+    const balance = this.getBalance(node);
+
+    // Left Left Case
+    if (balance > 1 && value < (node.left!.value)) {
+      return this.rightRotate(node);
     }
-    return null;
+
+    // Right Right Case
+    if (balance < -1 && value > (node.right!.value)) {
+      return this.leftRotate(node);
+    }
+
+    // Left Right Case
+    if (balance > 1 && value > (node.left!.value)) {
+      node.left = this.leftRotate(node.left!);
+      return this.rightRotate(node);
+    }
+
+    // Right Left Case
+    if (balance < -1 && value < (node.right!.value)) {
+      node.right = this.rightRotate(node.right!);
+      return this.leftRotate(node);
+    }
+
+    return node;
   }
 
-  delete(value: T): boolean {
-    const update = new Array<SkipListNode<T>>(this.maxLevel);
-    let current = this.header;
-
-    for (let i = this.level - 1; i >= 0; i--) {
-      while (
-        current.forwards[i] !== null &&
-        this.compare(current.forwards[i].value!, value) < 0
-      ) {
-        current = current.forwards[i];
-      }
-      update[i] = current;
+  // Traversal example: In-order
+  inorderTraversal(): T[] {
+    const result: T[] = [];
+    function inorder(node: AVLNode<T> | null) {
+      if (!node) return;
+      inorder(node.left);
+      result.push(node.value);
+      inorder(node.right);
     }
-
-    current = current.forwards[0];
-
-    if (current !== null && this.compare(current.value!, value) === 0) {
-      // Found the node, remove it by updating pointers
-      for (let i = 0; i < this.level; i++) {
-        if (update[i].forwards[i] !== current) {
-          break;
-        }
-        update[i].forwards[i] = current.forwards[i];
-      }
-
-      // Decrease level if highest levels are empty
-      while (this.level > 1 && this.header.forwards[this.level - 1] === null) {
-        this.level--;
-      }
-      return true;
-    }
-    return false;
-  }
-
-  // Optional: For debugging, print list levels
-  print(): void {
-    console.log("SkipList Levels:");
-    for (let i = this.level - 1; i >= 0; i--) {
-      let current = this.header.forwards[i];
-      const elems: string[] = [];
-      while (current !== null) {
-        elems.push(`${current.value}`);
-        current = current.forwards[i];
-      }
-      console.log(`Level ${i}: ${elems.join(" -> ")}`);
-    }
+    inorder(this.root);
+    return result;
   }
 }
-const skiplist = new SkipList<number>();
 
-skiplist.insert(3);
-skiplist.insert(6);
-skiplist.insert(7);
-skiplist.insert(9);
-skiplist.insert(12);
-skiplist.insert(19);
-skiplist.insert(17);
+// Example usage:
+const avl = new AVLTree<number>();
+avl.insert(10);
+avl.insert(20);
+avl.insert(30);
+avl.insert(40);
+avl.insert(50);
+avl.insert(25);
 
-console.log(skiplist.search(9));   // 9
-console.log(skiplist.search(15));  // null
-
-skiplist.delete(7);
-skiplist.print();
+console.log(avl.inorderTraversal()); // Should print the sorted values
