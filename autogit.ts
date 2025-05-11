@@ -1,43 +1,17 @@
-function mergeSort(arr: number[]): number[] {
-  // If the array has 0 or 1 element, it's already sorted
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  // Split the array roughly in half
-  const mid = Math.floor(arr.length / 2);
-  const left = arr.slice(0, mid);
-  const right = arr.slice(mid);
-
-  // Recursively sort the left and right halves
-  const sortedLeft = mergeSort(left);
-  const sortedRight = mergeSort(right);
-
-  // Merge the two sorted halves into one sorted array
-  return merge(sortedLeft, sortedRight);
+function factorial(n: number): number {
+  if (n < 0) throw new Error("Factorial is not defined for negative numbers");
+  if (n === 0) return 1;
+  return n * factorial(n - 1);
 }
 
-function merge(left: number[], right: number[]): number[] {
-  const result: number[] = [];
-  let i = 0;
-  let j = 0;
-
-  // Loop through both arrays and insert the smaller element into result
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
-    }
+console.log(factorial(5)); // 120
+function factorial(n: number): number {
+  if (n < 0) throw new Error("Factorial is not defined for negative numbers");
+  let result = 1;
+  for (let i = 2; i <= n; i++) {
+    result *= i;
   }
-
-  // Append any remaining elements (one of these will be empty)
-  return result.concat(left.slice(i)).concat(right.slice(j));
+  return result;
 }
 
-// Example usage:
-const myArray = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(myArray);
-console.log(sortedArray); // [3, 9, 10, 27, 38, 43, 82]
+console.log(factorial(5)); // 120
