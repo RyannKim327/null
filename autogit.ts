@@ -1,53 +1,76 @@
-type Node = string; // or whatever your node type is
+class Graph {
+  adjacencyList: Map<number, number[]>;
 
-function depthLimitedSearchIterative(
-  start: Node,
-  isGoal: (node: Node) => boolean,
-  getChildren: (node: Node) => Node[],
-  limit: number
-): Node | null {
-  // Stack holds tuples: [node, depth]
-  const stack: Array<[Node, number]> = [[start, 0]];
-  const visited = new Set<Node>();
-
-  while (stack.length > 0) {
-    const [node, depth] = stack.pop()!;
-
-    if (isGoal(node)) {
-      return node; // goal found
-    }
-
-    if (depth < limit) {
-      // To avoid cycles, optionally track visited nodes
-      if (!visited.has(node)) {
-        visited.add(node);
-        const children = getChildren(node);
-        for (const child of children) {
-          stack.push([child, depth + 1]);
-        }
-      }
-    }
+  constructor() {
+    this.adjacencyList = new Map();
   }
 
-  // Goal not found within depth limit
-  return null;
-}
-const graph = {
-  A: ['B', 'C'],
-  B: ['D'],
-  C: ['E', 'F'],
-  D: [],
-  E: [],
-  F: []
-};
+  addEdge(from: number, to: number) {
+    if (!this.adjacencyList.has(from)) {
+      this.adjacencyList.set(from, []);
+    }
+    this.adjacencyList.get(from)!.push(to);
+  }
 
-function isGoal(node: string) {
-  return node === 'E';
+  tarjanSCC(): number[][] {
+    const adjacencyList = this.adjacencyList;
+    const stack: number[] = [];
+    const onStack: Set<number> = new Set();
+    const ids: Map<number, number> = new Map();
+    const lowLinks: Map<number, number> = new Map();
+    const sccs: number[][] = [];
+    let id = 0;
+
+    function dfs(at: number) {
+      ids.set(at, id);
+      lowLinks.set(at, id);
+      id++;
+      stack.push(at);
+      onStack.add(at);
+
+      const neighbors = adjacencyList.get(at) || [];
+      neighbors.forEach(to => {
+        if (!ids.has(to)) {
+          dfs(to);
+          lowLinks.set(at, Math.min(lowLinks.get(at)!, lowLinks.get(to)!));
+        } else if (onStack.has(to)) {
+          lowLinks.set(at, Math.min(lowLinks.get(at)!, ids.get(to)!));
+        }
+      });
+
+      // On recursive callback, if we're at root node (start of SCC)
+      if (ids.get(at) === lowLinks.get(at)) {
+        const scc: number[] = [];
+        let node: number;
+
+        do {
+          node = stack.pop()!;
+          onStack.delete(node);
+          scc.push(node);
+        } while (node !== at);
+
+        sccs.push(scc);
+      }
+    }
+
+    // Run DFS from every node that hasn't been visited
+    for (const node of adjacencyList.keys()) {
+      if (!ids.has(node)) {
+        dfs(node);
+      }
+    }
+
+    return sccs;
+  }
 }
 
-function getChildren(node: string): string[] {
-  return graph[node] || [];
-}
+// Example usage
+const graph = new Graph();
+graph.addEdge(1, 2);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+graph.addEdge(3, 4);
 
-const result = depthLimitedSearchIterative('A', isGoal, getChildren, 2);
-console.log(result); // Should output "E" if found, or null if not within depth 2
+const sccs = graph.tarjanSCC();
+console.log(sccs); 
+// Output: [[4], [1, 3, 2]] -- the strongly connected components in the graph
