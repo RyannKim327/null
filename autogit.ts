@@ -1,24 +1,41 @@
-function isSorted(arr: number[]): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i - 1] > arr[i]) return false;
-  }
-  return true;
-}
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    // Make sure nums1 is the smaller array to minimize binary search range
+    if (nums1.length > nums2.length) {
+        return findMedianSortedArrays(nums2, nums1);
+    }
 
-function shuffle(arr: number[]): void {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
+    const m = nums1.length;
+    const n = nums2.length;
+    let left = 0;
+    let right = m;
 
-function randomSort(arr: number[]): number[] {
-  while (!isSorted(arr)) {
-    shuffle(arr);
-  }
-  return arr;
-}
+    while (left <= right) {
+        const partitionX = Math.floor((left + right) / 2);
+        const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
 
-// Example usage:
-const arr = [3, 2, 5, 1];
-console.log('Sorted:', randomSort(arr));
+        // If partitionX is 0 it means nothing is there on left side. Use -Infinity for maxLeftX
+        // If partitionX is length of input then there is nothing on right side. Use +Infinity for minRightX
+        const maxLeftX = partitionX === 0 ? Number.NEGATIVE_INFINITY : nums1[partitionX - 1];
+        const minRightX = partitionX === m ? Number.POSITIVE_INFINITY : nums1[partitionX];
+
+        const maxLeftY = partitionY === 0 ? Number.NEGATIVE_INFINITY : nums2[partitionY - 1];
+        const minRightY = partitionY === n ? Number.POSITIVE_INFINITY : nums2[partitionY];
+
+        if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
+            // We have partitioned array at correct place
+            if ((m + n) % 2 === 0) {
+                return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
+            } else {
+                return Math.max(maxLeftX, maxLeftY);
+            }
+        } else if (maxLeftX > minRightY) {
+            // Move towards left in nums1
+            right = partitionX - 1;
+        } else {
+            // Move towards right in nums1
+            left = partitionX + 1;
+        }
+    }
+
+    throw new Error("Input arrays are not sorted");
+}
