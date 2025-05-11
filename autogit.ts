@@ -1,16 +1,11 @@
-function firstRepeatedChar(str: string): string | null {
-  const seen = new Set<string>();
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-  for (const char of str) {
-    if (seen.has(char)) {
-      return char;
-    }
-    seen.add(char);
-  }
+const commonElements = array1.filter(element => array2.includes(element));
 
-  return null; // No repeated character found
-}
+console.log(commonElements); // Output: [3, 4, 5]
+const set2 = new Set(array2);
 
-// Example usage:
-console.log(firstRepeatedChar("swiss")); // Output: "s"
-console.log(firstRepeatedChar("abcde")); // Output: null
+const commonElements = array1.filter(element => set2.has(element));
+
+console.log(commonElements); // Output: [3, 4, 5]
