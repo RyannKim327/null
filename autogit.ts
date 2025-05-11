@@ -1,13 +1,10 @@
-function reverseWords(str: string): string {
-  // Split the string into words by spaces
-  const words = str.split(' ');
-  // Reverse the array of words
-  const reversedWords = words.reverse();
-  // Join them back into a single string
-  return reversedWords.join(' ');
-}
+npm install node-cron
+npm install --save-dev @types/node-cron
+import cron from 'node-cron';
 
-// Example usage:
-const input = "TypeScript is awesome";
-const output = reverseWords(input);
-console.log(output); // "awesome is TypeScript"
+const task = cron.schedule('* * * * *', () => {
+  const now = new Date();
+  console.log(`Cron job running at ${now.toLocaleTimeString()}`);
+});
+
+task.start();
