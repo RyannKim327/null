@@ -1,18 +1,10 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+function areAnagrams(str1: string, str2: string): boolean {
+    // Remove spaces and convert to lowercase for a case-insensitive comparison
+    const normalize = (str: string) =>
+        str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
+    
+    return normalize(str1) === normalize(str2);
 }
-
-function countLeafNodes(root: TreeNode | null): number {
-  if (root === null) return 0;
-  if (root.left === null && root.right === null) return 1;
-
-  return countLeafNodes(root.left) + countLeafNodes(root.right);
-}
+console.log(areAnagrams("Listen", "Silent")); // true
+console.log(areAnagrams("Hello", "Olelh")); // true
+console.log(areAnagrams("World", "Word")); // false
