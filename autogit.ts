@@ -1,39 +1,50 @@
-function longestIncreasingSubsequence(arr: number[]): number[] {
-    const n = arr.length;
-    if (n === 0) return [];
+function mergeSort(arr: number[]): number[] {
+  if (arr.length <= 1) {
+    return arr;
+  }
 
-    // dp[i] will hold the length of the LIS ending at index i
-    const dp = Array(n).fill(1);
-    // prev[i] will store the previous index in the LIS ending at i
-    const prev = Array(n).fill(-1);
+  // Split the array in half
+  const mid = Math.floor(arr.length / 2);
+  const left = arr.slice(0, mid);
+  const right = arr.slice(mid);
 
-    let maxLength = 1;
-    let maxIndex = 0;
+  // Recursively sort left and right halves
+  const sortedLeft = mergeSort(left);
+  const sortedRight = mergeSort(right);
 
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[j] < arr[i] && dp[j] + 1 > dp[i]) {
-                dp[i] = dp[j] + 1;
-                prev[i] = j;
-            }
-        }
-
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
-            maxIndex = i;
-        }
-    }
-
-    // Reconstruct the LIS
-    const lis: number[] = [];
-    for (let i = maxIndex; i !== -1; i = prev[i]) {
-        lis.push(arr[i]);
-    }
-    lis.reverse();
-
-    return lis;
+  // Merge the sorted halves
+  return merge(sortedLeft, sortedRight);
 }
 
-// Example usage
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(arr)); // Output: [2, 3, 7, 101]
+function merge(left: number[], right: number[]): number[] {
+  const result: number[] = [];
+  let i = 0;
+  let j = 0;
+
+  // Traverse both arrays and merge them in sorted order
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+
+  // If there are remaining elements in left or right, add them to result
+  while (i < left.length) {
+    result.push(left[i]);
+    i++;
+  }
+
+  while (j < right.length) {
+    result.push(right[j]);
+    j++;
+  }
+
+  return result;
+}
+const unsorted = [38, 27, 43, 3, 9, 82, 10];
+const sorted = mergeSort(unsorted);
+console.log(sorted); // [3, 9, 10, 27, 38, 43, 82]
