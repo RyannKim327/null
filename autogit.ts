@@ -1,32 +1,16 @@
-// Define the node structure
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function longestCommonPrefix(strs: string[]): string {
+  if (strs.length === 0) return "";
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+  for (let i = 0; i < strs[0].length; i++) {
+    const char = strs[0][i];
+    for (let j = 1; j < strs.length; j++) {
+      if (i >= strs[j].length || strs[j][i] !== char) {
+        return strs[0].slice(0, i);
+      }
+    }
   }
+
+  return strs[0];
 }
-
-function countLeafNodes(node: TreeNode | null): number {
-  if (node === null) {
-    return 0; // No node, no leaf
-  }
-  if (node.left === null && node.right === null) {
-    return 1; // This node is a leaf
-  }
-  // Recur on left and right subtrees
-  return countLeafNodes(node.left) + countLeafNodes(node.right);
-}
-
-// Example usage:
-const tree = new TreeNode(
-  1,
-  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-  new TreeNode(3)
-);
-
-console.log(countLeafNodes(tree)); // Outputs: 3 (nodes 4, 5, and 3 are leaves)
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Outputs: "fl"
