@@ -1,69 +1,44 @@
-type KeyValuePair<K, V> = {
-  key: K;
-  value: V;
-};
-
-class HashTable<K extends string | number, V> {
-  private buckets: Array<KeyValuePair<K, V>[]>; // Array of buckets
-  private readonly numBuckets: number;
-
-  constructor(size = 42) {
-    this.numBuckets = size;
-    this.buckets = new Array(size).fill(null).map(() => []);
-  }
-
-  // Simple hash function for string/number keys
-  private hash(key: K): number {
-    if (typeof key === 'number') {
-      return key % this.numBuckets;
-    }
-    // For strings, sum char codes and mod
-    let hashValue = 0;
-    for (const char of key) {
-      hashValue += char.charCodeAt(0);
-    }
-    return hashValue % this.numBuckets;
-  }
-
-  set(key: K, value: V): void {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-    const existingPair = bucket.find(pair => pair.key === key);
-
-    if (existingPair) {
-      existingPair.value = value; // Update existing
-    } else {
-      bucket.push({ key, value }); // Insert new
-    }
-  }
-
-  get(key: K): V | undefined {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-    const pair = bucket.find(pair => pair.key === key);
-    return pair?.value;
-  }
-
-  remove(key: K): boolean {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-    const initialLength = bucket.length;
-
-    this.buckets[index] = bucket.filter(pair => pair.key !== key);
-
-    return bucket.length !== this.buckets[index].length; // true if something was removed
-  }
+function kthSmallest(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;  
+  const sorted = arr.slice().sort((a,b) => a - b);
+  return sorted[k - 1];
 }
-const myHashTable = new HashTable<string, number>();
+function quickselect(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;
 
-myHashTable.set('apple', 5);
-myHashTable.set('banana', 10);
-console.log(myHashTable.get('apple')); // 5
-console.log(myHashTable.get('banana')); // 10
-console.log(myHashTable.get('cherry')); // undefined
+  function partition(left: number, right: number, pivotIndex: number): number {
+    const pivotValue = arr[pivotIndex];
+    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+    let storeIndex = left;
 
-myHashTable.set('apple', 15); // Update
-console.log(myHashTable.get('apple')); // 15
+    for (let i = left; i < right; i++) {
+      if (arr[i] < pivotValue) {
+        [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+        storeIndex++;
+      }
+    }
+    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
+    return storeIndex;
+  }
 
-myHashTable.remove('banana');
-console.log(myHashTable.get('banana')); // undefined
+  function select(left: number, right: number, kSmallest: number): number {
+    if (left === right) return arr[left];
+
+    // Choose a random pivotIndex to avoid worst case
+    const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
+    const pivotFinalIndex = partition(left, right, pivotIndex);
+
+    if (kSmallest === pivotFinalIndex) {
+      return arr[kSmallest];
+    } else if (kSmallest < pivotFinalIndex) {
+      return select(left, pivotFinalIndex - 1, kSmallest);
+    } else {
+      return select(pivotFinalIndex + 1, right, kSmallest);
+    }
+  }
+
+  return select(0, arr.length - 1, k - 1);
+}
+const arr = [7, 10, 4, 3, 20, 15];
+console.log(kthSmallest(arr, 3)); // Output: 7
+console.log(quickselect(arr, 3));  // Output: 7
