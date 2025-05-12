@@ -1,23 +1,31 @@
-const arr = [1, 2, 3, 2, 4];
-const valueToRemove = 2;
+// Define the node structure
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-const index = arr.indexOf(valueToRemove);
-if (index > -1) {
-  arr.splice(index, 1);
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
-console.log(arr); // Output: [1, 3, 2, 4]
-const arr = [1, 2, 3, 2, 4];
-const valueToRemove = 2;
+// Function to compute the length
+function getLength<T>(head: ListNode<T> | null): number {
+  let count = 0;
+  let current = head;
 
-const filtered = arr.filter(item => item !== valueToRemove);
+  while (current !== null) {
+    count++;
+    current = current.next;
+  }
 
-console.log(filtered); // Output: [1, 3, 4]
-const arr = [1, 2, 3, 4];
-const indexToRemove = 2; // Removes the element at index 2 (which is 3)
-
-if (indexToRemove > -1 && indexToRemove < arr.length) {
-  arr.splice(indexToRemove, 1);
+  return count;
 }
 
-console.log(arr); // Output: [1, 2, 4]
+// Example usage:
+const node3 = new ListNode(3);
+const node2 = new ListNode(2, node3);
+const node1 = new ListNode(1, node2);
+const head = node1;
+
+console.log(getLength(head)); // Output: 3
