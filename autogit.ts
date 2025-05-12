@@ -1,56 +1,31 @@
-class Node<T> {
-  value: T;
-  next: Node<T> | null = null;
-
-  constructor(value: T) {
-    this.value = value;
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
   }
 }
-class Queue<T> {
-  private head: Node<T> | null = null;
-  private tail: Node<T> | null = null;
-  private length = 0;
 
-  enqueue(value: T): void {
-    const newNode = new Node(value);
-    if (this.tail) {
-      this.tail.next = newNode;
-    } else {
-      this.head = newNode; // First node being added
-    }
-    this.tail = newNode;
-    this.length++;
+function diameterOfBinaryTree(root: TreeNode | null): number {
+  let diameter = 0;
+
+  function height(node: TreeNode | null): number {
+    if (!node) return 0;
+    
+    // Recursively find the height of left and right subtrees
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
+    
+    // Update diameter if path through this node is longer
+    diameter = Math.max(diameter, leftHeight + rightHeight);
+    
+    // Height of this node is max of left/right subtree heights plus 1 for this node
+    return Math.max(leftHeight, rightHeight) + 1;
   }
 
-  dequeue(): T | null {
-    if (!this.head) {
-      return null; // Queue is empty
-    }
-    const value = this.head.value;
-    this.head = this.head.next;
-    if (!this.head) {
-      this.tail = null; // Empty queue after dequeuing
-    }
-    this.length--;
-    return value;
-  }
-
-  peek(): T | null {
-    return this.head ? this.head.value : null;
-  }
-
-  isEmpty(): boolean {
-    return this.length === 0;
-  }
-
-  size(): number {
-    return this.length;
-  }
+  height(root);
+  return diameter;
 }
-const queue = new Queue<number>();
-queue.enqueue(1);
-queue.enqueue(2);
-console.log(queue.dequeue()); // 1
-console.log(queue.peek());    // 2
-console.log(queue.isEmpty()); // false
-console.log(queue.size());    // 1
