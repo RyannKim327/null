@@ -1,25 +1,17 @@
-// Define the structure of a binary tree node
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+const array = [1, 2, 3, 2, 4];
+const valueToRemove = 2;
+const filteredArray = array.filter(item => item !== valueToRemove);
+console.log(filteredArray); // [1, 3, 4]
+const array = [1, 2, 3, 2, 4];
+const valueToRemove = 2;
+const index = array.indexOf(valueToRemove);
+if (index > -1) {
+  array.splice(index, 1);
 }
-
-function maxDepth(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-
-  // Recursively find the depth of left and right subtrees
-  const leftDepth = maxDepth(root.left);
-  const rightDepth = maxDepth(root.right);
-
-  // The maximum depth is the greater one plus the current node
-  return Math.max(leftDepth, rightDepth) + 1;
+console.log(array); // [1, 3, 2, 4]
+const array = ['a', 'b', 'c', 'd'];
+const indexToRemove = 2; // removes 'c'
+if (indexToRemove > -1 && indexToRemove < array.length) {
+  array.splice(indexToRemove, 1);
 }
+console.log(array); // ['a', 'b', 'd']
