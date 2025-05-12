@@ -1,41 +1,12 @@
-class ListNode<T> {
-  data: T;
-  next: ListNode<T> | null = null;
-
-  constructor(data: T) {
-    this.data = data;
-  }
+function isPalindrome(str: string): boolean {
+    // Normalize the string: remove non-alphanumeric characters and make it lowercase
+    const normalizedStr = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Reverse the normalized string
+    const reversedStr = normalizedStr.split('').reverse().join('');
+    
+    // Check if the normalized string is equal to its reverse
+    return normalizedStr === reversedStr;
 }
-class LinkedList<T> {
-  private head: ListNode<T> | null = null;
-
-  // Add a node at the end
-  append(data: T): void {
-    const newNode = new ListNode(data);
-    if (!this.head) {
-      this.head = newNode;
-      return;
-    }
-    let current = this.head;
-    while (current.next) {
-      current = current.next;
-    }
-    current.next = newNode;
-  }
-
-  // Print all elements in the list
-  print(): void {
-    let current = this.head;
-    const elements: T[] = [];
-    while (current) {
-      elements.push(current.data);
-      current = current.next;
-    }
-    console.log(elements.join(" -> "));
-  }
-}
-const list = new LinkedList<number>();
-list.append(10);
-list.append(20);
-list.append(30);
-list.print(); // Output: 10 -> 20 -> 30
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("Hello")); // false
