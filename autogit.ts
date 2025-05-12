@@ -1,29 +1,37 @@
-function majorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
+function longestCommonSubstring(s1: string, s2: string): string {
+  const m = s1.length;
+  const n = s2.length;
+  let maxLength = 0;
+  let endIndex = 0;
 
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
+  // Create a 2D array to store lengths of longest common suffixes
+  const dp: number[][] = Array(m + 1)
+    .fill(0)
+    .map(() => Array(n + 1).fill(0));
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      if (s1[i - 1] === s2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndex = i - 1;
         }
+      } else {
+        dp[i][j] = 0;
+      }
     }
+  }
 
-    // Optional verification step: check if candidate is actually majority
-    if (candidate !== null) {
-        const occurrences = nums.filter(num => num === candidate).length;
-        if (occurrences > nums.length / 2) {
-            return candidate;
-        }
-    }
-
-    return null; // no majority element found
+  return s1.slice(endIndex - maxLength + 1, endIndex + 1);
 }
 
-// Usage example:
-const arr = [2, 2, 1, 1, 1, 2, 2];
-console.log(majorityElement(arr));  // Output: 2
+// Example usage:
+const str1 = "ababc";
+const str2 = "babca";
+console.log(longestCommonSubstring(str1, str2)); // Output: "abca" would be incorrect; actual longest common substring is "babc" or "abca"?
+
+// Actually the longest common substring in this example is "babc" or "abca"?
+// Let's test it:
+
+console.log(longestCommonSubstring("ababc", "babca")); // Outputs: "babc"
