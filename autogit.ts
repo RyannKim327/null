@@ -1,3 +1,22 @@
-const myString: string = "Hello World!";
-const lowerCaseString: string = myString.toLowerCase();
-console.log(lowerCaseString); // Output: "hello world!"
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
+
+async function fetchUser(userId: number): Promise<User> {
+  const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user with ID ${userId}: ${response.statusText}`);
+  }
+
+  const user: User = await response.json();
+  return user;
+}
+
+// Example usage:
+fetchUser(1)
+  .then(user => console.log(user))
+  .catch(err => console.error(err));
