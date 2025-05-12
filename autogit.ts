@@ -1,58 +1,23 @@
-class SuffixTreeNode {
-  children: Map<string, SuffixTreeNode>;
-  // Optional: index to store position of suffix, useful in leaf nodes
-  index?: number;
+const arr = [1, 2, 3, 2, 4];
+const valueToRemove = 2;
 
-  constructor() {
-    this.children = new Map();
-  }
+const index = arr.indexOf(valueToRemove);
+if (index > -1) {
+  arr.splice(index, 1);
 }
 
-class SuffixTree {
-  root: SuffixTreeNode;
-  text: string;
+console.log(arr); // Output: [1, 3, 2, 4]
+const arr = [1, 2, 3, 2, 4];
+const valueToRemove = 2;
 
-  constructor(text: string) {
-    this.root = new SuffixTreeNode();
-    this.text = text;
-    this.build();
-  }
+const filtered = arr.filter(item => item !== valueToRemove);
 
-  private build() {
-    for (let i = 0; i < this.text.length; i++) {
-      this.insertSuffix(i);
-    }
-  }
+console.log(filtered); // Output: [1, 3, 4]
+const arr = [1, 2, 3, 4];
+const indexToRemove = 2; // Removes the element at index 2 (which is 3)
 
-  private insertSuffix(start: number) {
-    let currentNode = this.root;
-
-    // Insert substring text[start..end]
-    for (let j = start; j < this.text.length; j++) {
-      const char = this.text[j];
-      if (!currentNode.children.has(char)) {
-        currentNode.children.set(char, new SuffixTreeNode());
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-
-    // Mark leaf node by storing suffix start index
-    currentNode.index = start;
-  }
-
-  search(pattern: string): boolean {
-    let currentNode = this.root;
-
-    for (const char of pattern) {
-      if (!currentNode.children.has(char)) return false;
-      currentNode = currentNode.children.get(char)!;
-    }
-
-    return true;
-  }
+if (indexToRemove > -1 && indexToRemove < arr.length) {
+  arr.splice(indexToRemove, 1);
 }
 
-// Usage
-const st = new SuffixTree("banana");
-console.log(st.search("ana"));  // true
-console.log(st.search("nab"));  // false
+console.log(arr); // Output: [1, 2, 4]
