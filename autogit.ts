@@ -1,113 +1,116 @@
-type Node = {
-  x: number;
-  y: number;
-};
+type Point = { x: number; y: number };
 
-function heuristic(a: Node, b: Node): number {
-  // Manhattan distance as heuristic
+// Manhattan distance (heuristic) for grid
+function heuristic(a: Point, b: Point): number {
   return Math.abs(a.x - b.x) + Math.abs(a.y - b.y);
 }
 
-function neighbors(node: Node, grid: number[][]): Node[] {
-  const deltas = [
-    { x: 1, y: 0 },
-    { x: -1, y: 0 },
-    { x: 0, y: 1 },
-    { x: 0, y: -1 },
+// Check neighbors (up, down, left, right)
+function getNeighbors(node: Point, grid: number[][]): Point[] {
+  const neighbors: Point[] = [];
+  const directions = [
+    { x: 0, y: -1 }, // Up
+    { x: 1, y: 0 },  // Right
+    { x: 0, y: 1 },  // Down
+    { x: -1, y: 0 }, // Left
   ];
-  const result: Node[] = [];
-  for (const d of deltas) {
-    const nx = node.x + d.x;
-    const ny = node.y + d.y;
+
+  for (const dir of directions) {
+    const nx = node.x + dir.x;
+    const ny = node.y + dir.y;
     if (
-      ny >= 0 &&
-      ny < grid.length &&
-      nx >= 0 &&
-      nx < grid[0].length &&
-      grid[ny][nx] === 0 // 0 = walkable, 1 = obstacle
+      nx >= 0 && ny >= 0 &&
+      ny < grid.length && nx < grid[0].length &&
+      grid[ny][nx] === 0 // assuming 0 = walkable, 1 = wall
     ) {
-      result.push({ x: nx, y: ny });
+      neighbors.push({ x: nx, y: ny });
     }
   }
-  return result;
+
+  return neighbors;
 }
-
-class PriorityQueue<T> {
-  private elements: Array<{ item: T; priority: number }> = [];
-
-  enqueue(item: T, priority: number) {
-    this.elements.push({ item, priority });
-    this.elements.sort((a, b) => a.priority - b.priority);
-  }
-
-  dequeue(): T | undefined {
-    return this.elements.shift()?.item;
-  }
-
-  isEmpty(): boolean {
-    return this.elements.length === 0;
-  }
-}
-
 function aStar(
-  start: Node,
-  goal: Node,
-  grid: number[][]
-): Node[] | null {
-  const frontier = new PriorityQueue<Node>();
-  frontier.enqueue(start, 0);
+  grid: number[][],
+  start: Point,
+  goal: Point
+): Point[] | null {
+  const openSet: Set<string> = new Set([`${start.x},${start.y}`]);
+  
+  // Maps coordinates 'x,y' -> Point
+  const cameFrom = new Map<string, Point>();
 
-  const cameFrom = new Map<string, string | null>();
-  const costSoFar = new Map<string, number>();
+  // gScore and fScore maps
+  const gScore = new Map<string, number>();
+  const fScore = new Map<string, number>();
 
-  function nodeKey(n: Node) {
-    return `${n.x},${n.y}`;
-  }
+  const startKey = `${start.x},${start.y}`;
+  gScore.set(startKey, 0);
+  fScore.set(startKey, heuristic(start, goal));
 
-  cameFrom.set(nodeKey(start), null);
-  costSoFar.set(nodeKey(start), 0);
+  while (openSet.size > 0) {
+    // Get node in openSet with lowest fScore
+    let currentKey: string | null = null;
+    let lowestF = Infinity;
+    for (const key of openSet) {
+      const score = fScore.get(key) ?? Infinity;
+      if (score < lowestF) {
+        lowestF = score;
+        currentKey = key;
+      }
+    }
 
-  while (!frontier.isEmpty()) {
-    const current = frontier.dequeue()!;
+    if (!currentKey) break;
+
+    const [cx, cy] = currentKey.split(',').map(Number);
+    const current: Point = { x: cx, y: cy };
+
     if (current.x === goal.x && current.y === goal.y) {
       // Reconstruct path
-      const path: Node[] = [];
-      let curKey = nodeKey(current);
-      while (curKey !== null) {
-        const [xStr, yStr] = curKey.split(',');
-        path.push({ x: parseInt(xStr), y: parseInt(yStr) });
-        curKey = cameFrom.get(curKey)!;
+      const path: Point[] = [current];
+      let key = currentKey;
+      while (cameFrom.has(key)) {
+        const prev = cameFrom.get(key)!;
+        path.push(prev);
+        key = `${prev.x},${prev.y}`;
       }
-      path.reverse();
-      return path;
+      return path.reverse();
     }
 
-    for (const next of neighbors(current, grid)) {
-      const newCost = (costSoFar.get(nodeKey(current)) ?? Infinity) + 1; // all edges cost 1
-      const nextKey = nodeKey(next);
-      if (!costSoFar.has(nextKey) || newCost < costSoFar.get(nextKey)!) {
-        costSoFar.set(nextKey, newCost);
-        const priority = newCost + heuristic(next, goal);
-        frontier.enqueue(next, priority);
-        cameFrom.set(nextKey, nodeKey(current));
+    openSet.delete(currentKey);
+
+    for (const neighbor of getNeighbors(current, grid)) {
+      const neighborKey = `${neighbor.x},${neighbor.y}`;
+      const tentativeGScore = (gScore.get(currentKey) ?? Infinity) + 1; // cost between neighbors is 1
+
+      if (tentativeGScore < (gScore.get(neighborKey) ?? Infinity)) {
+        cameFrom.set(neighborKey, current);
+        gScore.set(neighborKey, tentativeGScore);
+        fScore.set(neighborKey, tentativeGScore + heuristic(neighbor, goal));
+        if (!openSet.has(neighborKey)) {
+          openSet.add(neighborKey);
+        }
       }
     }
   }
-  return null; // no path found
+
+  // No path found
+  return null;
 }
-
-// Example usage:
-
 const grid = [
-  [0, 0, 0, 0, 0],
-  [1, 1, 0, 1, 0],
-  [0, 0, 0, 1, 0],
-  [0, 1, 1, 0, 0],
-  [0, 0, 0, 0, 0],
+  [0, 0, 0, 0],
+  [1, 1, 0, 1],
+  [0, 0, 0, 0],
+  [0, 1, 1, 0],
+  [0, 0, 0, 0],
 ];
 
-const start: Node = { x: 0, y: 0 };
-const goal: Node = { x: 4, y: 4 };
-const path = aStar(start, goal, grid);
+const start: Point = { x: 0, y: 0 };
+const goal: Point = { x: 3, y: 4 };
 
-console.log(path);
+const path = aStar(grid, start, goal);
+
+if (path) {
+  console.log("Path found:", path);
+} else {
+  console.log("No path found.");
+}
