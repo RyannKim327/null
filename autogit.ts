@@ -1,15 +1,58 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-const index = array.indexOf(elementToRemove);
-if (index !== -1) {
-  array.splice(index, 1);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+                // no increment of i here
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+    
+    return lps;
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 3, 4, 5];
-const elementToRemove = 3;
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
 
-const filteredArray = array.filter(item => item !== elementToRemove);
-console.log(filteredArray); // Output: [1, 2, 4, 5]
-array = array.filter(item => item !== elementToRemove);
+    let i = 0; // index for text
+    let j = 0; // index for pattern
+
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            // Found a match at index (i - j)
+            result.push(i - j);
+            j = lps[j - 1];
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
+    }
+
+    return result;
+}
+
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = KMPSearch(text, pattern);
+console.log("Pattern found at positions:", matches);
