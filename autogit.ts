@@ -1,14 +1,5 @@
-function countOccurrences(text: string, word: string): number {
-  // Create a case-insensitive global regex to find all occurrences of the word
-  const regex = new RegExp(`\\b${word}\\b`, 'gi');
-  
-  // Use match to get all occurrences
-  const matches = text.match(regex);
-  
-  // If no matches found, return 0, else the length of the matches array
-  return matches ? matches.length : 0;
-}
-
-// Example:
-const text = "This is a test. This test is simple. Testing is fun.";
-console.log(countOccurrences(text, "test")); // Output: 2
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = Array.from(new Set(array));
+console.log(uniqueArray); // [1, 2, 3, 4, 5]
+const uniqueArray = [...new Set(array)];
+const uniqueArray = array.filter((item, index) => array.indexOf(item) === index);
