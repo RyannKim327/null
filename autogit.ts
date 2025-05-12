@@ -1,22 +1,32 @@
-function bubbleSort(arr: number[]): number[] {
-    let n = arr.length;
-    let swapped: boolean;
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-    do {
-        swapped = false;
-        for (let i = 1; i < n; i++) {
-            if (arr[i - 1] > arr[i]) {
-                // Swap the elements
-                [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
-                swapped = true;
-            }
-        }
-        // Each pass places the largest element at the end,
-        // so we can reduce the range by 1
-        n--;
-    } while (swapped);
-
-    return arr;
+  constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+    this.val = val === undefined ? 0 : val;
+    this.left = left === undefined ? null : left;
+    this.right = right === undefined ? null : right;
+  }
 }
-console.log(bubbleSort([5, 3, 8, 4, 2]));
-// Output: [2, 3, 4, 5, 8]
+
+function diameterOfBinaryTree(root: TreeNode | null): number {
+  let diameter = 0;
+
+  function depth(node: TreeNode | null): number {
+    if (node === null) return 0;
+
+    // Recursively find the height of left and right subtrees
+    const leftDepth = depth(node.left);
+    const rightDepth = depth(node.right);
+
+    // Path through this node would be leftDepth + rightDepth
+    diameter = Math.max(diameter, leftDepth + rightDepth);
+
+    // Height of this node is max of left or right subtree heights + 1 for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
+  }
+
+  depth(root);
+  return diameter;
+}
