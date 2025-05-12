@@ -1,28 +1,12 @@
-function majorityElement(nums: number[]): number | null {
-  const countMap = new Map<number, number>();
-  const majorityCount = Math.floor(nums.length / 2);
-
-  for (const num of nums) {
-    countMap.set(num, (countMap.get(num) || 0) + 1);
-    if (countMap.get(num)! > majorityCount) {
-      return num;
-    }
-  }
-
-  return null; // no majority element if none exceeds n/2
+function isPalindrome(str: string): boolean {
+  // Normalize the string: remove non-alphanumeric characters and make lowercase
+  const cleaned = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
+  // Reverse the cleaned string
+  const reversed = cleaned.split('').reverse().join('');
+  // Compare cleaned and reversed strings
+  return cleaned === reversed;
 }
-function majorityElement(nums: number[]): number | null {
-  let count = 0;
-  let candidate: number | null = null;
 
-  for (const num of nums) {
-    if (count === 0) {
-      candidate = num;
-    }
-    count += (num === candidate) ? 1 : -1;
-  }
-
-  // Optional verification step, if you want to be sure:
-  count = nums.filter(x => x === candidate).length;
-  return count > Math.floor(nums.length / 2) ? candidate : null;
-}
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("Hello, world!")); // false
