@@ -1,24 +1,15 @@
-function quicksort(arr: number[]): number[] {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const pivot = arr[arr.length - 1]; // Choose the last element as the pivot
-  const left: number[] = [];
-  const right: number[] = [];
-
+function isSortedAsc(arr: number[]): boolean {
   for (let i = 0; i < arr.length - 1; i++) {
-    if (arr[i] < pivot) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
   }
-
-  return [...quicksort(left), pivot, ...quicksort(right)];
+  return true;
 }
-
-// Example usage
-const unsorted = [5, 3, 8, 4, 2];
-const sorted = quicksort(unsorted);
-console.log(sorted); // Outputs: [2, 3, 4, 5, 8]
+console.log(isSortedAsc([1, 2, 2, 4, 5])); // true
+console.log(isSortedAsc([1, 3, 2, 4]));    // false
+console.log(isSortedAsc([]));               // true (empty array considered sorted)
+console.log(isSortedAsc([10]));             // true (single element array considered sorted)
+function isSortedAsc(arr: number[]): boolean {
+  return arr.every((value, index) => index === 0 || arr[index - 1] <= value);
+}
