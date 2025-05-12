@@ -1,46 +1,26 @@
-function heapSort(arr: number[]): number[] {
+function selectionSort(arr: number[]): number[] {
   const n = arr.length;
 
-  // Heapify subtree rooted at index i, size is heap size n
-  function heapify(arr: number[], n: number, i: number) {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1;
-    const right = 2 * i + 2;
+  for (let i = 0; i < n - 1; i++) {
+    // Assume the smallest element is at the current position
+    let minIndex = i;
 
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-      largest = left;
+    // Check the rest of the array to find the actual smallest element
+    for (let j = i + 1; j < n; j++) {
+      if (arr[j] < arr[minIndex]) {
+        minIndex = j;
+      }
     }
 
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-      largest = right;
+    // Swap the found minimum element with the current element
+    if (minIndex !== i) {
+      [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
     }
-
-    // If largest is not root
-    if (largest !== i) {
-      [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
-      // Recursively heapify the affected sub-tree
-      heapify(arr, n, largest);
-    }
-  }
-
-  // Build max heap
-  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-    heapify(arr, n, i);
-  }
-
-  // Extract elements from heap one by one
-  for (let i = n - 1; i >= 0; i--) {
-    // Move current root to end
-    [arr[0], arr[i]] = [arr[i], arr[0]];
-    // call max heapify on the reduced heap
-    heapify(arr, i, 0);
   }
 
   return arr;
 }
 
 // Example usage:
-const numbers = [12, 11, 13, 5, 6, 7];
-console.log(heapSort(numbers));  // Output will be a sorted array
+const numbers = [64, 25, 12, 22, 11];
+console.log(selectionSort(numbers)); // Output: [11, 12, 22, 25, 64]
