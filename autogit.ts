@@ -1,15 +1,15 @@
-function isSortedAscending(arr: number[]): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i] < arr[i - 1]) {
-      return false;
-    }
+function maxSubArray(nums: number[]): number {
+  let maxSoFar = nums[0];
+  let maxEndingHere = nums[0];
+
+  for (let i = 1; i < nums.length; i++) {
+    maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
   }
-  return true;
+
+  return maxSoFar;
 }
 
-// Example usage
-console.log(isSortedAscending([1, 2, 2, 3])); // true
-console.log(isSortedAscending([3, 2, 1]));    // false
-function isSortedAscending(arr: number[]): boolean {
-  return arr.every((value, index) => index === 0 || arr[index - 1] <= value);
-}
+// Example:
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+console.log(maxSubArray(arr)); // Output: 6 (because [4, -1, 2, 1] sums to 6)
