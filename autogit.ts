@@ -1,65 +1,27 @@
-class Node<T> {
-  value: T;
-  next: Node<T> | null = null;
+import axios from 'axios';
 
-  constructor(value: T) {
-    this.value = value;
-  }
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
-class Queue<T> {
-  private front: Node<T> | null = null;
-  private rear: Node<T> | null = null;
-  private length: number = 0;
 
-  enqueue(value: T): void {
-    const newNode = new Node(value);
-
-    if (!this.rear) {
-      // Empty queue
-      this.front = newNode;
-      this.rear = newNode;
+async function fetchUsers(): Promise<void> {
+  try {
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    const users = response.data;
+    
+    users.forEach(user => {
+      console.log(`User: ${user.name} (${user.username}), Email: ${user.email}`);
+    });
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(`Axios error: ${error.message}`);
     } else {
-      this.rear.next = newNode;
-      this.rear = newNode;
+      console.error(`Unexpected error: ${error}`);
     }
-
-    this.length++;
-  }
-
-  dequeue(): T | null {
-    if (!this.front) {
-      return null; // Queue is empty
-    }
-
-    const dequeuedValue = this.front.value;
-    this.front = this.front.next;
-
-    // If the queue is now empty, reset rear as well
-    if (!this.front) {
-      this.rear = null;
-    }
-
-    this.length--;
-    return dequeuedValue;
-  }
-
-  peek(): T | null {
-    return this.front ? this.front.value : null;
-  }
-
-  size(): number {
-    return this.length;
-  }
-
-  isEmpty(): boolean {
-    return this.length === 0;
   }
 }
-const queue = new Queue<number>();
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
 
-console.log(queue.dequeue()); // 10
-console.log(queue.peek());    // 20
-console.log(queue.size());    // 2
+fetchUsers();
