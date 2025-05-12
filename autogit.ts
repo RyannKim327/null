@@ -1,68 +1,60 @@
-class SuffixTreeNode {
-  edges: Map<string, SuffixTreeNode>;
-  // If you want compressed edges, you can store label on edges or here, but let's keep simple:
-  indices: number[]; // indices of suffixes that reach this node (optional, helps searching)
+type Node = string; // or any type that identifies a node uniquely
+type Graph = Map<Node, Node[]>;
 
-  constructor() {
-    this.edges = new Map();
-    this.indices = [];
-  }
-}
+/**
+ * Breadth-Limited Search
+ * @param graph The graph represented as adjacency list
+ * @param start The starting node
+ * @param goal The goal node to find (optional - null if just traversal)
+ * @param limit Maximum depth to explore
+ * @returns Path to goal node or null if not found within the depth limit
+ */
+function breadthLimitedSearch(
+  graph: Graph,
+  start: Node,
+  goal: Node | null,
+  limit: number
+): Node[] | null {
+  if (limit < 0) return null;
 
-class SuffixTree {
-  root: SuffixTreeNode;
-  text: string;
+  // Queue elements are: [currentNode, pathSoFar, depth]
+  const queue: Array<[Node, Node[], number]> = [[start, [start], 0]];
+  const visited = new Set<Node>();
+  visited.add(start);
 
-  constructor(text: string) {
-    this.text = text;
-    this.root = new SuffixTreeNode();
-    this.build();
-  }
+  while (queue.length > 0) {
+    const [current, path, depth] = queue.shift()!;
 
-  build() {
-    for (let i = 0; i < this.text.length; i++) {
-      this.insertSuffix(i);
+    if (goal !== null && current === goal) {
+      return path;
     }
-  }
 
-  insertSuffix(startIndex: number) {
-    let currentNode = this.root;
-    for (let i = startIndex; i < this.text.length; i++) {
-      const char = this.text[i];
-      if (!currentNode.edges.has(char)) {
-        currentNode.edges.set(char, new SuffixTreeNode());
+    if (depth < limit) {
+      const neighbors = graph.get(current) || [];
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor)) {
+          visited.add(neighbor);
+          queue.push([neighbor, [...path, neighbor], depth + 1]);
+        }
       }
-      currentNode = currentNode.edges.get(char)!;
-      currentNode.indices.push(startIndex);
     }
   }
 
-  // Search if a pattern exists in the text using the suffix tree
-  search(pattern: string): boolean {
-    let currentNode = this.root;
-    for (const char of pattern) {
-      if (!currentNode.edges.has(char)) return false;
-      currentNode = currentNode.edges.get(char)!;
-    }
-    return true;
-  }
-
-  // Optional: get all starting indices where pattern occurs
-  getSuffixIndices(pattern: string): number[] {
-    let currentNode = this.root;
-    for (const char of pattern) {
-      if (!currentNode.edges.has(char)) return [];
-      currentNode = currentNode.edges.get(char)!;
-    }
-    return currentNode.indices;
-  }
+  // Goal not found within limit
+  return null;
 }
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D', 'E']],
+  ['C', ['F']],
+  ['D', []],
+  ['E', ['F']],
+  ['F', []]
+]);
 
-// Usage example:
-const text = "banana";
-const suffixTree = new SuffixTree(text);
+const start = 'A';
+const goal = 'F';
+const limit = 2;
 
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("nana")); // true
-console.log(suffixTree.search("bananas")); // false
-console.log(suffixTree.getSuffixIndices("ana")); // [1, 3]
+const path = breadthLimitedSearch(graph, start, goal, limit);
+console.log(path); // Might output something like ['A', 'C', 'F'] or null if not found within limit
