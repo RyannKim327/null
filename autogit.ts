@@ -1,22 +1,65 @@
-function insertionSort(arr: number[]): number[] {
-  // Make a copy to avoid mutating the input
-  const sortedArr = [...arr];
+class Node<T> {
+  value: T;
+  next: Node<T> | null = null;
 
-  for (let i = 1; i < sortedArr.length; i++) {
-    const key = sortedArr[i];
-    let j = i - 1;
+  constructor(value: T) {
+    this.value = value;
+  }
+}
+class Queue<T> {
+  private front: Node<T> | null = null;
+  private rear: Node<T> | null = null;
+  private length: number = 0;
 
-    // Move elements of sortedArr[0..i-1], that are greater than key,
-    // to one position ahead of their current position
-    while (j >= 0 && sortedArr[j] > key) {
-      sortedArr[j + 1] = sortedArr[j];
-      j--;
+  enqueue(value: T): void {
+    const newNode = new Node(value);
+
+    if (!this.rear) {
+      // Empty queue
+      this.front = newNode;
+      this.rear = newNode;
+    } else {
+      this.rear.next = newNode;
+      this.rear = newNode;
     }
-    sortedArr[j + 1] = key;
+
+    this.length++;
   }
 
-  return sortedArr;
+  dequeue(): T | null {
+    if (!this.front) {
+      return null; // Queue is empty
+    }
+
+    const dequeuedValue = this.front.value;
+    this.front = this.front.next;
+
+    // If the queue is now empty, reset rear as well
+    if (!this.front) {
+      this.rear = null;
+    }
+
+    this.length--;
+    return dequeuedValue;
+  }
+
+  peek(): T | null {
+    return this.front ? this.front.value : null;
+  }
+
+  size(): number {
+    return this.length;
+  }
+
+  isEmpty(): boolean {
+    return this.length === 0;
+  }
 }
-const numbers = [5, 3, 8, 1, 2];
-const sorted = insertionSort(numbers);
-console.log(sorted);  // Output: [1, 2, 3, 5, 8]
+const queue = new Queue<number>();
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.dequeue()); // 10
+console.log(queue.peek());    // 20
+console.log(queue.size());    // 2
