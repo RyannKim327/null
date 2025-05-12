@@ -1,22 +1,19 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-  
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
-}
-function sumNodes(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-  return root.val + sumNodes(root.left) + sumNodes(root.right);
-}
-const tree = new TreeNode(1, 
-                new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-                new TreeNode(3));
+const graph: Record<string, string[]> = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: [],
+};
+function dfs(graph: Record<string, string[]>, start: string, visited = new Set<string>()) {
+  if (visited.has(start)) return;
 
-console.log(sumNodes(tree)); // Output: 15
+  console.log(start);  // process the node (e.g., print it)
+  visited.add(start);
+
+  for (const neighbor of graph[start]) {
+    dfs(graph, neighbor, visited);
+  }
+}
+dfs(graph, 'A');
