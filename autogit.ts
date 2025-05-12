@@ -1,34 +1,56 @@
-function isValidPalindrome(s: string): boolean {
-  let left = 0;
-  let right = s.length - 1;
+class ListNode {
+  value: number;
+  next: ListNode | null;
 
-  while (left < right) {
-    // Move left pointer forward if not alphanumeric
-    while (left < right && !isAlphaNumeric(s[left])) {
-      left++;
-    }
-    // Move right pointer backward if not alphanumeric
-    while (left < right && !isAlphaNumeric(s[right])) {
-      right--;
-    }
+  constructor(value: number, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
+  }
+}
+function isPalindrome(head: ListNode | null): boolean {
+  if (!head || !head.next) return true;
 
-    // Compare characters case-insensitively
-    if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-      return false;
-    }
+  // Find the middle of the list (slow will end up at middle)
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
 
-    left++;
-    right--;
+  while (fast && fast.next) {
+    slow = slow!.next;
+    fast = fast.next.next;
   }
 
-  return true;
+  // Reverse the second half of the list
+  let secondHalfHead = reverseList(slow);
+
+  // Compare the first half and the reversed second half
+  let firstHalfPointer = head;
+  let secondHalfPointer = secondHalfHead;
+  let result = true;
+
+  while (secondHalfPointer) {
+    if (firstHalfPointer!.value !== secondHalfPointer.value) {
+      result = false;
+      break;
+    }
+    firstHalfPointer = firstHalfPointer!.next;
+    secondHalfPointer = secondHalfPointer.next;
+  }
+
+  // (Optional) Restore the original list by reversing the second half back
+  reverseList(secondHalfHead);
+
+  return result;
 }
 
-function isAlphaNumeric(char: string): boolean {
-  const code = char.charCodeAt(0);
-  return (
-    (code >= 48 && code <= 57) ||  // 0-9
-    (code >= 65 && code <= 90) ||  // A-Z
-    (code >= 97 && code <= 122)    // a-z
-  );
+function reverseList(head: ListNode | null): ListNode | null {
+  let prev: ListNode | null = null;
+  let current: ListNode | null = head;
+
+  while (current) {
+    const nextTemp = current.next;
+    current.next = prev;
+    prev = current;
+    current = nextTemp;
+  }
+  return prev;
 }
