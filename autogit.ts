@@ -1,11 +1,15 @@
-import * as readline from 'readline';
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+const index = array.indexOf(elementToRemove);
+if (index !== -1) {
+  array.splice(index, 1);
+}
 
-rl.question('Enter your name: ', (name: string) => {
-  console.log(`Hello, ${name}! Welcome to TypeScript.`);
-  rl.close();
-});
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 3, 4, 5];
+const elementToRemove = 3;
+
+const filteredArray = array.filter(item => item !== elementToRemove);
+console.log(filteredArray); // Output: [1, 2, 4, 5]
+array = array.filter(item => item !== elementToRemove);
