@@ -1,5 +1,11 @@
-function factorial(n: number): number {
-  if (n <= 1) return 1;  // Base case: factorial of 0 or 1 is 1
-  return n * factorial(n - 1);  // Recursive call
+function getStringLength(str: string): number {
+    let count = 0;
+    while (str[count] !== undefined) {
+        count++;
+    }
+    return count;
 }
-console.log(factorial(5)); // Outputs: 120
+
+// Example usage:
+const myStr = "Hello, world!";
+console.log(getStringLength(myStr));  // Output: 13
