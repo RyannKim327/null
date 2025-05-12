@@ -1,23 +1,51 @@
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
+interface Node<T> {
+  value: T;
+  neighbors: Node<T>[];
 }
 
-async function fetchUsers(): Promise<void> {
-  try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/users');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+// Depth-limited search iterative function
+function depthLimitedSearch<T>(
+  start: Node<T>,
+  goalTest: (node: Node<T>) => boolean,
+  depthLimit: number
+): Node<T> | null {
+  // Stack will hold tuples of [node, currentDepth]
+  const stack: Array<[Node<T>, number]> = [[start, 0]];
+  const visited = new Set<Node<T>>();
+
+  while (stack.length > 0) {
+    const [node, depth] = stack.pop()!;
+
+    if (goalTest(node)) {
+      return node;
     }
-    const users: User[] = await response.json();
-    users.forEach(user => {
-      console.log(`${user.id}: ${user.username}`);
-    });
-  } catch (error) {
-    console.error('Failed to fetch users:', error);
-  }
-}
 
-fetchUsers();
+    if (depth < depthLimit) {
+      visited.add(node);
+      // Push neighbors along with depth+1 if not already visited
+      for (const neighbor of node.neighbors) {
+        if (!visited.has(neighbor)) {
+          stack.push([neighbor, depth + 1]);
+        }
+      }
+    }
+  }
+
+  // If no goal node found within depth limit
+  return null;
+}
+const nodeA: Node<string> = { value: "A", neighbors: [] };
+const nodeB: Node<string> = { value: "B", neighbors: [] };
+const nodeC: Node<string> = { value: "C", neighbors: [] };
+// ... build the graph
+nodeA.neighbors.push(nodeB, nodeC);
+// etc.
+
+const goalTest = (node: Node<string>) => node.value === "C";
+
+const foundNode = depthLimitedSearch(nodeA, goalTest, 2);
+if (foundNode) {
+  console.log("Goal found:", foundNode.value);
+} else {
+  console.log("Goal not found within depth limit");
+}
