@@ -1,73 +1,87 @@
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null = null;
-  right: TreeNode<T> | null = null;
-
-  constructor(value: T) {
-    this.value = value;
+function buildBadCharTable(pattern: string): number[] {
+  const table = new Array(256).fill(-1); // ASCII size, initialize all to -1
+  for (let i = 0; i < pattern.length; i++) {
+    table[pattern.charCodeAt(i)] = i;
   }
+  return table;
 }
 
-class BinarySearchTree<T> {
-  root: TreeNode<T> | null = null;
+function buildGoodSuffixTable(pattern: string): number[] {
+  const m = pattern.length;
+  const goodSuffix = new Array(m).fill(0);
+  const suffixes = new Array(m).fill(0);
 
-  constructor(private compareFn: (a: T, b: T) => number) {}
-
-  insert(value: T) {
-    const newNode = new TreeNode(value);
-
-    if (!this.root) {
-      this.root = newNode;
-      return;
+  // Compute suffixes
+  let f = 0,
+    g = m - 1;
+  suffixes[m - 1] = m;
+  for (let i = m - 2; i >= 0; i--) {
+    if (i > g && suffixes[i + m - 1 - f] < i - g) {
+      suffixes[i] = suffixes[i + m - 1 - f];
+    } else {
+      if (i < g) g = i;
+      f = i;
+      while (g >= 0 && pattern.charAt(g) === pattern.charAt(g + m - 1 - f)) {
+        g--;
+      }
+      suffixes[i] = f - g;
     }
+  }
 
-    let current = this.root;
-    while (true) {
-      if (this.compareFn(value, current.value) < 0) {
-        if (current.left === null) {
-          current.left = newNode;
-          break;
+  // Build good suffix table using suffixes
+  for (let i = 0; i < m; i++) goodSuffix[i] = m;
+  let j = 0;
+  for (let i = m - 1; i >= -1; i--) {
+    if (i == -1 || suffixes[i] == i + 1) {
+      for (; j < m - 1 - i; j++) {
+        if (goodSuffix[j] === m) {
+          goodSuffix[j] = m - 1 - i;
         }
-        current = current.left;
-      } else {
-        if (current.right === null) {
-          current.right = newNode;
-          break;
-        }
-        current = current.right;
       }
     }
   }
-
-  search(value: T): boolean {
-    let current = this.root;
-
-    while (current) {
-      const cmp = this.compareFn(value, current.value);
-      if (cmp === 0) return true;
-      else if (cmp < 0) current = current.left;
-      else current = current.right;
-    }
-    return false;
+  for (let i = 0; i <= m - 2; i++) {
+    goodSuffix[m - 1 - suffixes[i]] = m - 1 - i;
   }
 
-  inOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-    if (!node) return result;
-
-    this.inOrderTraversal(node.left, result);
-    result.push(node.value);
-    this.inOrderTraversal(node.right, result);
-
-    return result;
-  }
+  return goodSuffix;
 }
-const bst = new BinarySearchTree<number>((a, b) => a - b);
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(7);
 
-console.log(bst.search(7)); // true
-console.log(bst.search(20)); // false
+function boyerMooreSearch(text: string, pattern: string): number[] {
+  const n = text.length;
+  const m = pattern.length;
+  if (m === 0) return [];
 
-console.log(bst.inOrderTraversal()); // [5, 7, 10, 15]
+  const badChar = buildBadCharTable(pattern);
+  const goodSuffix = buildGoodSuffixTable(pattern);
+
+  const matches: number[] = [];
+  let s = 0; // shift of the pattern with respect to text
+
+  while (s <= n - m) {
+    let j = m - 1;
+
+    // Move from right to left, looking for mismatch
+    while (j >= 0 && pattern[j] === text[s + j]) {
+      j--;
+    }
+
+    if (j < 0) {
+      // Match found at shift s
+      matches.push(s);
+      s += goodSuffix[0];
+    } else {
+      const badCharShift = j - badChar[text.charCodeAt(s + j)];
+      const goodSuffixShift = goodSuffix[j];
+      s += Math.max(1, Math.max(badCharShift, goodSuffixShift));
+    }
+  }
+
+  return matches;
+}
+
+// Example usage
+const text = "ABAAABCD";
+const pattern = "ABC";
+const positions = boyerMooreSearch(text, pattern);
+console.log("Pattern found at positions:", positions);
