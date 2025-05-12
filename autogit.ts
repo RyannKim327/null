@@ -1,37 +1,46 @@
-function countingSort(arr: number[]): number[] {
-  if (arr.length === 0) return [];
-
-  // Find the maximum and minimum values to handle negative numbers as well
-  let max = arr[0];
-  let min = arr[0];
-  for (const num of arr) {
-    if (num > max) max = num;
-    if (num < min) min = num;
+function depthLimitedSearch<Node>(
+  start: Node,
+  isGoal: (node: Node) => boolean,
+  getSuccessors: (node: Node) => Node[],
+  limit: number
+): Node | null {
+  // Inner recursive function
+  function recursiveDLS(node: Node, depth: number): Node | null {
+    if (isGoal(node)) {
+      return node;
+    }
+    if (depth === 0) {
+      return null; // limit reached without success
+    }
+    
+    for (const child of getSuccessors(node)) {
+      const result = recursiveDLS(child, depth - 1);
+      if (result !== null) {
+        return result;
+      }
+    }
+    return null; // no solution found at this branch
   }
 
-  // Initialize count array size based on the range of input values
-  const range = max - min + 1;
-  const count = new Array(range).fill(0);
-
-  // Count each element's frequency
-  for (const num of arr) {
-    count[num - min]++;
-  }
-
-  // Accumulate the counts (prefix sums) - optional if you want a stable sort
-  for (let i = 1; i < count.length; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Output array to place sorted elements
-  const output = new Array(arr.length);
-
-  // Build the output array from the input (traverse from the end for stability)
-  for (let i = arr.length - 1; i >= 0; i--) {
-    const num = arr[i];
-    count[num - min]--;
-    output[count[num - min]] = num;
-  }
-
-  return output;
+  return recursiveDLS(start, limit);
 }
+const graph: Record<string, string[]> = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: [],
+};
+
+const startNode = 'A';
+const goalNode = 'F';
+
+const found = depthLimitedSearch(
+  startNode,
+  (node) => node === goalNode,
+  (node) => graph[node] || [],
+  3
+);
+
+console.log(found); // 'F' if within depth limit, else null
