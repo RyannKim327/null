@@ -1,15 +1,25 @@
-const mainString = "Hello, world!";
-const substring = "world";
+// Define the structure of a binary tree node
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-const contains = mainString.includes(substring);
-console.log(contains); // true
-const mainString = "Hello, world!";
-const substring = "world";
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
+  }
+}
 
-const contains = mainString.indexOf(substring) !== -1;
-console.log(contains); // true
-const mainString = "Hello, world!";
-const substring = "world";
+function maxDepth(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
 
-const contains = new RegExp(substring).test(mainString);
-console.log(contains); // true
+  // Recursively find the depth of left and right subtrees
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  // The maximum depth is the greater one plus the current node
+  return Math.max(leftDepth, rightDepth) + 1;
+}
