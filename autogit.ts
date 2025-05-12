@@ -1,17 +1,12 @@
-const array = [1, 2, 3, 2, 4];
-const valueToRemove = 2;
-const filteredArray = array.filter(item => item !== valueToRemove);
-console.log(filteredArray); // [1, 3, 4]
-const array = [1, 2, 3, 2, 4];
-const valueToRemove = 2;
-const index = array.indexOf(valueToRemove);
-if (index > -1) {
-  array.splice(index, 1);
+function isPrime(num: number): boolean {
+  if (num <= 1) return false; // 0 and 1 are not prime
+  if (num <= 3) return true;  // 2 and 3 are prime
+
+  if (num % 2 === 0 || num % 3 === 0) return false; // eliminate multiples of 2 and 3 quickly
+
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
+  }
+
+  return true;
 }
-console.log(array); // [1, 3, 2, 4]
-const array = ['a', 'b', 'c', 'd'];
-const indexToRemove = 2; // removes 'c'
-if (indexToRemove > -1 && indexToRemove < array.length) {
-  array.splice(indexToRemove, 1);
-}
-console.log(array); // ['a', 'b', 'd']
