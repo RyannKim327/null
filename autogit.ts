@@ -1,39 +1,32 @@
-function getDigit(num: number, place: number): number {
-  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-}
+// Define the node structure
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-function digitCount(num: number): number {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-function mostDigits(nums: number[]): number {
-  let maxDigits = 0;
-  for (const num of nums) {
-    maxDigits = Math.max(maxDigits, digitCount(num));
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-  return maxDigits;
 }
 
-function radixSort(nums: number[]): number[] {
-  const maxDigitCount = mostDigits(nums);
-
-  for (let k = 0; k < maxDigitCount; k++) {
-    // Create buckets for each digit (0 to 9)
-    const buckets: number[][] = Array.from({ length: 10 }, () => []);
-
-    for (const num of nums) {
-      const digit = getDigit(num, k);
-      buckets[digit].push(num);
-    }
-
-    // Flatten the buckets back into the array
-    nums = [].concat(...buckets);
+function countLeafNodes(node: TreeNode | null): number {
+  if (node === null) {
+    return 0; // No node, no leaf
   }
-
-  return nums;
+  if (node.left === null && node.right === null) {
+    return 1; // This node is a leaf
+  }
+  // Recur on left and right subtrees
+  return countLeafNodes(node.left) + countLeafNodes(node.right);
 }
 
 // Example usage:
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+const tree = new TreeNode(
+  1,
+  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
+  new TreeNode(3)
+);
+
+console.log(countLeafNodes(tree)); // Outputs: 3 (nodes 4, 5, and 3 are leaves)
