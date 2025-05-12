@@ -1,39 +1,43 @@
-function findSecondLargest(arr: number[]): number | undefined {
-  if (arr.length < 2) return undefined; // Not enough elements
+function lengthOfLIS(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-  // Sort the array in descending order
-  const sorted = [...arr].sort((a, b) => b - a);
+    const dp = new Array(nums.length).fill(1);
 
-  // The second largest element will be at index 1,
-  // but we must ensure duplicates don't interfere
-  for (let i = 1; i < sorted.length; i++) {
-    if (sorted[i] < sorted[0]) {
-      return sorted[i];
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[j] < nums[i]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
-  }
-  
-  return undefined; // All elements are the same
+
+    return Math.max(...dp);
 }
+function lengthOfLIS(nums: number[]): number {
+    const tail: number[] = [];
 
-// Example:
-console.log(findSecondLargest([5, 3, 9, 1, 9])); // Outputs 5
-function findSecondLargest(arr: number[]): number | undefined {
-  if (arr.length < 2) return undefined;
+    function binarySearch(target: number): number {
+        let left = 0, right = tail.length - 1;
 
-  let first = -Infinity;
-  let second = -Infinity;
-
-  for (const num of arr) {
-    if (num > first) {
-      second = first;
-      first = num;
-    } else if (num > second && num < first) {
-      second = num;
+        while (left <= right) {
+            const mid = Math.floor((left + right) / 2);
+            if (tail[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return left;
     }
-  }
 
-  return second === -Infinity ? undefined : second;
+    for (const num of nums) {
+        const idx = binarySearch(num);
+        if (idx < tail.length) {
+            tail[idx] = num;
+        } else {
+            tail.push(num);
+        }
+    }
+
+    return tail.length;
 }
-
-// Example:
-console.log(findSecondLargest([5, 3, 9, 1, 9])); // Outputs 5
