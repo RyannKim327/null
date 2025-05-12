@@ -1,22 +1,37 @@
-const arr = [1, 2, 3, 2, 4];
-const valueToRemove = 2;
+function findMajorityElement(nums: number[]): number | null {
+    const counts: { [key: number]: number } = {};
+    const majorityCount = Math.floor(nums.length / 2);
 
-const filteredArr = arr.filter(element => element !== valueToRemove);
-console.log(filteredArr); // [1, 3, 4]
-const arr = [1, 2, 3, 4];
-const indexToRemove = 2;
-
-if (indexToRemove > -1 && indexToRemove < arr.length) {
-  arr.splice(indexToRemove, 1);
+    for (const num of nums) {
+        counts[num] = (counts[num] || 0) + 1;
+        if (counts[num] > majorityCount) {
+            return num;
+        }
+    }
+    // If no majority element exists
+    return null;
 }
+function findMajorityElement(nums: number[]): number | null {
+    let count = 0;
+    let candidate: number | null = null;
 
-console.log(arr); // [1, 2, 4]
-const arr = [1, 2, 3, 2, 4];
-const valueToRemove = 2;
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
+    }
 
-const index = arr.indexOf(valueToRemove);
-if (index !== -1) {
-  arr.splice(index, 1);
+    // Verify candidate is actually majority
+    if (candidate !== null) {
+        let occurrence = 0;
+        for (const num of nums) {
+            if (num === candidate) occurrence++;
+        }
+        if (occurrence > Math.floor(nums.length / 2)) {
+            return candidate;
+        }
+    }
+
+    return null;
 }
-
-console.log(arr); // [1, 3, 2, 4]
