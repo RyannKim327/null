@@ -1,8 +1,30 @@
-function triangleArea(base: number, height: number): number {
-  return 0.5 * base * height;
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
+
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
-// Example usage:
-const base = 10;
-const height = 5;
-console.log(`Area of the triangle: ${triangleArea(base, height)}`); // Output: 25
+function findNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
+  if (!head || n <= 0) return null;
+
+  let first: ListNode<T> | null = head;
+  let second: ListNode<T> | null = head;
+
+  // Move first pointer n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (!first) return null; // n is larger than the list length
+    first = first.next;
+  }
+
+  // Move both pointers until first reaches the end
+  while (first !== null) {
+    first = first.next;
+    second = second!.next;
+  }
+
+  return second;
+}
