@@ -1,37 +1,37 @@
-function findMajorityElement(nums: number[]): number | null {
-    const counts: { [key: number]: number } = {};
-    const majorityCount = Math.floor(nums.length / 2);
+function countingSort(arr: number[]): number[] {
+  if (arr.length === 0) return [];
 
-    for (const num of nums) {
-        counts[num] = (counts[num] || 0) + 1;
-        if (counts[num] > majorityCount) {
-            return num;
-        }
-    }
-    // If no majority element exists
-    return null;
-}
-function findMajorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
+  // Find the maximum and minimum values to handle negative numbers as well
+  let max = arr[0];
+  let min = arr[0];
+  for (const num of arr) {
+    if (num > max) max = num;
+    if (num < min) min = num;
+  }
 
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
-    }
+  // Initialize count array size based on the range of input values
+  const range = max - min + 1;
+  const count = new Array(range).fill(0);
 
-    // Verify candidate is actually majority
-    if (candidate !== null) {
-        let occurrence = 0;
-        for (const num of nums) {
-            if (num === candidate) occurrence++;
-        }
-        if (occurrence > Math.floor(nums.length / 2)) {
-            return candidate;
-        }
-    }
+  // Count each element's frequency
+  for (const num of arr) {
+    count[num - min]++;
+  }
 
-    return null;
+  // Accumulate the counts (prefix sums) - optional if you want a stable sort
+  for (let i = 1; i < count.length; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Output array to place sorted elements
+  const output = new Array(arr.length);
+
+  // Build the output array from the input (traverse from the end for stability)
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const num = arr[i];
+    count[num - min]--;
+    output[count[num - min]] = num;
+  }
+
+  return output;
 }
