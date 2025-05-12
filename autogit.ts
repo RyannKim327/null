@@ -1,81 +1,86 @@
-type Graph = {
-  [node: string]: { neighbor: string; weight: number }[];
-};
-function dijkstra(graph: Graph, start: string) {
-  // Distances from start to each node, initialized to Infinity
-  const distances: Record<string, number> = {};
-  // Keeps track of visited nodes
-  const visited: Set<string> = new Set();
-  // Previous node for path reconstruction
-  const previous: Record<string, string | null> = {};
-
-  // Initialize distances and previous nodes
-  for (const node in graph) {
-    distances[node] = Infinity;
-    previous[node] = null;
+function buildBadCharTable(pattern: string): number[] {
+  const table = new Array(256).fill(-1);
+  for (let i = 0; i < pattern.length; i++) {
+    table[pattern.charCodeAt(i)] = i;
   }
-  distances[start] = 0;
-
-  while (true) {
-    // Find unvisited node with smallest tentative distance
-    let closestNode: string | null = null;
-    let smallestDistance = Infinity;
-    for (const node in distances) {
-      if (!visited.has(node) && distances[node] < smallestDistance) {
-        smallestDistance = distances[node];
-        closestNode = node;
-      }
-    }
-
-    // If all nodes visited or smallest distance is Infinity, stop
-    if (closestNode === null) break;
-
-    // Mark current node as visited
-    visited.add(closestNode);
-
-    // Update distances to neighbors
-    for (const { neighbor, weight } of graph[closestNode]) {
-      if (visited.has(neighbor)) continue;
-
-      const newDistance = distances[closestNode] + weight;
-      if (newDistance < distances[neighbor]) {
-        distances[neighbor] = newDistance;
-        previous[neighbor] = closestNode;
-      }
-    }
-  }
-
-  return { distances, previous };
+  return table;
 }
 
-// Optional helper function to reconstruct path from start to target
-function reconstructPath(previous: Record<string, string | null>, start: string, end: string): string[] {
-  const path: string[] = [];
-  let current: string | null = end;
+function buildSuffixes(pattern: string): number[] {
+  const m = pattern.length;
+  const suffixes = new Array(m).fill(0);
+  let f = 0;
+  let g = m - 1;
 
-  while (current !== null) {
-    path.unshift(current);
-    current = previous[current];
+  suffixes[m - 1] = m;
+  for (let i = m - 2; i >= 0; i--) {
+    if (i > g && suffixes[i + m - 1 - f] < i - g) {
+      suffixes[i] = suffixes[i + m - 1 - f];
+    } else {
+      g = i;
+      f = i;
+      while (g >= 0 && pattern[g] === pattern[g + m - 1 - f]) {
+        g--;
+      }
+      suffixes[i] = f - g;
+    }
   }
-
-  if (path[0] === start) {
-    return path;
-  } else {
-    // No path found
-    return [];
-  }
+  return suffixes;
 }
-const graph: Graph = {
-  A: [{ neighbor: "B", weight: 7 }, { neighbor: "C", weight: 9 }, { neighbor: "F", weight: 14 }],
-  B: [{ neighbor: "A", weight: 7 }, { neighbor: "C", weight: 10 }, { neighbor: "D", weight: 15 }],
-  C: [{ neighbor: "A", weight: 9 }, { neighbor: "B", weight: 10 }, { neighbor: "D", weight: 11 }, { neighbor: "F", weight: 2 }],
-  D: [{ neighbor: "B", weight: 15 }, { neighbor: "C", weight: 11 }, { neighbor: "E", weight: 6 }],
-  E: [{ neighbor: "D", weight: 6 }, { neighbor: "F", weight: 9 }],
-  F: [{ neighbor: "A", weight: 14 }, { neighbor: "C", weight: 2 }, { neighbor: "E", weight: 9 }]
-};
 
-const { distances, previous } = dijkstra(graph, "A");
-console.log("Distances from A:", distances);
+function buildGoodSuffixTable(pattern: string): number[] {
+  const m = pattern.length;
+  const goodSuffix = new Array(m).fill(m);
+  const suffixes = buildSuffixes(pattern);
 
-const path = reconstructPath(previous, "A", "E");
-console.log("Path from A to E:", path);
+  for (let i = m - 1; i >= 0; i--) {
+    if (suffixes[i] === i + 1) {
+      for (let j = 0; j < m - 1 - i; j++) {
+        if (goodSuffix[j] === m) {
+          goodSuffix[j] = m - 1 - i;
+        }
+      }
+    }
+  }
+  for (let i = 0; i <= m - 2; i++) {
+    goodSuffix[m - 1 - suffixes[i]] = m - 1 - i;
+  }
+  return goodSuffix;
+}
+
+function boyerMooreSearch(text: string, pattern: string): number[] {
+  const n = text.length;
+  const m = pattern.length;
+  if (m === 0) return [];
+
+  const badCharTable = buildBadCharTable(pattern);
+  const goodSuffixTable = buildGoodSuffixTable(pattern);
+
+  const result: number[] = [];
+  let s = 0; // shift of the pattern with respect to text
+
+  while (s <= n - m) {
+    let j = m - 1;
+
+    while (j >= 0 && pattern[j] === text[s + j]) {
+      j--;
+    }
+
+    if (j < 0) {
+      result.push(s);
+      s += goodSuffixTable[0];
+    } else {
+      const badCharShift = j - badCharTable[text.charCodeAt(s + j)];
+      const goodSuffixShift = goodSuffixTable[j];
+      s += Math.max(1, badCharShift, goodSuffixShift);
+    }
+  }
+
+  return result;
+}
+
+// Example usage:
+const text = "abacaabadcabacabaabb";
+const pattern = "abacab";
+const indices = boyerMooreSearch(text, pattern);
+console.log(indices); // Output: [10]
