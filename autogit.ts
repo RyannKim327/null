@@ -1,23 +1,39 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
-
-  constructor(value: T) {
-    this.value = value;
-    this.next = null;
-  }
+function getDigit(num: number, place: number): number {
+  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
 }
 
-function findMiddle<T>(head: ListNode<T> | null): ListNode<T> | null {
-  if (!head) return null;
+function digitCount(num: number): number {
+  if (num === 0) return 1;
+  return Math.floor(Math.log10(Math.abs(num))) + 1;
+}
 
-  let slow: ListNode<T> | null = head;
-  let fast: ListNode<T> | null = head;
+function mostDigits(nums: number[]): number {
+  let maxDigits = 0;
+  for (const num of nums) {
+    maxDigits = Math.max(maxDigits, digitCount(num));
+  }
+  return maxDigits;
+}
 
-  while (fast !== null && fast.next !== null) {
-    slow = slow!.next;
-    fast = fast.next.next;
+function radixSort(nums: number[]): number[] {
+  const maxDigitCount = mostDigits(nums);
+
+  for (let k = 0; k < maxDigitCount; k++) {
+    // Create buckets for each digit (0 to 9)
+    const buckets: number[][] = Array.from({ length: 10 }, () => []);
+
+    for (const num of nums) {
+      const digit = getDigit(num, k);
+      buckets[digit].push(num);
+    }
+
+    // Flatten the buckets back into the array
+    nums = [].concat(...buckets);
   }
 
-  return slow;
+  return nums;
 }
+
+// Example usage:
+const arr = [170, 45, 75, 90, 802, 24, 2, 66];
+console.log(radixSort(arr)); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
