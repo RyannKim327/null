@@ -1,59 +1,70 @@
-function fibonacciSearch<T>(arr: T[], target: T, compare: (a: T, b: T) => number): number {
-  const n = arr.length;
-
-  // Initialize Fibonacci numbers
-  let fibMMm2 = 0; // (m-2)'th Fibonacci number
-  let fibMMm1 = 1; // (m-1)'th Fibonacci number
-  let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci number
-
-  // fibM is the smallest Fibonacci number greater or equal to n
-  while (fibM < n) {
-    fibMMm2 = fibMMm1;
-    fibMMm1 = fibM;
-    fibM = fibMMm1 + fibMMm2;
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+  const merged: number[] = [];
+  let i = 0, j = 0;
+  
+  while (i < nums1.length && j < nums2.length) {
+    if (nums1[i] < nums2[j]) {
+      merged.push(nums1[i]);
+      i++;
+    } else {
+      merged.push(nums2[j]);
+      j++;
+    }
+  }
+  
+  while (i < nums1.length) {
+    merged.push(nums1[i]);
+    i++;
+  }
+  
+  while (j < nums2.length) {
+    merged.push(nums2[j]);
+    j++;
+  }
+  
+  const mid = Math.floor(merged.length / 2);
+  if (merged.length % 2 === 0) {
+    return (merged[mid - 1] + merged[mid]) / 2;
+  } else {
+    return merged[mid];
+  }
+}
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+  if (nums1.length > nums2.length) {
+    return findMedianSortedArrays(nums2, nums1);
   }
 
-  // Marks the eliminated range from front
-  let offset = -1;
+  const m = nums1.length;
+  const n = nums2.length;
+  let low = 0, high = m;
 
-  /* While there are elements to be inspected. Note that
-     we compare arr[fibMMm2] with target. When fibM becomes 1,
-     fibMMm1 becomes 1 and fibMMm2 becomes 0 */
-  while (fibM > 1) {
-    // Check if fibMMm2 is a valid location
-    let i = Math.min(offset + fibMMm2, n - 1);
+  while (low <= high) {
+    const partitionX = Math.floor((low + high) / 2);
+    const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
 
-    const cmp = compare(arr[i], target);
+    const maxLeftX = partitionX === 0 ? Number.NEGATIVE_INFINITY : nums1[partitionX - 1];
+    const minRightX = partitionX === m ? Number.POSITIVE_INFINITY : nums1[partitionX];
 
-    if (cmp < 0) {
-      // Move the three Fibonacci variables down by one
-      fibM = fibMMm1;
-      fibMMm1 = fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
-      offset = i;
-    } else if (cmp > 0) {
-      // Move the Fibonacci variables down by two
-      fibM = fibMMm2;
-      fibMMm1 = fibMMm1 - fibMMm2;
-      fibMMm2 = fibM - fibMMm1;
+    const maxLeftY = partitionY === 0 ? Number.NEGATIVE_INFINITY : nums2[partitionY - 1];
+    const minRightY = partitionY === n ? Number.POSITIVE_INFINITY : nums2[partitionY];
+
+    if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
+      // Found the correct partition
+      if ((m + n) % 2 === 0) {
+        return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
+      } else {
+        return Math.max(maxLeftX, maxLeftY);
+      }
+    } else if (maxLeftX > minRightY) {
+      high = partitionX - 1;
     } else {
-      return i; // Found target
+      low = partitionX + 1;
     }
   }
 
-  // Comparing the last element with target
-  if (fibMMm1 && offset + 1 < n && compare(arr[offset + 1], target) === 0) {
-    return offset + 1;
-  }
-
-  // Not found
-  return -1;
+  throw new Error("Input arrays are not sorted or valid");
 }
-const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const target = 85;
+const arr1 = [1, 3, 8];
+const arr2 = [7, 9, 10, 11];
 
-// Comparator function for numbers
-const compareNumbers = (a: number, b: number) => a - b;
-
-const index = fibonacciSearch(arr, target, compareNumbers);
-console.log(index);  // Output: 8 (the index of 85)
+console.log(findMedianSortedArrays(arr1, arr2)); // Output: 8
