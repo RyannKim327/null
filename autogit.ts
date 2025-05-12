@@ -5,18 +5,19 @@ interface User {
   email: string;
 }
 
-async function fetchUser(userId: number): Promise<User> {
-  const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
-
-  if (!response.ok) {
-    throw new Error(`Failed to fetch user with ID ${userId}: ${response.statusText}`);
+async function fetchUsers(): Promise<void> {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/users');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const users: User[] = await response.json();
+    users.forEach(user => {
+      console.log(`${user.id}: ${user.username}`);
+    });
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
   }
-
-  const user: User = await response.json();
-  return user;
 }
 
-// Example usage:
-fetchUser(1)
-  .then(user => console.log(user))
-  .catch(err => console.error(err));
+fetchUsers();
