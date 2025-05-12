@@ -1,34 +1,28 @@
-type Node<T> = {
-  state: T;
-  depth: number;
-};
-
-function breadthLimitedSearch<T>(
-  start: T,
-  isGoal: (state: T) => boolean,
-  getNeighbors: (state: T) => T[],
-  limit: number
-): T | null {
-  const queue: Node<T>[] = [{ state: start, depth: 0 }];
-  const visited: Set<string> = new Set();
-
-  while (queue.length > 0) {
-    const currentNode = queue.shift()!;
-    const { state, depth } = currentNode;
-
-    // Consider stringifying state if it's not a primitive for correct Set behavior
-    const stateKey = JSON.stringify(state);
-    if (visited.has(stateKey)) continue;
-    visited.add(stateKey);
-
-    if (isGoal(state)) return state;
-
-    if (depth < limit) {
-      for (const neighbor of getNeighbors(state)) {
-        queue.push({ state: neighbor, depth: depth + 1 });
+// Simulated async connection task
+async function connectToAndroidService(): Promise<string> {
+  console.log('Starting connection to Android service...');
+  
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const success = Math.random() > 0.3; // 70% chance to connect
+      
+      if (success) {
+        resolve('Connected to Android service successfully!');
+      } else {
+        reject(new Error('Failed to connect to Android service.'));
       }
-    }
-  }
-
-  return null; // no solution found within depth limit
+    }, 2000); // simulate async 2-second task
+  });
 }
+
+// Usage example
+async function runConnection() {
+  try {
+    const result = await connectToAndroidService();
+    console.log(result);
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+runConnection();
