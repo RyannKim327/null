@@ -1,58 +1,27 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+class ListNode {
+  value: any;
+  next: ListNode | null;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-                // no increment of i here
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-    
-    return lps;
+  constructor(value: any, next: ListNode | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
-function KMPSearch(text: string, pattern: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
+function hasCycle(head: ListNode | null): boolean {
+  if (!head) return false;
 
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;
+    fast = fast.next.next;
 
-        if (j === pattern.length) {
-            // Found a match at index (i - j)
-            result.push(i - j);
-            j = lps[j - 1];
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
+    if (slow === fast) {
+      return true; // Cycle detected
     }
+  }
 
-    return result;
+  return false; // No cycle
 }
-
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = KMPSearch(text, pattern);
-console.log("Pattern found at positions:", matches);
