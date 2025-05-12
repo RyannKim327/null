@@ -1,27 +1,21 @@
-import axios from 'axios';
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
-async function fetchUsers(): Promise<void> {
-  try {
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    const users = response.data;
-    
-    users.forEach(user => {
-      console.log(`User: ${user.name} (${user.username}), Email: ${user.email}`);
-    });
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      console.error(`Axios error: ${error.message}`);
-    } else {
-      console.error(`Unexpected error: ${error}`);
-    }
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
 }
+function maxDepth(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
 
-fetchUsers();
+  const leftDepth = maxDepth(root.left);
+  const rightDepth = maxDepth(root.right);
+
+  return Math.max(leftDepth, rightDepth) + 1;
+}
