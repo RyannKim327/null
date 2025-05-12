@@ -1,7 +1,11 @@
-const originalString = "Hello World!";
-const lowerCaseString = originalString.toLowerCase();
+import * as readline from 'readline';
 
-console.log(lowerCaseString); // Output: "hello world!"
-function toLowerCase(str: string): string {
-  return str.toLowerCase();
-}
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question('Enter your name: ', (name: string) => {
+  console.log(`Hello, ${name}! Welcome to TypeScript.`);
+  rl.close();
+});
