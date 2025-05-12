@@ -1,18 +1,12 @@
-const numbers = [1, 2, 2, 3, 4, 4, 5];
-const uniqueNumbers = Array.from(new Set(numbers));
-console.log(uniqueNumbers); // [1, 2, 3, 4, 5]
-const uniqueNumbers = [...new Set(numbers)];
-const uniqueNumbers = numbers.filter((item, index) => numbers.indexOf(item) === index);
-interface User {
-  id: number;
-  name: string;
+function isPalindrome(str: string): boolean {
+  // Normalize the string: make lowercase and remove non-alphanumeric characters
+  const normalized = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+  // Reverse the normalized string
+  const reversed = normalized.split('').reverse().join('');
+  // Compare the normalized string with the reversed one
+  return normalized === reversed;
 }
 
-const users: User[] = [
-  { id: 1, name: "Alice" },
-  { id: 2, name: "Bob" },
-  { id: 1, name: "Alice" }
-];
-
-const uniqueUsers = Array.from(new Map(users.map(user => [user.id, user])).values());
-console.log(uniqueUsers);
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("Hello, world!")); // false
