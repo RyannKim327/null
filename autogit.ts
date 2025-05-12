@@ -1,56 +1,39 @@
-class ListNode {
-  value: number;
-  next: ListNode | null;
+function longestIncreasingSubsequence(arr: number[]): number[] {
+    const n = arr.length;
+    if (n === 0) return [];
 
-  constructor(value: number, next: ListNode | null = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
-function isPalindrome(head: ListNode | null): boolean {
-  if (!head || !head.next) return true;
+    // dp[i] will hold the length of the LIS ending at index i
+    const dp = Array(n).fill(1);
+    // prev[i] will store the previous index in the LIS ending at i
+    const prev = Array(n).fill(-1);
 
-  // Find the middle of the list (slow will end up at middle)
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head;
+    let maxLength = 1;
+    let maxIndex = 0;
 
-  while (fast && fast.next) {
-    slow = slow!.next;
-    fast = fast.next.next;
-  }
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[j] < arr[i] && dp[j] + 1 > dp[i]) {
+                dp[i] = dp[j] + 1;
+                prev[i] = j;
+            }
+        }
 
-  // Reverse the second half of the list
-  let secondHalfHead = reverseList(slow);
-
-  // Compare the first half and the reversed second half
-  let firstHalfPointer = head;
-  let secondHalfPointer = secondHalfHead;
-  let result = true;
-
-  while (secondHalfPointer) {
-    if (firstHalfPointer!.value !== secondHalfPointer.value) {
-      result = false;
-      break;
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+            maxIndex = i;
+        }
     }
-    firstHalfPointer = firstHalfPointer!.next;
-    secondHalfPointer = secondHalfPointer.next;
-  }
 
-  // (Optional) Restore the original list by reversing the second half back
-  reverseList(secondHalfHead);
+    // Reconstruct the LIS
+    const lis: number[] = [];
+    for (let i = maxIndex; i !== -1; i = prev[i]) {
+        lis.push(arr[i]);
+    }
+    lis.reverse();
 
-  return result;
+    return lis;
 }
 
-function reverseList(head: ListNode | null): ListNode | null {
-  let prev: ListNode | null = null;
-  let current: ListNode | null = head;
-
-  while (current) {
-    const nextTemp = current.next;
-    current.next = prev;
-    prev = current;
-    current = nextTemp;
-  }
-  return prev;
-}
+// Example usage
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(arr)); // Output: [2, 3, 7, 101]
