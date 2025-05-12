@@ -1,76 +1,68 @@
-class TreeNode<T> {
-    value: T;
-    left: TreeNode<T> | null = null;
-    right: TreeNode<T> | null = null;
+class SuffixTreeNode {
+  edges: Map<string, SuffixTreeNode>;
+  // If you want compressed edges, you can store label on edges or here, but let's keep simple:
+  indices: number[]; // indices of suffixes that reach this node (optional, helps searching)
 
-    constructor(value: T) {
-        this.value = value;
-    }
+  constructor() {
+    this.edges = new Map();
+    this.indices = [];
+  }
 }
 
-class BinarySearchTree<T> {
-    root: TreeNode<T> | null = null;
+class SuffixTree {
+  root: SuffixTreeNode;
+  text: string;
 
-    // Insert a new value into the BST
-    insert(value: T): void {
-        const newNode = new TreeNode(value);
+  constructor(text: string) {
+    this.text = text;
+    this.root = new SuffixTreeNode();
+    this.build();
+  }
 
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-
-        let current = this.root;
-        while (true) {
-            if (value < current.value) {
-                if (current.left === null) {
-                    current.left = newNode;
-                    return;
-                }
-                current = current.left;
-            } else {
-                if (current.right === null) {
-                    current.right = newNode;
-                    return;
-                }
-                current = current.right;
-            }
-        }
+  build() {
+    for (let i = 0; i < this.text.length; i++) {
+      this.insertSuffix(i);
     }
+  }
 
-    // Search for a value in the BST
-    search(value: T): boolean {
-        let current = this.root;
-        while (current !== null) {
-            if (value === current.value) {
-                return true;
-            }
-            if (value < current.value) {
-                current = current.left;
-            } else {
-                current = current.right;
-            }
-        }
-        return false;
+  insertSuffix(startIndex: number) {
+    let currentNode = this.root;
+    for (let i = startIndex; i < this.text.length; i++) {
+      const char = this.text[i];
+      if (!currentNode.edges.has(char)) {
+        currentNode.edges.set(char, new SuffixTreeNode());
+      }
+      currentNode = currentNode.edges.get(char)!;
+      currentNode.indices.push(startIndex);
     }
+  }
 
-    // In-order traversal: Left, Node, Right
-    inorderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            this.inorderTraversal(node.left, result);
-            result.push(node.value);
-            this.inorderTraversal(node.right, result);
-        }
-        return result;
+  // Search if a pattern exists in the text using the suffix tree
+  search(pattern: string): boolean {
+    let currentNode = this.root;
+    for (const char of pattern) {
+      if (!currentNode.edges.has(char)) return false;
+      currentNode = currentNode.edges.get(char)!;
     }
+    return true;
+  }
+
+  // Optional: get all starting indices where pattern occurs
+  getSuffixIndices(pattern: string): number[] {
+    let currentNode = this.root;
+    for (const char of pattern) {
+      if (!currentNode.edges.has(char)) return [];
+      currentNode = currentNode.edges.get(char)!;
+    }
+    return currentNode.indices;
+  }
 }
-const bst = new BinarySearchTree<number>();
-bst.insert(10);
-bst.insert(5);
-bst.insert(13);
-bst.insert(9);
-bst.insert(11);
 
-console.log(bst.search(13));  // true
-console.log(bst.search(7));   // false
-console.log(bst.inorderTraversal()); // [5, 9, 10, 11, 13]
+// Usage example:
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nana")); // true
+console.log(suffixTree.search("bananas")); // false
+console.log(suffixTree.getSuffixIndices("ana")); // [1, 3]
