@@ -1,10 +1,58 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Remove spaces and convert to lowercase for a case-insensitive comparison
-    const normalize = (str: string) =>
-        str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
-    
-    return normalize(str1) === normalize(str2);
+class SuffixTreeNode {
+  children: Map<string, SuffixTreeNode>;
+  // Optional: index to store position of suffix, useful in leaf nodes
+  index?: number;
+
+  constructor() {
+    this.children = new Map();
+  }
 }
-console.log(areAnagrams("Listen", "Silent")); // true
-console.log(areAnagrams("Hello", "Olelh")); // true
-console.log(areAnagrams("World", "Word")); // false
+
+class SuffixTree {
+  root: SuffixTreeNode;
+  text: string;
+
+  constructor(text: string) {
+    this.root = new SuffixTreeNode();
+    this.text = text;
+    this.build();
+  }
+
+  private build() {
+    for (let i = 0; i < this.text.length; i++) {
+      this.insertSuffix(i);
+    }
+  }
+
+  private insertSuffix(start: number) {
+    let currentNode = this.root;
+
+    // Insert substring text[start..end]
+    for (let j = start; j < this.text.length; j++) {
+      const char = this.text[j];
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new SuffixTreeNode());
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+
+    // Mark leaf node by storing suffix start index
+    currentNode.index = start;
+  }
+
+  search(pattern: string): boolean {
+    let currentNode = this.root;
+
+    for (const char of pattern) {
+      if (!currentNode.children.has(char)) return false;
+      currentNode = currentNode.children.get(char)!;
+    }
+
+    return true;
+  }
+}
+
+// Usage
+const st = new SuffixTree("banana");
+console.log(st.search("ana"));  // true
+console.log(st.search("nab"));  // false
