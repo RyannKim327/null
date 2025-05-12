@@ -1,9 +1,11 @@
-let str1: string = "Hello, ";
-let str2: string = "world!";
-let result = str1 + str2;  // "Hello, world!"
-let str1: string = "Hello, ";
-let str2: string = "world!";
-let result = `${str1}${str2}`;  // "Hello, world!"
-let str1: string = "Hello, ";
-let str2: string = "world!";
-let result = str1.concat(str2);  // "Hello, world!"
+function reverseWords(input: string): string {
+  return input.split(' ').reverse().join(' ');
+}
+
+// Example usage:
+const original = "The quick brown fox";
+const reversed = reverseWords(original);
+console.log(reversed); // Output: "fox brown quick The"
+function reverseWords(input: string): string {
+  return input.trim().split(/\s+/).reverse().join(' ');
+}
