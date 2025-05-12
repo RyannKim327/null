@@ -1,12 +1,15 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false; // 0 and 1 are not prime
-  if (num <= 3) return true;  // 2 and 3 are prime
+const arr = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArr = Array.from(new Set(arr));
 
-  if (num % 2 === 0 || num % 3 === 0) return false; // eliminate multiples of 2 and 3 quickly
-
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) return false;
+console.log(uniqueArr); // [1, 2, 3, 4, 5]
+const uniqueArr = [...new Set(arr)];
+const uniqueArr = arr.filter((item, index) => arr.indexOf(item) === index);
+const seen: {[key: string]: boolean} = {};
+const uniqueArr = arr.filter(item => {
+  if (seen[item]) {
+    return false;
+  } else {
+    seen[item] = true;
+    return true;
   }
-
-  return true;
-}
+});
