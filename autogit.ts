@@ -1,21 +1,41 @@
-function firstNonRepeatingChar(str: string): string | null {
-  const charCount: Record<string, number> = {};
+class ListNode<T> {
+  data: T;
+  next: ListNode<T> | null = null;
 
-  // Count occurrences
-  for (const char of str) {
-    charCount[char] = (charCount[char] || 0) + 1;
+  constructor(data: T) {
+    this.data = data;
   }
-
-  // Find first non-repeating character
-  for (const char of str) {
-    if (charCount[char] === 1) {
-      return char;
-    }
-  }
-
-  return null; // No non-repeating character found
 }
+class LinkedList<T> {
+  private head: ListNode<T> | null = null;
 
-// Example usage:
-const input = "swiss";
-console.log(firstNonRepeatingChar(input)); // Output: "w"
+  // Add a node at the end
+  append(data: T): void {
+    const newNode = new ListNode(data);
+    if (!this.head) {
+      this.head = newNode;
+      return;
+    }
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = newNode;
+  }
+
+  // Print all elements in the list
+  print(): void {
+    let current = this.head;
+    const elements: T[] = [];
+    while (current) {
+      elements.push(current.data);
+      current = current.next;
+    }
+    console.log(elements.join(" -> "));
+  }
+}
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.append(30);
+list.print(); // Output: 10 -> 20 -> 30
