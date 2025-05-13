@@ -1,14 +1,16 @@
-function isPalindrome(str: string): boolean {
-  // Normalize the string: remove non-alphanumeric chars and convert to lowercase
-  const normalized = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+const numbers = [3, 6, 2, 8, 4];
+const maxValue = Math.max(...numbers);
+console.log(maxValue);  // Output: 8
+const numbers = [3, 6, 2, 8, 4];
+let maxValue = numbers[0];
 
-  // Reverse the normalized string
-  const reversed = normalized.split('').reverse().join('');
-
-  // Compare both
-  return normalized === reversed;
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > maxValue) {
+    maxValue = numbers[i];
+  }
 }
 
-// Example
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("Hello, world!")); // false
+console.log(maxValue);  // Output: 8
+const numbers = [3, 6, 2, 8, 4];
+const maxValue = numbers.reduce((max, current) => (current > max ? current : max), numbers[0]);
+console.log(maxValue);  // Output: 8
