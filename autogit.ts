@@ -1,45 +1,30 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
-
-    constructor(val: number) {
-        this.val = val;
-        this.next = null;
+function selectionSort(arr: number[]): number[] {
+  // Make a copy of the array to avoid mutating the original
+  const sortedArr = [...arr];
+  
+  const n = sortedArr.length;
+  
+  for (let i = 0; i < n - 1; i++) {
+    // Assume the current position i is the minimum
+    let minIndex = i;
+    
+    // Check the rest of the array to find the true minimum
+    for (let j = i + 1; j < n; j++) {
+      if (sortedArr[j] < sortedArr[minIndex]) {
+        minIndex = j;
+      }
     }
+    
+    // If minIndex is not the position i, swap the elements
+    if (minIndex !== i) {
+      [sortedArr[i], sortedArr[minIndex]] = [sortedArr[minIndex], sortedArr[i]];
+    }
+  }
+  
+  return sortedArr;
 }
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
 
-    // Helper to get length of a list
-    const getLength = (head: ListNode | null): number => {
-        let length = 0;
-        let current = head;
-        while (current) {
-            length++;
-            current = current.next;
-        }
-        return length;
-    };
-
-    let lenA = getLength(headA);
-    let lenB = getLength(headB);
-
-    // Align starts
-    while (lenA > lenB) {
-        headA = headA!.next;
-        lenA--;
-    }
-
-    while (lenB > lenA) {
-        headB = headB!.next;
-        lenB--;
-    }
-
-    // Move both pointers until they collide or reach end
-    while (headA !== headB) {
-        headA = headA!.next;
-        headB = headB!.next;
-    }
-
-    return headA;  // Can be null or the intersection node
-}
+// Example usage:
+const numbers = [64, 25, 12, 22, 11];
+const sortedNumbers = selectionSort(numbers);
+console.log(sortedNumbers); // Output: [11, 12, 22, 25, 64]
