@@ -1,61 +1,112 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    const merged: number[] = [];
-    let i = 0, j = 0;
+class BTreeNode<T> {
+  keys: T[] = [];
+  children: BTreeNode<T>[] = [];
+  leaf: boolean;
 
-    while (i < nums1.length && j < nums2.length) {
-        if (nums1[i] < nums2[j]) {
-            merged.push(nums1[i]);
-            i++;
-        } else {
-            merged.push(nums2[j]);
-            j++;
-        }
+  constructor(leaf = false) {
+    this.leaf = leaf;
+  }
+}
+
+class BTree<T> {
+  root: BTreeNode<T>;
+  t: number; // Minimum degree (defines the range for number of keys)
+
+  constructor(t: number) {
+    this.t = t;
+    this.root = new BTreeNode<T>(true);
+  }
+
+  // Search key k in subtree rooted with this node
+  search(k: T, node: BTreeNode<T> = this.root): BTreeNode<T> | null {
+    let i = 0;
+    
+    // Find the first key greater or equal to k
+    while (i < node.keys.length && k > node.keys[i]) {
+      i++;
     }
+    
+    if (i < node.keys.length && k === node.keys[i]) {
+      return node;
+    }
+    
+    if (node.leaf) {
+      return null;
+    }
+    
+    return this.search(k, node.children[i]);
+  }
 
-    // Append remaining elements
-    while (i < nums1.length) merged.push(nums1[i++]);
-    while (j < nums2.length) merged.push(nums2[j++]);
+  // Insert a new key in the B-tree
+  insert(k: T): void {
+    const r = this.root;
 
-    const mid = Math.floor(merged.length / 2);
-
-    if (merged.length % 2 === 0) {
-        return (merged[mid - 1] + merged[mid]) / 2;
+    if (r.keys.length === 2 * this.t - 1) {
+      // Root is full, tree grows in height
+      const s = new BTreeNode<T>(false);
+      this.root = s;
+      s.children.push(r);
+      this.splitChild(s, 0);
+      this.insertNonFull(s, k);
     } else {
-        return merged[mid];
+      this.insertNonFull(r, k);
     }
+  }
+
+  private insertNonFull(node: BTreeNode<T>, k: T) {
+    let i = node.keys.length - 1;
+
+    if (node.leaf) {
+      // Insert the new key at correct position
+      node.keys.push(k); // Add dummy key to extend array
+      while (i >= 0 && k < node.keys[i]) {
+        node.keys[i + 1] = node.keys[i];
+        i--;
+      }
+      node.keys[i + 1] = k;
+    } else {
+      // Move to the correct child
+      while (i >= 0 && k < node.keys[i]) i--;
+      i++;
+
+      if (node.children[i].keys.length === 2 * this.t - 1) {
+        this.splitChild(node, i);
+
+        if (k > node.keys[i]) i++;
+      }
+
+      this.insertNonFull(node.children[i], k);
+    }
+  }
+
+  private splitChild(parent: BTreeNode<T>, i: number) {
+    const t = this.t;
+    const y = parent.children[i];
+    const z = new BTreeNode<T>(y.leaf);
+
+    // Move last t-1 keys from y to z
+    z.keys = y.keys.splice(t);
+    // If y is not leaf, move last t children from y to z
+    if (!y.leaf) {
+      z.children = y.children.splice(t);
+    }
+
+    parent.children.splice(i + 1, 0, z);
+    parent.keys.splice(i, 0, y.keys.splice(t - 1, 1)[0]);
+  }
+
+  // To visualize the tree — helpful for debugging
+  traverse(node: BTreeNode<T> = this.root, depth: number = 0) {
+    console.log('  '.repeat(depth) + node.keys.join(', '));
+    if (!node.leaf) {
+      node.children.forEach(child => this.traverse(child, depth + 1));
+    }
+  }
 }
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    if (nums1.length > nums2.length) {
-        // Ensure nums1 is the smaller array
-        return findMedianSortedArrays(nums2, nums1);
-    }
 
-    const m = nums1.length;
-    const n = nums2.length;
-    let low = 0, high = m;
-
-    while (low <= high) {
-        const partitionX = Math.floor((low + high) / 2);
-        const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
-
-        const maxX = partitionX === 0 ? Number.NEGATIVE_INFINITY : nums1[partitionX - 1];
-        const maxY = partitionY === 0 ? Number.NEGATIVE_INFINITY : nums2[partitionY - 1];
-
-        const minX = partitionX === m ? Number.POSITIVE_INFINITY : nums1[partitionX];
-        const minY = partitionY === n ? Number.POSITIVE_INFINITY : nums2[partitionY];
-
-        if (maxX <= minY && maxY <= minX) {
-            if ((m + n) % 2 === 0) {
-                return (Math.max(maxX, maxY) + Math.min(minX, minY)) / 2;
-            } else {
-                return Math.max(maxX, maxY);
-            }
-        } else if (maxX > minY) {
-            high = partitionX - 1;
-        } else {
-            low = partitionX + 1;
-        }
-    }
-
-    throw new Error("Input arrays are not sorted or invalid.");
-}
+// Usage example:
+const tree = new BTree<number>(2); // t=2 => max 3 keys per node
+[10, 20, 5, 6, 12, 30, 7, 17].forEach(num => tree.insert(num));
+tree.traverse();
+console.log('Search 6:', tree.search(6) ? 'Found' : 'Not found');
+console.log('Search 15:', tree.search(15) ? 'Found' : 'Not found');
