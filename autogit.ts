@@ -1,33 +1,26 @@
-function interpolationSearch(arr: number[], target: number): number {
-  let low = 0;
-  let high = arr.length - 1;
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
 
-  while (low <= high && target >= arr[low] && target <= arr[high]) {
-    // Prevent division by zero if arr[high] == arr[low]
-    if (arr[high] === arr[low]) {
-      if (arr[low] === target) return low;
-      else break;
-    }
-
-    // Estimate the position of the target value
-    const pos = low + Math.floor(
-      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
-    );
-
-    // Check the found position
-    if (arr[pos] === target) return pos;
-
-    if (arr[pos] < target) {
-      low = pos + 1;
-    } else {
-      high = pos - 1;
-    }
+  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
+    this.val = val;
+    this.left = left;
+    this.right = right;
   }
-
-  return -1; // target not found
 }
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90];
-const target = 70;
+function sumTree(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
+  return root.val + sumTree(root.left) + sumTree(root.right);
+}
+const tree = new TreeNode(1,
+  new TreeNode(2,
+    new TreeNode(4),
+    new TreeNode(5)
+  ),
+  new TreeNode(3)
+);
 
-const index = interpolationSearch(sortedArray, target);
-console.log(index);  // Output: 6
+console.log(sumTree(tree)); // Output should be 1 + 2 + 4 + 5 + 3 = 15
