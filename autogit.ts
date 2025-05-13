@@ -1,10 +1,23 @@
-function reverseWords(str: string): string {
-  return str.split(' ').reverse().join(' ');
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
+
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
-const input = "Hello world this is TypeScript";
-const reversed = reverseWords(input);
-console.log(reversed); // Output: "TypeScript is this world Hello"
-function reverseWords(str: string): string {
-  return str.trim().split(/\s+/).reverse().join(' ');
+function findMiddle<T>(head: ListNode<T> | null): T | null {
+  if (!head) return null;
+
+  let slow: ListNode<T> | null = head;
+  let fast: ListNode<T> | null = head;
+
+  while (fast !== null && fast.next !== null) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  return slow ? slow.value : null;
 }
