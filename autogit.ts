@@ -1,18 +1,14 @@
-function binarySearch(arr: number[], target: number): number {
-  let left = 0;
-  let right = arr.length - 1;
-  
-  while (left <= right) {
-    const mid = Math.floor((left + right) / 2);
-    
-    if (arr[mid] === target) {
-      return mid; // Found the target
-    } else if (arr[mid] < target) {
-      left = mid + 1; // Search in the right half
-    } else {
-      right = mid - 1; // Search in the left half
-    }
-  }
-  
-  return -1; // Target not found
+function isPalindrome(str: string): boolean {
+  // Normalize the string: remove non-alphanumeric chars and convert to lowercase
+  const normalized = str.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  // Reverse the normalized string
+  const reversed = normalized.split('').reverse().join('');
+
+  // Compare both
+  return normalized === reversed;
 }
+
+// Example
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("Hello, world!")); // false
