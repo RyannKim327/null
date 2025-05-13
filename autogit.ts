@@ -1,15 +1,39 @@
-const decimalNumber: number = 42;
-const binaryString: string = decimalNumber.toString(2);
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-console.log(binaryString); // Output: "101010"
-function decimalToBinary(decimal: number): string {
-    return decimal.toString(2);
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
 
-console.log(decimalToBinary(42)); // "101010"
-console.log(decimalToBinary(15)); // "1111"
-function decimalToBinaryArray(decimal: number): number[] {
-    return decimal.toString(2).split('').map(bit => parseInt(bit, 10));
-}
+function getNthFromEnd<T>(head: ListNode<T> | null, n: number): ListNode<T> | null {
+  if (!head || n <= 0) return null;
 
-console.log(decimalToBinaryArray(42)); // [1, 0, 1, 0, 1, 0]
+  let fast: ListNode<T> | null = head;
+  let slow: ListNode<T> | null = head;
+
+  // Move fast pointer n steps ahead
+  for (let i = 0; i < n; i++) {
+    if (!fast) return null;  // n is greater than length of list
+    fast = fast.next;
+  }
+
+  // Move both pointers until fast reaches the end
+  while (fast !== null) {
+    slow = slow!.next;
+    fast = fast.next;
+  }
+
+  return slow;
+}
+// Linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1,
+                new ListNode(2,
+                new ListNode(3,
+                new ListNode(4,
+                new ListNode(5)))));
+
+const nthNode = getNthFromEnd(head, 2);
+console.log(nthNode?.value);  // Outputs: 4
