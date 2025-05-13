@@ -1,10 +1,13 @@
-function isPalindrome(str: string): boolean {
-    const cleaned = str.toLowerCase().replace(/[^a-z0-9]/g, ''); // optional: ignore case and non-alphanumeric
-    const reversed = cleaned.split('').reverse().join('');
-    return cleaned === reversed;
+function calculateMean(numbers: number[]): number {
+  if (numbers.length === 0) {
+    throw new Error("Cannot calculate mean of an empty array");
+  }
+
+  const sum = numbers.reduce((acc, val) => acc + val, 0);
+  return sum / numbers.length;
 }
 
 // Example usage:
-console.log(isPalindrome("Racecar"));  // true
-console.log(isPalindrome("hello"));    // false
-console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+const data = [1, 2, 3, 4, 5];
+const mean = calculateMean(data);
+console.log(mean); // Outputs: 3
