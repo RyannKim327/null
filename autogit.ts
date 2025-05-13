@@ -1,3 +1,6 @@
+// Importing fetch type declarations (optional but useful)
+import fetch, { Response } from 'node-fetch';
+
 interface Post {
   userId: number;
   id: number;
@@ -5,18 +8,21 @@ interface Post {
   body: string;
 }
 
-async function fetchPost(postId: number): Promise<void> {
-  try {
-    const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`);
-    if (!response.ok) {
-      throw new Error(`Error fetching post: ${response.statusText}`);
-    }
-    const post: Post = await response.json();
-    console.log(post);
-  } catch (error) {
-    console.error('Fetch error:', error);
+async function fetchPosts(): Promise<Post[]> {
+  const response: Response = await fetch('https://jsonplaceholder.typicode.com/posts');
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status}`);
   }
+  const posts: Post[] = await response.json();
+  return posts;
 }
 
-// Example usage:
-fetchPost(1);
+(async () => {
+  try {
+    const posts = await fetchPosts();
+    console.log(`Fetched ${posts.length} posts`);
+    console.log(posts.slice(0, 3)); // Print first 3 posts as sample
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+  }
+})();
