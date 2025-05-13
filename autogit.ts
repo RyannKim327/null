@@ -1,25 +1,34 @@
-import axios from 'axios';
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
-async function fetchUsers(): Promise<User[]> {
-  try {
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching users:', error);
-    return [];
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
   }
 }
+function reverseLinkedList<T>(head: ListNode<T> | null): ListNode<T> | null {
+  let prev: ListNode<T> | null = null;
+  let current = head;
+  let next: ListNode<T> | null = null;
 
-(async () => {
-  const users = await fetchUsers();
-  users.forEach(user => {
-    console.log(`${user.name} (${user.username}): ${user.email}`);
-  });
-})();
+  while (current !== null) {
+    next = current.next;    // temporarily store the next node
+    current.next = prev;    // reverse the current node's pointer
+    prev = current;         // move prev to current
+    current = next;         // move to the next node in original list
+  }
+
+  return prev; // prev ends up as the new head
+}
+const n3 = new ListNode(3);
+const n2 = new ListNode(2, n3);
+const n1 = new ListNode(1, n2);
+
+const reversedHead = reverseLinkedList(n1);
+
+let pointer = reversedHead;
+while (pointer !== null) {
+  console.log(pointer.value); // 3, 2, 1
+  pointer = pointer.next;
+}
