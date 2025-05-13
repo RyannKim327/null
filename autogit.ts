@@ -1,13 +1,45 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  // Anagrams must be the same length
-  if (str1.length !== str2.length) return false;
+function mergeSort(arr: number[]): number[] {
+    if (arr.length <= 1) {
+        return arr; // Base case: arrays of length 0 or 1 are already sorted
+    }
 
-  // Normalize the strings (optional: lowercase and remove spaces/punctuation)
-  const normalize = (str: string) => str.toLowerCase().replace(/[\W_]+/g, "").split("").sort().join("");
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
 
-  return normalize(str1) === normalize(str2);
+    return merge(mergeSort(left), mergeSort(right));
 }
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world")); // false
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let i = 0;
+    let j = 0;
+
+    // Merge two sorted arrays into result
+    while (i < left.length && j < right.length) {
+        if (left[i] <= right[j]) {
+            result.push(left[i]);
+            i++;
+        } else {
+            result.push(right[j]);
+            j++;
+        }
+    }
+
+    // Copy any remaining elements from left
+    while (i < left.length) {
+        result.push(left[i]);
+        i++;
+    }
+
+    // Copy any remaining elements from right
+    while (j < right.length) {
+        result.push(right[j]);
+        j++;
+    }
+
+    return result;
+}
+const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(unsortedArray);
+console.log(sortedArray); // [3, 9, 10, 27, 38, 43, 82]
