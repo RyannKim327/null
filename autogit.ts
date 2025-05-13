@@ -1,57 +1,10 @@
-function buildLPS(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0;  // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-                // no increment of i here, re-evaluating
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
+function reverseWords(str: string): string {
+  return str.split(' ').reverse().join(' ');
 }
 
-function kmpSearch(text: string, pattern: string): number[] {
-    if (pattern.length === 0) return [];
-
-    const lps = buildLPS(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            // found an occurrence, record start index
-            result.push(i - j);
-            j = lps[j - 1];  // jump to the next best "partial match"
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result;
+const input = "Hello world this is TypeScript";
+const reversed = reverseWords(input);
+console.log(reversed); // Output: "TypeScript is this world Hello"
+function reverseWords(str: string): string {
+  return str.trim().split(/\s+/).reverse().join(' ');
 }
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const occurrences = kmpSearch(text, pattern);
-console.log(occurrences); // Output: [10]
