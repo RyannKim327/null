@@ -1,34 +1,12 @@
-// Graph type: keys are node identifiers, values are arrays of neighbor nodes
-type Graph = { [node: string]: string[] };
-
-// Depth-first search function
-function dfs(graph: Graph, startNode: string): string[] {
-  const visited = new Set<string>();
-  const result: string[] = [];
-
-  function explore(node: string) {
-    if (visited.has(node)) return;
-    visited.add(node);
-    result.push(node);
-
-    for (const neighbor of graph[node] || []) {
-      explore(neighbor);
-    }
-  }
-
-  explore(startNode);
-  return result;
+let arr = [1, 5, 2, 5];
+const valueToRemove = 5;
+arr = arr.filter(item => item !== valueToRemove);
+console.log(arr); // [1, 2]
+const index = arr.indexOf(valueToRemove);
+if (index !== -1) {
+  arr.splice(index, 1);
 }
-
-// Example usage:
-const graph: Graph = {
-  A: ['B', 'C'],
-  B: ['D', 'E'],
-  C: ['F'],
-  D: [],
-  E: ['F'],
-  F: [],
-};
-
-const visitedOrder = dfs(graph, 'A');
-console.log(visitedOrder); // ['A', 'B', 'D', 'E', 'F', 'C']
+console.log(arr); // removes just the first 5
+const indexToRemove = 2; // example
+arr.splice(indexToRemove, 1);
+console.log(arr);
