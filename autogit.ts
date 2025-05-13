@@ -1,39 +1,45 @@
-function getDigit(num: number, place: number): number {
-  return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+function kthSmallest(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;
+  const sorted = [...arr].sort((a, b) => a - b);
+  return sorted[k - 1];
 }
 
-function digitCount(num: number): number {
-  if (num === 0) return 1;
-  return Math.floor(Math.log10(Math.abs(num))) + 1;
-}
-
-function mostDigits(arr: number[]): number {
-  let maxDigits = 0;
-  for (const num of arr) {
-    maxDigits = Math.max(maxDigits, digitCount(num));
-  }
-  return maxDigits;
-}
-
-function radixSort(nums: number[]): number[] {
-  const maxDigitCount = mostDigits(nums);
-
-  for (let k = 0; k < maxDigitCount; k++) {
-    // Create buckets for each digit (0 to 9)
-    const buckets: number[][] = Array.from({ length: 10 }, () => []);
-
-    for (const num of nums) {
-      const digit = getDigit(num, k);
-      buckets[digit].push(num);
+// Example
+console.log(kthSmallest([7, 10, 4, 3, 20, 15], 3)); // Output: 7
+function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
+  const pivotValue = arr[pivotIndex];
+  [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
+  let storeIndex = left;
+  for (let i = left; i < right; i++) {
+    if (arr[i] < pivotValue) {
+      [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
+      storeIndex++;
     }
-
-    // Flatten the buckets back into our array
-    nums = ([] as number[]).concat(...buckets);
   }
-
-  return nums;
+  [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
+  return storeIndex;
 }
 
-// Example usage:
-const arr = [170, 45, 75, 90, 802, 24, 2, 66];
-console.log(radixSort(arr));  // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+  if (left === right) return arr[left];
+
+  const pivotIndex = left + Math.floor(Math.random() * (right - left + 1));
+  const pivotNewIndex = partition(arr, left, right, pivotIndex);
+
+  if (k === pivotNewIndex) {
+    return arr[k];
+  } else if (k < pivotNewIndex) {
+    return quickSelect(arr, left, pivotNewIndex - 1, k);
+  } else {
+    return quickSelect(arr, pivotNewIndex + 1, right, k);
+  }
+}
+
+function kthSmallest(arr: number[], k: number): number | undefined {
+  if (k < 1 || k > arr.length) return undefined;
+  // quickSelect expects a zero-based index, so subtract 1 from k
+  return quickSelect(arr.slice(), 0, arr.length - 1, k - 1);
+}
+
+// Example
+console.log(kthSmallest([7, 10, 4, 3, 20, 15], 3)); // Output: 7
