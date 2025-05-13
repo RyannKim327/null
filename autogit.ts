@@ -1,45 +1,9 @@
-function mergeSort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr; // Base case: arrays of length 0 or 1 are already sorted
-    }
-
-    const mid = Math.floor(arr.length / 2);
-    const left = arr.slice(0, mid);
-    const right = arr.slice(mid);
-
-    return merge(mergeSort(left), mergeSort(right));
-}
-
-function merge(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let i = 0;
-    let j = 0;
-
-    // Merge two sorted arrays into result
-    while (i < left.length && j < right.length) {
-        if (left[i] <= right[j]) {
-            result.push(left[i]);
-            i++;
-        } else {
-            result.push(right[j]);
-            j++;
-        }
-    }
-
-    // Copy any remaining elements from left
-    while (i < left.length) {
-        result.push(left[i]);
-        i++;
-    }
-
-    // Copy any remaining elements from right
-    while (j < right.length) {
-        result.push(right[j]);
-        j++;
-    }
-
-    return result;
-}
-const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray); // [3, 9, 10, 27, 38, 43, 82]
+const str = "1234";
+const num = parseInt(str, 10);  // The second argument 10 specifies base 10
+console.log(num);  // 1234
+const str = "1234";
+const num = +str;
+console.log(num);  // 1234
+const str = "1234";
+const num = Number(str);
+console.log(num);  // 1234
