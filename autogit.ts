@@ -1,93 +1,79 @@
-class SkipListNode<T> {
-  key: T;
-  forward: Array<SkipListNode<T> | null>;
+// Define a Node class representing each element in the BST
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null = null;
+  right: TreeNode<T> | null = null;
 
-  constructor(key: T, level: number) {
-    this.key = key;
-    this.forward = new Array(level + 1).fill(null);
+  constructor(value: T) {
+    this.value = value;
   }
 }
-class SkipList<T> {
-  private MAX_LEVEL: number;
-  private P: number; // Probability for random level
-  private level: number; // Current maximum level in skip list
-  private header: SkipListNode<T>;
 
-  constructor(maxLevel: number = 16, p: number = 0.5) {
-    this.MAX_LEVEL = maxLevel;
-    this.P = p;
-    this.level = 0;
-    this.header = new SkipListNode<T>(null as any, this.MAX_LEVEL);
-  }
+// Binary Search Tree class
+class BinarySearchTree<T> {
+  root: TreeNode<T> | null = null;
 
-  private randomLevel(): number {
-    let lvl = 0;
-    while (Math.random() < this.P && lvl < this.MAX_LEVEL) {
-      lvl++;
-    }
-    return lvl;
-  }
+  // Insert a value into the BST
+  insert(value: T): void {
+    const newNode = new TreeNode(value);
 
-  search(key: T): SkipListNode<T> | null {
-    let current = this.header;
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        current.forward[i] !== null &&
-        current.forward[i]!.key < key
-      ) {
-        current = current.forward[i]!;
-      }
-    }
-    current = current.forward[0]!;
-    if (current !== null && current.key === key) {
-      return current;
-    } else {
-      return null;
-    }
-  }
-
-  insert(key: T): void {
-    let update = new Array<SkipListNode<T>>(this.MAX_LEVEL + 1);
-    let current = this.header;
-
-    for (let i = this.level; i >= 0; i--) {
-      while (
-        current.forward[i] !== null &&
-        current.forward[i]!.key < key
-      ) {
-        current = current.forward[i]!;
-      }
-      update[i] = current;
+    if (!this.root) {
+      this.root = newNode;
+      return;
     }
 
-    current = current.forward[0]!;
-
-    if (current === null || current.key !== key) {
-      let lvl = this.randomLevel();
-      if (lvl > this.level) {
-        for (let i = this.level + 1; i <= lvl; i++) {
-          update[i] = this.header;
+    let current = this.root;
+    while (true) {
+      if (value < current.value) {
+        if (!current.left) {
+          current.left = newNode;
+          break;
         }
-        this.level = lvl;
-      }
-
-      let newNode = new SkipListNode<T>(key, lvl);
-
-      for (let i = 0; i <= lvl; i++) {
-        newNode.forward[i] = update[i].forward[i];
-        update[i].forward[i] = newNode;
+        current = current.left;
+      } else {
+        if (!current.right) {
+          current.right = newNode;
+          break;
+        }
+        current = current.right;
       }
     }
   }
 
-  // Optional: Implement deletion similarly
+  // Search for a value, return true if found
+  contains(value: T): boolean {
+    let current = this.root;
+
+    while (current) {
+      if (value === current.value) return true;
+      current = value < current.value ? current.left : current.right;
+    }
+
+    return false;
+  }
+
+  // In-order traversal that returns sorted array of values
+  inOrderTraversal(): T[] {
+    const result: T[] = [];
+
+    function traverse(node: TreeNode<T> | null) {
+      if (!node) return;
+      traverse(node.left);
+      result.push(node.value);
+      traverse(node.right);
+    }
+
+    traverse(this.root);
+    return result;
+  }
 }
-const skipList = new SkipList<number>();
+const bst = new BinarySearchTree<number>();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(7);
 
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
+console.log(bst.contains(7));  // true
+console.log(bst.contains(3));  // false
 
-console.log(skipList.search(6)); // Should print the node holding 6
-console.log(skipList.search(4)); // Should print null
+console.log(bst.inOrderTraversal());  // [5, 7, 10, 15]
