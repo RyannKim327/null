@@ -1,12 +1,13 @@
-function quicksort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr;
-    }
+function isPrime(num: number): boolean {
+  if (num <= 1) return false; // 0 and 1 are not prime
+  if (num <= 3) return true;  // 2 and 3 are prime
 
-    const pivot = arr[Math.floor(arr.length / 2)];
-    const left = arr.filter(value => value < pivot);
-    const middle = arr.filter(value => value === pivot);
-    const right = arr.filter(value => value > pivot);
+  if (num % 2 === 0 || num % 3 === 0) return false;
 
-    return [...quicksort(left), ...middle, ...quicksort(right)];
+  // only check factors up to the square root of num
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
+  }
+
+  return true;
 }
