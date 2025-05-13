@@ -1,16 +1,10 @@
-const numbers: number[] = [10, 5, 100, 2, 1000];
-const max = Math.max(...numbers);
-console.log(max); // 1000
-const numbers: number[] = [10, 5, 100, 2, 1000];
-let max = numbers[0];
-
-for (let i = 1; i < numbers.length; i++) {
-  if (numbers[i] > max) {
-    max = numbers[i];
-  }
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+function validateEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 }
 
-console.log(max); // 1000
-const numbers: number[] = [10, 5, 100, 2, 1000];
-const max = numbers.reduce((acc, val) => (val > acc ? val : acc), numbers[0]);
-console.log(max); // 1000
+// Usage
+console.log(validateEmail("example@test.com")); // true
+console.log(validateEmail("bad-email@"));       // false
+const stricterEmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
