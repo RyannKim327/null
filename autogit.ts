@@ -1,112 +1,77 @@
-class BTreeNode<T> {
-  keys: T[] = [];
-  children: BTreeNode<T>[] = [];
-  leaf: boolean;
+// Define a node in the binary tree
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null = null;
+  right: TreeNode<T> | null = null;
 
-  constructor(leaf = false) {
-    this.leaf = leaf;
+  constructor(value: T) {
+    this.value = value;
   }
 }
 
-class BTree<T> {
-  root: BTreeNode<T>;
-  t: number; // Minimum degree (defines the range for number of keys)
+// Define the binary tree itself
+class BinaryTree<T> {
+  root: TreeNode<T> | null = null;
 
-  constructor(t: number) {
-    this.t = t;
-    this.root = new BTreeNode<T>(true);
+  // Insert value (assuming a Binary Search Tree for ordering)
+  insert(value: T) {
+    const newNode = new TreeNode(value);
+    if (!this.root) {
+      this.root = newNode;
+      return;
+    }
+    this.insertNode(this.root, newNode);
   }
 
-  // Search key k in subtree rooted with this node
-  search(k: T, node: BTreeNode<T> = this.root): BTreeNode<T> | null {
-    let i = 0;
-    
-    // Find the first key greater or equal to k
-    while (i < node.keys.length && k > node.keys[i]) {
-      i++;
-    }
-    
-    if (i < node.keys.length && k === node.keys[i]) {
-      return node;
-    }
-    
-    if (node.leaf) {
-      return null;
-    }
-    
-    return this.search(k, node.children[i]);
-  }
-
-  // Insert a new key in the B-tree
-  insert(k: T): void {
-    const r = this.root;
-
-    if (r.keys.length === 2 * this.t - 1) {
-      // Root is full, tree grows in height
-      const s = new BTreeNode<T>(false);
-      this.root = s;
-      s.children.push(r);
-      this.splitChild(s, 0);
-      this.insertNonFull(s, k);
-    } else {
-      this.insertNonFull(r, k);
-    }
-  }
-
-  private insertNonFull(node: BTreeNode<T>, k: T) {
-    let i = node.keys.length - 1;
-
-    if (node.leaf) {
-      // Insert the new key at correct position
-      node.keys.push(k); // Add dummy key to extend array
-      while (i >= 0 && k < node.keys[i]) {
-        node.keys[i + 1] = node.keys[i];
-        i--;
+  private insertNode(node: TreeNode<T>, newNode: TreeNode<T>) {
+    if (newNode.value < node.value) {
+      if (!node.left) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
       }
-      node.keys[i + 1] = k;
     } else {
-      // Move to the correct child
-      while (i >= 0 && k < node.keys[i]) i--;
-      i++;
-
-      if (node.children[i].keys.length === 2 * this.t - 1) {
-        this.splitChild(node, i);
-
-        if (k > node.keys[i]) i++;
+      if (!node.right) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
       }
-
-      this.insertNonFull(node.children[i], k);
     }
   }
 
-  private splitChild(parent: BTreeNode<T>, i: number) {
-    const t = this.t;
-    const y = parent.children[i];
-    const z = new BTreeNode<T>(y.leaf);
-
-    // Move last t-1 keys from y to z
-    z.keys = y.keys.splice(t);
-    // If y is not leaf, move last t children from y to z
-    if (!y.leaf) {
-      z.children = y.children.splice(t);
+  // In-order traversal (left, root, right)
+  inorderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+    if (node) {
+      this.inorderTraversal(node.left, result);
+      result.push(node.value);
+      this.inorderTraversal(node.right, result);
     }
-
-    parent.children.splice(i + 1, 0, z);
-    parent.keys.splice(i, 0, y.keys.splice(t - 1, 1)[0]);
+    return result;
   }
 
-  // To visualize the tree — helpful for debugging
-  traverse(node: BTreeNode<T> = this.root, depth: number = 0) {
-    console.log('  '.repeat(depth) + node.keys.join(', '));
-    if (!node.leaf) {
-      node.children.forEach(child => this.traverse(child, depth + 1));
+  // Find a value in the tree
+  find(value: T): boolean {
+    return this.findNode(this.root, value);
+  }
+
+  private findNode(node: TreeNode<T> | null, value: T): boolean {
+    if (!node) return false;
+    if (value === node.value) return true;
+    if (value < node.value) {
+      return this.findNode(node.left, value);
+    } else {
+      return this.findNode(node.right, value);
     }
   }
 }
 
-// Usage example:
-const tree = new BTree<number>(2); // t=2 => max 3 keys per node
-[10, 20, 5, 6, 12, 30, 7, 17].forEach(num => tree.insert(num));
-tree.traverse();
-console.log('Search 6:', tree.search(6) ? 'Found' : 'Not found');
-console.log('Search 15:', tree.search(15) ? 'Found' : 'Not found');
+// Example usage:
+const tree = new BinaryTree<number>();
+tree.insert(5);
+tree.insert(3);
+tree.insert(7);
+tree.insert(1);
+
+console.log(tree.inorderTraversal());  // Output: [1, 3, 5, 7]
+console.log(tree.find(3));              // Output: true
+console.log(tree.find(10));             // Output: false
