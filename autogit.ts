@@ -1,26 +1,15 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+function firstRepeatedChar(str: string): string | null {
+  const seen = new Set<string>();
+  
+  for (const char of str) {
+    if (seen.has(char)) {
+      return char;
+    }
+    seen.add(char);
   }
-}
-function sumTree(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-  return root.val + sumTree(root.left) + sumTree(root.right);
-}
-const tree = new TreeNode(1,
-  new TreeNode(2,
-    new TreeNode(4),
-    new TreeNode(5)
-  ),
-  new TreeNode(3)
-);
 
-console.log(sumTree(tree)); // Output should be 1 + 2 + 4 + 5 + 3 = 15
+  return null; // no repeated character found
+}
+
+// Example:
+console.log(firstRepeatedChar("swiss")); // Outputs: "s"
