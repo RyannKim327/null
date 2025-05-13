@@ -1,23 +1,16 @@
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
+import cron from 'node-cron';
 
-async function fetchUser(userId: number): Promise<User> {
-  const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch user with id ${userId}: ${response.statusText}`);
-  }
-  const user: User = await response.json();
-  return user;
-}
+// Schedule a task that runs every minute
+const task = cron.schedule('* * * * *', () => {
+  const now = new Date();
+  console.log(`Cron task executed at: ${now.toISOString()}`);
+});
 
-fetchUser(1)
-  .then(user => {
-    console.log('User data:', user);
-  })
-  .catch(error => {
-    console.error('Error fetching user:', error);
-  });
+// Start the cron job
+task.start();
+
+// Optional: Stop the task after 5 minutes (for demonstration)
+setTimeout(() => {
+  task.stop();
+  console.log('Cron task stopped.');
+}, 5 * 60 * 1000);
