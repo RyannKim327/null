@@ -1,41 +1,74 @@
-function longestIncreasingSubsequence(arr: number[]): number[] {
-  const n = arr.length;
-  if (n === 0) return [];
+type Candidate<T> = {
+  state: T;
+  score: number;
+  history: T[];
+};
 
-  // dp[i] will hold the length of the LIS ending at index i
-  const dp = new Array(n).fill(1);
-  // To reconstruct the subsequence, track previous indices
-  const prev = new Array(n).fill(-1);
+/**
+ * Performs beam search.
+ * @param initial The initial state.
+ * @param expand A function that takes a candidate's state and returns possible next states with their scores.
+ * @param beamWidth Number of candidates to keep at each step.
+ * @param isComplete Function to determine if a candidate is complete.
+ * @param maxSteps Maximum number of iterations.
+ */
+function beamSearch<T>(
+  initial: T,
+  expand: (state: T) => Array<{ nextState: T; score: number }>,
+  beamWidth: number,
+  isComplete: (state: T) => boolean,
+  maxSteps: number = 100
+): Candidate<T> | null {
+  // Initialize beam with the initial candidate (score 0, empty history)
+  let beam: Candidate<T>[] = [{ state: initial, score: 0, history: [initial] }];
 
-  let maxLength = 1;
-  let maxIndex = 0;
+  for (let step = 0; step < maxSteps; step++) {
+    const allCandidates: Candidate<T>[] = [];
 
-  for (let i = 1; i < n; i++) {
-    for (let j = 0; j < i; j++) {
-      if (arr[j] < arr[i] && dp[j] + 1 > dp[i]) {
-        dp[i] = dp[j] + 1;
-        prev[i] = j;
+    for (const candidate of beam) {
+      if (isComplete(candidate.state)) {
+        // Return immediately if found a complete candidate
+        return candidate;
+      }
+
+      const expansions = expand(candidate.state);
+
+      for (const { nextState, score } of expansions) {
+        allCandidates.push({
+          state: nextState,
+          score: candidate.score + score,
+          history: [...candidate.history, nextState],
+        });
       }
     }
-    if (dp[i] > maxLength) {
-      maxLength = dp[i];
-      maxIndex = i;
+
+    if (allCandidates.length === 0) {
+      // No expansions possible, end search
+      break;
     }
+
+    // Sort all candidates by score descending and pick top beamWidth
+    allCandidates.sort((a, b) => b.score - a.score);
+    beam = allCandidates.slice(0, beamWidth);
   }
 
-  // Reconstruct the longest increasing subsequence
-  const lis: number[] = [];
-  let curr = maxIndex;
-  while (curr !== -1) {
-    lis.push(arr[curr]);
-    curr = prev[curr];
-  }
-  lis.reverse();
-
-  return lis;
+  // Return the best candidate even if incomplete after maxSteps
+  if (beam.length === 0) return null;
+  return beam.reduce((best, candidate) => (candidate.score > best.score ? candidate : best));
 }
+const initial = 0;
 
-// Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-const lis = longestIncreasingSubsequence(arr);
-console.log(lis); // Output: [2, 3, 7, 18]
+const expand = (state: number) => {
+  return [
+    { nextState: state + 1, score: 1 },
+    { nextState: state + 2, score: 2 },
+  ];
+};
+
+const isComplete = (state: number) => state >= 3;
+
+const beamWidth = 2;
+
+const result = beamSearch(initial, expand, beamWidth, isComplete, 10);
+
+console.log(result);
