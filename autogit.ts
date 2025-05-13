@@ -1,54 +1,52 @@
-type Edge = {
-  source: number;
-  target: number;
-  weight: number;
-};
+function fibonacciSearch(arr: number[], target: number): number {
+    const n = arr.length;
 
-function bellmanFord(
-  edges: Edge[],
-  vertexCount: number,
-  source: number
-): { distances: number[]; predecessors: (number | null)[] } | string {
-  const distances = new Array(vertexCount).fill(Infinity);
-  const predecessors = new Array(vertexCount).fill(null);
+    // Initialize Fibonacci numbers
+    let fibMMm2 = 0; // (m-2)'th Fibonacci No.
+    let fibMMm1 = 1; // (m-1)'th Fibonacci No.
+    let fibM = fibMMm2 + fibMMm1; // m'th Fibonacci
 
-  distances[source] = 0;
-
-  // Relax edges repeatedly
-  for (let i = 0; i < vertexCount - 1; i++) {
-    for (const edge of edges) {
-      const { source: u, target: v, weight } = edge;
-      if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-        distances[v] = distances[u] + weight;
-        predecessors[v] = u;
-      }
+    // fibM is the smallest Fibonacci number greater or equal to n
+    while (fibM < n) {
+        fibMMm2 = fibMMm1;
+        fibMMm1 = fibM;
+        fibM = fibMMm2 + fibMMm1;
     }
-  }
 
-  // Check for negative-weight cycles
-  for (const edge of edges) {
-    const { source: u, target: v, weight } = edge;
-    if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-      return "Graph contains a negative weight cycle";
+    // Marks the eliminated range from front
+    let offset = -1;
+
+    while (fibM > 1) {
+        // Check if fibMMm2 is a valid location
+        const i = Math.min(offset + fibMMm2, n - 1);
+
+        if (arr[i] < target) {
+            // Move forward in array
+            fibM = fibMMm1;
+            fibMMm1 = fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+            offset = i;
+        } else if (arr[i] > target) {
+            // Move backward in array
+            fibM = fibMMm2;
+            fibMMm1 = fibMMm1 - fibMMm2;
+            fibMMm2 = fibM - fibMMm1;
+        } else {
+            // Found target, return index
+            return i;
+        }
     }
-  }
 
-  return { distances, predecessors };
+    // Checking if the last element is target
+    if (fibMMm1 && arr[offset + 1] === target) {
+        return offset + 1;
+    }
+
+    // Element not found, return -1
+    return -1;
 }
-const edges: Edge[] = [
-  { source: 0, target: 1, weight: 6 },
-  { source: 0, target: 2, weight: 7 },
-  { source: 1, target: 2, weight: 8 },
-  { source: 1, target: 3, weight: 5 },
-  { source: 1, target: 4, weight: -4 },
-  { source: 2, target: 3, weight: -3 },
-  { source: 2, target: 4, weight: 9 },
-  { source: 3, target: 1, weight: -2 },
-  { source: 4, target: 3, weight: 7 },
-];
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const target = 85;
+const index = fibonacciSearch(arr, target);
 
-const vertexCount = 5;
-const source = 0;
-
-const result = bellmanFord(edges, vertexCount, source);
-console.log(result);
+console.log(index); // Output: 8 (index of value 85)
