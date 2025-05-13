@@ -1,12 +1,22 @@
-function isPrime(num: number): boolean {
-  if (num <= 1) return false;  // 0 and 1 are not prime numbers
-  if (num <= 3) return true;   // 2 and 3 are prime numbers
-  
-  if (num % 2 === 0 || num % 3 === 0) return false; // multiples of 2 and 3 are not prime
-  
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) return false;
-  }
-  
-  return true;
+function firstNonRepeatingChar(str: string): string | null {
+    const charCount: Record<string, number> = {};
+
+    // Count occurrences of each character
+    for (const char of str) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    // Find the first character with a count of 1
+    for (const char of str) {
+        if (charCount[char] === 1) {
+            return char;
+        }
+    }
+
+    // No non-repeating character found
+    return null;
 }
+
+// Example usage:
+console.log(firstNonRepeatingChar("swiss")); // Output: "w"
+console.log(firstNonRepeatingChar("aabbcc")); // Output: null
