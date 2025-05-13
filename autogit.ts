@@ -1,25 +1,70 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+class SuffixTreeNode {
+  children: Map<string, SuffixTreeNode>;
+  indexes: number[];
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
+  constructor() {
+    this.children = new Map();
+    this.indexes = [];
   }
 }
-function sumNodes(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
+
+class SuffixTree {
+  root: SuffixTreeNode;
+  text: string;
+
+  constructor(text: string) {
+    this.root = new SuffixTreeNode();
+    this.text = text;
+    this.build();
   }
 
-  return root.val + sumNodes(root.left) + sumNodes(root.right);
-}
-const tree = new TreeNode(
-  1,
-  new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-  new TreeNode(3)
-);
+  // Insert each suffix into the tree
+  private build() {
+    for (let i = 0; i < this.text.length; i++) {
+      this.insertSuffix(i);
+    }
+  }
 
-console.log(sumNodes(tree)); // Output should be 15 (1 + 2 + 4 + 5 + 3)
+  private insertSuffix(start: number) {
+    let currentNode = this.root;
+    for (let j = start; j < this.text.length; j++) {
+      const currentChar = this.text[j];
+      if (!currentNode.children.has(currentChar)) {
+        currentNode.children.set(currentChar, new SuffixTreeNode());
+      }
+      currentNode = currentNode.children.get(currentChar)!;
+      currentNode.indexes.push(start);
+    }
+  }
+
+  // Check if a pattern exists in the string
+  public search(pattern: string): boolean {
+    let currentNode = this.root;
+    for (const char of pattern) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    return true;
+  }
+
+  // Optional: get all starting indices of the pattern occurrences
+  public getOccurrences(pattern: string): number[] | null {
+    let currentNode = this.root;
+    for (const char of pattern) {
+      if (!currentNode.children.has(char)) {
+        return null;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+    // All suffixes indexed here contain the pattern at position stored in currentNode.indexes
+    return currentNode.indexes;
+  }
+}
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("apple")); // false
+console.log(suffixTree.getOccurrences("ana")); // [1, 3]
