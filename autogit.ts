@@ -1,34 +1,82 @@
-function mergeSort<T>(array: T[]): T[] {
-  if (array.length <= 1) {
-    return array; // Base case: arrays with 0 or 1 element are already sorted
-  }
+type Graph = Record<string, string[]>;
 
-  const mid = Math.floor(array.length / 2);
-  const left = mergeSort(array.slice(0, mid));  // Sort left half recursively
-  const right = mergeSort(array.slice(mid));    // Sort right half recursively
+function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
+  if (start === goal) return [start];
 
-  return merge(left, right); // Merge the sorted halves
-}
+  // Queues for forward and backward search
+  let forwardQueue: string[] = [start];
+  let backwardQueue: string[] = [goal];
 
-function merge<T>(left: T[], right: T[]): T[] {
-  const result: T[] = [];
-  let i = 0;
-  let j = 0;
+  // Visited maps store (node => parent)
+  let forwardVisited = new Map<string, string | null>([[start, null]]);
+  let backwardVisited = new Map<string, string | null>([[goal, null]]);
 
-  // We assume T can be compared with < operator; for full safety, you'd want to pass a comparator
-  while (i < left.length && j < right.length) {
-    if (left[i] < right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
+  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+    // Expand forward
+    const forwardNode = forwardQueue.shift()!;
+    for (const neighbor of graph[forwardNode] || []) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardVisited.set(neighbor, forwardNode);
+        forwardQueue.push(neighbor);
+
+        if (backwardVisited.has(neighbor)) {
+          // Path meets here, reconstruct path
+          return reconstructPath(neighbor, forwardVisited, backwardVisited);
+        }
+      }
+    }
+
+    // Expand backward
+    const backwardNode = backwardQueue.shift()!;
+    for (const neighbor of graph[backwardNode] || []) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardVisited.set(neighbor, backwardNode);
+        backwardQueue.push(neighbor);
+
+        if (forwardVisited.has(neighbor)) {
+          // Path meets here, reconstruct path
+          return reconstructPath(neighbor, forwardVisited, backwardVisited);
+        }
+      }
     }
   }
 
-  // Add remaining elements from left or right
-  return result.concat(left.slice(i)).concat(right.slice(j));
+  // No path found
+  return null;
 }
-const numbers = [5, 3, 8, 4, 2];
-const sortedNumbers = mergeSort(numbers);
-console.log(sortedNumbers); // [2, 3, 4, 5, 8]
+
+// Helper to reconstruct path from parent maps
+function reconstructPath(
+  meetingNode: string,
+  forwardVisited: Map<string, string | null>,
+  backwardVisited: Map<string, string | null>
+): string[] {
+  const path: string[] = [];
+
+  // Backtrace from meeting node to start
+  let current: string | null = meetingNode;
+  while (current !== null) {
+    path.unshift(current);
+    current = forwardVisited.get(current) || null;
+  }
+
+  // Backtrace from meeting node to goal (skipping meeting node itself to not duplicate)
+  current = backwardVisited.get(meetingNode) || null;
+  while (current !== null) {
+    path.push(current);
+    current = backwardVisited.get(current) || null;
+  }
+
+  return path;
+}
+const graph = {
+  A: ['B', 'C'],
+  B: ['A', 'D', 'E'],
+  C: ['A', 'F'],
+  D: ['B'],
+  E: ['B', 'F'],
+  F: ['C', 'E'],
+};
+
+const path = biDirectionalSearch(graph, 'A', 'F');
+console.log(path); // Might print ['A', 'C', 'F']
