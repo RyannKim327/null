@@ -1,24 +1,33 @@
-function isSorted(arr: number[]): boolean {
-  for (let i = 1; i < arr.length; i++) {
-    if (arr[i - 1] > arr[i]) return false;
-  }
-  return true;
-}
+function interpolationSearch(arr: number[], target: number): number {
+  let low = 0;
+  let high = arr.length - 1;
 
-function shuffle(arr: number[]): void {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
+  while (low <= high && target >= arr[low] && target <= arr[high]) {
+    // Prevent division by zero if arr[high] == arr[low]
+    if (arr[high] === arr[low]) {
+      if (arr[low] === target) return low;
+      else break;
+    }
 
-function bogoSort(arr: number[]): number[] {
-  while (!isSorted(arr)) {
-    shuffle(arr);
-  }
-  return arr;
-}
+    // Estimate the position of the target value
+    const pos = low + Math.floor(
+      ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+    );
 
-// Example usage:
-const myArray = [3, 1, 4, 1, 5];
-console.log('Sorted:', bogoSort(myArray));
+    // Check the found position
+    if (arr[pos] === target) return pos;
+
+    if (arr[pos] < target) {
+      low = pos + 1;
+    } else {
+      high = pos - 1;
+    }
+  }
+
+  return -1; // target not found
+}
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+const target = 70;
+
+const index = interpolationSearch(sortedArray, target);
+console.log(index);  // Output: 6
