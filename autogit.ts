@@ -1,23 +1,8 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+function calculateMean(numbers: number[]): number {
+  if (numbers.length === 0) return 0;  // or handle empty array as you prefer
 
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
+  const sum = numbers.reduce((acc, curr) => acc + curr, 0);
+  return sum / numbers.length;
 }
-
-function findMiddle<T>(head: ListNode<T> | null): T | null {
-  if (!head) return null;
-
-  let slow: ListNode<T> | null = head;
-  let fast: ListNode<T> | null = head;
-
-  while (fast !== null && fast.next !== null) {
-    slow = slow!.next;
-    fast = fast.next.next;
-  }
-
-  return slow ? slow.value : null;
-}
+const data = [10, 20, 30, 40, 50];
+console.log(calculateMean(data));  // Outputs: 30
