@@ -1,57 +1,21 @@
-class ListNode {
-  val: number;
-  next: ListNode | null;
+type User = {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+};
 
-  constructor(val: number, next: ListNode | null = null) {
-    this.val = val;
-    this.next = next;
-  }
-}
-function isPalindrome(head: ListNode | null): boolean {
-  if (!head || !head.next) return true;
+async function fetchUser(userId: number): Promise<User> {
+  const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
 
-  let slow: ListNode | null = head;
-  let fast: ListNode | null = head;
-
-  // Find middle (slow will be at the midpoint)
-  while (fast && fast.next) {
-    slow = slow!.next;
-    fast = fast.next.next;
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user with ID ${userId}: ${response.statusText}`);
   }
 
-  // Reverse second half
-  let secondHalf = reverseList(slow);
-
-  // Compare first half and reversed second half
-  let firstHalf = head;
-  let secondHalfCopy = secondHalf; // to restore later if needed
-  let palindrome = true;
-
-  while (secondHalf) {
-    if (firstHalf!.val !== secondHalf.val) {
-      palindrome = false;
-      break;
-    }
-    firstHalf = firstHalf!.next;
-    secondHalf = secondHalf.next;
-  }
-
-  // Optional: Restore the list
-  reverseList(secondHalfCopy);
-
-  return palindrome;
+  const user: User = await response.json();
+  return user;
 }
 
-function reverseList(head: ListNode | null): ListNode | null {
-  let prev: ListNode | null = null;
-  let current = head;
-
-  while (current) {
-    let nextNode = current.next;
-    current.next = prev;
-    prev = current;
-    current = nextNode;
-  }
-
-  return prev;
-}
+fetchUser(1)
+  .then(user => console.log(user))
+  .catch(error => console.error(error));
