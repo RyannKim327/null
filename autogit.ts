@@ -1,20 +1,26 @@
-function factorial(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers");
-    }
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * factorial(n - 1);
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
-console.log(factorial(5)); // Outputs: 120
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers");
-    }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
+
+async function getUsers(): Promise<User[]> {
+  const response = await fetch('https://jsonplaceholder.typicode.com/users');
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
+  }
+  const users: User[] = await response.json();
+  return users;
 }
+
+(async () => {
+  try {
+    const users = await getUsers();
+    users.forEach(user => {
+      console.log(`${user.name} (${user.username}) - ${user.email}`);
+    });
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+  }
+})();
