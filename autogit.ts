@@ -1,35 +1,19 @@
-class ListNode<T> {
-  value: T;
-  next: ListNode<T> | null;
+function findSecondLargest(arr: number[]): number | undefined {
+  if (arr.length < 2) return undefined;  // Not enough elements
 
-  constructor(value: T, next: ListNode<T> | null = null) {
-    this.value = value;
-    this.next = next;
-  }
-}
-function reverseLinkedList<T>(head: ListNode<T> | null): ListNode<T> | null {
-  let prev: ListNode<T> | null = null;
-  let current: ListNode<T> | null = head;
+  let largest = -Infinity;
+  let secondLargest = -Infinity;
 
-  while (current !== null) {
-    const nextNode = current.next; // save next node
-    current.next = prev;            // reverse the link
-    prev = current;                 // move prev forward
-    current = nextNode;             // move current forward
+  for (const num of arr) {
+    if (num > largest) {
+      secondLargest = largest;
+      largest = num;
+    } else if (num > secondLargest && num !== largest) {
+      secondLargest = num;
+    }
   }
 
-  return prev; // new head of the reversed list
+  return secondLargest === -Infinity ? undefined : secondLargest;
 }
-// Example usage:
-const n3 = new ListNode(3);
-const n2 = new ListNode(2, n3);
-const n1 = new ListNode(1, n2);
-
-const reversedHead = reverseLinkedList(n1);
-
-let cur = reversedHead;
-while (cur !== null) {
-  console.log(cur.value);
-  cur = cur.next;
-}
-// Logs: 3, 2, 1
+const nums = [10, 5, 8, 12, 3];
+console.log(findSecondLargest(nums));  // Output: 10
