@@ -1,25 +1,35 @@
-function bubbleSort(arr: number[]): number[] {
-    // Make a copy to avoid mutating the input array
-    let sortedArr = [...arr];
-    let n = sortedArr.length;
-    let swapped: boolean;
-    
-    do {
-        swapped = false;
-        for (let i = 1; i < n; i++) {
-            if (sortedArr[i - 1] > sortedArr[i]) {
-                // Swap elements
-                [sortedArr[i - 1], sortedArr[i]] = [sortedArr[i], sortedArr[i - 1]];
-                swapped = true;
-            }
-        }
-        // Each pass places the next largest element at the end,
-        // so we can reduce the range for the next pass
-        n--;
-    } while (swapped);
+class ListNode<T> {
+  value: T;
+  next: ListNode<T> | null;
 
-    return sortedArr;
+  constructor(value: T, next: ListNode<T> | null = null) {
+    this.value = value;
+    this.next = next;
+  }
 }
-const array = [5, 3, 8, 4, 2];
-const sorted = bubbleSort(array);
-console.log(sorted); // Output: [2, 3, 4, 5, 8]
+function reverseLinkedList<T>(head: ListNode<T> | null): ListNode<T> | null {
+  let prev: ListNode<T> | null = null;
+  let current: ListNode<T> | null = head;
+
+  while (current !== null) {
+    const nextNode = current.next; // save next node
+    current.next = prev;            // reverse the link
+    prev = current;                 // move prev forward
+    current = nextNode;             // move current forward
+  }
+
+  return prev; // new head of the reversed list
+}
+// Example usage:
+const n3 = new ListNode(3);
+const n2 = new ListNode(2, n3);
+const n1 = new ListNode(1, n2);
+
+const reversedHead = reverseLinkedList(n1);
+
+let cur = reversedHead;
+while (cur !== null) {
+  console.log(cur.value);
+  cur = cur.next;
+}
+// Logs: 3, 2, 1
