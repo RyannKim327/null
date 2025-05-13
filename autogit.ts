@@ -1,56 +1,57 @@
-function fibonacciSearch(arr: number[], target: number): number {
-    const n = arr.length;
+class ListNode {
+  val: number;
+  next: ListNode | null;
 
-    // Initialize fibonacci numbers
-    let fibMMm2 = 0;  // (m-2)'th Fibonacci No.
-    let fibMMm1 = 1;  // (m-1)'th Fibonacci No.
-    let fibM = fibMMm2 + fibMMm1;  // m'th Fibonacci
+  constructor(val: number, next: ListNode | null = null) {
+    this.val = val;
+    this.next = next;
+  }
+}
+function isPalindrome(head: ListNode | null): boolean {
+  if (!head || !head.next) return true;
 
-    // fibM is going to store the smallest Fibonacci number greater than or equal to n
-    while (fibM < n) {
-        fibMMm2 = fibMMm1;
-        fibMMm1 = fibM;
-        fibM = fibMMm2 + fibMMm1;
+  let slow: ListNode | null = head;
+  let fast: ListNode | null = head;
+
+  // Find middle (slow will be at the midpoint)
+  while (fast && fast.next) {
+    slow = slow!.next;
+    fast = fast.next.next;
+  }
+
+  // Reverse second half
+  let secondHalf = reverseList(slow);
+
+  // Compare first half and reversed second half
+  let firstHalf = head;
+  let secondHalfCopy = secondHalf; // to restore later if needed
+  let palindrome = true;
+
+  while (secondHalf) {
+    if (firstHalf!.val !== secondHalf.val) {
+      palindrome = false;
+      break;
     }
+    firstHalf = firstHalf!.next;
+    secondHalf = secondHalf.next;
+  }
 
-    // Marks the eliminated range from front
-    let offset = -1;
+  // Optional: Restore the list
+  reverseList(secondHalfCopy);
 
-    // While there are elements to be inspected
-    while (fibM > 1) {
-        // Check if fibMMm2 is a valid location
-        const i = Math.min(offset + fibMMm2, n - 1);
-
-        if (arr[i] < target) {
-            // Move three fibonacci variables down by one
-            fibM = fibMMm1;
-            fibMMm1 = fibMMm2;
-            fibMMm2 = fibM - fibMMm1;
-            offset = i;
-        } else if (arr[i] > target) {
-            // Move fibonacci variables down by two
-            fibM = fibMMm2;
-            fibMMm1 = fibMMm1 - fibMMm2;
-            fibMMm2 = fibM - fibMMm1;
-        } else {
-            // Element found. Return index
-            return i;
-        }
-    }
-
-    // Comparing the last element with target
-    if (fibMMm1 && arr[offset + 1] === target) {
-        return offset + 1;
-    }
-
-    // Element not found
-    return -1;
+  return palindrome;
 }
 
-// Example usage:
-const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const targetValue = 85;
+function reverseList(head: ListNode | null): ListNode | null {
+  let prev: ListNode | null = null;
+  let current = head;
 
-const index = fibonacciSearch(sortedArray, targetValue);
+  while (current) {
+    let nextNode = current.next;
+    current.next = prev;
+    prev = current;
+    current = nextNode;
+  }
 
-console.log(index);  // Output: 8
+  return prev;
+}
