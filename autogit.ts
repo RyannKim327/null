@@ -1,54 +1,34 @@
-function rabinKarp(text: string, pattern: string): number[] {
-  const result: number[] = [];
-  const m = pattern.length;
-  const n = text.length;
-
-  if (m > n) return result;
-
-  const base = 256;        // Number of possible characters (extended ASCII)
-  const prime = 101;       // A prime number for modulus to reduce collisions
-
-  let patternHash = 0;     // Hash value for the pattern
-  let textHash = 0;        // Hash value for the current window of text
-  let h = 1;               // The value of base^(m-1) % prime
-
-  // Precompute h = (base^(m-1)) % prime
-  for (let i = 0; i < m - 1; i++) {
-    h = (h * base) % prime;
+function mergeSort<T>(array: T[]): T[] {
+  if (array.length <= 1) {
+    return array; // Base case: arrays with 0 or 1 element are already sorted
   }
 
-  // Calculate initial hash values for pattern and the first window of text
-  for (let i = 0; i < m; i++) {
-    patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
-    textHash = (base * textHash + text.charCodeAt(i)) % prime;
-  }
+  const mid = Math.floor(array.length / 2);
+  const left = mergeSort(array.slice(0, mid));  // Sort left half recursively
+  const right = mergeSort(array.slice(mid));    // Sort right half recursively
 
-  // Slide the pattern over text one by one
-  for (let i = 0; i <= n - m; i++) {
-    // If hash values match, check characters one by one to avoid collision
-    if (patternHash === textHash) {
-      let j = 0;
-      for (; j < m; j++) {
-        if (text[i + j] !== pattern[j]) break;
-      }
-      if (j === m) result.push(i);
-    }
-
-    // Calculate hash for next window of text: Remove leading char, add trailing char
-    if (i < n - m) {
-      textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
-
-      // We might get negative value, convert to positive
-      if (textHash < 0) {
-        textHash += prime;
-      }
-    }
-  }
-
-  return result;
+  return merge(left, right); // Merge the sorted halves
 }
 
-// Example usage:
-const text = "ababcabcabababd";
-const pattern = "ababd";
-console.log(rabinKarp(text, pattern));  // Output: [10]
+function merge<T>(left: T[], right: T[]): T[] {
+  const result: T[] = [];
+  let i = 0;
+  let j = 0;
+
+  // We assume T can be compared with < operator; for full safety, you'd want to pass a comparator
+  while (i < left.length && j < right.length) {
+    if (left[i] < right[j]) {
+      result.push(left[i]);
+      i++;
+    } else {
+      result.push(right[j]);
+      j++;
+    }
+  }
+
+  // Add remaining elements from left or right
+  return result.concat(left.slice(i)).concat(right.slice(j));
+}
+const numbers = [5, 3, 8, 4, 2];
+const sortedNumbers = mergeSort(numbers);
+console.log(sortedNumbers); // [2, 3, 4, 5, 8]
