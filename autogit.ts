@@ -1,8 +1,11 @@
-function calculateMean(numbers: number[]): number {
-  if (numbers.length === 0) return 0;  // or handle empty array as you prefer
+function maxSubArray(nums: number[]): number {
+  let maxSoFar = nums[0];
+  let maxEndingHere = nums[0];
 
-  const sum = numbers.reduce((acc, curr) => acc + curr, 0);
-  return sum / numbers.length;
+  for (let i = 1; i < nums.length; i++) {
+    maxEndingHere = Math.max(nums[i], maxEndingHere + nums[i]);
+    maxSoFar = Math.max(maxSoFar, maxEndingHere);
+  }
+
+  return maxSoFar;
 }
-const data = [10, 20, 30, 40, 50];
-console.log(calculateMean(data));  // Outputs: 30
