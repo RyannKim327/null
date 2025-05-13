@@ -1,19 +1,12 @@
-function findSecondLargest(arr: number[]): number | undefined {
-  if (arr.length < 2) return undefined;  // Not enough elements
-
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
-
-  for (const num of arr) {
-    if (num > largest) {
-      secondLargest = largest;
-      largest = num;
-    } else if (num > secondLargest && num !== largest) {
-      secondLargest = num;
-    }
+function isPrime(num: number): boolean {
+  if (num <= 1) return false;  // 0 and 1 are not prime numbers
+  if (num <= 3) return true;   // 2 and 3 are prime numbers
+  
+  if (num % 2 === 0 || num % 3 === 0) return false; // multiples of 2 and 3 are not prime
+  
+  for (let i = 5; i * i <= num; i += 6) {
+    if (num % i === 0 || num % (i + 2) === 0) return false;
   }
-
-  return secondLargest === -Infinity ? undefined : secondLargest;
+  
+  return true;
 }
-const nums = [10, 5, 8, 12, 3];
-console.log(findSecondLargest(nums));  // Output: 10
