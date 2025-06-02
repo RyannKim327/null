@@ -92,9 +92,9 @@ exec("git fetch", (e: unknown) => {
   console.log(`----- Git Pull -----`);
   exec("git pull", (e: unknown) => {
     if (e) return console.error(e);
-    // exec("git config credential.helper cache", (e: unknown) => {
-    // if (e) return console.error(`ERR [Helper]: ${e}`);
-    run();
-    // });
+    exec("git config credential.helper cache", (e: unknown) => {
+      if (e) return console.error(`ERR [Helper]: ${e}`);
+      run();
+    });
   });
 });
