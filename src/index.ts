@@ -38,7 +38,7 @@ const run = async (): Promise<void> => {
 
     const msg: string = mm2[Math.floor(Math.random() * mm2.length)];
     fs.writeFileSync("Auto git.txt", msg, "utf-8");
-    fs.writeFileSync("autogit.ts", result, "utf-8");
+    fs.writeFileSync("src/autogit.ts", result, "utf-8");
 
     setTimeout(() => {
       console.log(`-----${_commitments}-----`);
@@ -62,7 +62,7 @@ const run = async (): Promise<void> => {
   } catch (e) {
     const msg: string = mm2[Math.floor(Math.random() * mm2.length)];
     fs.writeFileSync("Auto git.txt", msg, "utf-8");
-    fs.writeFileSync("autogit.ts", "// May error sa API", "utf-8");
+    fs.writeFileSync("src/autogit.ts", "// May error sa API", "utf-8");
 
     setTimeout(() => {
       console.log(`-----${_commitments}-----`);
@@ -92,9 +92,9 @@ exec("git fetch", (e: unknown) => {
   console.log(`----- Git Pull -----`);
   exec("git pull", (e: unknown) => {
     if (e) return console.error(e);
-    exec("git config credential.helper cache", (e: unknown) => {
-      if (e) return console.error(`ERR [Helper]: ${e}`);
-      run();
-    });
+    // exec("git config credential.helper cache", (e: unknown) => {
+    // if (e) return console.error(`ERR [Helper]: ${e}`);
+    run();
+    // });
   });
 });
