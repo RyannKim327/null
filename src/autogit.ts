@@ -1,23 +1,34 @@
-const array = [1, 2, 3, 4, 3];
-const valueToRemove = 3;
+function longestCommonSubstring(s1: string, s2: string): string {
+    const m = s1.length;
+    const n = s2.length;
+    let maxLength = 0;
+    let endingIndex = 0;
 
-const index = array.indexOf(valueToRemove);
-if (index > -1) {
-  array.splice(index, 1); // Removes element at specified index
+    // Create a 2D array to store lengths of longest common suffixes
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    // Build the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (s1[i - 1] === s2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+                if (dp[i][j] > maxLength) {
+                    maxLength = dp[i][j];
+                    endingIndex = i; // Update ending index of the longest common substring
+                }
+            }
+        }
+    }
+
+    // Extract the longest common substring
+    if (maxLength === 0) {
+        return ""; // No common substring found
+    }
+    return s1.substring(endingIndex - maxLength, endingIndex);
 }
 
-console.log(array); // Output: [1, 2, 4, 3]
-const array = [1, 2, 3, 4, 3];
-const valueToRemove = 3;
-
-const filteredArray = array.filter(item => item !== valueToRemove);
-
-console.log(filteredArray); // Output: [1, 2, 4]
-const array = [1, 2, 3, 4];
-const indexToRemove = 2; // remove the element at index 2 (which is 3)
-
-if (indexToRemove > -1 && indexToRemove < array.length) {
-  array.splice(indexToRemove, 1);
-}
-
-console.log(array); // Output: [1, 2, 4]
+// Example usage
+const str1 = "abcdef";
+const str2 = "zcdemf";
+const result = longestCommonSubstring(str1, str2);
+console.log(result); // Output: "cd"
