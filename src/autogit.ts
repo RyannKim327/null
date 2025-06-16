@@ -1,19 +1,10 @@
-function findSecondLargest(arr: number[]): number | null {
-  if (arr.length < 2) return null; // Not enough elements
+import cron from 'node-cron';
 
-  let largest = -Infinity;
-  let secondLargest = -Infinity;
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+  const now = new Date();
+  console.log(`Running a task at ${now.toISOString()}`);
+});
 
-  for (const num of arr) {
-    if (num > largest) {
-      secondLargest = largest;
-      largest = num;
-    } else if (num > secondLargest && num < largest) {
-      secondLargest = num;
-    }
-  }
-
-  return secondLargest === -Infinity ? null : secondLargest;
-}
-const arr = [3, 5, 7, 2, 8, 8];
-console.log(findSecondLargest(arr)); // Output: 7
+// Start the scheduled task
+task.start();
