@@ -1,55 +1,46 @@
-class Node {
-    value: string;
-    children: Node[];
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: Node) {
-        this.children.push(child);
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
     }
 }
 
-function depthLimitedSearch(root: Node, target: string, limit: number): boolean {
-    const stack: { node: Node; depth: number }[] = [];
-    stack.push({ node: root, depth: 0 });
+class BinaryTree {
+    private diameter: number = 0;
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!;
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return true;
-        }
-
-        // If the depth limit is not reached, add children to the stack
-        if (depth < limit) {
-            for (const child of node.children) {
-                stack.push({ node: child, depth: depth + 1 });
-            }
-        }
+    public getDiameter(root: TreeNode | null): number {
+        this.calculateHeight(root);
+        return this.diameter;
     }
 
-    // Target not found within the depth limit
-    return false;
+    private calculateHeight(node: TreeNode | null): number {
+        if (node === null) {
+            return 0;
+        }
+
+        // Recursively find the height of the left and right subtrees
+        const leftHeight = this.calculateHeight(node.left);
+        const rightHeight = this.calculateHeight(node.right);
+
+        // Update the diameter if the path through this node is larger
+        this.diameter = Math.max(this.diameter, leftHeight + rightHeight);
+
+        // Return the height of the tree rooted at this node
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
+// Example usage:
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-
-const target = "E";
-const limit = 2;
-
-const found = depthLimitedSearch(root, target, limit);
-console.log(`Target ${target} found: ${found}`);
+const binaryTree = new BinaryTree();
+console.log("Diameter of the binary tree:", binaryTree.getDiameter(root)); // Output: 3
