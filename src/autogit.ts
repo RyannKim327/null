@@ -1,31 +1,44 @@
-function maxSubArray(arr: number[]): { maxSum: number, start: number, end: number } {
-    if (arr.length === 0) {
-        return { maxSum: 0, start: -1, end: -1 };
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    // Ensure nums1 is the smaller array to minimize the binary search range
+    if (nums1.length > nums2.length) {
+        return findMedianSortedArrays(nums2, nums1);
     }
 
-    let maxSum = arr[0];
-    let currentSum = arr[0];
-    let start = 0;
-    let tempStart = 0;
-    let end = 0;
+    const m = nums1.length;
+    const n = nums2.length;
+    let left = 0;
+    let right = m;
 
-    for (let i = 1; i < arr.length; i++) {
-        if (currentSum + arr[i] < arr[i]) {
-            currentSum = arr[i];
-            tempStart = i;
+    while (left <= right) {
+        const partitionX = Math.floor((left + right) / 2);
+        const partitionY = Math.floor((m + n + 1) / 2) - partitionX;
+
+        const maxLeftX = (partitionX === 0) ? Number.NEGATIVE_INFINITY : nums1[partitionX - 1];
+        const minRightX = (partitionX === m) ? Number.POSITIVE_INFINITY : nums1[partitionX];
+
+        const maxLeftY = (partitionY === 0) ? Number.NEGATIVE_INFINITY : nums2[partitionY - 1];
+        const minRightY = (partitionY === n) ? Number.POSITIVE_INFINITY : nums2[partitionY];
+
+        if (maxLeftX <= minRightY && maxLeftY <= minRightX) {
+            // Found correct partition
+            if ((m + n) % 2 === 0) {
+                return (Math.max(maxLeftX, maxLeftY) + Math.min(minRightX, minRightY)) / 2;
+            } else {
+                return Math.max(maxLeftX, maxLeftY);
+            }
+        } else if (maxLeftX > minRightY) {
+            // Too far right on nums1, go left
+            right = partitionX - 1;
         } else {
-            currentSum += arr[i];
-        }
-
-        if (currentSum > maxSum) {
-            maxSum = currentSum;
-            start = tempStart;
-            end = i;
+            // Too far left on nums1, go right
+            left = partitionX + 1;
         }
     }
 
-    return { maxSum, start, end };
+    throw new Error("Input arrays are not sorted or invalid.");
 }
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSubArray(arr);
-console.log(result); // { maxSum: 6, start: 3, end: 6 }
+
+// Example usage:
+const arr1 = [1, 3, 8];
+const arr2 = [7, 9, 10, 11];
+console.log(findMedianSortedArrays(arr1, arr2)); // Output: 8
