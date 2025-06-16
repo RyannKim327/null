@@ -1,31 +1,97 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const rotations: string[] = [];
+class PriorityQueue<T> {
+  private heap: T[] = [];
+  private comparator: (a: T, b: T) => number;
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
+  constructor(comparator: (a: T, b: T) => number) {
+    this.comparator = comparator;
+  }
+
+  size(): number {
+    return this.heap.length;
+  }
+
+  peek(): T | undefined {
+    return this.heap[0];
+  }
+
+  enqueue(value: T): void {
+    this.heap.push(value);
+    this.bubbleUp();
+  }
+
+  dequeue(): T | undefined {
+    if (this.size() === 0) return undefined;
+
+    const root = this.heap[0];
+    const last = this.heap.pop()!;
+    if (this.size() !== 0) {
+      this.heap[0] = last;
+      this.bubbleDown();
     }
+    return root;
+  }
 
-    // Sort the rotations
-    rotations.sort();
+  private bubbleUp() {
+    let index = this.size() - 1;
+    const element = this.heap[index];
 
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = 0;
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      const parent = this.heap[parentIndex];
 
-    for (let i = 0; i < n; i++) {
-        transformed += rotations[i][n - 1]; // Last character of each sorted rotation
-        if (rotations[i] === input) {
-            originalIndex = i; // Store the index of the original string
+      if (this.comparator(element, parent) >= 0) break;
+
+      // Swap element with parent
+      this.heap[parentIndex] = element;
+      this.heap[index] = parent;
+      index = parentIndex;
+    }
+  }
+
+  private bubbleDown() {
+    let index = 0;
+    const length = this.size();
+    const element = this.heap[0];
+
+    while (true) {
+      const leftChildIndex = 2 * index + 1;
+      const rightChildIndex = 2 * index + 2;
+      let leftChild: T | undefined, rightChild: T | undefined;
+      let swapIndex: number | null = null;
+
+      if (leftChildIndex < length) {
+        leftChild = this.heap[leftChildIndex];
+        if (this.comparator(leftChild, element) < 0) {
+          swapIndex = leftChildIndex;
         }
+      }
+
+      if (rightChildIndex < length) {
+        rightChild = this.heap[rightChildIndex];
+        if (
+          (swapIndex === null && this.comparator(rightChild, element) < 0) ||
+          (swapIndex !== null && leftChild && this.comparator(rightChild, leftChild) < 0)
+        ) {
+          swapIndex = rightChildIndex;
+        }
+      }
+
+      if (swapIndex === null) break;
+
+      this.heap[index] = this.heap[swapIndex];
+      this.heap[swapIndex] = element;
+      index = swapIndex;
     }
-
-    return { transformed, index: originalIndex };
+  }
 }
+// Min-heap example: smaller numbers have higher priority
+const pq = new PriorityQueue<number>((a, b) => a - b);
 
-// Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log(`Transformed: ${transformed}, Original Index: ${index}`);
-Transformed: annb$aa, Original Index: 3
+pq.enqueue(5);
+pq.enqueue(3);
+pq.enqueue(6);
+pq.enqueue(1);
+
+console.log(pq.dequeue()); // 1
+console.log(pq.dequeue()); // 3
+console.log(pq.peek());    // 5 (next smallest)
