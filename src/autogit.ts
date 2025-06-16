@@ -1,30 +1,17 @@
-function bubbleSort(arr: number[]): number[] {
-    // Create a copy of the array to avoid mutating the original
-    const result = [...arr];
-    const n = result.length;
+function firstRepeatedCharacter(str: string): string | null {
+    const seenCharacters = new Set<string>();
 
-    for (let i = 0; i < n - 1; i++) {
-        // Flag to detect any swap during this pass
-        let swapped = false;
-
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (result[j] > result[j + 1]) {
-                // Swap adjacent elements if they are in wrong order
-                [result[j], result[j + 1]] = [result[j + 1], result[j]];
-                swapped = true;
-            }
+    for (const char of str) {
+        if (seenCharacters.has(char)) {
+            return char; // Return the first repeated character
         }
-
-        // If no two elements were swapped by inner loop, array is sorted
-        if (!swapped) {
-            break;
-        }
+        seenCharacters.add(char); // Add the character to the set
     }
 
-    return result;
+    return null; // Return null if no repeated character is found
 }
 
 // Example usage:
-const unsorted = [64, 34, 25, 12, 22, 11, 90];
-const sorted = bubbleSort(unsorted);
-console.log("Sorted array:", sorted);
+const inputString = "abca";
+const result = firstRepeatedCharacter(inputString);
+console.log(result); // Output: 'a'
