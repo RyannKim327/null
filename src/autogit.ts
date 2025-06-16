@@ -1,10 +1,16 @@
-import cron from 'node-cron';
+function firstRepeatedChar(str: string): string | null {
+  const seen = new Set<string>();
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-  const now = new Date();
-  console.log(`Running a task at ${now.toISOString()}`);
-});
+  for (const char of str) {
+    if (seen.has(char)) {
+      return char;
+    }
+    seen.add(char);
+  }
 
-// Start the scheduled task
-task.start();
+  return null; // No repeated character found
+}
+
+// Example usage:
+console.log(firstRepeatedChar("swiss")); // Output: 's'
+console.log(firstRepeatedChar("abcdef")); // Output: null
