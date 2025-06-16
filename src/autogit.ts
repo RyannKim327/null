@@ -1,17 +1,31 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: convert to lowercase and remove spaces
-    const normalizedStr1 = str1.toLowerCase().replace(/\s+/g, '');
-    const normalizedStr2 = str2.toLowerCase().replace(/\s+/g, '');
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
 
-    // Sort the characters of both strings
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
+
+    for (let i = 0; i < n; i++) {
+        transformed += rotations[i][n - 1]; // Last character of each sorted rotation
+        if (rotations[i] === input) {
+            originalIndex = i; // Store the index of the original string
+        }
+    }
+
+    return { transformed, index: originalIndex };
 }
 
-// Example usage:
-const string1 = "listen";
-const string2 = "silent";
-console.log(areAnagrams(string1, string2)); // Output: true
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log(`Transformed: ${transformed}, Original Index: ${index}`);
+Transformed: annb$aa, Original Index: 3
