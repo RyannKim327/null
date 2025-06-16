@@ -1,35 +1,20 @@
-function binarySearch(arr: number[], target: number): number {
-    let left = 0;
-    let right = arr.length - 1;
+function firstNonRepeatingChar(str: string): string | null {
+  const charCount: Record<string, number> = {};
 
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
+  // Count the frequency of each character
+  for (const char of str) {
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
 
-        // Check if the target is present at mid
-        if (arr[mid] === target) {
-            return mid; // Target found, return the index
-        }
-
-        // If target is greater, ignore the left half
-        if (arr[mid] < target) {
-            left = mid + 1;
-        } else {
-            // If target is smaller, ignore the right half
-            right = mid - 1;
-        }
+  // Find the first character with a count of 1
+  for (const char of str) {
+    if (charCount[char] === 1) {
+      return char;
     }
+  }
 
-    // Target was not found in the array
-    return -1;
+  return null; // No non-repeating character found
 }
 
 // Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const targetValue = 5;
-const result = binarySearch(sortedArray, targetValue);
-
-if (result !== -1) {
-    console.log(`Target found at index: ${result}`);
-} else {
-    console.log('Target not found in the array.');
-}
+console.log(firstNonRepeatingChar("swiss")); // Output: w
