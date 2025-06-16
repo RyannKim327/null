@@ -1,50 +1,24 @@
-type Node<T> = {
-  value: T;
-  children?: Node<T>[];
-};
+function majorityElement(nums: number[]): number | null {
+    let count = 0;
+    let candidate: number | null = null;
 
-function depthLimitedSearch<T>(
-  node: Node<T>,
-  goalTest: (value: T) => boolean,
-  limit: number
-): boolean {
-  // Base case: check if the current node is the goal
-  if (goalTest(node.value)) {
-    return true;
-  }
-
-  // If limit is zero, do not explore further
-  if (limit <= 0) {
-    return false;
-  }
-
-  // Recurse over children if any
-  if (node.children) {
-    for (const child of node.children) {
-      // recurse with limit - 1
-      if (depthLimitedSearch(child, goalTest, limit - 1)) {
-        return true;
-      }
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
     }
-  }
-  // not found at this branch
-  return false;
+
+    // Optional verification step to confirm candidate is indeed the majority
+    if (candidate !== null) {
+        let occurrences = 0;
+        for (const num of nums) {
+            if (num === candidate) occurrences++;
+        }
+        if (occurrences > Math.floor(nums.length / 2)) {
+            return candidate;
+        }
+    }
+
+    return null; // No majority element found
 }
-const tree: Node<number> = {
-  value: 1,
-  children: [
-    { value: 2, children: [{ value: 4 }, { value: 5 }] },
-    { value: 3, children: [{ value: 6 }, { value: 7 }] }
-  ],
-};
-
-const goal = 5;
-const limit = 2;
-
-const found = depthLimitedSearch(
-  tree,
-  (value) => value === goal,
-  limit
-);
-
-console.log(`Goal ${goal} found within depth limit ${limit}: ${found}`);
