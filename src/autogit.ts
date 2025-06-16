@@ -1,11 +1,27 @@
-function reverseWords(sentence: string): string {
-  return sentence.split(' ').reverse().join(' ');
-}
+import * as readline from 'readline';
 
-// Example usage:
-const myString = "Hello world this is TypeScript";
-const reversed = reverseWords(myString);
-console.log(reversed);  // Output: "TypeScript is this world Hello"
-function reverseWords(sentence: string): string {
-  return sentence.trim().split(/\s+/).reverse().join(' ');
-}
+// Create an interface for input and output
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to ask for user input
+const askQuestion = (question: string): Promise<string> => {
+    return new Promise((resolve) => {
+        rl.question(question, (answer) => {
+            resolve(answer);
+        });
+    });
+};
+
+// Main function to run the program
+const main = async () => {
+    const name = await askQuestion('What is your name? ');
+    console.log(`Hello, ${name}!`);
+    
+    rl.close();
+};
+
+// Run the main function
+main();
