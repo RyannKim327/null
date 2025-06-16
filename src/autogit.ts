@@ -1,39 +1,30 @@
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function shellSort(arr: number[]): number[] {
+    let n = arr.length;
 
-  constructor(val: number, left: TreeNode | null = null, right: TreeNode | null = null) {
-    this.val = val;
-    this.left = left;
-    this.right = right;
-  }
+    // Start with a big gap, then reduce the gap
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // save arr[i] in temp and make a hole at position i
+            let temp = arr[i];
+
+            // shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            let j = i;
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            // put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
+        }
+    }
+
+    return arr;
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-  let diameter = 0;
-
-  // Helper function to compute height and update diameter
-  function height(node: TreeNode | null): number {
-    if (node === null) return 0;
-    const leftHeight = height(node.left);
-    const rightHeight = height(node.right);
-
-    // Update diameter at this node
-    diameter = Math.max(diameter, leftHeight + rightHeight);
-
-    // Height of current node = max height of left/right subtree + 1 for current node
-    return Math.max(leftHeight, rightHeight) + 1;
-  }
-
-  height(root);
-  return diameter;
-}
-
-// Example Usage
-
-const root = new TreeNode(1, 
-                new TreeNode(2, new TreeNode(4), new TreeNode(5)),
-                new TreeNode(3));
-
-console.log(diameterOfBinaryTree(root));  // Output: 3
+// Example usage:
+const array = [23, 12, 1, 8, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
