@@ -1,50 +1,90 @@
-function merge(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+// Define a class for the nodes of the BST
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null;
+  right: TreeNode<T> | null;
 
-    // Compare elements from left and right arrays and merge them in sorted order
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
-        }
+  constructor(value: T) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+// Define the BST class
+class BinarySearchTree<T> {
+  root: TreeNode<T> | null;
+
+  constructor() {
+    this.root = null;
+  }
+
+  // Insert a value into the BST
+  insert(value: T): void {
+    const newNode = new TreeNode(value);
+    if (this.root === null) {
+      this.root = newNode;
+    } else {
+      this.insertNode(this.root, newNode);
     }
+  }
 
-    // Concatenate any remaining elements from the left array
-    while (leftIndex < left.length) {
-        result.push(left[leftIndex]);
-        leftIndex++;
+  private insertNode(node: TreeNode<T>, newNode: TreeNode<T>): void {
+    if (newNode.value < node.value) {
+      // Insert to the left subtree
+      if (node.left === null) {
+        node.left = newNode;
+      } else {
+        this.insertNode(node.left, newNode);
+      }
+    } else {
+      // Insert to the right subtree
+      if (node.right === null) {
+        node.right = newNode;
+      } else {
+        this.insertNode(node.right, newNode);
+      }
     }
+  }
 
-    // Concatenate any remaining elements from the right array
-    while (rightIndex < right.length) {
-        result.push(right[rightIndex]);
-        rightIndex++;
+  // Search for a value in the BST
+  search(value: T): boolean {
+    return this.searchNode(this.root, value);
+  }
+
+  private searchNode(node: TreeNode<T> | null, value: T): boolean {
+    if (node === null) {
+      return false;
     }
+    if (value === node.value) {
+      return true;
+    } else if (value < node.value) {
+      return this.searchNode(node.left, value);
+    } else {
+      return this.searchNode(node.right, value);
+    }
+  }
 
+  // In-order traversal (left, root, right)
+  inorderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+    if (node !== null) {
+      this.inorderTraversal(node.left, result);
+      result.push(node.value);
+      this.inorderTraversal(node.right, result);
+    }
     return result;
+  }
 }
 
-function mergeSort(array: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (array.length <= 1) {
-        return array;
-    }
+// Example usage:
+const bst = new BinarySearchTree<number>();
+bst.insert(8);
+bst.insert(3);
+bst.insert(10);
+bst.insert(1);
+bst.insert(6);
+bst.insert(14);
 
-    // Split the array into two halves
-    const mid = Math.floor(array.length / 2);
-    const left = mergeSort(array.slice(0, mid));
-    const right = mergeSort(array.slice(mid));
-
-    // Merge the sorted halves
-    return merge(left, right);
-}
-
-// Example usage
-const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(unsortedArray);
-console.log(sortedArray); // Output: [3, 9, 10, 27, 38, 43, 82]
+console.log("Inorder traversal:", bst.inorderTraversal()); // Should print values in sorted order
+console.log("Search 6:", bst.search(6)); // true
+console.log("Search 7:", bst.search(7)); // false
