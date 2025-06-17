@@ -1,17 +1,36 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  // Normalize - you can also add regex to remove punctuation if needed
-  const normalize = (str: string) => str.toLowerCase().split('').sort().join('');
-  
-  return normalize(str1) === normalize(str2);
-}
+type Graph = Map<string, string[]>;  // adjacency list representation
 
-// Example usage:
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world'));   // false
-const normalize = (str: string) =>
-  str
-    .toLowerCase()
-    .replace(/[^a-z]/g, '') // keep only letters
-    .split('')
-    .sort()
-    .join('');
+function bfs(graph: Graph, start: string): string[] {
+  const visited = new Set<string>();
+  const queue: string[] = [];
+  const result: string[] = [];
+
+  queue.push(start);
+  visited.add(start);
+
+  while (queue.length > 0) {
+    const node = queue.shift()!;
+    result.push(node);
+
+    const neighbors = graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push(neighbor);
+      }
+    }
+  }
+
+  return result;
+}
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D', 'E']],
+  ['C', ['F']],
+  ['D', []],
+  ['E', ['F']],
+  ['F', []],
+]);
+
+const traversal = bfs(graph, 'A');
+console.log(traversal);  // Output: ['A', 'B', 'C', 'D', 'E', 'F']
