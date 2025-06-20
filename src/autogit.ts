@@ -1,28 +1,53 @@
-function findFirstNonRepeatingCharacter(input: string): string | null {
-    // Step 1: Create a map to store character frequencies
-    const charFrequency = new Map<string, number>();
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Populate the frequency map
-    for (const char of input) {
-        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null; // This will become the new tail (null initially)
+    let current: ListNode | null = head; // Start from the head of the list
+
+    while (current !== null) {
+        const nextNode = current.next; // Store the next node temporarily
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current node
+        current = nextNode; // Move to the next node in the original list
     }
 
-    // Step 2: Find the first character with a frequency of 1
-    for (const char of input) {
-        if (charFrequency.get(char) === 1) {
-            return char; // Return the first non-repeating character
-        }
+    // At the end, prev will be pointing to the new head
+    return prev;
+}
+// Helper function to print the linked list
+function printList(head: ListNode | null): void {
+    let current = head;
+    const result: number[] = [];
+    while (current !== null) {
+        result.push(current.value);
+        current = current.next;
     }
-
-    // Step 3: If no non-repeating character is found, return null
-    return null;
+    console.log(result.join(" -> "));
 }
 
-// Example Usage
-const testString = "swiss";
-const result = findFirstNonRepeatingCharacter(testString);
-console.log(`The first non-repeating character is: ${result}`);
-console.log(findFirstNonRepeatingCharacter("swiss")); // Output: "w"
-console.log(findFirstNonRepeatingCharacter("level")); // Output: "v"
-console.log(findFirstNonRepeatingCharacter("aabbcc")); // Output: null
-console.log(findFirstNonRepeatingCharacter("")); // Output: null
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+console.log("Original List:");
+printList(head);
+
+// Reverse the linked list
+const reversedHead = reverseLinkedList(head);
+
+console.log("Reversed List:");
+printList(reversedHead);
+Original List:
+1 -> 2 -> 3 -> 4 -> 5
+Reversed List:
+5 -> 4 -> 3 -> 2 -> 1
