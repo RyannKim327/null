@@ -1,64 +1,34 @@
-function calculateMean(numbers: number[]): number {
-    // Implementation goes here
-}
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("Cannot calculate the mean of an empty array.");
-        // Alternatively, you could return NaN:
-        // return NaN;
-    }
-    // Continue with calculation
-}
-const sum = numbers.reduce((accumulator, current) => accumulator + current, 0);
-const mean = sum / numbers.length;
-function calculateMean(numbers: number[]): number {
-    if (numbers.length === 0) {
-        throw new Error("Cannot calculate the mean of an empty array.");
-        // Alternatively, you could return NaN:
-        // return NaN;
-    }
+function binarySearchRecursive(
+  arr: number[], 
+  target: number, 
+  low: number = 0, 
+  high: number = arr.length - 1
+): number {
+  // Base case: If the search space is invalid, the target is not in the array
+  if (low > high) {
+    return -1;
+  }
 
-    const sum = numbers.reduce((accumulator, current) => accumulator + current, 0);
-    const mean = sum / numbers.length;
+  // Calculate the middle index
+  const mid = Math.floor((low + high) / 2);
 
-    return mean;
-}
-const data: number[] = [10, 20, 30, 40, 50];
-const mean = calculateMean(data);
-console.log(`The mean is: ${mean}`); // Output: The mean is: 30
-const calculateMean = (numbers: number[]): number => {
-    if (numbers.length === 0) {
-        throw new Error("Cannot calculate the mean of an empty array.");
-        // Alternatively, return NaN:
-        // return NaN;
-    }
-
-    const sum = numbers.reduce((acc, num) => acc + num, 0);
-    return sum / numbers.length;
-};
-
-// Usage
-const data: number[] = [5, 15, 25, 35, 45];
-const mean = calculateMean(data);
-console.log(`The mean is: ${mean}`); // Output: The mean is: 25
-function calculateMeanSafe(numbers: any[]): number {
-    if (!Array.isArray(numbers)) {
-        throw new TypeError("Input must be an array.");
-    }
-
-    const validNumbers = numbers.filter(item => typeof item === 'number' && !isNaN(item));
-
-    if (validNumbers.length === 0) {
-        throw new Error("No valid numbers to calculate the mean.");
-        // Or return NaN:
-        // return NaN;
-    }
-
-    const sum = validNumbers.reduce((acc, num) => acc + num, 0);
-    return sum / validNumbers.length;
+  // Check if the middle element is the target
+  if (arr[mid] === target) {
+    return mid; // Target found, return its index
+  } 
+  // If the target is less than the middle element, search the left half
+  else if (target < arr[mid]) {
+    return binarySearchRecursive(arr, target, low, mid - 1);
+  } 
+  // If the target is greater than the middle element, search the right half
+  else {
+    return binarySearchRecursive(arr, target, mid + 1, high);
+  }
 }
 
-// Usage
-const mixedData = [10, '20', 30, null, 40, undefined, 50];
-const mean = calculateMeanSafe(mixedData);
-console.log(`The mean is: ${mean}`); // Output: The mean is: 30
+// Example usage:
+const sortedArray = [1, 3, 5, 7, 9, 11, 13];
+const target = 7;
+
+const result = binarySearchRecursive(sortedArray, target);
+console.log(result); // Output: 3 (index of 7 in the array)
