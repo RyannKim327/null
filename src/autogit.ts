@@ -1,49 +1,64 @@
-// Define the structure of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+function calculateMean(numbers: number[]): number {
+    // Implementation goes here
 }
-
-// Function to check if a linked list contains a cycle
-function hasCycle(head: ListNode | null): boolean {
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow!.next; // Move slow pointer by 1 step
-        fast = fast.next.next; // Move fast pointer by 2 steps
-
-        if (slow === fast) {
-            return true; // Cycle detected
-        }
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("Cannot calculate the mean of an empty array.");
+        // Alternatively, you could return NaN:
+        // return NaN;
+    }
+    // Continue with calculation
+}
+const sum = numbers.reduce((accumulator, current) => accumulator + current, 0);
+const mean = sum / numbers.length;
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("Cannot calculate the mean of an empty array.");
+        // Alternatively, you could return NaN:
+        // return NaN;
     }
 
-    return false; // No cycle detected
+    const sum = numbers.reduce((accumulator, current) => accumulator + current, 0);
+    const mean = sum / numbers.length;
+
+    return mean;
 }
-// Create nodes for a linked list
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+const data: number[] = [10, 20, 30, 40, 50];
+const mean = calculateMean(data);
+console.log(`The mean is: ${mean}`); // Output: The mean is: 30
+const calculateMean = (numbers: number[]): number => {
+    if (numbers.length === 0) {
+        throw new Error("Cannot calculate the mean of an empty array.");
+        // Alternatively, return NaN:
+        // return NaN;
+    }
 
-// Link the nodes to form a list with a cycle
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle back to node2
+    const sum = numbers.reduce((acc, num) => acc + num, 0);
+    return sum / numbers.length;
+};
 
-// Check if the list contains a cycle
-console.log(hasCycle(node1)); // Output: true
+// Usage
+const data: number[] = [5, 15, 25, 35, 45];
+const mean = calculateMean(data);
+console.log(`The mean is: ${mean}`); // Output: The mean is: 25
+function calculateMeanSafe(numbers: any[]): number {
+    if (!Array.isArray(numbers)) {
+        throw new TypeError("Input must be an array.");
+    }
 
-// Create a non-cyclic linked list
-const head = new ListNode(5);
-head.next = new ListNode(6);
-head.next.next = new ListNode(7);
+    const validNumbers = numbers.filter(item => typeof item === 'number' && !isNaN(item));
 
-// Check if the list contains a cycle
-console.log(hasCycle(head)); // Output: false
+    if (validNumbers.length === 0) {
+        throw new Error("No valid numbers to calculate the mean.");
+        // Or return NaN:
+        // return NaN;
+    }
+
+    const sum = validNumbers.reduce((acc, num) => acc + num, 0);
+    return sum / validNumbers.length;
+}
+
+// Usage
+const mixedData = [10, '20', 30, null, 40, undefined, 50];
+const mean = calculateMeanSafe(mixedData);
+console.log(`The mean is: ${mean}`); // Output: The mean is: 30
