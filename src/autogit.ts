@@ -1,60 +1,156 @@
-List A: 1 -> 2 -> 3 \
-                     -> 7 -> 8
-List B:      4 -> 5 /
-// Definition for a singly-linked list node.
-class ListNode {
-    val: number;
-    next: ListNode | null;
+class AVLTreeNode {
+    value: number;
+    left: AVLTreeNode | null;
+    right: AVLTreeNode | null;
+    height: number;
 
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+        this.height = 1; // Height of a single node is 1
     }
 }
 
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    // Edge case: If either list is empty, there is no intersection.
-    if (!headA || !headB) return null;
+class AVLTree {
+    root: AVLTreeNode | null;
 
-    let pA: ListNode | null = headA;
-    let pB: ListNode | null = headB;
-
-    // Traverse both lists until the pointers meet or both reach null.
-    while (pA !== pB) {
-        // Move pointer A. If it reaches the end, redirect it to headB.
-        pA = pA === null ? headB : pA.next;
-
-        // Move pointer B. If it reaches the end, redirect it to headA.
-        pB = pB === null ? headA : pB.next;
+    constructor() {
+        this.root = null;
     }
 
-    // Either both pointers meet at the intersection node, or both are null.
-    return pA;
-}
-// Helper function to create a linked list from an array.
-function createLinkedList(arr: number[]): ListNode | null {
-    if (arr.length === 0) return null;
-    const head = new ListNode(arr[0]);
-    let current = head;
-    for (let i = 1; i < arr.length; i++) {
-        current.next = new ListNode(arr[i]);
-        current = current.next;
+    // Helper method to get the height of a node
+    private getHeight(node: AVLTreeNode | null): number {
+        return node ? node.height : 0;
     }
-    return head;
+
+    // Helper method to calculate the balance factor of a node
+    private getBalanceFactor(node: AVLTreeNode | null): number {
+        if (!node) return 0;
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
+
+    // Update the height of a node
+    private updateHeight(node: AVLTreeNode): void {
+        node.height =
+            Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
+    }
+
+    // Perform a right rotation
+    private rotateRight(y: AVLTreeNode): AVLTreeNode {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        this.updateHeight(y);
+        this.updateHeight(x);
+
+        return x; // New root of the subtree
+    }
+
+    // Perform a left rotation
+    private rotateLeft(x: AVLTreeNode): AVLTreeNode {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        this.updateHeight(x);
+        this.updateHeight(y);
+
+        return y; // New root of the subtree
+    }
+
+    // Insert a value into the AVL tree
+    insert(value: number): void {
+        this.root = this.insertNode(this.root, value);
+    }
+
+    private insertNode(node: AVLTreeNode | null, value: number): AVLTreeNode {
+        // Step 1: Perform normal BST insertion
+        if (!node) return new AVLTreeNode(value);
+
+        if (value < node.value) {
+            node.left = this.insertNode(node.left, value);
+        } else if (value > node.value) {
+            node.right = this.insertNode(node.right, value);
+        } else {
+            // Duplicate values are not allowed
+            return node;
+        }
+
+        // Step 2: Update the height of the current node
+        this.updateHeight(node);
+
+        // Step 3: Get the balance factor to check if the node is unbalanced
+        const balanceFactor = this.getBalanceFactor(node);
+
+        // Step 4: Perform rotations if the node is unbalanced
+
+        // Left-Left Case
+        if (balanceFactor > 1 && value < node.left!.value) {
+            return this.rotateRight(node);
+        }
+
+        // Right-Right Case
+        if (balanceFactor < -1 && value > node.right!.value) {
+            return this.rotateLeft(node);
+        }
+
+        // Left-Right Case
+        if (balanceFactor > 1 && value > node.left!.value) {
+            node.left = this.rotateLeft(node.left!);
+            return this.rotateRight(node);
+        }
+
+        // Right-Left Case
+        if (balanceFactor < -1 && value < node.right!.value) {
+            node.right = this.rotateRight(node.right!);
+            return this.rotateLeft(node);
+        }
+
+        // Return the unchanged node pointer
+        return node;
+    }
+
+    // In-order traversal (left -> root -> right)
+    inOrderTraversal(node: AVLTreeNode | null = this.root): number[] {
+        if (!node) return [];
+        return [
+            ...this.inOrderTraversal(node.left),
+            node.value,
+            ...this.inOrderTraversal(node.right),
+        ];
+    }
+
+    // Pre-order traversal (root -> left -> right)
+    preOrderTraversal(node: AVLTreeNode | null = this.root): number[] {
+        if (!node) return [];
+        return [
+            node.value,
+            ...this.preOrderTraversal(node.left),
+            ...this.preOrderTraversal(node.right),
+        ];
+    }
 }
 
-// Example usage.
-const common = createLinkedList([7, 8]); // Shared part of the lists.
+// Example usage
+const avlTree = new AVLTree();
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+avlTree.insert(40);
+avlTree.insert(50);
+avlTree.insert(25);
 
-const headA = createLinkedList([1, 2, 3]);
-let tailA = headA;
-while (tailA?.next) tailA = tailA.next;
-if (tailA) tailA.next = common; // Connect list A to the shared part.
-
-const headB = createLinkedList([4, 5]);
-let tailB = headB;
-while (tailB?.next) tailB = tailB.next;
-if (tailB) tailB.next = common; // Connect list B to the shared part.
-
-const intersection = getIntersectionNode(headA, headB);
-console.log(intersection?.val); // Output: 7 (intersection node value)
+console.log("In-order traversal:", avlTree.inOrderTraversal());
+console.log("Pre-order traversal:", avlTree.preOrderTraversal());
+In-order traversal: [10, 20, 25, 30, 40, 50]
+Pre-order traversal: [30, 20, 10, 25, 40, 50]
