@@ -1,186 +1,108 @@
-class SkipListNode {
-    value: number;
-    forward: SkipListNode[];
+class ListNode {
+    val: number;
+    next: ListNode | null;
 
-    constructor(value: number, level: number) {
-        this.value = value;
-        this.forward = new Array(level).fill(null); // Pointers to the next nodes at each level
+    constructor(val?: number, next?: ListNode | null) {
+        this.val = (val === undefined ? 0 : val);
+        this.next = (next === undefined ? null : next);
     }
 }
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
 
-class SkipList {
-    private head: SkipListNode;
-    private maxLevel: number;
-    private currentLevel: number;
+    let ptrA: ListNode | null = headA;
+    let ptrB: ListNode | null = headB;
 
-    constructor(maxLevel: number = 16) {
-        this.maxLevel = maxLevel;
-        this.currentLevel = 0;
-        this.head = new SkipListNode(-Infinity, maxLevel); // Sentinel node with negative infinity value
+    // Traverse both lists
+    while (ptrA !== ptrB) {
+        // Move to the next node or switch to the other list's head
+        ptrA = ptrA === null ? headB : ptrA.next;
+        ptrB = ptrB === null ? headA : ptrB.next;
     }
 
-    // Randomly determine the level for a new node
-    private randomLevel(): number {
-        let level = 0;
-        while (Math.random() < 0.5 && level < this.maxLevel - 1) {
-            level++;
-        }
-        return level;
+    // Either both are null (no intersection) or both point to the intersection node
+    return ptrA;
+}
+// Helper function to create a linked list from an array
+function createList(arr: number[]): ListNode | null {
+    if (arr.length === 0) return null;
+    const head = new ListNode(arr[0]);
+    let current = head;
+    for (let i = 1; i < arr.length; i++) {
+        current.next = new ListNode(arr[i]);
+        current = current.next;
     }
-
-    // Search for a value in the skip list
-    search(target: number): boolean {
-        let current = this.head;
-
-        // Start from the top level and move down
-        for (let i = this.currentLevel; i >= 0; i--) {
-            while (current.forward[i] && current.forward[i].value < target) {
-                current = current.forward[i];
-            }
-        }
-
-        // Move to the bottom level to check if the target exists
-        current = current.forward[0];
-        return current && current.value === target;
-    }
-
-    // Insert a value into the skip list
-    insert(value: number): void {
-        const update: SkipListNode[] = new Array(this.maxLevel).fill(null);
-        let current = this.head;
-
-        // Find the position to insert the new node
-        for (let i = this.currentLevel; i >= 0; i--) {
-            while (current.forward[i] && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        // Move to the bottom level
-        current = current.forward[0];
-
-        // If the value already exists, do nothing
-        if (current && current.value === value) {
-            console.log(`Value ${value} already exists.`);
-            return;
-        }
-
-        // Determine the level for the new node
-        const level = this.randomLevel();
-
-        // Update the current level of the skip list
-        if (level > this.currentLevel) {
-            for (let i = this.currentLevel + 1; i <= level; i++) {
-                update[i] = this.head;
-            }
-            this.currentLevel = level;
-        }
-
-        // Create the new node
-        const newNode = new SkipListNode(value, level);
-
-        // Update the forward pointers
-        for (let i = 0; i <= level; i++) {
-            newNode.forward[i] = update[i].forward[i];
-            update[i].forward[i] = newNode;
-        }
-
-        console.log(`Inserted value ${value} at level ${level}`);
-    }
-
-    // Delete a value from the skip list
-    delete(value: number): void {
-        const update: SkipListNode[] = new Array(this.maxLevel).fill(null);
-        let current = this.head;
-
-        // Find the node to delete
-        for (let i = this.currentLevel; i >= 0; i--) {
-            while (current.forward[i] && current.forward[i].value < value) {
-                current = current.forward[i];
-            }
-            update[i] = current;
-        }
-
-        // Move to the bottom level
-        current = current.forward[0];
-
-        // If the value does not exist, do nothing
-        if (!current || current.value !== value) {
-            console.log(`Value ${value} not found.`);
-            return;
-        }
-
-        // Adjust the forward pointers to remove the node
-        for (let i = 0; i <= this.currentLevel; i++) {
-            if (update[i].forward[i] !== current) break;
-            update[i].forward[i] = current.forward[i];
-        }
-
-        // Update the current level of the skip list
-        while (this.currentLevel > 0 && !this.head.forward[this.currentLevel]) {
-            this.currentLevel--;
-        }
-
-        console.log(`Deleted value ${value}`);
-    }
-
-    // Display the skip list
-    display(): void {
-        console.log("Skip List Structure:");
-        for (let i = 0; i <= this.currentLevel; i++) {
-            let current = this.head.forward[i];
-            let levelValues = [];
-            while (current) {
-                levelValues.push(current.value);
-                current = current.forward[i];
-            }
-            console.log(`Level ${i}: ${levelValues.join(" -> ")}`);
-        }
-    }
+    return head;
 }
 
-// Example Usage
-const skipList = new SkipList();
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
-skipList.insert(17);
+// Helper function to print the list values
+function printList(head: ListNode | null): void {
+    const vals: number[] = [];
+    let current = head;
+    while (current !== null) {
+        vals.push(current.val);
+        current = current.next;
+    }
+    console.log(vals.join(" -> "));
+}
 
-skipList.display();
+// Create two lists that intersect
+const common = createList([8, 10]);
 
-console.log("Search for 7:", skipList.search(7)); // true
-console.log("Search for 10:", skipList.search(10)); // false
+const listA = createList([4, 1]);
+let tailA = listA;
+while (tailA && tailA.next) {
+    tailA = tailA.next;
+}
+if (tailA) {
+    tailA.next = common;
+}
 
-skipList.delete(7);
-skipList.display();
+const listB = createList([5, 6, 1]);
+let tailB = listB;
+while (tailB && tailB.next) {
+    tailB = tailB.next;
+}
+if (tailB) {
+    tailB.next = common;
+}
 
-skipList.delete(19);
-skipList.display();
-Inserted value 3 at level 1
-Inserted value 6 at level 0
-Inserted value 7 at level 2
-Inserted value 9 at level 1
-Inserted value 12 at level 0
-Inserted value 19 at level 3
-Inserted value 17 at level 0
-Skip List Structure:
-Level 0: 3 -> 6 -> 7 -> 9 -> 12 -> 17 -> 19
-Level 1: 3 -> 7 -> 9 -> 19
-Level 2: 7 -> 19
-Level 3: 19
-Search for 7: true
-Search for 10: false
-Deleted value 7
-Skip List Structure:
-Level 0: 3 -> 6 -> 9 -> 12 -> 17 -> 19
-Level 1: 3 -> 9 -> 19
-Level 2: 19
-Level 3: 19
-Deleted value 19
-Skip List Structure:
-Level 0: 3 -> 6 -> 9 -> 12 -> 17
-Level 1: 3 -> 9
+console.log("List A:");
+printList(listA); // Output: 4 -> 1 -> 8 -> 10
+
+console.log("List B:");
+printList(listB); // Output: 5 -> 6 -> 1 -> 8 -> 10
+
+// Find the intersection
+const intersection = getIntersectionNode(listA, listB);
+if (intersection) {
+    console.log(`Intersection at node with value: ${intersection.val}`); // Output: 8
+} else {
+    console.log("No intersection found.");
+}
+List A:
+4 -> 1 -> 8 -> 10
+List B:
+5 -> 6 -> 1 -> 8 -> 10
+Intersection at node with value: 8
+function getIntersectionNodeWithSet(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    const seen = new Set<ListNode>();
+    let ptrA = headA;
+    
+    // Store all nodes of list A in the set
+    while (ptrA !== null) {
+        seen.add(ptrA);
+        ptrA = ptrA.next;
+    }
+    
+    // Traverse list B and check for intersection
+    let ptrB = headB;
+    while (ptrB !== null) {
+        if (seen.has(ptrB)) {
+            return ptrB;
+        }
+        ptrB = ptrB.next;
+    }
+    
+    return null;
+}
