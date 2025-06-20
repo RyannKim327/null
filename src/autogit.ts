@@ -1,49 +1,46 @@
-// Definition of a binary tree node
-class TreeNode {
-  val: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+const arrayWithDuplicates: number[] = [1, 2, 3, 2, 4, 1];
+const uniqueArray = Array.from(new Set(arrayWithDuplicates));
 
-  constructor(val: number) {
-    this.val = val;
-    this.left = null;
-    this.right = null;
+console.log(uniqueArray); // Output: [1, 2, 3, 4]
+const arrayWithDuplicates: number[] = [1, 2, 3, 2, 4, 1];
+const uniqueArray = arrayWithDuplicates.filter((item, index) => 
+  arrayWithDuplicates.indexOf(item) === index
+);
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4]
+const arrayWithDuplicates: number[] = [1, 2, 3, 2, 4, 1];
+const uniqueArray = arrayWithDuplicates.reduce((acc, item) => {
+  if (!acc.includes(item)) {
+    acc.push(item);
   }
+  return acc;
+}, [] as number[]);
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4]
+interface Person {
+  id: number;
+  name: string;
 }
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-  // Variable to store the maximum diameter found
-  let maxDiameter = 0;
+const arrayWithDuplicates: Person[] = [
+  { id: 1, name: "Alice" },
+  { id: 2, name: "Bob" },
+  { id: 1, name: "Alice" },
+];
 
-  // Helper function to calculate the height of the tree and update the diameter
-  function height(node: TreeNode | null): number {
-    if (node === null) {
-      return 0; // Base case: height of an empty tree is 0
-    }
+const uniqueArray = Object.values(
+  arrayWithDuplicates.reduce((acc, item) => {
+    acc[item.id] = item; // Use a unique key (e.g., id) to avoid duplicates
+    return acc;
+  }, {} as Record<number, Person>)
+);
 
-    // Recursively calculate the height of the left and right subtrees
-    const leftHeight = height(node.left);
-    const rightHeight = height(node.right);
+console.log(uniqueArray);
+// Output: [{ id: 1, name: "Alice" }, { id: 2, name: "Bob" }]
+import _ from 'lodash';
 
-    // Update the maximum diameter: it's the sum of heights of left and right subtrees
-    maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+const arrayWithDuplicates: number[] = [1, 2, 3, 2, 4, 1];
+const uniqueArray = _.uniq(arrayWithDuplicates);
 
-    // Return the height of the current node
-    return Math.max(leftHeight, rightHeight) + 1;
-  }
-
-  // Start the recursion to calculate height and update maxDiameter
-  height(root);
-
-  // Return the maximum diameter found
-  return maxDiameter;
-}
-// Constructing a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-// Calculate the diameter of the binary tree
-console.log(diameterOfBinaryTree(root)); // Output: 3
+console.log(uniqueArray); // Output: [1, 2, 3, 4]
+const uniqueArray = Array.from(new Set(arrayWithDuplicates));
