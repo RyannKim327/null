@@ -1,26 +1,49 @@
-const str = "42";
-const num = parseInt(str, 10); // Converts "42" to the number 42
-console.log(num); // Output: 42
-const str = "42";
-const num = Number(str); // Converts "42" to the number 42
-console.log(num); // Output: 42
-const str = "42";
-const num = +str; // Converts "42" to the number 42
-console.log(num); // Output: 42
-const str = "42.7";
-const num = Math.floor(Number(str)); // Converts "42.7" to 42
-console.log(num); // Output: 42
-const str = "42.7";
-const num = Math.trunc(Number(str)); // Converts "42.7" to 42
-console.log(num); // Output: 42
-const str = "abc";
-const num = parseInt(str, 10);
+// Define the structure of a linked list node
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-if (isNaN(num)) {
-  console.log("Invalid number");
-} else {
-  console.log(num);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
-const str = "42";
-const num = parseInt(str, 10);
-console.log(num); // Output: 42
+
+// Function to check if a linked list contains a cycle
+function hasCycle(head: ListNode | null): boolean {
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow!.next; // Move slow pointer by 1 step
+        fast = fast.next.next; // Move fast pointer by 2 steps
+
+        if (slow === fast) {
+            return true; // Cycle detected
+        }
+    }
+
+    return false; // No cycle detected
+}
+// Create nodes for a linked list
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+// Link the nodes to form a list with a cycle
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle back to node2
+
+// Check if the list contains a cycle
+console.log(hasCycle(node1)); // Output: true
+
+// Create a non-cyclic linked list
+const head = new ListNode(5);
+head.next = new ListNode(6);
+head.next.next = new ListNode(7);
+
+// Check if the list contains a cycle
+console.log(hasCycle(head)); // Output: false
