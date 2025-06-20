@@ -1,25 +1,49 @@
-function removeAllSpaces(input: string): string {
-    // Use a regular expression to replace all spaces
-    return input.replace(/\s/g, '');
+// Definition of a binary tree node
+class TreeNode {
+  val: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(val: number) {
+    this.val = val;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Example usage:
-const originalString = "Hello World! This is a test.";
-const stringWithoutSpaces = removeAllSpaces(originalString);
-console.log(stringWithoutSpaces); // Output: "HelloWorld!Thisisatest."
-function removeAllSpaces(input: string): string {
-    // Replace only literal spaces
-    return input.replace(/ /g, '');
-}
-const originalString = "Hello World!\tThis is a test.";
-const stringWithoutSpaces = removeAllSpaces(originalString);
-console.log(stringWithoutSpaces); 
-// Output: "HelloWorld!	Thisisatest." (Note: Tabs/newlines remain)
-function removeAllSpaces(input: string): string {
-    return input.split(' ').join('');
-}
+function diameterOfBinaryTree(root: TreeNode | null): number {
+  // Variable to store the maximum diameter found
+  let maxDiameter = 0;
 
-// Example usage:
-const originalString = "Hello World! This is a test.";
-const stringWithoutSpaces = removeAllSpaces(originalString);
-console.log(stringWithoutSpaces); // Output: "HelloWorld!Thisisatest."
+  // Helper function to calculate the height of the tree and update the diameter
+  function height(node: TreeNode | null): number {
+    if (node === null) {
+      return 0; // Base case: height of an empty tree is 0
+    }
+
+    // Recursively calculate the height of the left and right subtrees
+    const leftHeight = height(node.left);
+    const rightHeight = height(node.right);
+
+    // Update the maximum diameter: it's the sum of heights of left and right subtrees
+    maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+
+    // Return the height of the current node
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  // Start the recursion to calculate height and update maxDiameter
+  height(root);
+
+  // Return the maximum diameter found
+  return maxDiameter;
+}
+// Constructing a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+// Calculate the diameter of the binary tree
+console.log(diameterOfBinaryTree(root)); // Output: 3
