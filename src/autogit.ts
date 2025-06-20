@@ -1,46 +1,28 @@
-const arrayWithDuplicates: number[] = [1, 2, 3, 2, 4, 1];
-const uniqueArray = Array.from(new Set(arrayWithDuplicates));
+function findFirstNonRepeatingCharacter(input: string): string | null {
+    // Step 1: Create a map to store character frequencies
+    const charFrequency = new Map<string, number>();
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
-const arrayWithDuplicates: number[] = [1, 2, 3, 2, 4, 1];
-const uniqueArray = arrayWithDuplicates.filter((item, index) => 
-  arrayWithDuplicates.indexOf(item) === index
-);
+    // Populate the frequency map
+    for (const char of input) {
+        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
+    }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
-const arrayWithDuplicates: number[] = [1, 2, 3, 2, 4, 1];
-const uniqueArray = arrayWithDuplicates.reduce((acc, item) => {
-  if (!acc.includes(item)) {
-    acc.push(item);
-  }
-  return acc;
-}, [] as number[]);
+    // Step 2: Find the first character with a frequency of 1
+    for (const char of input) {
+        if (charFrequency.get(char) === 1) {
+            return char; // Return the first non-repeating character
+        }
+    }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
-interface Person {
-  id: number;
-  name: string;
+    // Step 3: If no non-repeating character is found, return null
+    return null;
 }
 
-const arrayWithDuplicates: Person[] = [
-  { id: 1, name: "Alice" },
-  { id: 2, name: "Bob" },
-  { id: 1, name: "Alice" },
-];
-
-const uniqueArray = Object.values(
-  arrayWithDuplicates.reduce((acc, item) => {
-    acc[item.id] = item; // Use a unique key (e.g., id) to avoid duplicates
-    return acc;
-  }, {} as Record<number, Person>)
-);
-
-console.log(uniqueArray);
-// Output: [{ id: 1, name: "Alice" }, { id: 2, name: "Bob" }]
-import _ from 'lodash';
-
-const arrayWithDuplicates: number[] = [1, 2, 3, 2, 4, 1];
-const uniqueArray = _.uniq(arrayWithDuplicates);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4]
-const uniqueArray = Array.from(new Set(arrayWithDuplicates));
+// Example Usage
+const testString = "swiss";
+const result = findFirstNonRepeatingCharacter(testString);
+console.log(`The first non-repeating character is: ${result}`);
+console.log(findFirstNonRepeatingCharacter("swiss")); // Output: "w"
+console.log(findFirstNonRepeatingCharacter("level")); // Output: "v"
+console.log(findFirstNonRepeatingCharacter("aabbcc")); // Output: null
+console.log(findFirstNonRepeatingCharacter("")); // Output: null
