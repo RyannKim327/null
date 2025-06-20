@@ -1,61 +1,32 @@
-function computeLPS(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let len = 0; // Length of the previous longest prefix suffix
-    let i = 1;
+function countingSort(arr: number[]): number[] {
+    if (arr.length === 0) return arr; // Handle empty array case
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+    // Step 1: Find the minimum and maximum values
+    const min = Math.min(...arr);
+    const max = Math.max(...arr);
+
+    // Step 2: Create the counting array
+    const range = max - min + 1;
+    const count: number[] = new Array(range).fill(0);
+
+    // Step 3: Count occurrences of each element
+    for (const num of arr) {
+        count[num - min]++;
+    }
+
+    // Step 4: Reconstruct the sorted array
+    const sortedArray: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            sortedArray.push(i + min);
+            count[i]--;
         }
     }
 
-    return lps;
+    return sortedArray;
 }
-function KMPSearch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const n = text.length;
-    const m = pattern.length;
 
-    if (m === 0) return result; // Edge case: empty pattern
-
-    const lps = computeLPS(pattern);
-
-    let i = 0; // Index for text
-    let j = 0; // Index for pattern
-
-    while (i < n) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            // Match found at index i - j
-            result.push(i - j);
-            j = lps[j - 1]; // Continue searching for next occurrence
-        } else if (i < n && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result;
-}
-const text = "ababcabcabababd";
-const pattern = "ababd";
-
-const matches = KMPSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
-Pattern found at indices: [9]
+// Example Usage
+const inputArray = [4, 2, 2, 8, 3, 3, 1];
+const sortedArray = countingSort(inputArray);
+console.log("Sorted Array:", sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
