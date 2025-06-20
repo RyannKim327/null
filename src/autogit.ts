@@ -1,76 +1,69 @@
-type Node = string | number; // Define the type for nodes (can be string or number)
-type Graph = Map<Node, Node[]>; // Graph represented as an adjacency list
+function rabinKarpSearch(text: string, pattern: string): number[] {
+    const result: number[] = [];
+    const n = text.length;
+    const m = pattern.length;
 
-/**
- * Depth-Limited Search function
- * @param graph - The graph represented as an adjacency list
- * @param start - The starting node
- * @param goal - The target node to find
- * @param limit - The maximum depth limit
- * @returns A boolean indicating whether the goal was found, and the path to the goal if found
- */
-function depthLimitedSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node,
-  limit: number
-): { found: boolean; path: Node[] } {
-  /**
-   * Recursive helper function for DLS
-   * @param node - Current node being explored
-   * @param depth - Current depth in the search
-   * @param path - Current path taken to reach this node
-   * @returns A boolean indicating whether the goal was found, and the path to the goal if found
-   */
-  function dlsRecursive(
-    node: Node,
-    depth: number,
-    path: Node[]
-  ): { found: boolean; path: Node[] } {
-    // Base case: If the current node is the goal, return success
-    if (node === goal) {
-      return { found: true, path: [...path, node] };
+    // Edge case: if pattern is empty or longer than text
+    if (m === 0 || m > n) {
+        return result;
     }
 
-    // Base case: If the depth limit is reached, stop exploring further
-    if (depth === 0) {
-      return { found: false, path: [] };
+    // Constants for the hash function
+    const base = 256; // Number of possible characters (ASCII)
+    const prime = 101; // A prime number to reduce hash collisions
+
+    // Compute the hash of the pattern and the first window of the text
+    let patternHash = 0;
+    let textHash = 0;
+    let h = 1; // Used to calculate the highest power of base modulo prime
+
+    // Precompute h = (base^(m-1)) % prime
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * base) % prime;
     }
 
-    // Recursive case: Explore neighbors
-    for (const neighbor of graph.get(node) || []) {
-      const result = dlsRecursive(neighbor, depth - 1, [...path, node]);
-      if (result.found) {
-        return result; // Goal found, propagate the result up
-      }
+    // Calculate the initial hash values for pattern and text
+    for (let i = 0; i < m; i++) {
+        patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
+        textHash = (base * textHash + text.charCodeAt(i)) % prime;
     }
 
-    // If no path to the goal is found, return failure
-    return { found: false, path: [] };
-  }
+    // Slide the pattern over the text
+    for (let i = 0; i <= n - m; i++) {
+        // Check if hash values match
+        if (patternHash === textHash) {
+            // Verify character by character
+            let match = true;
+            for (let j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                result.push(i); // Pattern found at index i
+            }
+        }
 
-  // Start the recursive search from the start node
-  return dlsRecursive(start, limit, []);
+        // Update the hash for the next window
+        if (i < n - m) {
+            textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
+
+            // Ensure the hash is non-negative
+            if (textHash < 0) {
+                textHash += prime;
+            }
+        }
+    }
+
+    return result;
 }
 
-// Example usage
-const graph: Graph = new Map([
-  ["A", ["B", "C"]],
-  ["B", ["D", "E"]],
-  ["C", ["F"]],
-  ["D", []],
-  ["E", ["F"]],
-  ["F", []],
-]);
-
-const startNode: Node = "A";
-const goalNode: Node = "F";
-const depthLimit: number = 3;
-
-const result = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
-
-if (result.found) {
-  console.log(`Goal found! Path: ${result.path.join(" -> ")}`);
-} else {
-  console.log("Goal not found within the depth limit.");
-}
+// Example usage:
+const text = "abracadabra";
+const pattern = "abra";
+const matches = rabinKarpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
+const text = "abracadabra";
+const pattern = "abra";
+Pattern found at indices: [0, 7]
