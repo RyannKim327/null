@@ -1,108 +1,58 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
+function fibonacciSearch(arr: number[], target: number): number {
+    const n = arr.length;
 
-    constructor(val?: number, next?: ListNode | null) {
-        this.val = (val === undefined ? 0 : val);
-        this.next = (next === undefined ? null : next);
-    }
-}
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
+    // Initialize Fibonacci numbers
+    let fibMMinus2 = 0; // (m-2)'th Fibonacci number
+    let fibMMinus1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibMMinus1 + fibMMinus2; // m'th Fibonacci number
 
-    let ptrA: ListNode | null = headA;
-    let ptrB: ListNode | null = headB;
-
-    // Traverse both lists
-    while (ptrA !== ptrB) {
-        // Move to the next node or switch to the other list's head
-        ptrA = ptrA === null ? headB : ptrA.next;
-        ptrB = ptrB === null ? headA : ptrB.next;
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibMMinus2 = fibMMinus1;
+        fibMMinus1 = fibM;
+        fibM = fibMMinus1 + fibMMinus2;
     }
 
-    // Either both are null (no intersection) or both point to the intersection node
-    return ptrA;
-}
-// Helper function to create a linked list from an array
-function createList(arr: number[]): ListNode | null {
-    if (arr.length === 0) return null;
-    const head = new ListNode(arr[0]);
-    let current = head;
-    for (let i = 1; i < arr.length; i++) {
-        current.next = new ListNode(arr[i]);
-        current = current.next;
-    }
-    return head;
-}
+    // Marks the eliminated range from the front
+    let offset = -1;
 
-// Helper function to print the list values
-function printList(head: ListNode | null): void {
-    const vals: number[] = [];
-    let current = head;
-    while (current !== null) {
-        vals.push(current.val);
-        current = current.next;
-    }
-    console.log(vals.join(" -> "));
-}
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Check if fibMMinus2 is a valid location
+        let i = Math.min(offset + fibMMinus2, n - 1);
 
-// Create two lists that intersect
-const common = createList([8, 10]);
-
-const listA = createList([4, 1]);
-let tailA = listA;
-while (tailA && tailA.next) {
-    tailA = tailA.next;
-}
-if (tailA) {
-    tailA.next = common;
-}
-
-const listB = createList([5, 6, 1]);
-let tailB = listB;
-while (tailB && tailB.next) {
-    tailB = tailB.next;
-}
-if (tailB) {
-    tailB.next = common;
-}
-
-console.log("List A:");
-printList(listA); // Output: 4 -> 1 -> 8 -> 10
-
-console.log("List B:");
-printList(listB); // Output: 5 -> 6 -> 1 -> 8 -> 10
-
-// Find the intersection
-const intersection = getIntersectionNode(listA, listB);
-if (intersection) {
-    console.log(`Intersection at node with value: ${intersection.val}`); // Output: 8
-} else {
-    console.log("No intersection found.");
-}
-List A:
-4 -> 1 -> 8 -> 10
-List B:
-5 -> 6 -> 1 -> 8 -> 10
-Intersection at node with value: 8
-function getIntersectionNodeWithSet(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    const seen = new Set<ListNode>();
-    let ptrA = headA;
-    
-    // Store all nodes of list A in the set
-    while (ptrA !== null) {
-        seen.add(ptrA);
-        ptrA = ptrA.next;
-    }
-    
-    // Traverse list B and check for intersection
-    let ptrB = headB;
-    while (ptrB !== null) {
-        if (seen.has(ptrB)) {
-            return ptrB;
+        // If target is greater than the value at index i, cut the subarray from offset to i
+        if (arr[i] < target) {
+            fibM = fibMMinus1;
+            fibMMinus1 = fibMMinus2;
+            fibMMinus2 = fibM - fibMMinus1;
+            offset = i;
         }
-        ptrB = ptrB.next;
+        // If target is less than the value at index i, cut the subarray after i+1
+        else if (arr[i] > target) {
+            fibM = fibMMinus2;
+            fibMMinus1 = fibMMinus1 - fibMMinus2;
+            fibMMinus2 = fibM - fibMMinus1;
+        }
+        // Element found
+        else {
+            return i;
+        }
     }
-    
-    return null;
+
+    // Compare the last element with the target
+    if (fibMMinus1 && offset + 1 < n && arr[offset + 1] === target) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
+
+// Example usage
+const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const target = 85;
+
+const result = fibonacciSearch(sortedArray, target);
+console.log(`Element found at index: ${result}`);
+Element found at index: 8
