@@ -1,156 +1,44 @@
-class AVLTreeNode {
-    value: number;
-    left: AVLTreeNode | null;
-    right: AVLTreeNode | null;
-    height: number;
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-        this.height = 1; // Height of a single node is 1
-    }
-}
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Avoid division by zero
+        if (arr[high] === arr[low]) {
+            if (arr[low] === target) {
+                return low; // All elements in the range are equal
+            }
+            break;
+        }
 
-class AVLTree {
-    root: AVLTreeNode | null;
+        // Estimate the position of the target
+        const pos = low + Math.floor(
+            ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+        );
 
-    constructor() {
-        this.root = null;
-    }
+        // Check if the estimated position contains the target
+        if (arr[pos] === target) {
+            return pos; // Target found
+        }
 
-    // Helper method to get the height of a node
-    private getHeight(node: AVLTreeNode | null): number {
-        return node ? node.height : 0;
-    }
-
-    // Helper method to calculate the balance factor of a node
-    private getBalanceFactor(node: AVLTreeNode | null): number {
-        if (!node) return 0;
-        return this.getHeight(node.left) - this.getHeight(node.right);
-    }
-
-    // Update the height of a node
-    private updateHeight(node: AVLTreeNode): void {
-        node.height =
-            Math.max(this.getHeight(node.left), this.getHeight(node.right)) + 1;
-    }
-
-    // Perform a right rotation
-    private rotateRight(y: AVLTreeNode): AVLTreeNode {
-        const x = y.left!;
-        const T2 = x.right;
-
-        // Perform rotation
-        x.right = y;
-        y.left = T2;
-
-        // Update heights
-        this.updateHeight(y);
-        this.updateHeight(x);
-
-        return x; // New root of the subtree
-    }
-
-    // Perform a left rotation
-    private rotateLeft(x: AVLTreeNode): AVLTreeNode {
-        const y = x.right!;
-        const T2 = y.left;
-
-        // Perform rotation
-        y.left = x;
-        x.right = T2;
-
-        // Update heights
-        this.updateHeight(x);
-        this.updateHeight(y);
-
-        return y; // New root of the subtree
-    }
-
-    // Insert a value into the AVL tree
-    insert(value: number): void {
-        this.root = this.insertNode(this.root, value);
-    }
-
-    private insertNode(node: AVLTreeNode | null, value: number): AVLTreeNode {
-        // Step 1: Perform normal BST insertion
-        if (!node) return new AVLTreeNode(value);
-
-        if (value < node.value) {
-            node.left = this.insertNode(node.left, value);
-        } else if (value > node.value) {
-            node.right = this.insertNode(node.right, value);
+        // Adjust the search range
+        if (arr[pos] < target) {
+            low = pos + 1; // Search in the upper part
         } else {
-            // Duplicate values are not allowed
-            return node;
+            high = pos - 1; // Search in the lower part
         }
-
-        // Step 2: Update the height of the current node
-        this.updateHeight(node);
-
-        // Step 3: Get the balance factor to check if the node is unbalanced
-        const balanceFactor = this.getBalanceFactor(node);
-
-        // Step 4: Perform rotations if the node is unbalanced
-
-        // Left-Left Case
-        if (balanceFactor > 1 && value < node.left!.value) {
-            return this.rotateRight(node);
-        }
-
-        // Right-Right Case
-        if (balanceFactor < -1 && value > node.right!.value) {
-            return this.rotateLeft(node);
-        }
-
-        // Left-Right Case
-        if (balanceFactor > 1 && value > node.left!.value) {
-            node.left = this.rotateLeft(node.left!);
-            return this.rotateRight(node);
-        }
-
-        // Right-Left Case
-        if (balanceFactor < -1 && value < node.right!.value) {
-            node.right = this.rotateRight(node.right!);
-            return this.rotateLeft(node);
-        }
-
-        // Return the unchanged node pointer
-        return node;
     }
 
-    // In-order traversal (left -> root -> right)
-    inOrderTraversal(node: AVLTreeNode | null = this.root): number[] {
-        if (!node) return [];
-        return [
-            ...this.inOrderTraversal(node.left),
-            node.value,
-            ...this.inOrderTraversal(node.right),
-        ];
-    }
-
-    // Pre-order traversal (root -> left -> right)
-    preOrderTraversal(node: AVLTreeNode | null = this.root): number[] {
-        if (!node) return [];
-        return [
-            node.value,
-            ...this.preOrderTraversal(node.left),
-            ...this.preOrderTraversal(node.right),
-        ];
-    }
+    return -1; // Target not found
 }
 
 // Example usage
-const avlTree = new AVLTree();
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
-avlTree.insert(40);
-avlTree.insert(50);
-avlTree.insert(25);
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90];
+const targetValue = 40;
 
-console.log("In-order traversal:", avlTree.inOrderTraversal());
-console.log("Pre-order traversal:", avlTree.preOrderTraversal());
-In-order traversal: [10, 20, 25, 30, 40, 50]
-Pre-order traversal: [30, 20, 10, 25, 40, 50]
+const index = interpolationSearch(sortedArray, targetValue);
+if (index !== -1) {
+    console.log(`Element found at index ${index}`);
+} else {
+    console.log("Element not found");
+}
