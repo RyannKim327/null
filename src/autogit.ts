@@ -1,130 +1,106 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number | null; // `null` indicates an open-ended interval for active leaves
+class Graph {
+    private adjList: Map<number, number[]>;
+    private index: number;
+    private stack: number[];
+    private indices: Map<number, number>;
+    private lowLinks: Map<number, number>;
+    private onStack: Set<number>;
+    private sccs: number[][];
 
-    constructor(start: number, end: number | null = null) {
-        this.children = new Map();
-        this.start = start;
-        this.end = end;
+    constructor() {
+        this.adjList = new Map<number, number[]>(); // Adjacency list representation of the graph
     }
 
-    // Returns the length of the substring represented by this node
-    getEdgeLength(): number {
-        return (this.end === null ? -1 : this.end) - this.start + 1;
+    // Add a directed edge from node u to node v
+    addEdge(u: number, v: number): void {
+        if (!this.adjList.has(u)) {
+            this.adjList.set(u, []);
+        }
+        this.adjList.get(u)?.push(v);
+    }
+
+    // Find all strongly connected components using Tarjan's algorithm
+    findStronglyConnectedComponents(): number[][] {
+        this.index = 0; // Global DFS index counter
+        this.stack = []; // Stack to keep track of visited nodes during DFS
+        this.indices = new Map<number, number>(); // Stores the DFS index of each node
+        this.lowLinks = new Map<number, number>(); // Stores the low-link value of each node
+        this.onStack = new Set<number>(); // Tracks whether a node is on the stack
+        this.sccs = []; // List of strongly connected components
+
+        // Iterate over all nodes in the graph
+        for (const node of this.adjList.keys()) {
+            if (!this.indices.has(node)) {
+                this.tarjan(node);
+            }
+        }
+
+        return this.sccs;
+    }
+
+    // Helper function implementing Tarjan's algorithm
+    private tarjan(node: number): void {
+        // Set the depth index for the current node
+        this.indices.set(node, this.index);
+        this.lowLinks.set(node, this.index);
+        this.index++;
+
+        // Push the current node onto the stack
+        this.stack.push(node);
+        this.onStack.add(node);
+
+        // Explore all neighbors of the current node
+        const neighbors = this.adjList.get(node) || [];
+        for (const neighbor of neighbors) {
+            if (!this.indices.has(neighbor)) {
+                // Neighbor has not been visited yet
+                this.tarjan(neighbor);
+                // Update the low-link value of the current node
+                this.lowLinks.set(
+                    node,
+                    Math.min(this.lowLinks.get(node)!, this.lowLinks.get(neighbor)!)
+                );
+            } else if (this.onStack.has(neighbor)) {
+                // Neighbor is already on the stack, meaning it's part of the current SCC
+                this.lowLinks.set(
+                    node,
+                    Math.min(this.lowLinks.get(node)!, this.indices.get(neighbor)!)
+                );
+            }
+        }
+
+        // If the current node is a root node, pop the stack and generate an SCC
+        if (this.lowLinks.get(node) === this.indices.get(node)) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = this.stack.pop()!;
+                this.onStack.delete(w);
+                scc.push(w);
+            } while (w !== node);
+            this.sccs.push(scc);
+        }
     }
 }
 
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
+// Example usage:
+function main() {
+    const graph = new Graph();
 
-    constructor(text: string) {
-        this.root = new SuffixTreeNode(-1); // Root node has no associated substring
-        this.text = text;
-        this.buildSuffixTree();
-    }
+    // Add edges to the graph
+    graph.addEdge(1, 2);
+    graph.addEdge(2, 3);
+    graph.addEdge(3, 1);
+    graph.addEdge(4, 5);
+    graph.addEdge(5, 6);
+    graph.addEdge(6, 4);
+    graph.addEdge(7, 6);
+    graph.addEdge(7, 8);
 
-    // Build the suffix tree by inserting all suffixes
-    private buildSuffixTree(): void {
-        for (let i = 0; i < this.text.length; i++) {
-            this.insertSuffix(i);
-        }
-    }
-
-    // Insert a suffix starting at index `startIdx`
-    private insertSuffix(startIdx: number): void {
-        let currentNode = this.root;
-        let currentSuffixStart = startIdx;
-
-        while (currentSuffixStart < this.text.length) {
-            const char = this.text[currentSuffixStart];
-
-            // Check if the current node has a child with the character
-            if (currentNode.children.has(char)) {
-                const child = currentNode.children.get(char)!;
-                const edgeLength = child.getEdgeLength();
-
-                // Compare the suffix with the edge label
-                let matchLength = 0;
-                while (
-                    matchLength < edgeLength &&
-                    this.text[child.start + matchLength] === this.text[currentSuffixStart + matchLength]
-                ) {
-                    matchLength++;
-                }
-
-                if (matchLength === edgeLength) {
-                    // Fully matched the edge, move to the child node
-                    currentNode = child;
-                    currentSuffixStart += edgeLength;
-                } else {
-                    // Partial match, split the edge
-                    const newInternalNode = new SuffixTreeNode(child.start, child.start + matchLength - 1);
-
-                    // Update the child node's start index
-                    child.start += matchLength;
-
-                    // Add the remainder as a new child
-                    const newLeafNode = new SuffixTreeNode(currentSuffixStart + matchLength, null);
-
-                    newInternalNode.children.set(this.text[newLeafNode.start], newLeafNode);
-                    newInternalNode.children.set(this.text[child.start], child);
-
-                    // Replace the old child with the new internal node
-                    currentNode.children.set(char, newInternalNode);
-                    break;
-                }
-            } else {
-                // No matching child, create a new leaf node
-                const newLeafNode = new SuffixTreeNode(currentSuffixStart, null);
-                currentNode.children.set(char, newLeafNode);
-                break;
-            }
-        }
-    }
-
-    // Search for a substring in the suffix tree
-    search(pattern: string): boolean {
-        let currentNode = this.root;
-        let patternIndex = 0;
-
-        while (patternIndex < pattern.length) {
-            const char = pattern[patternIndex];
-            if (!currentNode.children.has(char)) {
-                return false; // Pattern not found
-            }
-
-            const child = currentNode.children.get(char)!;
-            const edgeLength = child.getEdgeLength();
-
-            // Compare the pattern with the edge label
-            let matchLength = 0;
-            while (
-                matchLength < edgeLength &&
-                patternIndex + matchLength < pattern.length &&
-                this.text[child.start + matchLength] === pattern[patternIndex + matchLength]
-            ) {
-                matchLength++;
-            }
-
-            if (matchLength === edgeLength) {
-                // Fully matched the edge, move to the child node
-                currentNode = child;
-                patternIndex += matchLength;
-            } else {
-                return false; // Partial match means the pattern is not present
-            }
-        }
-
-        return true; // Entire pattern matched
-    }
+    // Find strongly connected components
+    const sccs = graph.findStronglyConnectedComponents();
+    console.log("Strongly Connected Components:", sccs);
 }
 
-// Example usage
-const text = "banana$";
-const suffixTree = new SuffixTree(text);
-
-console.log(suffixTree.search("ana")); // true
-console.log(suffixTree.search("ban")); // true
-console.log(suffixTree.search("xyz")); // false
+main();
+Strongly Connected Components: [ [ 3, 2, 1 ], [ 6, 5, 4 ], [ 8 ], [ 7 ] ]
