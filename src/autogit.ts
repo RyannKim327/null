@@ -1,19 +1,15 @@
-function findSecondLargest(arr: number[]): number | undefined {
-    // Step 1: Remove duplicates by converting the array to a Set, then back to an array
-    const uniqueElements = Array.from(new Set(arr));
+function isPalindrome(input: string): boolean {
+    // Step 1: Normalize the input by removing non-alphanumeric characters and converting to lowercase
+    const normalized = input.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
 
-    // Step 2: Sort the array in descending order
-    uniqueElements.sort((a, b) => b - a);
+    // Step 2: Reverse the normalized string
+    const reversed = normalized.split('').reverse().join('');
 
-    // Step 3: Return the second largest element if it exists
-    return uniqueElements[1]; // undefined if there is no second largest element
+    // Step 3: Compare the normalized string with its reversed version
+    return normalized === reversed;
 }
 
-// Example usage:
-const numbers = [4, 1, 7, 7, 3, 9, 9];
-const secondLargest = findSecondLargest(numbers);
-console.log(secondLargest); // Output: 7
-console.log(findSecondLargest([])); // Output: undefined (empty array)
-console.log(findSecondLargest([5])); // Output: undefined (single element)
-console.log(findSecondLargest([2, 2, 2])); // Output: undefined (all elements identical)
-console.log(findSecondLargest([10, 20])); // Output: 10 (two unique elements)
+// Example Usage:
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // Output: true
+console.log(isPalindrome("racecar"));                       // Output: true
+console.log(isPalindrome("hello"));                         // Output: false
