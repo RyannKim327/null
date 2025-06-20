@@ -1,51 +1,40 @@
-function mergeSortIterative(arr: number[]): number[] {
-    const n = arr.length;
+function isPrime(num: number): boolean {
+    // Step 1: Handle edge cases
+    if (num <= 1) return false; // Numbers <= 1 are not prime
+    if (num === 2) return true; // 2 is the only even prime number
+    if (num % 2 === 0) return false; // Exclude other even numbers
 
-    // Helper function to merge two sorted subarrays
-    function merge(left: number, mid: number, right: number): void {
-        const leftSize = mid - left + 1;
-        const rightSize = right - mid;
-
-        // Create temporary arrays for the left and right subarrays
-        const leftArr = arr.slice(left, mid + 1);
-        const rightArr = arr.slice(mid + 1, right + 1);
-
-        let i = 0, j = 0, k = left;
-
-        // Merge the two subarrays back into the original array
-        while (i < leftSize && j < rightSize) {
-            if (leftArr[i] <= rightArr[j]) {
-                arr[k++] = leftArr[i++];
-            } else {
-                arr[k++] = rightArr[j++];
-            }
-        }
-
-        // Copy any remaining elements from the left subarray
-        while (i < leftSize) {
-            arr[k++] = leftArr[i++];
-        }
-
-        // Copy any remaining elements from the right subarray
-        while (j < rightSize) {
-            arr[k++] = rightArr[j++];
+    // Step 2: Check divisors from 3 to √num
+    const sqrt = Math.sqrt(num);
+    for (let i = 3; i <= sqrt; i += 2) {
+        if (num % i === 0) {
+            return false; // Found a divisor, so it's not prime
         }
     }
 
-    // Start with subarrays of size 1 and double the size at each step
-    for (let size = 1; size < n; size *= 2) {
-        for (let left = 0; left < n; left += 2 * size) {
-            const mid = Math.min(left + size - 1, n - 1); // End of the first subarray
-            const right = Math.min(left + 2 * size - 1, n - 1); // End of the second subarray
-
-            // Merge the two subarrays
-            merge(left, mid, right);
-        }
-    }
-
-    return arr;
+    // Step 3: If no divisors found, it's prime
+    return true;
 }
 
-// Example usage:
-const array = [38, 27, 43, 3, 9, 82, 10];
-console.log("Sorted Array:", mergeSortIterative(array));
+// Example usage
+console.log(isPrime(2));  // Output: true
+console.log(isPrime(4));  // Output: false
+console.log(isPrime(17)); // Output: true
+console.log(isPrime(18)); // Output: false
+const testNumbers = [1, 2, 3, 4, 5, 16, 17, 19, 20, 23, 24, 29, 97];
+testNumbers.forEach(num => {
+    console.log(`Is ${num} prime?`, isPrime(num));
+});
+Is 1 prime? false
+Is 2 prime? true
+Is 3 prime? true
+Is 4 prime? false
+Is 5 prime? true
+Is 16 prime? false
+Is 17 prime? true
+Is 19 prime? true
+Is 20 prime? false
+Is 23 prime? true
+Is 24 prime? false
+Is 29 prime? true
+Is 97 prime? true
