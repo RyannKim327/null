@@ -1,39 +1,46 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove non-alphanumeric characters and convert to lowercase
-    const normalize = (str: string) => 
-        str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().split('').sort().join('');
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    return normalize(str1) === normalize(str2);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
-
-// Example Usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-function areAnagrams(str1: string, str2: string): boolean {
-    // Helper function to build a frequency map
-    const buildFrequencyMap = (str: string): Map<string, number> => {
-        const frequency = new Map<string, number>();
-        for (const char of str.toLowerCase()) {
-            if (/[a-z0-9]/.test(char)) { // Only consider alphanumeric characters
-                frequency.set(char, (frequency.get(char) || 0) + 1);
-            }
-        }
-        return frequency;
-    };
-
-    const freq1 = buildFrequencyMap(str1);
-    const freq2 = buildFrequencyMap(str2);
-
-    // Compare the two frequency maps
-    if (freq1.size !== freq2.size) return false;
-
-    for (const [char, count] of freq1) {
-        if (freq2.get(char) !== count) return false;
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    return true;
-}
+    // Check if the current node is a leaf node
+    if (root.left === null && root.right === null) {
+        return 1; // This is a leaf node
+    }
 
-// Example Usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
+    // Recursively count leaf nodes in the left and right subtrees
+    const leftCount = countLeafNodes(root.left);
+    const rightCount = countLeafNodes(root.right);
+
+    // Return the total count of leaf nodes
+    return leftCount + rightCount;
+}
+// Example binary tree:
+//        1
+//       / \
+//      2   3
+//     / \   \
+//    4   5   6
+
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
+
+// Count the leaf nodes
+const leafCount = countLeafNodes(root);
+console.log(`Number of leaf nodes: ${leafCount}`); // Output: 3
