@@ -1,73 +1,61 @@
-type Graph = Map<number, { node: number; weight: number }[]>;
+function computeLPS(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let len = 0; // Length of the previous longest prefix suffix
+    let i = 1;
 
-function dijkstra(graph: Graph, startNode: number): Map<number, number> {
-    // Priority queue to process nodes with the smallest distance first
-    const pq = new MinPriorityQueue<{ distance: number; node: number }>();
-    pq.enqueue({ distance: 0, node: startNode }, 0);
-
-    // Map to store the shortest distance to each node
-    const distances = new Map<number, number>();
-    distances.set(startNode, 0);
-
-    // Process nodes until the priority queue is empty
-    while (!pq.isEmpty()) {
-        const { element } = pq.dequeue();
-        const { distance: currentDistance, node: currentNode } = element;
-
-        // If we already found a shorter path to this node, skip it
-        if (currentDistance > (distances.get(currentNode) || Infinity)) continue;
-
-        // Explore neighbors of the current node
-        const neighbors = graph.get(currentNode) || [];
-        for (const { node: neighbor, weight } of neighbors) {
-            const newDistance = currentDistance + weight;
-
-            // If we found a shorter path to the neighbor, update the distance
-            if (newDistance < (distances.get(neighbor) || Infinity)) {
-                distances.set(neighbor, newDistance);
-                pq.enqueue({ distance: newDistance, node: neighbor }, newDistance);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[len]) {
+            len++;
+            lps[i] = len;
+            i++;
+        } else {
+            if (len !== 0) {
+                len = lps[len - 1];
+            } else {
+                lps[i] = 0;
+                i++;
             }
         }
     }
 
-    return distances;
+    return lps;
 }
+function KMPSearch(text: string, pattern: string): number[] {
+    const result: number[] = [];
+    const n = text.length;
+    const m = pattern.length;
 
-// Helper class for MinPriorityQueue (using a library or implementing your own)
-class MinPriorityQueue<T> {
-    private heap: { priority: number; value: T }[] = [];
+    if (m === 0) return result; // Edge case: empty pattern
 
-    enqueue(value: T, priority: number): void {
-        this.heap.push({ priority, value });
-        this.heap.sort((a, b) => a.priority - b.priority);
+    const lps = computeLPS(pattern);
+
+    let i = 0; // Index for text
+    let j = 0; // Index for pattern
+
+    while (i < n) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            // Match found at index i - j
+            result.push(i - j);
+            j = lps[j - 1]; // Continue searching for next occurrence
+        } else if (i < n && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
 
-    dequeue(): { priority: number; value: T } {
-        return this.heap.shift()!;
-    }
-
-    isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
+    return result;
 }
-// Define the graph
-const graph: Graph = new Map([
-    [0, [{ node: 1, weight: 4 }, { node: 2, weight: 1 }]],
-    [1, [{ node: 3, weight: 1 }]],
-    [2, [{ node: 1, weight: 2 }, { node: 3, weight: 5 }]],
-    [3, []],
-]);
+const text = "ababcabcabababd";
+const pattern = "ababd";
 
-// Find shortest paths from node 0
-const shortestPaths = dijkstra(graph, 0);
-
-// Print the results
-console.log("Shortest distances from node 0:");
-for (const [node, distance] of shortestPaths) {
-    console.log(`Node ${node}: ${distance}`);
-}
-Shortest distances from node 0:
-Node 0: 0
-Node 1: 3
-Node 2: 1
-Node 3: 4
+const matches = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
+Pattern found at indices: [9]
