@@ -1,86 +1,83 @@
-type Node = string | number; // Define the type for nodes (can be strings or numbers)
-type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
+type Graph = Map<number, number[]>;
 
-/**
- * Depth-Limited Search function
- * @param graph - The graph represented as an adjacency list
- * @param start - The starting node
- * @param goal - The target node to search for
- * @param limit - The maximum depth limit for the search
- * @returns A boolean indicating whether the goal was found, and the path if found
- */
-function depthLimitedSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node,
-  limit: number
-): { found: boolean; path: Node[] } {
-  const result = dls(graph, start, goal, limit, []);
-  return { found: result.found, path: result.path };
-}
+function dfsRecursive(graph: Graph, startNode: number): void {
+    const visited = new Set<number>();
 
-/**
- * Recursive helper function for DLS
- * @param graph - The graph represented as an adjacency list
- * @param node - The current node being explored
- * @param goal - The target node to search for
- * @param limit - The remaining depth limit
- * @param path - The current path taken to reach the node
- * @returns An object indicating whether the goal was found and the path
- */
-function dls(
-  graph: Graph,
-  node: Node,
-  goal: Node,
-  limit: number,
-  path: Node[]
-): { found: boolean; path: Node[] } {
-  // Add the current node to the path
-  path.push(node);
+    function dfs(node: number): void {
+        // Mark the current node as visited
+        visited.add(node);
+        console.log(`Visited node: ${node}`);
 
-  // Base case: If the current node is the goal, return success
-  if (node === goal) {
-    return { found: true, path };
-  }
-
-  // Base case: If the depth limit is reached, stop further exploration
-  if (limit === 0) {
-    path.pop(); // Remove the current node from the path before backtracking
-    return { found: false, path };
-  }
-
-  // Recursive case: Explore neighbors
-  const neighbors = graph.get(node) || [];
-  for (const neighbor of neighbors) {
-    const result = dls(graph, neighbor, goal, limit - 1, path);
-    if (result.found) {
-      return result; // Goal found, propagate the result up
+        // Traverse all adjacent nodes
+        const neighbors = graph.get(node) || [];
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                dfs(neighbor); // Recursively visit the neighbor
+            }
+        }
     }
-  }
 
-  // Backtrack: Remove the current node from the path
-  path.pop();
-  return { found: false, path };
+    // Start DFS from the given start node
+    dfs(startNode);
 }
 
-// Example Usage
-const graph = new Map<Node, Node[]>([
-  ["A", ["B", "C"]],
-  ["B", ["D", "E"]],
-  ["C", ["F"]],
-  ["D", []],
-  ["E", ["F"]],
-  ["F", []],
+// Example usage
+const graph: Graph = new Map([
+    [0, [1, 2]],
+    [1, [2]],
+    [2, [0, 3]],
+    [3, [3]]
 ]);
 
-const startNode: Node = "A";
-const goalNode: Node = "F";
-const depthLimit = 2;
+console.log("DFS Recursive:");
+dfsRecursive(graph, 2);
+type Graph = Map<number, number[]>;
 
-const { found, path } = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
+function dfsIterative(graph: Graph, startNode: number): void {
+    const visited = new Set<number>();
+    const stack: number[] = [startNode]; // Initialize stack with the start node
 
-if (found) {
-  console.log(`Goal found! Path: ${path.join(" -> ")}`);
-} else {
-  console.log("Goal not found within the depth limit.");
+    while (stack.length > 0) {
+        const node = stack.pop()!; // Pop the top node from the stack
+        if (!visited.has(node)) {
+            visited.add(node);
+            console.log(`Visited node: ${node}`);
+
+            // Push all unvisited neighbors onto the stack
+            const neighbors = graph.get(node) || [];
+            for (const neighbor of neighbors.reverse()) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
 }
+
+// Example usage
+const graph: Graph = new Map([
+    [0, [1, 2]],
+    [1, [2]],
+    [2, [0, 3]],
+    [3, [3]]
+]);
+
+console.log("DFS Iterative:");
+dfsIterative(graph, 2);
+{
+    0: [1, 2],
+    1: [2],
+    2: [0, 3],
+    3: [3]
+}
+DFS Recursive:
+Visited node: 2
+Visited node: 0
+Visited node: 1
+Visited node: 3
+
+DFS Iterative:
+Visited node: 2
+Visited node: 0
+Visited node: 1
+Visited node: 3
