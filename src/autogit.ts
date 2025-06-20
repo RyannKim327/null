@@ -1,53 +1,51 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function mergeSortIterative(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Helper function to merge two sorted subarrays
+    function merge(left: number, mid: number, right: number): void {
+        const leftSize = mid - left + 1;
+        const rightSize = right - mid;
+
+        // Create temporary arrays for the left and right subarrays
+        const leftArr = arr.slice(left, mid + 1);
+        const rightArr = arr.slice(mid + 1, right + 1);
+
+        let i = 0, j = 0, k = left;
+
+        // Merge the two subarrays back into the original array
+        while (i < leftSize && j < rightSize) {
+            if (leftArr[i] <= rightArr[j]) {
+                arr[k++] = leftArr[i++];
+            } else {
+                arr[k++] = rightArr[j++];
+            }
+        }
+
+        // Copy any remaining elements from the left subarray
+        while (i < leftSize) {
+            arr[k++] = leftArr[i++];
+        }
+
+        // Copy any remaining elements from the right subarray
+        while (j < rightSize) {
+            arr[k++] = rightArr[j++];
+        }
     }
-}
-function reverseLinkedList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null; // This will become the new tail (null initially)
-    let current: ListNode | null = head; // Start from the head of the list
 
-    while (current !== null) {
-        const nextNode = current.next; // Store the next node temporarily
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to current node
-        current = nextNode; // Move to the next node in the original list
+    // Start with subarrays of size 1 and double the size at each step
+    for (let size = 1; size < n; size *= 2) {
+        for (let left = 0; left < n; left += 2 * size) {
+            const mid = Math.min(left + size - 1, n - 1); // End of the first subarray
+            const right = Math.min(left + 2 * size - 1, n - 1); // End of the second subarray
+
+            // Merge the two subarrays
+            merge(left, mid, right);
+        }
     }
 
-    // At the end, prev will be pointing to the new head
-    return prev;
-}
-// Helper function to print the linked list
-function printList(head: ListNode | null): void {
-    let current = head;
-    const result: number[] = [];
-    while (current !== null) {
-        result.push(current.value);
-        current = current.next;
-    }
-    console.log(result.join(" -> "));
+    return arr;
 }
 
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-console.log("Original List:");
-printList(head);
-
-// Reverse the linked list
-const reversedHead = reverseLinkedList(head);
-
-console.log("Reversed List:");
-printList(reversedHead);
-Original List:
-1 -> 2 -> 3 -> 4 -> 5
-Reversed List:
-5 -> 4 -> 3 -> 2 -> 1
+// Example usage:
+const array = [38, 27, 43, 3, 9, 82, 10];
+console.log("Sorted Array:", mergeSortIterative(array));
