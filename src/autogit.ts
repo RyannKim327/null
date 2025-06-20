@@ -1,55 +1,97 @@
-// Define an interface for the structure of the data returned by the API
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
+class PriorityQueue<T> {
+  private heap: { priority: number; value: T }[] = [];
 
-// Function to fetch data from the API
-async function fetchPosts(): Promise<Post[]> {
-  try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    
-    // Check if the response status is OK (status code 200)
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+  // Helper function to swap two elements in the heap
+  private swap(i: number, j: number): void {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+  }
+
+  // Helper function to get the parent index
+  private parentIndex(index: number): number {
+    return Math.floor((index - 1) / 2);
+  }
+
+  // Helper function to get the left child index
+  private leftChildIndex(index: number): number {
+    return 2 * index + 1;
+  }
+
+  // Helper function to get the right child index
+  private rightChildIndex(index: number): number {
+    return 2 * index + 2;
+  }
+
+  // Bubble up to maintain the heap property after insertion
+  private bubbleUp(): void {
+    let index = this.heap.length - 1;
+    while (index > 0) {
+      const parentIdx = this.parentIndex(index);
+      if (this.heap[parentIdx].priority <= this.heap[index].priority) break;
+      this.swap(parentIdx, index);
+      index = parentIdx;
     }
+  }
 
-    // Parse the response as JSON and return it
-    const posts: Post[] = await response.json();
-    return posts;
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    return [];
+  // Bubble down to maintain the heap property after extraction
+  private bubbleDown(): void {
+    let index = 0;
+    const length = this.heap.length;
+    while (true) {
+      const leftIdx = this.leftChildIndex(index);
+      const rightIdx = this.rightChildIndex(index);
+      let smallestIdx = index;
+
+      if (leftIdx < length && this.heap[leftIdx].priority < this.heap[smallestIdx].priority) {
+        smallestIdx = leftIdx;
+      }
+      if (rightIdx < length && this.heap[rightIdx].priority < this.heap[smallestIdx].priority) {
+        smallestIdx = rightIdx;
+      }
+      if (smallestIdx === index) break;
+      this.swap(index, smallestIdx);
+      index = smallestIdx;
+    }
+  }
+
+  // Insert an element with a given priority
+  public enqueue(value: T, priority: number): void {
+    this.heap.push({ priority, value });
+    this.bubbleUp();
+  }
+
+  // Remove and return the element with the highest priority
+  public dequeue(): T | undefined {
+    if (this.heap.length === 0) return undefined;
+    if (this.heap.length === 1) return this.heap.pop()?.value;
+
+    const top = this.heap[0];
+    this.heap[0] = this.heap.pop()!;
+    this.bubbleDown();
+    return top.value;
+  }
+
+  // Peek at the element with the highest priority without removing it
+  public peek(): T | undefined {
+    return this.heap.length > 0 ? this.heap[0].value : undefined;
+  }
+
+  // Check if the priority queue is empty
+  public isEmpty(): boolean {
+    return this.heap.length === 0;
+  }
+
+  // Get the size of the priority queue
+  public size(): number {
+    return this.heap.length;
   }
 }
 
-// Function to display the fetched posts
-function displayPosts(posts: Post[]): void {
-  console.log('Fetched Posts:');
-  posts.forEach((post) => {
-    console.log(`ID: ${post.id}, Title: ${post.title}`);
-  });
-}
+// Example usage:
+const pq = new PriorityQueue<string>();
+pq.enqueue("Task 1", 3);
+pq.enqueue("Task 2", 1);
+pq.enqueue("Task 3", 2);
 
-// Main function to execute the program
-async function main() {
-  console.log('Fetching posts from the API...');
-  const posts = await fetchPosts();
-  
-  if (posts.length > 0) {
-    displayPosts(posts);
-  } else {
-    console.log('No posts available.');
-  }
-}
-
-// Run the main function
-main();
-Fetching posts from the API...
-Fetched Posts:
-ID: 1, Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
-ID: 2, Title: qui est esse
-ID: 3, Title: ea molestias quasi exercitationem repellat qui ipsa sit aut
-...
+console.log(pq.dequeue()); // Output: "Task 2" (highest priority)
+console.log(pq.dequeue()); // Output: "Task 3"
+console.log(pq.dequeue()); // Output: "Task 1"
