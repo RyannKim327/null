@@ -1,59 +1,59 @@
-const sentence = "Hello world from TypeScript";
-const words = sentence.split(' ');
-// Result: ["Hello", "world", "from", "TypeScript"]
-const reversedWords = words.reverse();
-// Result: ["TypeScript", "from", "world", "Hello"]
-const reversedSentence = reversedWords.join(' ');
-// Result: "TypeScript from world Hello"
-function reverseWords(input: string): string {
-    // Trim the input to remove leading/trailing whitespace
-    const trimmedInput = input.trim();
+type Candidate<T> = {
+  sequence: T[]; // The current sequence of elements
+  score: number; // The cumulative score of the sequence
+};
 
-    // Split the string by one or more spaces to handle multiple spaces
-    const words = trimmedInput.split(/\s+/);
+function beamSearch<T>(
+  start: T[], // Initial sequence
+  beamWidth: number, // Number of candidates to keep
+  maxSteps: number, // Maximum number of steps to expand
+  expandFunction: (sequence: T[]) => T[], // Function to generate next possible elements
+  scoreFunction: (sequence: T[]) => number // Function to score a sequence
+): T[] {
+  // Initialize the beam with the starting sequence
+  let beam: Candidate<T>[] = [{ sequence: start, score: scoreFunction(start) }];
 
-    // Reverse the array of words
-    const reversedWords = words.reverse();
+  for (let step = 0; step < maxSteps; step++) {
+    let nextCandidates: Candidate<T>[] = [];
 
-    // Join the reversed words back into a string with single spaces
-    const reversedSentence = reversedWords.join(' ');
+    // Expand each candidate in the current beam
+    for (const { sequence } of beam) {
+      const possibleNextElements = expandFunction(sequence);
 
-    return reversedSentence;
-}
+      for (const nextElement of possibleNextElements) {
+        const newSequence = [...sequence, nextElement];
+        const newScore = scoreFunction(newSequence);
 
-// Example usage:
-const original = "  Hello   world from TypeScript  ";
-const reversed = reverseWords(original);
-console.log(reversed); // Outputs: "TypeScript from world Hello"
-function reverseWords(input: string): string {
-    if (!input || input.trim().length === 0) {
-        return ''; // Return an empty string if input is empty or all spaces
+        nextCandidates.push({ sequence: newSequence, score: newScore });
+      }
     }
 
-    const words = input.trim().split(/\s+/);
-    const reversedWords = words.reverse();
-    return reversedWords.join(' ');
+    // Sort all candidates by score and retain only the top `beamWidth`
+    nextCandidates.sort((a, b) => b.score - a.score); // Descending order
+    beam = nextCandidates.slice(0, beamWidth);
+  }
+
+  // Return the sequence with the highest score
+  return beam[0].sequence;
 }
+// Example: Generate sequences of characters and score them
+const expandFunction = (sequence: string[]): string[] => {
+  // Possible next characters to add to the sequence
+  return ['A', 'B', 'C'];
+};
 
-// Test cases:
-console.log(reverseWords("  Hello   world from TypeScript  ")); 
-// Output: "TypeScript from world Hello"
+const scoreFunction = (sequence: string[]): number => {
+  // Simple scoring: higher score for sequences with more 'A's
+  return sequence.filter(char => char === 'A').length;
+};
 
-console.log(reverseWords("   ")); 
-// Output: ""
+const result = beamSearch<string>(
+  [], // Start with an empty sequence
+  2, // Beam width
+  4, // Maximum steps
+  expandFunction,
+  scoreFunction
+);
 
-console.log(reverseWords("OneWord")); 
-// Output: "OneWord"
-
-console.log(reverseWords("")); 
-// Output: ""
-function reverseWordsFunctional(input: string): string {
-    return input
-        .trim()
-        .split(/\s+/)
-        .reduce((acc, word) => `${word} ${acc}`, '').trim();
-}
-
-// Example usage:
-console.log(reverseWordsFunctional("The quick brown fox jumps over the lazy dog"));
-// Output: "dog lazy the over jumps fox brown quick The"
+console.log("Best sequence:", result);
+Best sequence: [ 'A', 'A', 'A', 'A' ]
