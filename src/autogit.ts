@@ -1,54 +1,48 @@
-// Define an interface for the structure of the data we expect from the API
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
 
-// Function to fetch posts from the JSONPlaceholder API
-async function fetchPosts(): Promise<Post[]> {
-  try {
-    // Fetch data from the API
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    if (m === 0) return [];
 
-    // Check if the response status is OK (status code 200)
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    // Step 1: Preprocess the bad character shift table
+    const badCharShift: { [key: string]: number } = {};
+    for (let i = 0; i < m - 1; i++) {
+        badCharShift[pattern[i]] = m - 1 - i;
     }
 
-    // Parse the response as JSON and return it
-    const posts: Post[] = await response.json();
-    return posts;
-  } catch (error) {
-    // Handle errors (e.g., network issues, invalid URL, etc.)
-    console.error('Error fetching posts:', error);
-    return [];
-  }
+    // Step 2: Search for the pattern in the text
+    const result: number[] = [];
+    let i = 0; // Index in the text
+
+    while (i <= n - m) {
+        let j = m - 1; // Start comparing from the end of the pattern
+
+        // Compare characters from the end of the pattern
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // Match found
+            result.push(i);
+            // Shift the pattern to align with the next possible match
+            i += badCharShift[text[i + m]] ?? m;
+        } else {
+            // Mismatch occurred at pattern[j]
+            const shift = badCharShift[text[i + j]] ?? m;
+            i += Math.max(1, shift - (m - 1 - j));
+        }
+    }
+
+    return result;
 }
 
-// Function to display posts in the console
-function displayPosts(posts: Post[]): void {
-  posts.forEach((post) => {
-    console.log(`Post ID: ${post.id}`);
-    console.log(`Title: ${post.title}`);
-    console.log(`Body: ${post.body}`);
-    console.log('-----------------------------');
-  });
-}
+// Example usage
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
+const matches = boyerMooreSearch(text, pattern);
 
-// Main function to execute the program
-async function main() {
-  console.log('Fetching posts...');
-  const posts = await fetchPosts();
-
-  if (posts.length > 0) {
-    console.log('Fetched posts successfully!');
-    displayPosts(posts);
-  } else {
-    console.log('No posts available.');
-  }
-}
-
-// Run the main function
-main();
+console.log("Pattern found at indices:", matches);
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
+Pattern found at indices: [17]
