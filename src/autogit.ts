@@ -1,139 +1,86 @@
-class Node {
-    x: number; // X-coordinate
-    y: number; // Y-coordinate
-    g: number; // Cost from start to this node
-    h: number; // Heuristic cost to goal
-    f: number; // Total cost (f = g + h)
-    parent: Node | null; // Parent node for reconstructing the path
+function areAnagrams(str1: string, str2: string): boolean {
+    // Step 1: Normalize the strings (remove spaces, convert to lowercase)
+    const normalize = (str: string): string =>
+        str.replace(/\s+/g, '').toLowerCase();
 
-    constructor(x: number, y: number) {
-        this.x = x;
-        this.y = y;
-        this.g = 0;
-        this.h = 0;
-        this.f = 0;
-        this.parent = null;
-    }
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
 
-    // Calculate Manhattan distance as the heuristic
-    calculateHeuristic(goal: Node): void {
-        this.h = Math.abs(this.x - goal.x) + Math.abs(this.y - goal.y);
-    }
+    // Step 2: Sort the characters of both strings
+    const sortString = (str: string): string =>
+        str.split('').sort().join('');
 
-    // Update the total cost
-    updateCosts(start: Node, goal: Node): void {
-        this.g = start ? this.parent!.g + 1 : 0; // Assuming uniform cost grid
-        this.calculateHeuristic(goal);
-        this.f = this.g + this.h;
-    }
+    const sortedStr1 = sortString(normalizedStr1);
+    const sortedStr2 = sortString(normalizedStr2);
+
+    // Step 3: Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
-class PriorityQueue {
-    private queue: Node[] = [];
 
-    enqueue(node: Node): void {
-        this.queue.push(node);
-        this.queue.sort((a, b) => a.f - b.f); // Sort by f-cost
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // Output: true
+console.log(areAnagrams("hello", "world"));   // Output: false
+function areAnagramsUsingFrequency(str1: string, str2: string): boolean {
+    // Normalize the strings
+    const normalize = (str: string): string =>
+        str.replace(/\s+/g, '').toLowerCase();
+
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
+
+    // If lengths differ, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    dequeue(): Node | undefined {
-        return this.queue.shift(); // Remove and return the node with the lowest f-cost
+    // Create a character frequency map for the first string
+    const charCount = new Map<string, number>();
+    for (const char of normalizedStr1) {
+        charCount.set(char, (charCount.get(char) || 0) + 1);
     }
 
-    isEmpty(): boolean {
-        return this.queue.length === 0;
-    }
-}
-function aStarSearch(start: Node, goal: Node, grid: Node[][]): Node[] | null {
-    const openList = new PriorityQueue();
-    const closedList = new Set<Node>();
-
-    // Initialize the start node
-    start.updateCosts(start, goal);
-    openList.enqueue(start);
-
-    while (!openList.isEmpty()) {
-        const current = openList.dequeue()!;
-
-        // If we've reached the goal, reconstruct the path
-        if (current.x === goal.x && current.y === goal.y) {
-            return reconstructPath(current);
+    // Compare with the second string
+    for (const char of normalizedStr2) {
+        if (!charCount.has(char)) {
+            return false; // Character not found in the first string
         }
-
-        closedList.add(current);
-
-        // Get neighbors of the current node
-        const neighbors = getNeighbors(current, grid);
-        for (const neighbor of neighbors) {
-            if (closedList.has(neighbor)) continue;
-
-            const tentativeG = current.g + 1; // Assuming uniform cost grid
-            const isNewNodeBetter = !openList.queue.includes(neighbor) || tentativeG < neighbor.g;
-
-            if (isNewNodeBetter) {
-                neighbor.parent = current;
-                neighbor.g = tentativeG;
-                neighbor.updateCosts(start, goal);
-
-                if (!openList.queue.includes(neighbor)) {
-                    openList.enqueue(neighbor);
-                }
-            }
+        const count = charCount.get(char)!;
+        if (count === 1) {
+            charCount.delete(char); // Remove the character if its count reaches zero
+        } else {
+            charCount.set(char, count - 1); // Decrease the count
         }
     }
 
-    // No path found
-    return null;
+    // If the map is empty, the strings are anagrams
+    return charCount.size === 0;
 }
 
-// Helper function to reconstruct the path
-function reconstructPath(node: Node): Node[] {
-    const path: Node[] = [];
-    let current: Node | null = node;
+// Example usage:
+console.log(areAnagramsUsingFrequency("listen", "silent")); // Output: true
+console.log(areAnagramsUsingFrequency("hello", "world"));   // Output: false
+// Using sorting
+function areAnagrams(str1: string, str2: string): boolean {
+    const normalize = (str: string): string => str.replace(/\s+/g, '').toLowerCase();
+    const sortString = (str: string): string => str.split('').sort().join('');
+    return sortString(normalize(str1)) === sortString(normalize(str2));
+}
 
-    while (current !== null) {
-        path.push(current);
-        current = current.parent;
+// Using frequency count
+function areAnagramsUsingFrequency(str1: string, str2: string): boolean {
+    const normalize = (str: string): string => str.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
+    if (normalizedStr1.length !== normalizedStr2.length) return false;
+    const charCount = new Map<string, number>();
+    for (const char of normalizedStr1) {
+        charCount.set(char, (charCount.get(char) || 0) + 1);
     }
-
-    return path.reverse(); // Reverse to get the path from start to goal
-}
-
-// Helper function to get valid neighbors
-function getNeighbors(node: Node, grid: Node[][]): Node[] {
-    const neighbors: Node[] = [];
-    const directions = [
-        { dx: -1, dy: 0 }, // Left
-        { dx: 1, dy: 0 },  // Right
-        { dx: 0, dy: -1 }, // Up
-        { dx: 0, dy: 1 },  // Down
-    ];
-
-    for (const { dx, dy } of directions) {
-        const newX = node.x + dx;
-        const newY = node.y + dy;
-
-        if (newX >= 0 && newX < grid.length && newY >= 0 && newY < grid[0].length) {
-            neighbors.push(grid[newX][newY]);
-        }
+    for (const char of normalizedStr2) {
+        if (!charCount.has(char)) return false;
+        const count = charCount.get(char)!;
+        if (count === 1) charCount.delete(char);
+        else charCount.set(char, count - 1);
     }
-
-    return neighbors;
-}
-// Create a 5x5 grid of nodes
-const grid: Node[][] = Array.from({ length: 5 }, (_, x) =>
-    Array.from({ length: 5 }, (_, y) => new Node(x, y))
-);
-
-// Define start and goal nodes
-const start = grid[0][0];
-const goal = grid[4][4];
-
-// Run A* search
-const path = aStarSearch(start, goal, grid);
-
-if (path) {
-    console.log("Path found:");
-    path.forEach(node => console.log(`(${node.x}, ${node.y})`));
-} else {
-    console.log("No path found.");
+    return charCount.size === 0;
 }
