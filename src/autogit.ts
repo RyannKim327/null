@@ -1,64 +1,77 @@
-        3
-       / \
-      9   20
-         /  \
-        15   7
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Step 1: Normalize the strings (remove spaces, convert to lowercase)
+    const normalize = (str: string): string =>
+        str.replace(/\s+/g, '').toLowerCase();
 
-    constructor(val: number = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
+
+    // Step 2: If lengths differ, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
+
+    // Step 3: Sort the characters and compare
+    const sortString = (str: string): string =>
+        str.split('').sort().join('');
+
+    return sortString(normalizedStr1) === sortString(normalizedStr2);
 }
 
-function maxDepth(root: TreeNode | null): number {
-    // Base case: if the node is null, the depth is 0
-    if (root === null) {
-        return 0;
+// Example Usage
+console.log(areAnagrams("Listen", "Silent")); // true
+console.log(areAnagrams("Hello", "Olelh"));   // true
+console.log(areAnagrams("Triangle", "Integral")); // true
+console.log(areAnagrams("Apple", "Pabble")); // false
+function areAnagramsUsingFrequencyMap(str1: string, str2: string): boolean {
+    // Normalize the strings
+    const normalize = (str: string): string =>
+        str.replace(/\s+/g, '').toLowerCase();
+
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
+
+    // If lengths differ, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    // Recursively calculate the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    // Create a frequency map for the first string
+    const frequencyMap: Record<string, number> = {};
 
-    // The depth of the current node is 1 + the maximum of the two subtree depths
-    return 1 + Math.max(leftDepth, rightDepth);
-}
-function maxDepthIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
+    for (const char of normalizedStr1) {
+        frequencyMap[char] = (frequencyMap[char] || 0) + 1;
     }
 
-    let depth = 0;
-    const queue: TreeNode[] = [root]; // Initialize the queue with the root node
-
-    while (queue.length > 0) {
-        const levelSize = queue.length; // Number of nodes at the current level
-        for (let i = 0; i < levelSize; i++) {
-            const currentNode = queue.shift()!; // Dequeue the front node
-            if (currentNode.left !== null) {
-                queue.push(currentNode.left); // Enqueue the left child
-            }
-            if (currentNode.right !== null) {
-                queue.push(currentNode.right); // Enqueue the right child
-            }
+    // Compare with the second string
+    for (const char of normalizedStr2) {
+        if (!frequencyMap[char]) {
+            return false; // Character not found or frequency mismatch
         }
-        depth++; // Increment the depth after processing each level
+        frequencyMap[char]--;
     }
 
-    return depth;
+    return true;
 }
-// Create a sample binary tree
-const root = new TreeNode(3);
-root.left = new TreeNode(9);
-root.right = new TreeNode(20);
-root.right.left = new TreeNode(15);
-root.right.right = new TreeNode(7);
 
-console.log(maxDepth(root)); // Output: 3
-console.log(maxDepthIterative(root)); // Output: 3
+// Example Usage
+console.log(areAnagramsUsingFrequencyMap("Listen", "Silent")); // true
+console.log(areAnagramsUsingFrequencyMap("Hello", "Olelh"));   // true
+console.log(areAnagramsUsingFrequencyMap("Triangle", "Integral")); // true
+console.log(areAnagramsUsingFrequencyMap("Apple", "Pabble")); // false
+function areAnagrams(str1: string, str2: string): boolean {
+    const normalize = (str: string): string =>
+        str.replace(/\s+/g, '').toLowerCase();
+
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
+
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
+    }
+
+    const sortString = (str: string): string =>
+        str.split('').sort().join('');
+
+    return sortString(normalizedStr1) === sortString(normalizedStr2);
+}
