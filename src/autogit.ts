@@ -1,59 +1,57 @@
-type Edge = {
-  source: number;
-  target: number;
-  weight: number;
-};
+function radixSort(arr: number[]): number[] {
+    // Helper function to get the maximum number in the array
+    const getMax = (array: number[]): number => {
+        let max = array[0];
+        for (let i = 1; i < array.length; i++) {
+            if (array[i] > max) {
+                max = array[i];
+            }
+        }
+        return max;
+    };
 
-function bellmanFord(edges: Edge[], V: number, source: number): { distances: number[]; hasNegativeCycle: boolean } {
-  // Step 1: Initialize distances
-  const distances: number[] = Array(V).fill(Infinity);
-  distances[source] = 0;
+    // Helper function to perform counting sort based on a specific digit
+    const countingSortForDigit = (array: number[], digitPlace: number): void => {
+        const n = array.length;
+        const output: number[] = new Array(n).fill(0);
+        const count: number[] = new Array(10).fill(0);
 
-  // Step 2: Relax edges repeatedly (V-1 times)
-  for (let i = 0; i < V - 1; i++) {
-    for (const edge of edges) {
-      const { source: u, target: v, weight: w } = edge;
-      if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
-        distances[v] = distances[u] + w;
-      }
+        // Count occurrences of each digit at the current digit place
+        for (let i = 0; i < n; i++) {
+            const index = Math.floor((array[i] / digitPlace) % 10);
+            count[index]++;
+        }
+
+        // Update count array to store cumulative counts
+        for (let i = 1; i < 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        // Build the output array by placing elements in their correct positions
+        for (let i = n - 1; i >= 0; i--) {
+            const index = Math.floor((array[i] / digitPlace) % 10);
+            output[count[index] - 1] = array[i];
+            count[index]--;
+        }
+
+        // Copy the sorted elements back into the original array
+        for (let i = 0; i < n; i++) {
+            array[i] = output[i];
+        }
+    };
+
+    // Main Radix Sort logic
+    const max = getMax(arr);
+
+    // Perform counting sort for each digit place (1s, 10s, 100s, etc.)
+    for (let digitPlace = 1; Math.floor(max / digitPlace) > 0; digitPlace *= 10) {
+        countingSortForDigit(arr, digitPlace);
     }
-  }
 
-  // Step 3: Check for negative weight cycles
-  let hasNegativeCycle = false;
-  for (const edge of edges) {
-    const { source: u, target: v, weight: w } = edge;
-    if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
-      hasNegativeCycle = true;
-      break;
-    }
-  }
-
-  return { distances, hasNegativeCycle };
+    return arr;
 }
 
-// Example usage
-const edges: Edge[] = [
-  { source: 0, target: 1, weight: 4 },
-  { source: 0, target: 2, weight: 3 },
-  { source: 1, target: 2, weight: -2 },
-  { source: 2, target: 3, weight: 2 },
-  { source: 3, target: 1, weight: 1 },
-];
-
-const V = 4; // Number of vertices
-const source = 0; // Source vertex
-
-const result = bellmanFord(edges, V, source);
-console.log("Distances:", result.distances);
-console.log("Has Negative Cycle:", result.hasNegativeCycle);
-Edges:
-0 -> 1 (weight 4)
-0 -> 2 (weight 3)
-1 -> 2 (weight -2)
-2 -> 3 (weight 2)
-3 -> 1 (weight 1)
-
-Source: 0
-Distances: [ 0, 2, 0, 2 ]
-Has Negative Cycle: false
+// Example usage:
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
