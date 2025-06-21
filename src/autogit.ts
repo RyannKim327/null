@@ -1,45 +1,114 @@
-function findMajorityElement(nums: number[]): number | null {
-    // Step 1: Initialize variables
-    let candidate: number | null = null;
-    let count = 0;
+// Define the structure of a binary tree node
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
 
-    // Step 2: First pass to find the candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num; // Set current number as the candidate
-        }
-        count += (num === candidate ? 1 : -1); // Update count
+    constructor(value: T) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    // Step 3: Second pass to verify the candidate
-    if (candidate !== null) {
-        const occurrence = nums.filter(num => num === candidate).length;
-        if (occurrence > Math.floor(nums.length / 2)) {
-            return candidate; // Majority element found
-        }
-    }
-
-    return null; // No majority element exists
 }
 
-// Example Usage
-const array = [3, 2, 3];
-console.log(findMajorityElement(array)); // Output: 3
+// Define the binary tree class
+class BinaryTree<T> {
+    root: TreeNode<T> | null;
 
-const array2 = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElement(array2)); // Output: 2
+    constructor() {
+        this.root = null; // The tree starts with no nodes
+    }
 
-const array3 = [1, 2, 3, 4, 5];
-console.log(findMajorityElement(array3)); // Output: null
-function findMajorityElementWithMap(nums: number[]): number | null {
-    const counts: Map<number, number> = new Map();
+    // Insert a new value into the binary tree
+    insert(value: T): void {
+        const newNode = new TreeNode(value);
 
-    for (const num of nums) {
-        counts.set(num, (counts.get(num) || 0) + 1);
-        if (counts.get(num)! > Math.floor(nums.length / 2)) {
-            return num;
+        if (!this.root) {
+            // If the tree is empty, set the new node as the root
+            this.root = newNode;
+            return;
+        }
+
+        // Traverse the tree to find the correct position for the new node
+        let current = this.root;
+        while (true) {
+            if (value < current.value) {
+                // Go to the left subtree
+                if (!current.left) {
+                    current.left = newNode;
+                    return;
+                }
+                current = current.left;
+            } else {
+                // Go to the right subtree
+                if (!current.right) {
+                    current.right = newNode;
+                    return;
+                }
+                current = current.right;
+            }
         }
     }
 
-    return null;
+    // In-order traversal: Left -> Root -> Right
+    inOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (node) {
+            this.inOrderTraversal(node.left, result); // Traverse left subtree
+            result.push(node.value); // Visit the root
+            this.inOrderTraversal(node.right, result); // Traverse right subtree
+        }
+        return result;
+    }
+
+    // Pre-order traversal: Root -> Left -> Right
+    preOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (node) {
+            result.push(node.value); // Visit the root
+            this.preOrderTraversal(node.left, result); // Traverse left subtree
+            this.preOrderTraversal(node.right, result); // Traverse right subtree
+        }
+        return result;
+    }
+
+    // Post-order traversal: Left -> Right -> Root
+    postOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (node) {
+            this.postOrderTraversal(node.left, result); // Traverse left subtree
+            this.postOrderTraversal(node.right, result); // Traverse right subtree
+            result.push(node.value); // Visit the root
+        }
+        return result;
+    }
+
+    // Search for a value in the binary tree
+    search(value: T): boolean {
+        let current = this.root;
+        while (current) {
+            if (value === current.value) {
+                return true; // Found the value
+            } else if (value < current.value) {
+                current = current.left; // Search in the left subtree
+            } else {
+                current = current.right; // Search in the right subtree
+            }
+        }
+        return false; // Value not found
+    }
 }
+const tree = new BinaryTree<number>();
+
+// Insert values into the tree
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+
+// Perform traversals
+console.log("In-order traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
+console.log("Pre-order traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
+console.log("Post-order traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
+
+// Search for values
+console.log("Search for 7:", tree.search(7)); // true
+console.log("Search for 20:", tree.search(20)); // false
