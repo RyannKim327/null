@@ -1,62 +1,34 @@
-const numbers: number[] = [1, 2, 3, 4, 5];
-const valueToRemove: number = 3;
+// Original array
+const fruits: string[] = ['Apple', 'Banana', 'Cherry', 'Date'];
 
-// Create a new array excluding the value to remove
-const filteredNumbers = numbers.filter(num => num !== valueToRemove);
+// Method 1: Using reverse() - modifies original array
+const reversedFruits1 = fruits.slice().reverse();
+console.log('Original:', fruits); // ['Apple', 'Banana', 'Cherry', 'Date']
+console.log('Reversed (Method 1):', reversedFruits1); // ['Date', 'Cherry', 'Banana', 'Apple']
 
-console.log(filteredNumbers); // Output: [1, 2, 4, 5]
-const fruits: string[] = ['apple', 'banana', 'cherry', 'banana'];
-const fruitToRemove: string = 'banana';
-
-// Find the index of the element to remove
-const index = fruits.indexOf(fruitToRemove);
-
-if (index !== -1) {
-  // Remove the element at the found index
-  fruits.splice(index, 1);
+// Method 2: Using for loop
+function reverseWithLoop<T>(arr: T[]): T[] {
+    const reversed: T[] = [];
+    for (let i = arr.length - 1; i >= 0; i--) {
+        reversed.push(arr[i]);
+    }
+    return reversed;
 }
+const reversedFruits2 = reverseWithLoop(fruits);
+console.log('Reversed (Method 2):', reversedFruits2); // ['Date', 'Cherry', 'Banana', 'Apple']
 
-console.log(fruits); // Output: ['apple', 'cherry', 'banana']
-const colors: string[] = ['red', 'blue', 'green', 'blue', 'yellow'];
-const colorToRemove: string = 'blue';
+// Method 3: Using reduce()
+const reversedFruits3 = fruits.reduce((acc, fruit) => {
+    acc.unshift(fruit);
+    return acc;
+}, [] as string[]);
+console.log('Reversed (Method 3):', reversedFruits3); // ['Date', 'Cherry', 'Banana', 'Apple']
 
-for (let i = colors.length - 1; i >= 0; i--) {
-  if (colors[i] === colorToRemove) {
-    colors.splice(i, 1);
-  }
-}
-
-console.log(colors); // Output: ['red', 'green', 'yellow']
-const uniqueNumbers: number[] = [1, 2, 3, 4];
-const numberToRemove: number = 3;
-
-// Convert to Set, remove the element, and convert back to Array
-const resultSet = new Set(uniqueNumbers);
-resultSet.delete(numberToRemove);
-const resultArray = Array.from(resultSet);
-
-console.log(resultArray); // Output: [1, 2, 4]
-import _ from 'lodash';
-
-const animals: string[] = ['cat', 'dog', 'elephant', 'dog'];
-_.remove(animals, animal => animal === 'dog');
-
-console.log(animals); // Output: ['cat', 'elephant']
-import _ from 'lodash';
-
-const animals: string[] = ['cat', 'dog', 'elephant', 'dog'];
-const filteredAnimals = _.without(animals, 'dog');
-
-console.log(filteredAnimals); // Output: ['cat', 'elephant']
-const books: string[] = ['Harry Potter', 'Lord of the Rings', 'Harry Potter', '1984'];
-
-// Remove all occurrences of 'Harry Potter' using filter()
-const filteredBooks = books.filter(book => book !== 'Harry Potter');
-console.log(filteredBooks); // Output: ['Lord of the Rings', '1984']
-
-// Remove the first occurrence of '1984' using indexOf() and splice()
-const index = books.indexOf('1984');
-if (index !== -1) {
-  books.splice(index, 1);
-}
-console.log(books); // Output: ['Harry Potter', 'Lord of the Rings', 'Harry Potter']
+// Method 4: Using spread operator
+const reversedFruits4 = [...fruits].reverse();
+console.log('Reversed (Method 4):', reversedFruits4); // ['Date', 'Cherry', 'Banana', 'Apple']
+Original: ['Apple', 'Banana', 'Cherry', 'Date']
+Reversed (Method 1): ['Date', 'Cherry', 'Banana', 'Apple']
+Reversed (Method 2): ['Date', 'Cherry', 'Banana', 'Apple']
+Reversed (Method 3): ['Date', 'Cherry', 'Banana', 'Apple']
+Reversed (Method 4): ['Date', 'Cherry', 'Banana', 'Apple']
