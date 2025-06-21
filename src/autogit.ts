@@ -1,150 +1,114 @@
-// Define the structure of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+// Define the TreeNode class
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
 
-    constructor(value: number = 0, next: ListNode | null = null) {
+    constructor(value: T) {
         this.value = value;
-        this.next = next;
+        this.left = null;
+        this.right = null;
     }
 }
 
-/**
- * Function to find the nth node from the end of a linked list
- * @param head - The head of the linked list
- * @param n - The position from the end
- * @returns The nth node from the end or null if it doesn't exist
- */
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head) {
-        return null; // Empty list case
+// Define the BinarySearchTree class
+class BinarySearchTree<T> {
+    root: TreeNode<T> | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    let fast: ListNode | null = head;
-    let slow: ListNode | null = head;
+    // Insert a value into the BST
+    insert(value: T): void {
+        const newNode = new TreeNode(value);
 
-    // Move the fast pointer n steps forward
-    for (let i = 0; i < n; i++) {
-        if (!fast) {
-            return null; // n is larger than the length of the list
+        if (!this.root) {
+            // If the tree is empty, set the new node as the root
+            this.root = newNode;
+            return;
         }
-        fast = fast.next;
-    }
 
-    // Move both pointers until fast reaches the end
-    while (fast) {
-        fast = fast.next;
-        slow = slow!.next; // Non-null assertion since we've already checked
-    }
-
-    return slow;
-}
-
-// Example usage:
-function main() {
-    // Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
-    const head = new ListNode(1);
-    head.next = new ListNode(2);
-    head.next.next = new ListNode(3);
-    head.next.next.next = new ListNode(4);
-    head.next.next.next.next = new ListNode(5);
-
-    const n = 2; // Find the 2nd node from the end
-
-    const result = findNthFromEnd(head, n);
-    if (result) {
-        console.log(`The ${n}nd node from the end is: ${result.value}`);
-    } else {
-        console.log("Node not found.");
-    }
-}
-
-main();
-The 2nd node from the end is: 4
-function findNthFromEndWithCounter(head: ListNode | null, n: number): ListNode | null {
-    if (!head) return null;
-
-    let length = 0;
-    let current = head;
-
-    // First pass to get the length of the list
-    while (current) {
-        length++;
-        current = current.next;
-    }
-
-    // Check if n is within the bounds of the list length
-    if (n > length || n <= 0) {
-        return null;
-    }
-
-    // Second pass to find the (length - n)th node from the start
-    current = head;
-    for (let i = 0; i < length - n; i++) {
-        current = current!.next;
-    }
-
-    return current;
-}
-// Define the structure of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number = 0, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
-    }
-}
-
-/**
- * Function to find the nth node from the end of a linked list
- * @param head - The head of the linked list
- * @param n - The position from the end
- * @returns The nth node from the end or null if it doesn't exist
- */
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head) {
-        return null; // Empty list case
-    }
-
-    let fast: ListNode | null = head;
-    let slow: ListNode | null = head;
-
-    // Move the fast pointer n steps forward
-    for (let i = 0; i < n; i++) {
-        if (!fast) {
-            return null; // n is larger than the length of the list
+        // Otherwise, find the correct position for the new node
+        let currentNode = this.root;
+        while (true) {
+            if (value < currentNode.value) {
+                // Go left
+                if (!currentNode.left) {
+                    currentNode.left = newNode;
+                    return;
+                }
+                currentNode = currentNode.left;
+            } else {
+                // Go right
+                if (!currentNode.right) {
+                    currentNode.right = newNode;
+                    return;
+                }
+                currentNode = currentNode.right;
+            }
         }
-        fast = fast.next;
     }
 
-    // Move both pointers until fast reaches the end
-    while (fast) {
-        fast = fast.next;
-        slow = slow!.next; // Non-null assertion since we've already checked
+    // Search for a value in the BST
+    search(value: T): boolean {
+        let currentNode = this.root;
+
+        while (currentNode) {
+            if (value === currentNode.value) {
+                return true; // Value found
+            } else if (value < currentNode.value) {
+                currentNode = currentNode.left; // Search left subtree
+            } else {
+                currentNode = currentNode.right; // Search right subtree
+            }
+        }
+
+        return false; // Value not found
     }
 
-    return slow;
+    // In-order traversal (left, root, right)
+    inOrderTraversal(node: TreeNode<T> | null, result: T[] = []): T[] {
+        if (node) {
+            this.inOrderTraversal(node.left, result);
+            result.push(node.value);
+            this.inOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Pre-order traversal (root, left, right)
+    preOrderTraversal(node: TreeNode<T> | null, result: T[] = []): T[] {
+        if (node) {
+            result.push(node.value);
+            this.preOrderTraversal(node.left, result);
+            this.preOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Post-order traversal (left, right, root)
+    postOrderTraversal(node: TreeNode<T> | null, result: T[] = []): T[] {
+        if (node) {
+            this.postOrderTraversal(node.left, result);
+            this.postOrderTraversal(node.right, result);
+            result.push(node.value);
+        }
+        return result;
+    }
 }
 
-// Example usage:
-function main() {
-    // Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
-    const head = new ListNode(1);
-    head.next = new ListNode(2);
-    head.next.next = new ListNode(3);
-    head.next.next.next = new ListNode(4);
-    head.next.next.next.next = new ListNode(5);
+// Example usage
+const bst = new BinarySearchTree<number>();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
 
-    const n = 2; // Find the 2nd node from the end
+console.log("In-order traversal:", bst.inOrderTraversal(bst.root)); // [3, 5, 7, 10, 15]
+console.log("Pre-order traversal:", bst.preOrderTraversal(bst.root)); // [10, 5, 3, 7, 15]
+console.log("Post-order traversal:", bst.postOrderTraversal(bst.root)); // [3, 7, 5, 15, 10]
 
-    const result = findNthFromEnd(head, n);
-    if (result) {
-        console.log(`The ${n}nd node from the end is: ${result.value}`);
-    } else {
-        console.log("Node not found.");
-    }
-}
-
-main();
+console.log("Search for 7:", bst.search(7)); // true
+console.log("Search for 20:", bst.search(20)); // false
