@@ -1,72 +1,56 @@
-function findCommonElements<T>(array1: T[], array2: T[]): T[] {
-    const set = new Set(array2); // Convert the second array to a Set for fast lookup
-    return array1.filter(item => set.has(item)); // Filter elements present in the Set
+function areAnagrams(str1: string, str2: string): boolean {
+    // Helper function to normalize a string
+    const normalize = (str: string): string => {
+        return str
+            .replace(/\s+/g, '') // Remove all whitespace
+            .toLowerCase()       // Convert to lowercase
+            .split('')           // Split into an array of characters
+            .sort()              // Sort the characters alphabetically
+            .join('');           // Join back into a string
+    };
+
+    // Normalize both strings and compare
+    return normalize(str1) === normalize(str2);
 }
 
 // Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [4, 5, 6, 7, 8];
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("triangle", "integral")); // true
+console.log(areAnagrams("apple", "pale")); // false
+function areAnagramsOptimized(str1: string, str2: string): boolean {
+    const normalize = (str: string): string => {
+        return str.replace(/\s+/g, '').toLowerCase();
+    };
 
-const common = findCommonElements(arr1, arr2);
-console.log(common); // Output: [4, 5]
-function findCommonElements<T>(array1: T[], array2: T[]): T[] {
-    return array1.filter(item => array2.includes(item));
-}
+    const countChars = (str: string): Record<string, number> => {
+        const charCount: Record<string, number> = {};
+        for (const char of str) {
+            charCount[char] = (charCount[char] || 0) + 1;
+        }
+        return charCount;
+    };
 
-// Example usage:
-const arr1 = ['a', 'b', 'c'];
-const arr2 = ['b', 'c', 'd'];
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
 
-const common = findCommonElements(arr1, arr2);
-console.log(common); // Output: ['b', 'c']
-function findCommonElements<T>(array1: T[], array2: T[]): T[] {
-    const set = new Set(array2);
-    return array1.reduce((acc, item) => {
-        if (set.has(item)) acc.push(item);
-        return acc;
-    }, [] as T[]);
-}
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false; // Different lengths, not anagrams
+    }
 
-// Example usage:
-const arr1 = [10, 20, 30, 40];
-const arr2 = [30, 40, 50, 60];
+    const charCount1 = countChars(normalizedStr1);
+    const charCount2 = countChars(normalizedStr2);
 
-const common = findCommonElements(arr1, arr2);
-console.log(common); // Output: [30, 40]
-function findUniqueCommonElements<T>(array1: T[], array2: T[]): T[] {
-    const set1 = new Set(array1);
-    const set2 = new Set(array2);
-    return [...set1].filter(item => set2.has(item));
-}
-
-// Example usage:
-const arr1 = [1, 2, 2, 3];
-const arr2 = [2, 2, 4];
-
-const common = findUniqueCommonElements(arr1, arr2);
-console.log(common); // Output: [2]
-function findCommonElementsSorted<T>(array1: T[], array2: T[]): T[] {
-    const result: T[] = [];
-    let i = 0, j = 0;
-
-    while (i < array1.length && j < array2.length) {
-        if (array1[i] === array2[j]) {
-            result.push(array1[i]);
-            i++;
-            j++;
-        } else if (array1[i] < array2[j]) {
-            i++;
-        } else {
-            j++;
+    // Compare character counts
+    for (const char in charCount1) {
+        if (charCount1[char] !== charCount2[char]) {
+            return false;
         }
     }
 
-    return result;
+    return true;
 }
 
 // Example usage:
-const arr1 = [1, 3, 4, 6, 7];
-const arr2 = [2, 3, 5, 6];
-
-const common = findCommonElementsSorted(arr1, arr2);
-console.log(common); // Output: [3, 6]
+console.log(areAnagramsOptimized("listen", "silent")); // true
+console.log(areAnagramsOptimized("triangle", "integral")); // true
+console.log(areAnagramsOptimized("apple", "pale")); // false
