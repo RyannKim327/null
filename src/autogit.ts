@@ -1,59 +1,53 @@
-class Stack<T> {
-  private items: T[] = [];
+// Definition of a linked list node
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-  // Push an item onto the stack
-  push(item: T): void {
-    this.items.push(item);
-  }
-
-  // Pop the top item from the stack and return it
-  pop(): T | undefined {
-    if (this.isEmpty()) {
-      throw new Error("Stack is empty. Cannot pop from an empty stack.");
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-    return this.items.pop();
-  }
-
-  // Peek at the top item without removing it
-  peek(): T | undefined {
-    if (this.isEmpty()) {
-      return undefined;
-    }
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty(): boolean {
-    return this.items.length === 0;
-  }
-
-  // Get the size of the stack
-  size(): number {
-    return this.items.length;
-  }
-
-  // Optional: Clear the stack
-  clear(): void {
-    this.items = [];
-  }
 }
-const stack = new Stack<number>();
 
-// Push elements onto the stack
-stack.push(10);
-stack.push(20);
-stack.push(30);
+// Function to check if a linked list contains a cycle
+function hasCycle(head: ListNode | null): boolean {
+    // Initialize two pointers
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-console.log("Stack size:", stack.size()); // Output: 3
-console.log("Top element:", stack.peek()); // Output: 30
+    // Traverse the list
+    while (fast !== null && fast.next !== null) {
+        slow = slow!.next;           // Move slow pointer by 1 step
+        fast = fast.next.next;       // Move fast pointer by 2 steps
 
-// Pop elements from the stack
-console.log("Popped element:", stack.pop()); // Output: 30
-console.log("Stack size after pop:", stack.size()); // Output: 2
+        // Check if slow and fast meet
+        if (slow === fast) {
+            return true;             // Cycle detected
+        }
+    }
 
-// Check if the stack is empty
-console.log("Is stack empty?", stack.isEmpty()); // Output: false
+    return false;                    // No cycle detected
+}
+// Create nodes
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
 
-// Clear the stack
-stack.clear();
-console.log("Is stack empty after clear?", stack.isEmpty()); // Output: true
+// Link nodes to form a list with a cycle
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// Create a list without a cycle
+const nodeA = new ListNode(1);
+const nodeB = new ListNode(2);
+const nodeC = new ListNode(3);
+
+nodeA.next = nodeB;
+nodeB.next = nodeC;
+
+console.log(hasCycle(nodeA)); // Output: false
