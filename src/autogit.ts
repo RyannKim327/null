@@ -1,49 +1,23 @@
-function countCharacter(input: string, targetChar: string): number {
-    let count = 0;
-    for (let i = 0; i < input.length; i++) {
-        if (input[i] === targetChar) {
-            count++;
-        }
-    }
-    return count;
+const str = "42";
+const num = parseInt(str, 10); // Convert to integer with base 10
+console.log(num); // Output: 42
+console.log(typeof num); // Output: "number"
+const str = "42";
+const num = Number(str); // Convert to a number
+console.log(num); // Output: 42
+console.log(typeof num); // Output: "number"
+const str = "42";
+const num = +str; // Convert to a number
+console.log(num); // Output: 42
+console.log(typeof num); // Output: "number"
+const str = "42.7";
+const num = Math.floor(Number(str)); // Convert to integer by flooring
+console.log(num); // Output: 42
+console.log(typeof num); // Output: "number"
+function toInteger(str: string): number | null {
+    const num = parseInt(str, 10);
+    return isNaN(num) ? null : num;
 }
 
-// Example usage:
-const result = countCharacter("hello world", "l");
-console.log(result); // Output: 3
-function countCharacter(input: string, targetChar: string): number {
-    return input.split(targetChar).length - 1;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "l");
-console.log(result); // Output: 3
-function countCharacter(input: string, targetChar: string): number {
-    const matches = input.match(new RegExp(targetChar.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'));
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "l");
-console.log(result); // Output: 3
-function countCharacter(input: string, targetChar: string): number {
-    return input.split('').reduce((count, char) => char === targetChar ? count + 1 : count, 0);
-}
-
-// Example usage:
-const result = countCharacter("hello world", "l");
-console.log(result); // Output: 3
-function countCharacter(input: string, targetChar: string): number {
-    return input.split('').filter(char => char === targetChar).length;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "l");
-console.log(result); // Output: 3
-function countCharacter(input: string, targetChar: string): number {
-    return input.split(targetChar).length - 1;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "l");
-console.log(result); // Output: 3
+console.log(toInteger("42")); // Output: 42
+console.log(toInteger("abc")); // Output: null
