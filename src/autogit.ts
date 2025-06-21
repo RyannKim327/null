@@ -1,85 +1,55 @@
-const numbers: number[] = [10, 5, 8, 20, 3];
+// Function to fetch data from a public API
+async function fetchData<T>(url: string): Promise<T | null> {
+  try {
+    console.log(`Fetching data from: ${url}`);
+    
+    // Make the HTTP GET request using fetch
+    const response = await fetch(url);
 
-// Use Math.max with the spread operator
-const maxValue: number = Math.max(...numbers);
-
-console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
-const numbers: number[] = [10, 5, 8, 20, 3];
-
-// Use reduce to find the maximum value
-const maxValue: number = numbers.reduce((max, current) => {
-  return current > max ? current : max;
-}, numbers[0]); // Initialize with the first element
-
-console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
-const numbers: number[] = [];
-
-const maxValue: number | undefined = numbers.reduce<number | undefined>((max, current) => {
-  return current > (max ?? -Infinity) ? current : max;
-}, undefined);
-
-if (maxValue !== undefined) {
-  console.log(`The maximum value is: ${maxValue}`);
-} else {
-  console.log('The array is empty.');
-}
-const numbers: number[] = [10, 5, 8, 20, 3];
-let maxValue: number = numbers[0];
-
-for (let i = 1; i < numbers.length; i++) {
-  if (numbers[i] > maxValue) {
-    maxValue = numbers[i];
-  }
-}
-
-console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
-const numbers: number[] = [];
-let maxValue: number | undefined;
-
-if (numbers.length === 0) {
-  maxValue = undefined;
-} else {
-  maxValue = numbers[0];
-  for (let i = 1; i < numbers.length; i++) {
-    if (numbers[i] > maxValue) {
-      maxValue = numbers[i];
+    // Check if the response status is OK (status code 200-299)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
+
+    // Parse the response body as JSON
+    const data = await response.json();
+
+    // Return the parsed JSON data
+    return data;
+  } catch (error) {
+    // Handle any errors that occurred during the fetch process
+    console.error("Error fetching data:", error);
+    return null;
   }
 }
 
-if (maxValue !== undefined) {
-  console.log(`The maximum value is: ${maxValue}`);
-} else {
-  console.log('The array is empty.');
-}
-const numbers: number[] = [10, 5, 8, 20, 3];
+// Example usage of the fetchData function
+(async () => {
+  // Define the API endpoint URL
+  const apiUrl = "https://jsonplaceholder.typicode.com/posts/1";
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
+  // Call the fetchData function and handle the result
+  const postData = await fetchData<{ userId: number; id: number; title: string; body: string }>(apiUrl);
 
-// The last element is the maximum
-const maxValue: number = numbers[numbers.length - 1];
-
-console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
-function findMaxValue(arr: (number | string)[]): number | undefined {
-  // Filter out non-number and NaN values
-  const numbers = arr
-    .filter((item): item is number => typeof item === 'number' && !isNaN(item));
-
-  if (numbers.length === 0) {
-    return undefined; // Return undefined if no valid numbers are found
+  if (postData) {
+    console.log("Fetched Post Data:");
+    console.log(`User ID: ${postData.userId}`);
+    console.log(`Post ID: ${postData.id}`);
+    console.log(`Title: ${postData.title}`);
+    console.log(`Body: ${postData.body}`);
+  } else {
+    console.log("Failed to fetch post data.");
   }
-
-  // Find the maximum value using reduce
-  return numbers.reduce((max, current) => (current > max ? current : max), numbers[0]);
-}
-
-// Usage
-const mixedArray: (number | string)[] = [10, '5', NaN, 20, 'three', 3];
-const maxValue = findMaxValue(mixedArray);
-
-if (maxValue !== undefined) {
-  console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
-} else {
-  console.log('No valid numbers found in the array.');
-}
+})();
+Fetching data from: https://jsonplaceholder.typicode.com/posts/1
+Fetched Post Data:
+User ID: 1
+Post ID: 1
+Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+Body: quia et suscipit
+suscipit recusandae consequuntur expedita et cum
+reprehenderit molestiae ut ut quas totam
+nostrum rerum est autem sunt rem eveniet architecto
+Fetching data from: https://jsonplaceholder.typicode.com/posts/1
+Error fetching data: TypeError: Failed to fetch
+Failed to fetch post data.
