@@ -1,114 +1,60 @@
-// Define the TreeNode class
-class TreeNode<T> {
-    value: T;
-    left: TreeNode<T> | null;
-    right: TreeNode<T> | null;
+function quickSort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 elements are already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Step 1: Choose a pivot (we'll use the last element for simplicity)
+    const pivot = arr[arr.length - 1];
+
+    // Step 2: Partition the array into two subarrays
+    const left: number[] = [];  // Elements less than or equal to the pivot
+    const right: number[] = []; // Elements greater than the pivot
+
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] <= pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
+
+    // Step 3: Recursively sort the left and right subarrays
+    const sortedLeft = quickSort(left);
+    const sortedRight = quickSort(right);
+
+    // Step 4: Combine the sorted subarrays with the pivot
+    return [...sortedLeft, pivot, ...sortedRight];
+}
+
+// Example usage:
+const unsortedArray = [10, 7, 8, 9, 1, 5];
+const sortedArray = quickSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
+function quickSortInPlace(arr: number[], low: number = 0, high: number = arr.length - 1): void {
+    if (low < high) {
+        const pivotIndex = partition(arr, low, high);
+        quickSortInPlace(arr, low, pivotIndex - 1);
+        quickSortInPlace(arr, pivotIndex + 1, high);
     }
 }
 
-// Define the BinarySearchTree class
-class BinarySearchTree<T> {
-    root: TreeNode<T> | null;
+function partition(arr: number[], low: number, high: number): number {
+    const pivot = arr[high];
+    let i = low - 1;
 
-    constructor() {
-        this.root = null;
-    }
-
-    // Insert a value into the BST
-    insert(value: T): void {
-        const newNode = new TreeNode(value);
-
-        if (!this.root) {
-            // If the tree is empty, set the new node as the root
-            this.root = newNode;
-            return;
-        }
-
-        // Otherwise, find the correct position for the new node
-        let currentNode = this.root;
-        while (true) {
-            if (value < currentNode.value) {
-                // Go left
-                if (!currentNode.left) {
-                    currentNode.left = newNode;
-                    return;
-                }
-                currentNode = currentNode.left;
-            } else {
-                // Go right
-                if (!currentNode.right) {
-                    currentNode.right = newNode;
-                    return;
-                }
-                currentNode = currentNode.right;
-            }
+    for (let j = low; j < high; j++) {
+        if (arr[j] <= pivot) {
+            i++;
+            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap
         }
     }
 
-    // Search for a value in the BST
-    search(value: T): boolean {
-        let currentNode = this.root;
-
-        while (currentNode) {
-            if (value === currentNode.value) {
-                return true; // Value found
-            } else if (value < currentNode.value) {
-                currentNode = currentNode.left; // Search left subtree
-            } else {
-                currentNode = currentNode.right; // Search right subtree
-            }
-        }
-
-        return false; // Value not found
-    }
-
-    // In-order traversal (left, root, right)
-    inOrderTraversal(node: TreeNode<T> | null, result: T[] = []): T[] {
-        if (node) {
-            this.inOrderTraversal(node.left, result);
-            result.push(node.value);
-            this.inOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // Pre-order traversal (root, left, right)
-    preOrderTraversal(node: TreeNode<T> | null, result: T[] = []): T[] {
-        if (node) {
-            result.push(node.value);
-            this.preOrderTraversal(node.left, result);
-            this.preOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // Post-order traversal (left, right, root)
-    postOrderTraversal(node: TreeNode<T> | null, result: T[] = []): T[] {
-        if (node) {
-            this.postOrderTraversal(node.left, result);
-            this.postOrderTraversal(node.right, result);
-            result.push(node.value);
-        }
-        return result;
-    }
+    [arr[i + 1], arr[high]] = [arr[high], arr[i + 1]]; // Place pivot in the correct position
+    return i + 1;
 }
 
-// Example usage
-const bst = new BinarySearchTree<number>();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-console.log("In-order traversal:", bst.inOrderTraversal(bst.root)); // [3, 5, 7, 10, 15]
-console.log("Pre-order traversal:", bst.preOrderTraversal(bst.root)); // [10, 5, 3, 7, 15]
-console.log("Post-order traversal:", bst.postOrderTraversal(bst.root)); // [3, 7, 5, 15, 10]
-
-console.log("Search for 7:", bst.search(7)); // true
-console.log("Search for 20:", bst.search(20)); // false
+// Example usage:
+const unsortedArray = [10, 7, 8, 9, 1, 5];
+quickSortInPlace(unsortedArray);
+console.log("Sorted Array:", unsortedArray);
