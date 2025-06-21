@@ -1,63 +1,53 @@
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
-    constructor(val: number = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
+// Define an interface for the expected response data structure
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
-function maxDepth(root: TreeNode | null): number {
-    // Base case: if the tree is empty, its depth is 0
-    if (root === null) {
-        return 0;
+// Function to fetch a post by ID using Axios
+async function fetchPostById(postId: number): Promise<Post | null> {
+  try {
+    const response: AxiosResponse<Post> = await axios.get(
+      `https://jsonplaceholder.typicode.com/posts/${postId}`
+    );
+
+    // Return the fetched post data
+    return response.data;
+  } catch (error) {
+    // Handle errors using AxiosError type for better type safety
+    if (axios.isAxiosError(error)) {
+      const axiosError: AxiosError = error;
+
+      // Log detailed error information
+      if (axiosError.response) {
+        console.error('Server responded with error status:', axiosError.response.status);
+        console.error('Error response data:', axiosError.response.data);
+      } else if (axiosError.request) {
+        console.error('No response received from server:', axiosError.request);
+      } else {
+        console.error('Error message:', axiosError.message);
+      }
+    } else {
+      console.error('An unexpected error occurred:', error);
     }
 
-    // Recursively find the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // Return the maximum depth of the two subtrees, plus 1 for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
+    // Return null in case of an error
+    return null;
+  }
 }
-function maxDepthIterative(root: TreeNode | null): number {
-    // If the tree is empty, its depth is 0
-    if (root === null) {
-        return 0;
-    }
 
-    let depth = 0; // Initialize the depth counter
-    const queue: TreeNode[] = [root]; // Initialize the queue with the root node
+// Example usage of the fetchPostById function
+(async () => {
+  const postId = 1; // Fetching post with ID 1
+  const post = await fetchPostById(postId);
 
-    while (queue.length > 0) {
-        const levelSize = queue.length; // Number of nodes at the current level
-        for (let i = 0; i < levelSize; i++) {
-            const currentNode = queue.shift()!; // Dequeue the front node
-            if (currentNode.left !== null) {
-                queue.push(currentNode.left); // Enqueue the left child
-            }
-            if (currentNode.right !== null) {
-                queue.push(currentNode.right); // Enqueue the right child
-            }
-        }
-        depth++; // Increment the depth after processing a level
-    }
-
-    return depth;
-}
-// Create a sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-// Recursive solution
-console.log(maxDepth(root)); // Output: 3
-
-// Iterative solution
-console.log(maxDepthIterative(root)); // Output: 3
+  if (post) {
+    console.log('Fetched Post:', post);
+  } else {
+    console.log('Failed to fetch the post.');
+  }
+})();
