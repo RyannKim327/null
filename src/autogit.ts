@@ -1,65 +1,91 @@
-function rabinKarpSearch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const n = text.length;
-    const m = pattern.length;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+function isValidEmail(email: string): boolean {
+    return emailRegex.test(email);
+}
+// Example usage:
+const testEmails = [
+    "example@example.com",
+    "user.name+tag+sorting@example.com",
+    "user_name@example.co.uk",
+    "invalid-email@.com",
+    "another.invalid@domain",
+    "missingat.com",
+];
 
-    if (m > n || m === 0) return result; // Edge case: pattern longer than text or empty pattern
+testEmails.forEach(email => {
+    const isValid = isValidEmail(email);
+    console.log(`${email}: ${isValid}`);
+});
+example@example.com: true
+user.name+tag+sorting@example.com: true
+user_name@example.co.uk: true
+invalid-email@.com: false
+another.invalid@domain: false
+missingat.com: false
+const unicodeEmailRegex: RegExp = /^[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[A-Za-z0-9\u0080-\uFFFF-]+\.)+[A-Za-z\u0080-\uFFFF]{2,}$/;
 
-    const base = 256; // Base for polynomial rolling hash function (number of characters in the input alphabet)
-    const prime = 101; // A prime number to reduce collisions
+function isValidUnicodeEmail(email: string): boolean {
+    return unicodeEmailRegex.test(email);
+}
+function validateEmail(input: unknown): input is string {
+    if (typeof input !== 'string') return false;
+    return emailRegex.test(input);
+}
 
-    let patternHash = 0; // Hash value for the pattern
-    let textHash = 0; // Hash value for the current text window
-    let h = 1; // The value of h is "base^(m-1) % prime"
+// Usage
+const userInput: unknown = "test@example.com";
+if (validateEmail(userInput)) {
+    console.log("Valid email:", userInput);
+} else {
+    console.log("Invalid email.");
+}
+// emailValidator.ts
 
-    // Precompute h = (base^(m-1)) % prime
-    for (let i = 0; i < m - 1; i++) {
-        h = (h * base) % prime;
+export class EmailValidator {
+    private static readonly emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+    /**
+     * Validates if the provided string is a valid email address.
+     * @param email - The email string to validate.
+     * @returns True if the email is valid; otherwise, false.
+     */
+    public static isValid(email: string): boolean {
+        return this.emailRegex.test(email);
     }
 
-    // Calculate the hash value of the pattern and the first window of the text
-    for (let i = 0; i < m; i++) {
-        patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
-        textHash = (base * textHash + text.charCodeAt(i)) % prime;
+    /**
+     * Validates multiple email addresses.
+     * @param emails - An array of email strings to validate.
+     * @returns An object with separate arrays for valid and invalid emails.
+     */
+    public static validateMultiple(emails: string[]): { valid: string[], invalid: string[] } {
+        const valid: string[] = [];
+        const invalid: string[] = [];
+
+        emails.forEach(email => {
+            if (this.isValid(email)) {
+                valid.push(email);
+            } else {
+                invalid.push(email);
+            }
+        });
+
+        return { valid, invalid };
     }
-
-    // Slide the pattern over the text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check if the hash values of the current window of text and the pattern match
-        if (patternHash === textHash) {
-            // Check character by character to confirm the match
-            let match = true;
-            for (let j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) {
-                result.push(i); // Pattern found at index i
-            }
-        }
-
-        // Calculate the hash value for the next window of text
-        // Remove the leading character and add the trailing character
-        if (i < n - m) {
-            textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
-
-            // Handle negative hash values
-            if (textHash < 0) {
-                textHash += prime;
-            }
-        }
-    }
-
-    return result;
 }
 
 // Example usage:
-const text = "GEEKS FOR GEEKS";
-const pattern = "GEEK";
-const matches = rabinKarpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
-const text = "GEEKS FOR GEEKS";
-const pattern = "GEEK";
-Pattern found at indices: [0, 10]
+const emailsToTest = [
+    "good@example.com",
+    "bad-email@com",
+    "another.good@example.co.uk",
+    "invalid@@example..com"
+];
+
+const results = EmailValidator.validateMultiple(emailsToTest);
+
+console.log("Valid Emails:", results.valid);
+console.log("Invalid Emails:", results.invalid);
+Valid Emails: [ 'good@example.com', 'another.good@example.co.uk' ]
+Invalid Emails: [ 'bad-email@com', 'invalid@@example..com' ]
