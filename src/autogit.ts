@@ -1,25 +1,55 @@
-const originalString: string = "This is a sample string with spaces.";
-const stringWithoutSpaces: string = originalString.replace(/\s+/g, '');
-
-console.log(stringWithoutSpaces); // Output: "Thisisasamplestringwithspaces."
-const originalString: string = "This is a sample string with spaces.";
-const stringWithoutSpaces: string = originalString.split(' ').join('');
-
-console.log(stringWithoutSpaces); // Output: "Thisisasamplestringwithspaces."
-// Remove only space characters
-const stringWithoutSpaces: string = originalString.replace(/ /g, '');
-
-// Remove only tabs
-const stringWithoutTabs: string = originalString.replace(/\t/g, '');
-
-// Remove only newlines
-const stringWithoutNewlines: string = originalString.replace(/\n/g, '');
-function removeSpaces(input: string): string {
-    // Using regex to remove all whitespace characters
-    return input.replace(/\s+/g, '');
+^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$
+function validateEmailSimple(email: string): boolean {
+    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return regex.test(email);
 }
 
-const testString: string = "Hello,   World!\nThis is a test.\tTabs and spaces removed.";
-const result: string = removeSpaces(testString);
+// Usage examples:
+console.log(validateEmailSimple("example@example.com")); // true
+console.log(validateEmailSimple("user.name+tag+sorting@example.co.uk")); // true
+console.log(validateEmailSimple("invalid-email@.com")); // false
+function validateEmailComprehensive(email: string): boolean {
+    const regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+    return regex.test(email);
+}
 
-console.log(result); // Output: "Hello,World!Thisisatest.Tabsandspacesremoved."
+// Usage examples:
+console.log(validateEmailComprehensive("example@example.com")); // true
+console.log(validateEmailComprehensive("user.name+tag+sorting@example.co.uk")); // true
+console.log(validateEmailComprehensive("invalid-email@.com")); // false
+console.log(validateEmailComprehensive("very.long.email.address.that.exceeds.the.maximum.length.allowed.by.the.regex@domain.com")); // false
+const regex = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
+<input type="email" id="emailInput" />
+const input = document.getElementById('emailInput') as HTMLInputElement;
+
+if (input.checkValidity()) {
+    console.log('HTML5 validation passed.');
+    if (validateEmailSimple(input.value)) {
+        console.log('Regex validation passed.');
+    } else {
+        console.log('Invalid email according to regex.');
+    }
+} else {
+    console.log('Invalid email according to HTML5 validation.');
+}
+function validateEmail(email: string): boolean {
+    const regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
+    return regex.test(email);
+}
+
+// Example usage:
+const testEmails = [
+    "example@example.com",
+    "user.name+tag+sorting@example.co.uk",
+    "invalid-email@.com",
+    "very.long.email.address.that.exceeds.the.maximum.length.allowed.by.the.regex@domain.com"
+];
+
+testEmails.forEach(email => {
+    console.log(`${email}: ${validateEmail(email)}`);
+});
+example@example.com: true
+user.name+tag+sorting@example.co.uk: true
+invalid-email@.com: false
+very.long.email.address.that.exceeds.the.maximum.length.allowed.by.the.regex@domain.com: false
