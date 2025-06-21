@@ -1,28 +1,26 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = 0;
+function burrowsWheelerTransform(input: string): string {
+    // Step 1: Append a special end-of-string marker ('$') if not already present
+    const text = input + '$';
 
-    // Divide out all factors of 2
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    // Step 2: Generate all cyclic rotations of the string
+    const rotations: string[] = [];
+    for (let i = 0; i < text.length; i++) {
+        rotations.push(text.slice(i) + text.slice(0, i));
     }
 
-    // Check for odd factors starting from 3
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
-        }
+    // Step 3: Sort the rotations lexicographically
+    rotations.sort();
+
+    // Step 4: Extract the last column of the sorted rotations
+    let lastColumn = '';
+    for (const rotation of rotations) {
+        lastColumn += rotation[rotation.length - 1];
     }
 
-    // If n is still greater than 2, then it is a prime number
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    return lastColumn;
 }
 
 // Example usage:
-const number = 600851475143; // Replace with your desired number
-console.log(`The largest prime factor of ${number} is:`, largestPrimeFactor(number));
+const input = "banana";
+const transformed = burrowsWheelerTransform(input);
+console.log(`BWT of "${input}" is "${transformed}"`);
