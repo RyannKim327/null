@@ -1,73 +1,89 @@
-type Node = string; // Assuming nodes are represented as strings
-type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
+type State = any; // Replace `any` with the specific type of your state
+type Score = number;
+
+interface BeamSearchOptions {
+  beamWidth: number; // Number of top candidates to keep
+  maxSteps: number; // Maximum number of steps to run the search
+}
 
 /**
- * Depth-Limited Search Algorithm
- * @param graph - The graph represented as an adjacency list
- * @param start - The starting node
- * @param goal - The target node to find
- * @param limit - The maximum depth to explore
- * @returns True if the goal is found within the depth limit, otherwise false
+ * Beam Search Algorithm
+ * @param initialState - The starting state(s) for the search.
+ * @param expandFunction - A function that generates new states from a given state.
+ * @param scoreFunction - A function that evaluates and scores a state.
+ * @param isGoalFunction - A function that checks if a state is a goal state.
+ * @param options - Configuration options for the beam search.
+ * @returns The best state found, or null if no solution is found.
  */
-function depthLimitedSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node,
-  limit: number
-): boolean {
-  // Helper function for recursive depth-limited search
-  function dlsHelper(currentNode: Node, currentLimit: number): boolean {
-    console.log(`Visiting node: ${currentNode} at depth limit: ${currentLimit}`);
+function beamSearch(
+  initialState: State[],
+  expandFunction: (state: State) => State[],
+  scoreFunction: (state: State) => Score,
+  isGoalFunction: (state: State) => boolean,
+  options: BeamSearchOptions
+): State | null {
+  let { beamWidth, maxSteps } = options;
+  let beam: State[] = initialState;
 
-    // Base case: If the current node is the goal, return true
-    if (currentNode === goal) {
-      console.log(`Goal found at node: ${currentNode}`);
-      return true;
-    }
-
-    // Base case: If the depth limit is reached, stop exploring this path
-    if (currentLimit <= 0) {
-      console.log(`Depth limit reached at node: ${currentNode}`);
-      return false;
-    }
-
-    // Recursive case: Explore neighbors
-    const neighbors = graph.get(currentNode) || [];
-    for (const neighbor of neighbors) {
-      if (dlsHelper(neighbor, currentLimit - 1)) {
-        return true; // Goal found in the subtree
+  for (let step = 0; step < maxSteps; step++) {
+    // Expand all states in the current beam
+    let candidates: { state: State; score: Score }[] = [];
+    for (const state of beam) {
+      const newStates = expandFunction(state);
+      for (const newState of newStates) {
+        candidates.push({ state: newState, score: scoreFunction(newState) });
       }
     }
 
-    return false; // Goal not found in any subtree
+    // Sort candidates by score in descending order
+    candidates.sort((a, b) => b.score - a.score);
+
+    // Retain only the top-k candidates
+    beam = candidates.slice(0, beamWidth).map(candidate => candidate.state);
+
+    // Check if any of the current states are goal states
+    for (const state of beam) {
+      if (isGoalFunction(state)) {
+        return state; // Return the first goal state found
+      }
+    }
+
+    // If the beam is empty, terminate early
+    if (beam.length === 0) {
+      break;
+    }
   }
 
-  // Start the depth-limited search from the root node
-  return dlsHelper(start, limit);
+  // Return the best state found after all steps
+  return beam.length > 0 ? beam[0] : null;
 }
+type GridState = { x: number; y: number };
 
-// Example usage
-const graph: Graph = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['D', 'E']],
-  ['C', ['F']],
-  ['D', []],
-  ['E', ['G']],
-  ['F', []],
-  ['G', []],
-]);
+// Example: Find a path in a 2D grid from (0, 0) to (3, 3)
+const initialState: GridState[] = [{ x: 0, y: 0 }];
 
-const startNode: Node = 'A';
-const goalNode: Node = 'G';
-const depthLimit: number = 3;
+const expandFunction = (state: GridState): GridState[] => {
+  const moves = [
+    { dx: 1, dy: 0 }, // Move right
+    { dx: 0, dy: 1 }, // Move down
+  ];
+  return moves.map(({ dx, dy }) => ({ x: state.x + dx, y: state.y + dy }));
+};
 
-const result = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
-console.log(`Goal ${goalNode} found within depth limit ${depthLimit}:`, result);
-Visiting node: A at depth limit: 3
-Visiting node: B at depth limit: 2
-Visiting node: D at depth limit: 1
-Depth limit reached at node: D
-Visiting node: E at depth limit: 1
-Visiting node: G at depth limit: 0
-Goal found at node: G
-Goal G found within depth limit 3: true
+const scoreFunction = (state: GridState): number => {
+  // Higher score for states closer to the goal (3, 3)
+  return -(Math.abs(3 - state.x) + Math.abs(3 - state.y));
+};
+
+const isGoalFunction = (state: GridState): boolean => {
+  return state.x === 3 && state.y === 3;
+};
+
+const options: BeamSearchOptions = {
+  beamWidth: 2,
+  maxSteps: 10,
+};
+
+const result = beamSearch(initialState, expandFunction, scoreFunction, isGoalFunction, options);
+
+console.log("Best path found:", result);
