@@ -1,23 +1,33 @@
-const str = "42";
-const num = parseInt(str, 10); // Convert to integer with base 10
-console.log(num); // Output: 42
-console.log(typeof num); // Output: "number"
-const str = "42";
-const num = Number(str); // Convert to a number
-console.log(num); // Output: 42
-console.log(typeof num); // Output: "number"
-const str = "42";
-const num = +str; // Convert to a number
-console.log(num); // Output: 42
-console.log(typeof num); // Output: "number"
-const str = "42.7";
-const num = Math.floor(Number(str)); // Convert to integer by flooring
-console.log(num); // Output: 42
-console.log(typeof num); // Output: "number"
-function toInteger(str: string): number | null {
-    const num = parseInt(str, 10);
-    return isNaN(num) ? null : num;
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
+
+const newArray = array.filter(item => item !== valueToRemove);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
+
+const index = array.indexOf(valueToRemove);
+if (index !== -1) {
+  array.splice(index, 1); // Removes 1 element at the specified index
 }
 
-console.log(toInteger("42")); // Output: 42
-console.log(toInteger("abc")); // Output: null
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
+
+const index = array.indexOf(valueToRemove);
+if (index !== -1) {
+  const newArray = [...array.slice(0, index), ...array.slice(index + 1)];
+  console.log(newArray); // Output: [1, 2, 4, 5]
+}
+const array = [1, 2, 3, 4, 3, 5];
+const valueToRemove = 3;
+
+for (let i = array.length - 1; i >= 0; i--) {
+  if (array[i] === valueToRemove) {
+    array.splice(i, 1);
+  }
+}
+
+console.log(array); // Output: [1, 2, 4, 5]
