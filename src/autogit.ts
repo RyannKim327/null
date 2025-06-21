@@ -1,77 +1,59 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Step 1: Normalize the strings (remove spaces, convert to lowercase)
-    const normalize = (str: string): string =>
-        str.replace(/\s+/g, '').toLowerCase();
-
-    const normalizedStr1 = normalize(str1);
-    const normalizedStr2 = normalize(str2);
-
-    // Step 2: If lengths differ, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+/**
+ * Function to preprocess the last occurrence of each character in the pattern.
+ * @param pattern - The pattern string to search for.
+ * @returns A Map where keys are characters and values are their last occurrence indices.
+ */
+function preprocessBadCharacterTable(pattern: string): Map<string, number> {
+    const badCharTable = new Map<string, number>();
+    for (let i = 0; i < pattern.length; i++) {
+        badCharTable.set(pattern[i], i); // Store the last occurrence index of each character
     }
-
-    // Step 3: Sort the characters and compare
-    const sortString = (str: string): string =>
-        str.split('').sort().join('');
-
-    return sortString(normalizedStr1) === sortString(normalizedStr2);
+    return badCharTable;
 }
 
-// Example Usage
-console.log(areAnagrams("Listen", "Silent")); // true
-console.log(areAnagrams("Hello", "Olelh"));   // true
-console.log(areAnagrams("Triangle", "Integral")); // true
-console.log(areAnagrams("Apple", "Pabble")); // false
-function areAnagramsUsingFrequencyMap(str1: string, str2: string): boolean {
-    // Normalize the strings
-    const normalize = (str: string): string =>
-        str.replace(/\s+/g, '').toLowerCase();
+/**
+ * Boyer-Moore algorithm for string searching using the bad character rule.
+ * @param text - The text in which to search.
+ * @param pattern - The pattern to search for.
+ * @returns An array of starting indices where the pattern is found in the text.
+ */
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
+    if (m === 0) return []; // Edge case: empty pattern
 
-    const normalizedStr1 = normalize(str1);
-    const normalizedStr2 = normalize(str2);
+    const badCharTable = preprocessBadCharacterTable(pattern);
+    const result: number[] = [];
 
-    // If lengths differ, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
-    }
+    let s = 0; // Shift of the pattern with respect to the text
+    while (s <= n - m) {
+        let j = m - 1; // Start from the end of the pattern
 
-    // Create a frequency map for the first string
-    const frequencyMap: Record<string, number> = {};
-
-    for (const char of normalizedStr1) {
-        frequencyMap[char] = (frequencyMap[char] || 0) + 1;
-    }
-
-    // Compare with the second string
-    for (const char of normalizedStr2) {
-        if (!frequencyMap[char]) {
-            return false; // Character not found or frequency mismatch
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
         }
-        frequencyMap[char]--;
+
+        if (j < 0) {
+            // Pattern matched
+            result.push(s);
+            // Shift the pattern to align with the next possible match
+            s += (s + m < n) ? m - (badCharTable.get(text[s + m]) ?? -1) : 1;
+        } else {
+            // Mismatch occurred at pattern[j]
+            const badCharShift = j - (badCharTable.get(text[s + j]) ?? -1);
+            s += Math.max(1, badCharShift); // Ensure we shift at least one position
+        }
     }
 
-    return true;
+    return result;
 }
 
-// Example Usage
-console.log(areAnagramsUsingFrequencyMap("Listen", "Silent")); // true
-console.log(areAnagramsUsingFrequencyMap("Hello", "Olelh"));   // true
-console.log(areAnagramsUsingFrequencyMap("Triangle", "Integral")); // true
-console.log(areAnagramsUsingFrequencyMap("Apple", "Pabble")); // false
-function areAnagrams(str1: string, str2: string): boolean {
-    const normalize = (str: string): string =>
-        str.replace(/\s+/g, '').toLowerCase();
-
-    const normalizedStr1 = normalize(str1);
-    const normalizedStr2 = normalize(str2);
-
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
-    }
-
-    const sortString = (str: string): string =>
-        str.split('').sort().join('');
-
-    return sortString(normalizedStr1) === sortString(normalizedStr2);
-}
+// Example usage
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
+const matches = boyerMooreSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
+Pattern found at indices: [17]
