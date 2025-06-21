@@ -1,51 +1,53 @@
-// Define the type for the adjacency list
-type AdjacencyList = Map<number, number[]>;
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-/**
- * Breadth-First Search (BFS) function.
- * @param graph - The graph represented as an adjacency list.
- * @param startNode - The starting node for the BFS traversal.
- */
-function bfs(graph: AdjacencyList, startNode: number): void {
-    // Queue to manage the BFS traversal
-    const queue: number[] = [];
-    // Set to track visited nodes
-    const visited: Set<number> = new Set();
+// Create a new array without the specified value
+const newArray = array.filter(item => item !== valueToRemove);
 
-    // Initialize the BFS by adding the start node to the queue and marking it as visited
-    queue.push(startNode);
-    visited.add(startNode);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-    console.log("BFS Traversal:");
+// Find the index of the value to remove
+const index = array.indexOf(valueToRemove);
 
-    // Perform BFS
-    while (queue.length > 0) {
-        // Dequeue the front node from the queue
-        const currentNode = queue.shift()!;
-        console.log(currentNode); // Process the current node (e.g., print it)
-
-        // Get the neighbors of the current node
-        const neighbors = graph.get(currentNode) || [];
-
-        // Add unvisited neighbors to the queue and mark them as visited
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                queue.push(neighbor);
-                visited.add(neighbor);
-            }
-        }
-    }
+// Remove the element if found
+if (index !== -1) {
+  array.splice(index, 1);
 }
 
-// Example usage
-const graph: AdjacencyList = new Map([
-    [0, [1, 2]],
-    [1, [2]],
-    [2, [0, 3]],
-    [3, [3]]
-]);
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
+const idToRemove = 2;
 
-console.log("Graph Representation:");
-console.log(graph);
+// Find the index of the object with the specified id
+const index = array.findIndex(item => item.id === idToRemove);
 
-bfs(graph, 2); // Start BFS traversal from node 2
+// Remove the element if found
+if (index !== -1) {
+  array.splice(index, 1);
+}
+
+console.log(array); // Output: [{ id: 1 }, { id: 3 }]
+const array = [1, 2, 3, 2, 4, 2];
+const valueToRemove = 2;
+
+const newArray = array.filter(item => item !== valueToRemove);
+
+console.log(newArray); // Output: [1, 3, 4]
+const array = [1, 2, 3, 2, 4, 2];
+const valueToRemove = 2;
+
+let index = array.indexOf(valueToRemove);
+while (index !== -1) {
+  array.splice(index, 1);
+  index = array.indexOf(valueToRemove);
+}
+
+console.log(array); // Output: [1, 3, 4]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
+
+const newArray = array.filter(item => item !== valueToRemove);
+
+console.log(newArray); // Output: [1, 2, 4, 5]
