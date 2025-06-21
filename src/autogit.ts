@@ -1,53 +1,64 @@
-// Definition of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+        3
+       / \
+      9   20
+         /  \
+        15   7
+// Definition of a binary tree node
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    constructor(val: number = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
     }
 }
 
-// Function to check if a linked list contains a cycle
-function hasCycle(head: ListNode | null): boolean {
-    // Initialize two pointers
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+function maxDepth(root: TreeNode | null): number {
+    // Base case: if the node is null, the depth is 0
+    if (root === null) {
+        return 0;
+    }
 
-    // Traverse the list
-    while (fast !== null && fast.next !== null) {
-        slow = slow!.next;           // Move slow pointer by 1 step
-        fast = fast.next.next;       // Move fast pointer by 2 steps
+    // Recursively calculate the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-        // Check if slow and fast meet
-        if (slow === fast) {
-            return true;             // Cycle detected
+    // The depth of the current node is 1 + the maximum of the two subtree depths
+    return 1 + Math.max(leftDepth, rightDepth);
+}
+function maxDepthIterative(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
+
+    let depth = 0;
+    const queue: TreeNode[] = [root]; // Initialize the queue with the root node
+
+    while (queue.length > 0) {
+        const levelSize = queue.length; // Number of nodes at the current level
+        for (let i = 0; i < levelSize; i++) {
+            const currentNode = queue.shift()!; // Dequeue the front node
+            if (currentNode.left !== null) {
+                queue.push(currentNode.left); // Enqueue the left child
+            }
+            if (currentNode.right !== null) {
+                queue.push(currentNode.right); // Enqueue the right child
+            }
         }
+        depth++; // Increment the depth after processing each level
     }
 
-    return false;                    // No cycle detected
+    return depth;
 }
-// Create nodes
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
+// Create a sample binary tree
+const root = new TreeNode(3);
+root.left = new TreeNode(9);
+root.right = new TreeNode(20);
+root.right.left = new TreeNode(15);
+root.right.right = new TreeNode(7);
 
-// Link nodes to form a list with a cycle
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
-
-// Create a list without a cycle
-const nodeA = new ListNode(1);
-const nodeB = new ListNode(2);
-const nodeC = new ListNode(3);
-
-nodeA.next = nodeB;
-nodeB.next = nodeC;
-
-console.log(hasCycle(nodeA)); // Output: false
+console.log(maxDepth(root)); // Output: 3
+console.log(maxDepthIterative(root)); // Output: 3
