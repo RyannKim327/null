@@ -1,87 +1,53 @@
-class BoyerMoore {
-    private badCharTable: Map<string, number>;
-    private goodSuffixShift: number[];
-    private pattern: string;
+// Importing necessary modules
+import axios from 'axios';
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-        this.goodSuffixShift = this.buildGoodSuffixTable(pattern);
-    }
-
-    // Preprocess the bad character table
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        for (let i = 0; i < pattern.length - 1; i++) {
-            table.set(pattern[i], pattern.length - 1 - i);
-        }
-        return table;
-    }
-
-    // Preprocess the good suffix table
-    private buildGoodSuffixTable(pattern: string): number[] {
-        const m = pattern.length;
-        const shift = Array(m + 1).fill(m); // Initialize all shifts to the length of the pattern
-        const z = Array(m).fill(0); // Z-array for pattern matching
-
-        // Compute the Z-array for the reverse of the pattern
-        for (let i = 1; i < m; i++) {
-            if (i <= shift[m]) {
-                let j = Math.max(0, i - shift[m]);
-                while (j < m && pattern[m - 1 - j] === pattern[m - 1 - (i - j)]) {
-                    j++;
-                }
-                z[i] = j;
-                shift[m - z[i]] = m - i;
-            }
-        }
-
-        // Handle matches at the end of the pattern
-        for (let i = 0; i < m; i++) {
-            shift[i] = Math.max(shift[i], m - i - 1);
-        }
-
-        return shift;
-    }
-
-    // Search for the pattern in the text
-    public search(text: string): number[] {
-        const n = text.length;
-        const m = this.pattern.length;
-        const result: number[] = [];
-        let i = 0;
-
-        while (i <= n - m) {
-            let j = m - 1;
-
-            // Compare the pattern with the text from right to left
-            while (j >= 0 && this.pattern[j] === text[i + j]) {
-                j--;
-            }
-
-            if (j < 0) {
-                // Pattern found at index i
-                result.push(i);
-                i += this.goodSuffixShift[0]; // Shift based on the good suffix rule
-            } else {
-                // Calculate the shift using both rules
-                const badCharShift = this.badCharTable.get(text[i + j]) || m;
-                const goodSuffixShift = this.goodSuffixShift[j];
-                i += Math.max(badCharShift, goodSuffixShift);
-            }
-        }
-
-        return result;
-    }
+// Define an interface for the structure of the data returned by the API
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
-// Example usage
-const pattern = "ABCD";
-const text = "ABC ABCDAB ABCDABCDABDE";
-const bm = new BoyerMoore(pattern);
-const matches = bm.search(text);
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+  try {
+    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
+    console.log('Fetched Posts:', response.data);
+    return response.data; // Return the fetched posts
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    throw error; // Re-throw the error for further handling if needed
+  }
+}
 
-console.log("Pattern found at indices:", matches);
-const pattern = "ABCD";
-const text = "ABC ABCDAB ABCDABCDABDE";
-Pattern found at indices: [4, 11, 15]
+// Function to display a specific post by ID
+async function displayPostById(postId: number): Promise<void> {
+  try {
+    const posts = await fetchPosts(); // Fetch all posts
+    const post = posts.find((p) => p.id === postId); // Find the post with the given ID
+
+    if (post) {
+      console.log(`Post Found - ID: ${post.id}, Title: "${post.title}"`);
+    } else {
+      console.log(`No post found with ID: ${postId}`);
+    }
+  } catch (error) {
+    console.error('Error displaying post:', error);
+  }
+}
+
+// Main function to execute the program
+async function main() {
+  console.log('Fetching posts from the API...');
+  
+  // Display a random post by ID (e.g., ID between 1 and 100)
+  const randomPostId = Math.floor(Math.random() * 100) + 1;
+  await displayPostById(randomPostId);
+}
+
+// Run the main function
+main();
+Fetching posts from the API...
+Fetched Posts: [ { userId: 1, id: 1, title: 'sunt aut facere repellat provident occaecati...', body: 'quia et suscipit...' }, ... ]
+Post Found - ID: 42, Title: "id labore ex et quam laborum"
