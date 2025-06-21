@@ -1,52 +1,29 @@
-// Define an interface for the structure of the data we expect from the API
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
+function shellSort(arr: number[]): number[] {
+    let n = arr.length;
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-  try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    // Start with a large gap and reduce it over time
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        // Perform a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Store the current element
+            let temp = arr[i];
 
-    // Check if the response status is OK (status code 200)
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            let j: number;
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
+
+            // Place the stored element at its correct location
+            arr[j] = temp;
+        }
     }
 
-    // Parse the response as JSON and return it
-    const posts: Post[] = await response.json();
-    return posts;
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    return [];
-  }
+    return arr;
 }
 
-// Function to display posts in the console
-function displayPosts(posts: Post[]): void {
-  posts.forEach((post) => {
-    console.log(`Post ID: ${post.id}`);
-    console.log(`Title: ${post.title}`);
-    console.log(`Body: ${post.body}`);
-    console.log('-----------------------------');
-  });
-}
-
-// Main function to execute the program
-async function main() {
-  console.log('Fetching posts from the API...');
-  const posts = await fetchPosts();
-
-  if (posts.length > 0) {
-    console.log('Posts fetched successfully!');
-    displayPosts(posts);
-  } else {
-    console.log('No posts available or an error occurred.');
-  }
-}
-
-// Run the main function
-main();
+// Example usage:
+const unsortedArray = [35, 33, 42, 10, 14, 19, 27, 44, 26, 31];
+const sortedArray = shellSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
+Sorted Array: [10, 14, 19, 26, 27, 31, 33, 35, 42, 44]
