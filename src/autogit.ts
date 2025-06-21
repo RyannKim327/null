@@ -1,53 +1,49 @@
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+// The longest increasing subsequence is [2, 3, 7, 101], so the length is 4.
+function findLongestIncreasingSubsequence(nums: number[]): { length: number; subsequence: number[] } {
+    if (nums.length === 0) {
+        return { length: 0, subsequence: [] };
+    }
 
-// Create a new array without the specified value
-const newArray = array.filter(item => item !== valueToRemove);
+    const n = nums.length;
+    const dp: number[] = new Array(n).fill(1);
+    const prev: number[] = new Array(n).fill(-1);
 
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
+    let maxLength = 1;
+    let endIndex = 0;
 
-// Find the index of the value to remove
-const index = array.indexOf(valueToRemove);
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[j] < nums[i] && dp[j] + 1 > dp[i]) {
+                dp[i] = dp[j] + 1;
+                prev[i] = j;
+            }
+        }
 
-// Remove the element if found
-if (index !== -1) {
-  array.splice(index, 1);
+        // Update the maximum length and end index
+        if (dp[i] > maxLength) {
+            maxLength = dp[i];
+            endIndex = i;
+        }
+    }
+
+    // Reconstruct the longest increasing subsequence
+    const lis: number[] = [];
+    let currentIndex = endIndex;
+
+    while (currentIndex !== -1) {
+        lis.push(nums[currentIndex]);
+        currentIndex = prev[currentIndex];
+    }
+
+    // The sequence is built backwards, so reverse it
+    lis.reverse();
+
+    return { length: maxLength, subsequence: lis };
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [{ id: 1 }, { id: 2 }, { id: 3 }];
-const idToRemove = 2;
-
-// Find the index of the object with the specified id
-const index = array.findIndex(item => item.id === idToRemove);
-
-// Remove the element if found
-if (index !== -1) {
-  array.splice(index, 1);
-}
-
-console.log(array); // Output: [{ id: 1 }, { id: 3 }]
-const array = [1, 2, 3, 2, 4, 2];
-const valueToRemove = 2;
-
-const newArray = array.filter(item => item !== valueToRemove);
-
-console.log(newArray); // Output: [1, 3, 4]
-const array = [1, 2, 3, 2, 4, 2];
-const valueToRemove = 2;
-
-let index = array.indexOf(valueToRemove);
-while (index !== -1) {
-  array.splice(index, 1);
-  index = array.indexOf(valueToRemove);
-}
-
-console.log(array); // Output: [1, 3, 4]
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
-
-const newArray = array.filter(item => item !== valueToRemove);
-
-console.log(newArray); // Output: [1, 2, 4, 5]
+// Example usage:
+const nums = [10, 9, 2, 5, 3, 7, 101, 18];
+const result = findLongestIncreasingSubsequence(nums);
+console.log(`Length of LIS: ${result.length}`);           // Output: Length of LIS: 4
+console.log(`Longest Increasing Subsequence: ${result.subsequence}`); // Output: Longest Increasing Subsequence: 2,3,7,101
