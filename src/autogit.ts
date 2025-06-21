@@ -1,32 +1,31 @@
-function binarySearchRecursive(
-  array: number[], 
-  target: number, 
-  left: number = 0, 
-  right: number = array.length - 1
-): number {
-  // Base case: if the search space is empty
-  if (left > right) {
-    return -1; // Target not found
-  }
-
-  // Calculate the middle index
-  const mid = Math.floor((left + right) / 2);
-
-  // Check if the middle element is the target
-  if (array[mid] === target) {
-    return mid; // Target found at index mid
-  } else if (target < array[mid]) {
-    // Recursively search in the left half
-    return binarySearchRecursive(array, target, left, mid - 1);
-  } else {
-    // Recursively search in the right half
-    return binarySearchRecursive(array, target, mid + 1, right);
-  }
+function isSorted(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
+    }
+    return true;
 }
 
-// Example usage
-const sortedArray = [1, 3, 5, 7, 9, 11, 13];
-const target = 7;
+function shuffleArray(arr: number[]): void {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+    }
+}
 
-const result = binarySearchRecursive(sortedArray, target);
-console.log(`Index of ${target}:`, result); // Output: Index of 7: 3
+function bogoSort(arr: number[]): number[] {
+    while (!isSorted(arr)) {
+        shuffleArray(arr);
+    }
+    return arr;
+}
+
+// Example usage:
+const unsortedArray = [3, 1, 4, 2];
+console.log("Unsorted Array:", unsortedArray);
+
+const sortedArray = bogoSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
+Unsorted Array: [3, 1, 4, 2]
+Sorted Array: [1, 2, 3, 4]
