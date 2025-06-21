@@ -1,76 +1,51 @@
-type Node = string; // You can change this type based on your use case (e.g., number, object, etc.)
-type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
+// Define the structure of a Node in the linked list
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-/**
- * Performs Depth-Limited Search (DLS) on a graph.
- * @param graph - The graph represented as an adjacency list.
- * @param start - The starting node.
- * @param goal - The goal node to find.
- * @param depthLimit - The maximum depth to explore.
- * @returns True if the goal is found within the depth limit, otherwise false.
- */
-function depthLimitedSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node,
-  depthLimit: number
-): boolean {
-  /**
-   * Recursive helper function for DLS.
-   * @param current - The current node being explored.
-   * @param currentDepth - The current depth in the search.
-   * @returns True if the goal is found, otherwise false.
-   */
-  function dlsHelper(current: Node, currentDepth: number): boolean {
-    console.log(`Visiting node: ${current} at depth: ${currentDepth}`);
-
-    // Base case: If the current node is the goal, return true
-    if (current === goal) {
-      return true;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Base case: If the depth limit is reached, return false
-    if (currentDepth >= depthLimit) {
-      return false;
-    }
-
-    // Recursive case: Explore neighbors
-    const neighbors = graph.get(current) || [];
-    for (const neighbor of neighbors) {
-      if (dlsHelper(neighbor, currentDepth + 1)) {
-        return true; // Goal found in the subtree
-      }
-    }
-
-    return false; // Goal not found in any subtree
-  }
-
-  // Start the search from the start node at depth 0
-  return dlsHelper(start, 0);
 }
 
-// Example Usage
-const graph: Graph = new Map([
-  ["A", ["B", "C"]],
-  ["B", ["D", "E"]],
-  ["C", ["F"]],
-  ["D", []],
-  ["E", ["G"]],
-  ["F", []],
-  ["G", []],
-]);
+// Function to reverse a linked list
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;  // Initially, there's no previous node
+    let current: ListNode | null = head;  // Start from the head of the list
+    let next: ListNode | null = null;  // Placeholder for the next node
 
-const startNode: Node = "A";
-const goalNode: Node = "G";
-const depthLimit: number = 3;
+    while (current !== null) {
+        next = current.next;  // Store the next node
+        current.next = prev;  // Reverse the link
+        prev = current;       // Move prev to current node
+        current = next;       // Move to the next node
+    }
 
-const result = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
-console.log(`Goal "${goalNode}" found within depth limit ${depthLimit}:`, result);
-        A
-       / \
-      B   C
-     / \   \
-    D   E   F
-         \
-          G
-Goal "G" found within depth limit 3: true
+    // At the end, prev will be the new head of the reversed list
+    return prev;
+}
+// Helper function to print the linked list
+function printList(head: ListNode | null): void {
+    let current = head;
+    const values: number[] = [];
+    while (current !== null) {
+        values.push(current.value);
+        current = current.next;
+    }
+    console.log(values.join(" -> "));
+}
+
+// Create a sample linked list: 1 -> 2 -> 3 -> null
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+
+console.log("Original List:");
+printList(head);  // Output: 1 -> 2 -> 3
+
+// Reverse the linked list
+const reversedHead = reverseLinkedList(head);
+
+console.log("Reversed List:");
+printList(reversedHead);  // Output: 3 -> 2 -> 1
