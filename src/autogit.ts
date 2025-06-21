@@ -1,53 +1,39 @@
-function factorial(n: number): number {
-    // Input validation: Ensure n is a non-negative integer
-    if (!Number.isInteger(n) || n < 0) {
-        throw new Error("Factorial is only defined for non-negative integers.");
-    }
+function binarySearchRecursive(
+  array: number[], 
+  target: number, 
+  left: number = 0, 
+  right: number = array.length - 1
+): number {
+  // Base case: if the search space is invalid (left > right), return -1 (not found)
+  if (left > right) {
+    return -1;
+  }
 
-    // Base case: 0! = 1
-    if (n === 0) {
-        return 1;
-    }
+  // Calculate the middle index
+  const mid = Math.floor((left + right) / 2);
 
-    // Recursive calculation of factorial
-    return n * factorial(n - 1);
+  // Check if the middle element is the target
+  if (array[mid] === target) {
+    return mid; // Target found, return the index
+  } 
+  // If the target is smaller than the middle element, search the left half
+  else if (target < array[mid]) {
+    return binarySearchRecursive(array, target, left, mid - 1);
+  } 
+  // If the target is larger than the middle element, search the right half
+  else {
+    return binarySearchRecursive(array, target, mid + 1, right);
+  }
 }
 
 // Example usage:
-console.log(factorial(5)); // Output: 120
-console.log(factorial(0)); // Output: 1
-function factorialIterative(n: number): number {
-    // Input validation: Ensure n is a non-negative integer
-    if (!Number.isInteger(n) || n < 0) {
-        throw new Error("Factorial is only defined for non-negative integers.");
-    }
+const sortedArray = [1, 3, 5, 7, 9, 11, 13, 15];
+const targetValue = 7;
 
-    let result = 1;
+const result = binarySearchRecursive(sortedArray, targetValue);
 
-    // Multiply all integers from 1 to n
-    for (let i = 1; i <= n; i++) {
-        result *= i;
-    }
-
-    return result;
+if (result !== -1) {
+  console.log(`Element found at index: ${result}`);
+} else {
+  console.log("Element not found in the array.");
 }
-
-// Example usage:
-console.log(factorialIterative(5)); // Output: 120
-console.log(factorialIterative(0)); // Output: 1
-function factorialBigInt(n: number): bigint {
-    if (!Number.isInteger(n) || n < 0) {
-        throw new Error("Factorial is only defined for non-negative integers.");
-    }
-
-    let result: bigint = 1n;
-
-    for (let i = 1; i <= n; i++) {
-        result *= BigInt(i);
-    }
-
-    return result;
-}
-
-// Example usage:
-console.log(factorialBigInt(20)); // Output: 2432902008176640000n
