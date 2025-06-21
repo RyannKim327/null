@@ -1,40 +1,33 @@
-let str: string = "   Hello, World!   ";
-let trimmedStr: string = str.trim();
-
+const str = "   Hello, World!   ";
+const trimmedStr = str.trim();
 console.log(trimmedStr); // Output: "Hello, World!"
-let str: string = "   Hello, World!   ";
-
-console.log(str.trimStart()); // Output: "Hello, World!   "
-console.log(str.trimEnd());   // Output: "   Hello, World!"
-let str: string = " \t Hello,\n World! \r\n";
-let noWhitespaceStr: string = str.replace(/\s+/g, '');
-
+const str = "   Hello, \t World! \n";
+const noWhitespaceStr = str.replace(/\s+/g, '');
 console.log(noWhitespaceStr); // Output: "Hello,World!"
-let str: string = " \t Hello,\n World! ";
-let noSpacesStr: string = str.replace(/ /g, '');
+const str = "   Hello, \t World! \n";
+const noSpacesStr = str.replace(/ /g, '');
+console.log(noSpacesStr); // Output: "Hello,\tWorld!\n"
+const str = "   Hello, \t World! \n";
+const noTabsStr = str.replace(/\t/g, '');
+console.log(noTabsStr); // Output: "   Hello,  World! \n"
+const str = "   Hello,    \t World!   ";
+const collapsedStr = str.replace(/\s+/g, ' ').trim();
+console.log(collapsedStr); // Output: "Hello, World!"
+function removeWhitespace(input: string, options: { leading?: boolean, trailing?: boolean, inner?: boolean }): string {
+    let result = input;
 
-console.log(noSpacesStr); 
-// Output: "\tHello,\nWorld!"
-let str: string = "Hello,    World!  This is  TypeScript.";
-let singleSpacedStr: string = str.replace(/\s+/g, ' ').trim();
+    if (options.leading || options.trailing) {
+        result = result.trim();
+    }
 
-console.log(singleSpacedStr); 
-// Output: "Hello, World! This is TypeScript."
-function removeAllWhitespace(str: string): string {
-    return str.replace(/\s+/g, '');
+    if (options.inner) {
+        result = result.replace(/\s+/g, '');
+    }
+
+    return result;
 }
 
-function trimString(str: string): string {
-    return str.trim();
-}
-
-function removeExtraSpaces(str: string): string {
-    return str.replace(/\s+/g, ' ').trim();
-}
-
-// Usage examples:
-let input: string = " \t Hello,\n World! \r\n";
-
-console.log(removeAllWhitespace(input)); // "Hello,World!"
-console.log(trimString(input));          // "Hello,\nWorld!"
-console.log(removeExtraSpaces(input));   // "Hello, World!"
+const str = "   Hello,    World!   ";
+console.log(removeWhitespace(str, { leading: true, trailing: true })); // Output: "Hello,    World!"
+console.log(removeWhitespace(str, { inner: true })); // Output: "Hello,World!"
+console.log(removeWhitespace(str, { leading: true, trailing: true, inner: true })); // Output: "Hello,World!"
