@@ -1,41 +1,29 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    while (left < right) {
-        // Move left pointer to the next alphanumeric character
-        while (left < right && !isAlphanumeric(s[left])) {
-            left++;
+    // Outer loop for each pass
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
+
+        // Inner loop for comparing adjacent elements
+        for (let j = 0; j < n - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap the elements
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
         }
 
-        // Move right pointer to the previous alphanumeric character
-        while (left < right && !isAlphanumeric(s[right])) {
-            right--;
-        }
-
-        // Compare characters (case-insensitive)
-        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false;
-        }
-
-        // Move both pointers toward the center
-        left++;
-        right--;
+        // If no swaps were made, the array is already sorted
+        if (!swapped) break;
     }
 
-    return true;
+    return arr;
 }
 
-// Helper function to check if a character is alphanumeric
-function isAlphanumeric(char: string): boolean {
-    const code = char.charCodeAt(0);
-    return (
-        (code >= 48 && code <= 57) || // Digits '0'-'9'
-        (code >= 65 && code <= 90) || // Uppercase 'A'-'Z'
-        (code >= 97 && code <= 122)   // Lowercase 'a'-'z'
-    );
-}
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race a car"));                    // Output: false
-console.log(isPalindrome(" "));                             // Output: true
-console.log(isPalindrome(".,"));                            // Output: true
+// Example usage:
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
+Sorted Array: [11, 12, 22, 25, 34, 64, 90]
