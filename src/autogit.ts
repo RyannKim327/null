@@ -1,41 +1,58 @@
-function isSorted(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
+// Definition of a binary tree node
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(val: number = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
+        this.val = val;
+        this.left = left;
+        this.right = right;
+    }
+}
+
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: empty tree has depth 0
+    }
+
+    // Recursively find the depth of left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    // Return the greater depth of the two subtrees, plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
+}
+function maxDepthIterative(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Empty tree has depth 0
+    }
+
+    const queue: TreeNode[] = [root];
+    let depth = 0;
+
+    while (queue.length > 0) {
+        const levelSize = queue.length; // Number of nodes at the current level
+        for (let i = 0; i < levelSize; i++) {
+            const currentNode = queue.shift()!; // Remove the first node from the queue
+            if (currentNode.left !== null) {
+                queue.push(currentNode.left); // Add left child to the queue
+            }
+            if (currentNode.right !== null) {
+                queue.push(currentNode.right); // Add right child to the queue
+            }
         }
+        depth++; // Increment depth after processing all nodes at the current level
     }
-    return true;
+
+    return depth;
 }
+// Create a sample binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-function shuffleArray(arr: number[]): number[] {
-    const shuffled = [...arr];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap elements
-    }
-    return shuffled;
-}
-
-function bogoSort(arr: number[]): number[] {
-    let attempts = 0;
-    while (!isSorted(arr)) {
-        arr = shuffleArray(arr);
-        attempts++;
-        console.log(`Attempt ${attempts}: ${arr}`);
-    }
-    console.log(`Sorted after ${attempts} attempts.`);
-    return arr;
-}
-
-// Example usage:
-const unsortedArray = [3, 1, 4, 2];
-console.log("Original array:", unsortedArray);
-
-const sortedArray = bogoSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
-Original array: [3, 1, 4, 2]
-Attempt 1: [4, 3, 2, 1]
-Attempt 2: [2, 4, 1, 3]
-Attempt 3: [1, 2, 3, 4]
-Sorted after 3 attempts.
-Sorted array: [1, 2, 3, 4]
+console.log("Maximum Depth (Recursive):", maxDepth(root)); // Output: 3
+console.log("Maximum Depth (Iterative):", maxDepthIterative(root)); // Output: 3
