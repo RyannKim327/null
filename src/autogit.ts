@@ -1,28 +1,38 @@
-function findFirstRepeatedCharacter(input: string): string | null {
-    // A set to keep track of seen characters
-    const seenChars = new Set<string>();
+import axios, { AxiosError } from 'axios';
 
-    // Iterate over each character in the string
-    for (const char of input) {
-        // Check if the character is already in the set
-        if (seenChars.has(char)) {
-            return char; // First repeated character found
-        }
-        // Add the character to the set
-        seenChars.add(char);
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
+
+async function fetchPost(postId: number): Promise<void> {
+  try {
+    const response = await axios.get<Post>(`https://jsonplaceholder.typicode.com/posts/${postId}`);
+    const post = response.data;
+
+    console.log('Fetched Post:');
+    console.log(`ID: ${post.id}`);
+    console.log(`Title: ${post.title}`);
+    console.log(`Body: ${post.body}`);
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        console.error('Server responded with error status:', axiosError.response.status);
+      } else if (axiosError.request) {
+        console.error('No response received from server. Request:', axiosError.request);
+      } else {
+        console.error('Axios error message:', axiosError.message);
+      }
+    } else {
+      console.error('An unexpected error occurred:', error);
     }
-
-    // If no repeated character is found, return null
-    return null;
+  }
 }
 
-// Example usage:
-const testString = "programming";
-const result = findFirstRepeatedCharacter(testString);
-
-if (result !== null) {
-    console.log(`The first repeated character is: ${result}`);
-} else {
-    console.log("No repeated character found.");
-}
-input = input.toLowerCase();
+// Example usage
+fetchPost(1)
+  .then(() => console.log('Post fetched successfully'))
+  .catch((err) => console.error('Failed to fetch post:', err));
