@@ -1,163 +1,54 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number = 0, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
-    }
-}
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head) {
-        throw new Error("The linked list is empty.");
-    }
-
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    // Move the first pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (!first) {
-            throw new Error("n is larger than the length of the linked list.");
-        }
-        first = first.next;
-    }
-
-    // Edge case: If n equals the length of the list, the first pointer will be null
-    if (!first) {
-        return head; // The nth node from the end is the head itself
-    }
-
-    // Move both pointers until the first pointer reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second!.next; // Non-null assertion since first and second maintain the same gap
-    }
-
-    return second;
-}
-// Helper function to create a linked list from an array
-function createLinkedList(arr: number[]): ListNode {
-    const dummy = new ListNode();
-    let current = dummy;
-    for (const num of arr) {
-        current.next = new ListNode(num);
-        current = current.next;
-    }
-    return dummy.next!;
+// Define an interface for the structure of the data we expect from the API
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
-// Helper function to print the linked list
-function printLinkedList(head: ListNode | null): void {
-    const values: number[] = [];
-    let current = head;
-    while (current !== null) {
-        values.push(current.value);
-        current = current.next;
+// Function to fetch posts from the JSONPlaceholder API
+async function fetchPosts(): Promise<Post[]> {
+  try {
+    // Fetch data from the API
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+
+    // Check if the response status is OK (status code 200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    console.log(values.join(" -> "));
+
+    // Parse the response as JSON and return it
+    const posts: Post[] = await response.json();
+    return posts;
+  } catch (error) {
+    // Handle errors (e.g., network issues, invalid URL, etc.)
+    console.error('Error fetching posts:', error);
+    return [];
+  }
 }
 
-// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = createLinkedList([1, 2, 3, 4, 5]);
-
-console.log("Linked List:");
-printLinkedList(head);
-
-// Find the 2nd node from the end
-const n = 2;
-const nthNode = findNthFromEnd(head, n);
-
-if (nthNode) {
-    console.log(`The ${n}nd node from the end has value: ${nthNode.value}`);
-} else {
-    console.log(`The ${n}nd node from the end does not exist.`);
-}
-Linked List:
-1 -> 2 -> 3 -> 4 -> 5
-The 2nd node from the end has value: 4
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number = 0, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
-    }
+// Function to display posts in the console
+function displayPosts(posts: Post[]): void {
+  posts.forEach((post) => {
+    console.log(`Post ID: ${post.id}`);
+    console.log(`Title: ${post.title}`);
+    console.log(`Body: ${post.body}`);
+    console.log('-----------------------------');
+  });
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head) {
-        throw new Error("The linked list is empty.");
-    }
+// Main function to execute the program
+async function main() {
+  console.log('Fetching posts...');
+  const posts = await fetchPosts();
 
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    // Move the first pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (!first) {
-            throw new Error("n is larger than the length of the linked list.");
-        }
-        first = first.next;
-    }
-
-    // Edge case: If n equals the length of the list, the first pointer will be null
-    if (!first) {
-        return head; // The nth node from the end is the head itself
-    }
-
-    // Move both pointers until the first pointer reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second!.next; // Non-null assertion since first and second maintain the same gap
-    }
-
-    return second;
+  if (posts.length > 0) {
+    console.log('Fetched posts successfully!');
+    displayPosts(posts);
+  } else {
+    console.log('No posts available.');
+  }
 }
 
-// Helper function to create a linked list from an array
-function createLinkedList(arr: number[]): ListNode {
-    const dummy = new ListNode();
-    let current = dummy;
-    for (const num of arr) {
-        current.next = new ListNode(num);
-        current = current.next;
-    }
-    return dummy.next!;
-}
-
-// Helper function to print the linked list
-function printLinkedList(head: ListNode | null): void {
-    const values: number[] = [];
-    let current = head;
-    while (current !== null) {
-        values.push(current.value);
-        current = current.next;
-    }
-    console.log(values.join(" -> "));
-}
-
-// Example Usage
-function main() {
-    // Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
-    const head = createLinkedList([1, 2, 3, 4, 5]);
-
-    console.log("Linked List:");
-    printLinkedList(head);
-
-    // Find the 2nd node from the end
-    const n = 2;
-    try {
-        const nthNode = findNthFromEnd(head, n);
-        if (nthNode) {
-            console.log(`The ${n}nd node from the end has value: ${nthNode.value}`);
-        } else {
-            console.log(`The ${n}nd node from the end does not exist.`);
-        }
-    } catch (error) {
-        console.error(error.message);
-    }
-}
-
+// Run the main function
 main();
