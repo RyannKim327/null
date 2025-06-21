@@ -1,35 +1,80 @@
-function reverseWords(input: string): string {
-    // Step 1: Split the string into an array of words
-    const wordsArray = input.split(" ");
-
-    // Step 2: Reverse the array of words
-    const reversedArray = wordsArray.reverse();
-
-    // Step 3: Join the reversed array back into a string
-    const reversedString = reversedArray.join(" ");
-
-    return reversedString;
+function reverseString(str: string): string {
+    return str.split('').reverse().join('');
 }
 
-// Example usage
-const originalString = "Hello world this is TypeScript";
-const result = reverseWords(originalString);
-console.log(result); // Output: "TypeScript is this world Hello"
-function reverseWords(input: string): string {
-    // Trim the input and split by one or more spaces
-    const wordsArray = input.trim().split(/\s+/);
-
-    // Reverse the array of words
-    const reversedArray = wordsArray.reverse();
-
-    // Join the reversed array back into a string
-    const reversedString = reversedArray.join(" ");
-
-    return reversedString;
+// Example usage:
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
 }
 
-// Example usage with edge cases
-console.log(reverseWords("   Hello   world   ")); // Output: "world Hello"
-console.log(reverseWords(""));                    // Output: ""
-console.log(reverseWords("TypeScript"));          // Output: "TypeScript"
-console.log(reverseWords("Hello, world!"));       // Output: "world! Hello,"
+// Example usage:
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    if (str.length <= 1) {
+        return str;
+    }
+    return reverseString(str.substr(1)) + str.charAt(0);
+}
+
+// Example usage:
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    return [...str].reverse().join('');
+}
+
+// Example usage:
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseStringUnicodeSafe(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Example usage:
+const original = "Hello, 🌍!";
+const reversed = reverseStringUnicodeSafe(original);
+console.log(reversed); // Output: "!🌍 ,olleH"
+function reverseStringSplitReverseJoin(str: string): string {
+    return str.split('').reverse().join('');
+}
+
+function reverseStringForLoop(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
+}
+
+function reverseStringRecursion(str: string): string {
+    if (str.length <= 1) return str;
+    return reverseStringRecursion(str.substr(1)) + str.charAt(0);
+}
+
+function reverseStringSpreadOperator(str: string): string {
+    return [...str].reverse().join('');
+}
+
+function reverseStringUnicodeSafe(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Example usage:
+const original = "Hello, 🌍!";
+
+console.log(reverseStringSplitReverseJoin(original));      // Output: "!🌍 ,olleH"
+console.log(reverseStringForLoop(original));             // Output: "!🌍 ,olleH"
+console.log(reverseStringRecursion(original));           // Output: "!🌍 ,olleH"
+console.log(reverseStringSpreadOperator(original));      // Output: "!🌍 ,olleH"
+console.log(reverseStringUnicodeSafe(original));         // Output: "!🌍 ,olleH"
