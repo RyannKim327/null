@@ -1,49 +1,29 @@
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-// The longest increasing subsequence is [2, 3, 7, 101], so the length is 4.
-function findLongestIncreasingSubsequence(nums: number[]): { length: number; subsequence: number[] } {
-    if (nums.length === 0) {
-        return { length: 0, subsequence: [] };
-    }
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    const n = nums.length;
-    const dp: number[] = new Array(n).fill(1);
-    const prev: number[] = new Array(n).fill(-1);
+    // Outer loop: Iterate through each element of the array
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the current index is the minimum
+        let minIndex = i;
 
-    let maxLength = 1;
-    let endIndex = 0;
-
-    for (let i = 1; i < n; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[j] < nums[i] && dp[j] + 1 > dp[i]) {
-                dp[i] = dp[j] + 1;
-                prev[i] = j;
+        // Inner loop: Find the smallest element in the remaining unsorted portion
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j; // Update the index of the smallest element
             }
         }
 
-        // Update the maximum length and end index
-        if (dp[i] > maxLength) {
-            maxLength = dp[i];
-            endIndex = i;
+        // Swap the found minimum element with the first element of the unsorted portion
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swap using destructuring
         }
     }
 
-    // Reconstruct the longest increasing subsequence
-    const lis: number[] = [];
-    let currentIndex = endIndex;
-
-    while (currentIndex !== -1) {
-        lis.push(nums[currentIndex]);
-        currentIndex = prev[currentIndex];
-    }
-
-    // The sequence is built backwards, so reverse it
-    lis.reverse();
-
-    return { length: maxLength, subsequence: lis };
+    return arr;
 }
 
 // Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-const result = findLongestIncreasingSubsequence(nums);
-console.log(`Length of LIS: ${result.length}`);           // Output: Length of LIS: 4
-console.log(`Longest Increasing Subsequence: ${result.subsequence}`); // Output: Longest Increasing Subsequence: 2,3,7,101
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
+Sorted Array: [11, 12, 22, 25, 64]
