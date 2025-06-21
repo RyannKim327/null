@@ -1,41 +1,53 @@
-function isPrime(num: number): boolean {
-    // Handle edge cases
-    if (num <= 1) return false; // Numbers <= 1 are not prime
-    if (num === 2) return true; // 2 is the only even prime number
-    if (num % 2 === 0) return false; // Exclude other even numbers
-
-    // Check divisors from 3 up to the square root of num
-    const sqrt = Math.sqrt(num);
-    for (let i = 3; i <= sqrt; i += 2) {
-        if (num % i === 0) {
-            return false; // Found a divisor, so it's not prime
-        }
-    }
-
-    return true; // No divisors found, so it's prime
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Example usage:
-console.log(isPrime(2));  // true
-console.log(isPrime(17)); // true
-console.log(isPrime(18)); // false
-console.log(isPrime(1));  // false
-const testNumbers = [1, 2, 3, 4, 5, 16, 17, 18, 19, 20, 23, 24, 29, 97, 100];
-testNumbers.forEach(num => {
-    console.log(`Is ${num} prime?`, isPrime(num));
+async function fetchUsers(): Promise<User[] | null> {
+  const url = "https://jsonplaceholder.typicode.com/users";
+
+  try {
+    // Fetch data from the API
+    const response = await fetch(url);
+
+    // Check if the response status is OK (status code 200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Parse the response as JSON
+    const users: User[] = await response.json();
+
+    // Log the users to the console
+    console.log("Fetched Users:", users);
+
+    return users;
+  } catch (error) {
+    // Handle any errors that occur during the fetch
+    console.error("Error fetching users:", error);
+    return null;
+  }
+}
+
+// Call the function and handle the result
+fetchUsers().then((users) => {
+  if (users) {
+    users.forEach((user) => {
+      console.log(`User ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`);
+    });
+  } else {
+    console.log("No users fetched.");
+  }
 });
-Is 1 prime? false
-Is 2 prime? true
-Is 3 prime? true
-Is 4 prime? false
-Is 5 prime? true
-Is 16 prime? false
-Is 17 prime? true
-Is 18 prime? false
-Is 19 prime? true
-Is 20 prime? false
-Is 23 prime? true
-Is 24 prime? false
-Is 29 prime? true
-Is 97 prime? true
-Is 100 prime? false
+Fetched Users: [
+  { id: 1, name: 'Leanne Graham', username: 'Bret', email: 'Sincere@april.biz' },
+  { id: 2, name: 'Ervin Howell', username: 'Antonette', email: 'Shanna@melissa.tv' },
+  ...
+]
+User ID: 1, Name: Leanne Graham, Email: Sincere@april.biz
+User ID: 2, Name: Ervin Howell, Email: Shanna@melissa.tv
+...
+Error fetching users: Error: HTTP error! Status: 404
+No users fetched.
