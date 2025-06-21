@@ -1,53 +1,28 @@
-// Define an interface for the structure of the user object
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: {
-    street: string;
-    suite: string;
-    city: string;
-    zipcode: string;
-  };
-}
+function findFirstRepeatedCharacter(input: string): string | null {
+    // A set to keep track of seen characters
+    const seenChars = new Set<string>();
 
-// Function to fetch users from the API
-async function fetchUsers(): Promise<User[]> {
-  const url = "https://jsonplaceholder.typicode.com/users";
-
-  try {
-    // Fetch data from the API
-    const response = await fetch(url);
-
-    // Check if the response status is OK (status code 200)
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    // Iterate over each character in the string
+    for (const char of input) {
+        // Check if the character is already in the set
+        if (seenChars.has(char)) {
+            return char; // First repeated character found
+        }
+        // Add the character to the set
+        seenChars.add(char);
     }
 
-    // Parse the response as JSON and return it
-    const users: User[] = await response.json();
-    return users;
-  } catch (error) {
-    // Handle any errors that occur during the fetch
-    console.error("Error fetching users:", error);
-    return [];
-  }
+    // If no repeated character is found, return null
+    return null;
 }
 
-// Example usage of the fetchUsers function
-async function displayUsers() {
-  const users = await fetchUsers();
+// Example usage:
+const testString = "programming";
+const result = findFirstRepeatedCharacter(testString);
 
-  if (users.length > 0) {
-    console.log("List of Users:");
-    users.forEach((user) => {
-      console.log(`ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`);
-    });
-  } else {
-    console.log("No users found or an error occurred.");
-  }
+if (result !== null) {
+    console.log(`The first repeated character is: ${result}`);
+} else {
+    console.log("No repeated character found.");
 }
-
-// Call the displayUsers function
-displayUsers();
+input = input.toLowerCase();
