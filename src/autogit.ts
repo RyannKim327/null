@@ -1,34 +1,129 @@
-function binarySearchRecursive(
-  arr: number[], 
-  target: number, 
-  low: number = 0, 
-  high: number = arr.length - 1
-): number {
-  // Base case: If the search space is invalid, the target is not in the array
-  if (low > high) {
-    return -1;
-  }
+// Node class represents each element in the linked list
+class Node<T> {
+  public data: T; // The value stored in the node
+  public next: Node<T> | null; // Reference to the next node
 
-  // Calculate the middle index
-  const mid = Math.floor((low + high) / 2);
-
-  // Check if the middle element is the target
-  if (arr[mid] === target) {
-    return mid; // Target found, return its index
-  } 
-  // If the target is less than the middle element, search the left half
-  else if (target < arr[mid]) {
-    return binarySearchRecursive(arr, target, low, mid - 1);
-  } 
-  // If the target is greater than the middle element, search the right half
-  else {
-    return binarySearchRecursive(arr, target, mid + 1, high);
+  constructor(data: T) {
+    this.data = data;
+    this.next = null; // By default, the next node is null
   }
 }
 
-// Example usage:
-const sortedArray = [1, 3, 5, 7, 9, 11, 13];
-const target = 7;
+// LinkedList class manages the nodes
+class LinkedList<T> {
+  private head: Node<T> | null; // Reference to the first node
+  private size: number; // Number of nodes in the list
 
-const result = binarySearchRecursive(sortedArray, target);
-console.log(result); // Output: 3 (index of 7 in the array)
+  constructor() {
+    this.head = null; // Initially, the list is empty
+    this.size = 0; // Initial size is zero
+  }
+
+  // Method to add a new node at the end of the list
+  public append(data: T): void {
+    const newNode = new Node(data);
+
+    if (!this.head) {
+      // If the list is empty, set the new node as the head
+      this.head = newNode;
+    } else {
+      // Traverse to the last node and append the new node
+      let current = this.head;
+      while (current.next !== null) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+
+    this.size++; // Increment the size of the list
+  }
+
+  // Method to insert a new node at a specific position
+  public insertAt(data: T, index: number): void {
+    if (index < 0 || index > this.size) {
+      throw new Error("Index out of bounds");
+    }
+
+    const newNode = new Node(data);
+
+    if (index === 0) {
+      // Insert at the beginning
+      newNode.next = this.head;
+      this.head = newNode;
+    } else {
+      // Insert at a specific position
+      let current = this.head;
+      for (let i = 0; i < index - 1; i++) {
+        if (current) {
+          current = current.next!;
+        }
+      }
+      if (current) {
+        newNode.next = current.next;
+        current.next = newNode;
+      }
+    }
+
+    this.size++; // Increment the size of the list
+  }
+
+  // Method to remove a node at a specific position
+  public removeAt(index: number): T | null {
+    if (index < 0 || index >= this.size) {
+      throw new Error("Index out of bounds");
+    }
+
+    let removedData: T | null = null;
+
+    if (index === 0) {
+      // Remove the first node
+      removedData = this.head?.data || null;
+      this.head = this.head?.next || null;
+    } else {
+      // Remove at a specific position
+      let current = this.head;
+      for (let i = 0; i < index - 1; i++) {
+        if (current) {
+          current = current.next!;
+        }
+      }
+      if (current && current.next) {
+        removedData = current.next.data;
+        current.next = current.next.next;
+      }
+    }
+
+    this.size--; // Decrement the size of the list
+    return removedData;
+  }
+
+  // Method to get the size of the list
+  public getSize(): number {
+    return this.size;
+  }
+
+  // Method to print the list as an array
+  public toArray(): T[] {
+    const result: T[] = [];
+    let current = this.head;
+
+    while (current !== null) {
+      result.push(current.data);
+      current = current.next;
+    }
+
+    return result;
+  }
+}
+const list = new LinkedList<number>();
+
+list.append(10); // Add 10 to the list
+list.append(20); // Add 20 to the list
+list.insertAt(15, 1); // Insert 15 at index 1
+list.append(30); // Add 30 to the list
+
+console.log(list.toArray()); // Output: [10, 15, 20, 30]
+console.log(list.getSize()); // Output: 4
+
+list.removeAt(2); // Remove the node at index 2
+console.log(list.toArray()); // Output: [10, 15, 30]
