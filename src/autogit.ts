@@ -1,65 +1,122 @@
-// Define the structure for an edge
-interface Edge {
-  source: number;
-  destination: number;
-  weight: number;
-}
+class Node<T> {
+    data: T;
+    next: Node<T> | null;
 
-/**
- * Bellman-Ford Algorithm to find shortest paths from a source vertex.
- * @param vertices - Total number of vertices in the graph.
- * @param edges - Array of edges in the graph.
- * @param source - The source vertex.
- * @returns An array of distances from the source to all vertices, or null if a negative weight cycle is detected.
- */
-function bellmanFord(vertices: number, edges: Edge[], source: number): number[] | null {
-  // Step 1: Initialize distances
-  const distances: number[] = new Array(vertices).fill(Infinity);
-  distances[source] = 0;
-
-  // Step 2: Relax all edges (V-1) times
-  for (let i = 0; i < vertices - 1; i++) {
-    for (const edge of edges) {
-      const { source: u, destination: v, weight: w } = edge;
-      if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
-        distances[v] = distances[u] + w;
-      }
+    constructor(data: T) {
+        this.data = data;
+        this.next = null;
     }
-  }
+}
+class LinkedList<T> {
+    private head: Node<T> | null; // Reference to the first node in the list
+    private size: number;         // Number of nodes in the list
 
-  // Step 3: Check for negative weight cycles
-  for (const edge of edges) {
-    const { source: u, destination: v, weight: w } = edge;
-    if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
-      console.error("Graph contains a negative weight cycle");
-      return null; // Negative weight cycle detected
+    constructor() {
+        this.head = null;
+        this.size = 0;
     }
-  }
 
-  return distances;
+    // Add a new node at the end of the list
+    add(data: T): void {
+        const newNode = new Node(data);
+
+        if (!this.head) {
+            // If the list is empty, set the new node as the head
+            this.head = newNode;
+        } else {
+            // Traverse to the end of the list and append the new node
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+
+        this.size++;
+    }
+
+    // Remove the first occurrence of a node with the specified data
+    remove(data: T): boolean {
+        if (!this.head) return false; // List is empty
+
+        // If the head node contains the data, remove it
+        if (this.head.data === data) {
+            this.head = this.head.next;
+            this.size--;
+            return true;
+        }
+
+        // Search for the node to remove
+        let current = this.head;
+        while (current.next && current.next.data !== data) {
+            current = current.next;
+        }
+
+        // If the node was found, remove it
+        if (current.next) {
+            current.next = current.next.next;
+            this.size--;
+            return true;
+        }
+
+        return false; // Node not found
+    }
+
+    // Check if the list contains a specific value
+    contains(data: T): boolean {
+        let current = this.head;
+        while (current) {
+            if (current.data === data) {
+                return true;
+            }
+            current = current.next;
+        }
+        return false;
+    }
+
+    // Get the size of the list
+    getSize(): number {
+        return this.size;
+    }
+
+    // Convert the list to an array for easy viewing
+    toArray(): T[] {
+        const result: T[] = [];
+        let current = this.head;
+        while (current) {
+            result.push(current.data);
+            current = current.next;
+        }
+        return result;
+    }
+
+    // Clear the entire list
+    clear(): void {
+        this.head = null;
+        this.size = 0;
+    }
 }
+const list = new LinkedList<number>();
 
-// Example Usage
-const vertices = 5; // Number of vertices
-const edges: Edge[] = [
-  { source: 0, destination: 1, weight: -1 },
-  { source: 0, destination: 2, weight: 4 },
-  { source: 1, destination: 2, weight: 3 },
-  { source: 1, destination: 3, weight: 2 },
-  { source: 1, destination: 4, weight: 2 },
-  { source: 3, destination: 2, weight: 5 },
-  { source: 3, destination: 1, weight: 1 },
-  { source: 4, destination: 3, weight: -3 },
-];
+// Add elements to the list
+list.add(10);
+list.add(20);
+list.add(30);
 
-const sourceVertex = 0;
-const result = bellmanFord(vertices, edges, sourceVertex);
+// Print the list as an array
+console.log(list.toArray()); // Output: [10, 20, 30]
 
-if (result) {
-  console.log("Shortest distances from vertex", sourceVertex, ":", result);
-} else {
-  console.log("Negative weight cycle detected.");
-}
-Shortest distances from vertex 0 : [ 0, -1, 2, -2, 1 ]
-Graph contains a negative weight cycle
-Negative weight cycle detected.
+// Check if the list contains a specific value
+console.log(list.contains(20)); // Output: true
+console.log(list.contains(40)); // Output: false
+
+// Remove an element
+list.remove(20);
+console.log(list.toArray()); // Output: [10, 30]
+
+// Get the size of the list
+console.log(list.getSize()); // Output: 2
+
+// Clear the list
+list.clear();
+console.log(list.toArray()); // Output: []
