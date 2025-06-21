@@ -1,62 +1,59 @@
-function rabinKarp(text: string, pattern: string): number[] {
-    const d = 256; // Number of characters in the input alphabet (ASCII)
-    const q = 101; // A prime number for modulo operation to reduce hash collisions
+class Stack<T> {
+  private items: T[] = [];
 
-    const n = text.length;
-    const m = pattern.length;
+  // Push an item onto the stack
+  push(item: T): void {
+    this.items.push(item);
+  }
 
-    if (m > n) return []; // If the pattern is longer than the text, no match is possible
-
-    let h = 1; // Used to calculate the highest power of d for rolling hash
-    let p = 0; // Hash value for the pattern
-    let t = 0; // Hash value for the current text window
-    const result: number[] = [];
-
-    // Precompute h = (d^(m-1)) % q
-    for (let i = 0; i < m - 1; i++) {
-        h = (h * d) % q;
+  // Pop the top item from the stack and return it
+  pop(): T | undefined {
+    if (this.isEmpty()) {
+      throw new Error("Stack is empty. Cannot pop from an empty stack.");
     }
+    return this.items.pop();
+  }
 
-    // Calculate the hash value of the pattern and the first window of the text
-    for (let i = 0; i < m; i++) {
-        p = (d * p + pattern.charCodeAt(i)) % q;
-        t = (d * t + text.charCodeAt(i)) % q;
+  // Peek at the top item without removing it
+  peek(): T | undefined {
+    if (this.isEmpty()) {
+      return undefined;
     }
+    return this.items[this.items.length - 1];
+  }
 
-    // Slide the pattern over the text one by one
-    for (let i = 0; i <= n - m; i++) {
-        // Check if the hash values match
-        if (p === t) {
-            // Check for characters one by one to avoid false positives
-            let j;
-            for (j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) break;
-            }
-            if (j === m) {
-                // Match found at index i
-                result.push(i);
-            }
-        }
+  // Check if the stack is empty
+  isEmpty(): boolean {
+    return this.items.length === 0;
+  }
 
-        // Calculate the hash value for the next window of text
-        if (i < n - m) {
-            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
+  // Get the size of the stack
+  size(): number {
+    return this.items.length;
+  }
 
-            // Ensure the hash value is non-negative
-            if (t < 0) {
-                t += q;
-            }
-        }
-    }
-
-    return result;
+  // Optional: Clear the stack
+  clear(): void {
+    this.items = [];
+  }
 }
+const stack = new Stack<number>();
 
-// Example usage:
-const text = "GEEKS FOR GEEKS";
-const pattern = "GEEK";
-const matches = rabinKarp(text, pattern);
-console.log("Pattern found at indices:", matches);
-const text = "GEEKS FOR GEEKS";
-const pattern = "GEEK";
-Pattern found at indices: [0, 10]
+// Push elements onto the stack
+stack.push(10);
+stack.push(20);
+stack.push(30);
+
+console.log("Stack size:", stack.size()); // Output: 3
+console.log("Top element:", stack.peek()); // Output: 30
+
+// Pop elements from the stack
+console.log("Popped element:", stack.pop()); // Output: 30
+console.log("Stack size after pop:", stack.size()); // Output: 2
+
+// Check if the stack is empty
+console.log("Is stack empty?", stack.isEmpty()); // Output: false
+
+// Clear the stack
+stack.clear();
+console.log("Is stack empty after clear?", stack.isEmpty()); // Output: true
