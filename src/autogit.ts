@@ -1,58 +1,53 @@
-// Definition of a binary tree node
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+// Define an interface for the structure of the user object
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+  address: {
+    street: string;
+    suite: string;
+    city: string;
+    zipcode: string;
+  };
 }
 
-// Function to calculate the diameter of a binary tree
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    // Helper function to calculate both height and diameter
-    function calculateHeightAndDiameter(node: TreeNode | null): { height: number, diameter: number } {
-        if (node === null) {
-            return { height: 0, diameter: 0 }; // Base case: empty tree
-        }
+// Function to fetch users from the API
+async function fetchUsers(): Promise<User[]> {
+  const url = "https://jsonplaceholder.typicode.com/users";
 
-        // Recursively calculate height and diameter for left and right subtrees
-        const left = calculateHeightAndDiameter(node.left);
-        const right = calculateHeightAndDiameter(node.right);
+  try {
+    // Fetch data from the API
+    const response = await fetch(url);
 
-        // Height of the current node is 1 + max(height of left subtree, height of right subtree)
-        const height = 1 + Math.max(left.height, right.height);
-
-        // Diameter of the current node is the maximum of:
-        // 1. Diameter of the left subtree
-        // 2. Diameter of the right subtree
-        // 3. Longest path passing through the current node (left.height + right.height)
-        const diameter = Math.max(
-            left.diameter,
-            right.diameter,
-            left.height + right.height
-        );
-
-        return { height, diameter };
+    // Check if the response status is OK (status code 200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    // Call the helper function and return the diameter
-    return calculateHeightAndDiameter(root).diameter;
+    // Parse the response as JSON and return it
+    const users: User[] = await response.json();
+    return users;
+  } catch (error) {
+    // Handle any errors that occur during the fetch
+    console.error("Error fetching users:", error);
+    return [];
+  }
 }
-// Constructing a binary tree
-//       1
-//      / \
-//     2   3
-//    / \     
-//   4   5    
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-// Calculate the diameter of the binary tree
-console.log(diameterOfBinaryTree(root)); // Output: 3
+// Example usage of the fetchUsers function
+async function displayUsers() {
+  const users = await fetchUsers();
+
+  if (users.length > 0) {
+    console.log("List of Users:");
+    users.forEach((user) => {
+      console.log(`ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`);
+    });
+  } else {
+    console.log("No users found or an error occurred.");
+  }
+}
+
+// Call the displayUsers function
+displayUsers();
