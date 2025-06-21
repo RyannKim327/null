@@ -1,69 +1,79 @@
-type Node = string | number;
-type Graph = Map<Node, Node[]>;
+class ListNode {
+    val: number;
+    next: ListNode | null;
 
-function breadthLimitedSearch(
-  graph: Graph,
-  startNode: Node,
-  goalNode: Node,
-  depthLimit: number
-): Node[] | null {
-  // Queue stores tuples of [currentNode, currentDepth]
-  const queue: [Node, number][] = [[startNode, 0]];
-  const visited = new Set<Node>();
-
-  while (queue.length > 0) {
-    const [currentNode, currentDepth] = queue.shift()!;
-
-    // Skip if the node is already visited
-    if (visited.has(currentNode)) continue;
-
-    // Mark the node as visited
-    visited.add(currentNode);
-
-    // If the goal is found, return the path
-    if (currentNode === goalNode) {
-      return [currentNode]; // You can modify this to return the full path if needed
+    constructor(val: number = 0, next: ListNode | null = null) {
+        this.val = val;
+        this.next = next;
     }
-
-    // If the current depth exceeds the depth limit, skip further exploration
-    if (currentDepth >= depthLimit) continue;
-
-    // Add neighbors to the queue with incremented depth
-    const neighbors = graph.get(currentNode) || [];
-    for (const neighbor of neighbors) {
-      queue.push([neighbor, currentDepth + 1]);
-    }
-  }
-
-  // If the goal is not found within the depth limit, return null
-  return null;
 }
 
-// Example Usage
-const graph: Graph = new Map([
-  ["A", ["B", "C"]],
-  ["B", ["D", "E"]],
-  ["C", ["F"]],
-  ["D", []],
-  ["E", ["G"]],
-  ["F", []],
-  ["G", []],
-]);
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) return true; // An empty or single-node list is a palindrome
 
-const startNode = "A";
-const goalNode = "G";
-const depthLimit = 3;
+    // Step 1: Find the middle of the list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-const result = breadthLimitedSearch(graph, startNode, goalNode, depthLimit);
-if (result) {
-  console.log(`Goal node "${goalNode}" found within depth limit.`);
-} else {
-  console.log(`Goal node "${goalNode}" not found within depth limit.`);
+    while (fast && fast.next) {
+        slow = slow!.next;
+        fast = fast.next.next;
+    }
+
+    // Step 2: Reverse the second half of the list
+    let secondHalfHead: ListNode | null = reverseList(slow);
+
+    // Step 3: Compare the first half and the reversed second half
+    let firstHalfHead: ListNode | null = head;
+    let isPalindrome: boolean = true;
+
+    while (secondHalfHead) {
+        if (firstHalfHead!.val !== secondHalfHead.val) {
+            isPalindrome = false;
+            break;
+        }
+        firstHalfHead = firstHalfHead!.next;
+        secondHalfHead = secondHalfHead.next;
+    }
+
+    // Step 4: Restore the second half (optional)
+    reverseList(secondHalfHead);
+
+    return isPalindrome;
 }
-        A
-       / \
-      B   C
-     / \   \
-    D   E   F
-        \
-         G
+
+// Helper function to reverse a linked list
+function reverseList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let curr: ListNode | null = head;
+
+    while (curr) {
+        const nextTemp: ListNode | null = curr.next;
+        curr.next = prev;
+        prev = curr;
+        curr = nextTemp;
+    }
+
+    return prev;
+}
+// Helper function to create a linked list from an array
+function createLinkedList(arr: number[]): ListNode | null {
+    if (arr.length === 0) return null;
+    const head = new ListNode(arr[0]);
+    let current = head;
+    for (let i = 1; i < arr.length; i++) {
+        current.next = new ListNode(arr[i]);
+        current = current.next;
+    }
+    return head;
+}
+
+// Test cases
+const list1 = createLinkedList([1, 2, 2, 1]);
+console.log(isPalindrome(list1)); // Output: true
+
+const list2 = createLinkedList([1, 2]);
+console.log(isPalindrome(list2)); // Output: false
+
+const list3 = createLinkedList([1, 2, 3, 2, 1]);
+console.log(isPalindrome(list3)); // Output: true
