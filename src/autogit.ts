@@ -1,53 +1,34 @@
-// Importing necessary modules
-import axios from 'axios';
+function findCommonElements<T>(array1: T[], array2: T[]): T[] {
+    // Convert the first array to a Set for fast lookups
+    const set = new Set(array1);
 
-// Define an interface for the structure of the data returned by the API
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
+    // Filter the second array to find elements present in the Set
+    const commonElements = array2.filter(item => set.has(item));
+
+    return commonElements;
 }
 
-// Function to fetch posts from the API
-async function fetchPosts(): Promise<Post[]> {
-  try {
-    const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
-    console.log('Fetched Posts:', response.data);
-    return response.data; // Return the fetched posts
-  } catch (error) {
-    console.error('Error fetching posts:', error);
-    throw error; // Re-throw the error for further handling if needed
-  }
-}
+// Example usage:
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-// Function to display a specific post by ID
-async function displayPostById(postId: number): Promise<void> {
-  try {
-    const posts = await fetchPosts(); // Fetch all posts
-    const post = posts.find((p) => p.id === postId); // Find the post with the given ID
-
-    if (post) {
-      console.log(`Post Found - ID: ${post.id}, Title: "${post.title}"`);
-    } else {
-      console.log(`No post found with ID: ${postId}`);
+const common = findCommonElements(array1, array2);
+console.log(common); // Output: [3, 4, 5]
+function findCommonElementsWithLoops<T>(array1: T[], array2: T[]): T[] {
+    const commonElements: T[] = [];
+    for (const item1 of array1) {
+        for (const item2 of array2) {
+            if (item1 === item2) {
+                commonElements.push(item1);
+                break; // Avoid duplicates if arrays have repeated elements
+            }
+        }
     }
-  } catch (error) {
-    console.error('Error displaying post:', error);
-  }
+    return commonElements;
 }
-
-// Main function to execute the program
-async function main() {
-  console.log('Fetching posts from the API...');
-  
-  // Display a random post by ID (e.g., ID between 1 and 100)
-  const randomPostId = Math.floor(Math.random() * 100) + 1;
-  await displayPostById(randomPostId);
+function findCommonElementsWithReduce<T>(array1: T[], array2: T[]): T[] {
+    return array2.reduce((acc, item) => {
+        if (array1.includes(item)) acc.push(item);
+        return acc;
+    }, [] as T[]);
 }
-
-// Run the main function
-main();
-Fetching posts from the API...
-Fetched Posts: [ { userId: 1, id: 1, title: 'sunt aut facere repellat provident occaecati...', body: 'quia et suscipit...' }, ... ]
-Post Found - ID: 42, Title: "id labore ex et quam laborum"
