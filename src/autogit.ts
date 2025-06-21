@@ -1,80 +1,52 @@
-function reverseString(str: string): string {
-    return str.split('').reverse().join('');
+// Define an interface for the structure of the data we expect from the API
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
-// Example usage:
-const original = "Hello, TypeScript!";
-const reversed = reverseString(original);
-console.log(reversed); // Output: "!tpircSyeT ,olleH"
-function reverseString(str: string): string {
-    let reversed = '';
-    for (let i = str.length - 1; i >= 0; i--) {
-        reversed += str[i];
+// Function to fetch posts from the API
+async function fetchPosts(): Promise<Post[]> {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+
+    // Check if the response status is OK (status code 200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    return reversed;
+
+    // Parse the response as JSON and return it
+    const posts: Post[] = await response.json();
+    return posts;
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    return [];
+  }
 }
 
-// Example usage:
-const original = "Hello, TypeScript!";
-const reversed = reverseString(original);
-console.log(reversed); // Output: "!tpircSyeT ,olleH"
-function reverseString(str: string): string {
-    if (str.length <= 1) {
-        return str;
-    }
-    return reverseString(str.substr(1)) + str.charAt(0);
+// Function to display posts in the console
+function displayPosts(posts: Post[]): void {
+  posts.forEach((post) => {
+    console.log(`Post ID: ${post.id}`);
+    console.log(`Title: ${post.title}`);
+    console.log(`Body: ${post.body}`);
+    console.log('-----------------------------');
+  });
 }
 
-// Example usage:
-const original = "Hello, TypeScript!";
-const reversed = reverseString(original);
-console.log(reversed); // Output: "!tpircSyeT ,olleH"
-function reverseString(str: string): string {
-    return [...str].reverse().join('');
+// Main function to execute the program
+async function main() {
+  console.log('Fetching posts from the API...');
+  const posts = await fetchPosts();
+
+  if (posts.length > 0) {
+    console.log('Posts fetched successfully!');
+    displayPosts(posts);
+  } else {
+    console.log('No posts available or an error occurred.');
+  }
 }
 
-// Example usage:
-const original = "Hello, TypeScript!";
-const reversed = reverseString(original);
-console.log(reversed); // Output: "!tpircSyeT ,olleH"
-function reverseStringUnicodeSafe(str: string): string {
-    return Array.from(str).reverse().join('');
-}
-
-// Example usage:
-const original = "Hello, 🌍!";
-const reversed = reverseStringUnicodeSafe(original);
-console.log(reversed); // Output: "!🌍 ,olleH"
-function reverseStringSplitReverseJoin(str: string): string {
-    return str.split('').reverse().join('');
-}
-
-function reverseStringForLoop(str: string): string {
-    let reversed = '';
-    for (let i = str.length - 1; i >= 0; i--) {
-        reversed += str[i];
-    }
-    return reversed;
-}
-
-function reverseStringRecursion(str: string): string {
-    if (str.length <= 1) return str;
-    return reverseStringRecursion(str.substr(1)) + str.charAt(0);
-}
-
-function reverseStringSpreadOperator(str: string): string {
-    return [...str].reverse().join('');
-}
-
-function reverseStringUnicodeSafe(str: string): string {
-    return Array.from(str).reverse().join('');
-}
-
-// Example usage:
-const original = "Hello, 🌍!";
-
-console.log(reverseStringSplitReverseJoin(original));      // Output: "!🌍 ,olleH"
-console.log(reverseStringForLoop(original));             // Output: "!🌍 ,olleH"
-console.log(reverseStringRecursion(original));           // Output: "!🌍 ,olleH"
-console.log(reverseStringSpreadOperator(original));      // Output: "!🌍 ,olleH"
-console.log(reverseStringUnicodeSafe(original));         // Output: "!🌍 ,olleH"
+// Run the main function
+main();
