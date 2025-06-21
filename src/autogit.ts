@@ -1,122 +1,69 @@
-class Node<T> {
-    data: T;
-    next: Node<T> | null;
+// Definition of a binary tree node
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(data: T) {
-        this.data = data;
-        this.next = null;
+    constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
+        this.val = val === undefined ? 0 : val;
+        this.left = left === undefined ? null : left;
+        this.right = right === undefined ? null : right;
     }
 }
-class LinkedList<T> {
-    private head: Node<T> | null; // Reference to the first node in the list
-    private size: number;         // Number of nodes in the list
 
-    constructor() {
-        this.head = null;
-        this.size = 0;
+function maxDepth(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Base case: empty tree has depth 0
     }
 
-    // Add a new node at the end of the list
-    add(data: T): void {
-        const newNode = new Node(data);
+    // Recursively find the depth of left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-        if (!this.head) {
-            // If the list is empty, set the new node as the head
-            this.head = newNode;
-        } else {
-            // Traverse to the end of the list and append the new node
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-
-        this.size++;
-    }
-
-    // Remove the first occurrence of a node with the specified data
-    remove(data: T): boolean {
-        if (!this.head) return false; // List is empty
-
-        // If the head node contains the data, remove it
-        if (this.head.data === data) {
-            this.head = this.head.next;
-            this.size--;
-            return true;
-        }
-
-        // Search for the node to remove
-        let current = this.head;
-        while (current.next && current.next.data !== data) {
-            current = current.next;
-        }
-
-        // If the node was found, remove it
-        if (current.next) {
-            current.next = current.next.next;
-            this.size--;
-            return true;
-        }
-
-        return false; // Node not found
-    }
-
-    // Check if the list contains a specific value
-    contains(data: T): boolean {
-        let current = this.head;
-        while (current) {
-            if (current.data === data) {
-                return true;
-            }
-            current = current.next;
-        }
-        return false;
-    }
-
-    // Get the size of the list
-    getSize(): number {
-        return this.size;
-    }
-
-    // Convert the list to an array for easy viewing
-    toArray(): T[] {
-        const result: T[] = [];
-        let current = this.head;
-        while (current) {
-            result.push(current.data);
-            current = current.next;
-        }
-        return result;
-    }
-
-    // Clear the entire list
-    clear(): void {
-        this.head = null;
-        this.size = 0;
-    }
+    // Return the maximum depth of the two subtrees, plus 1 for the current node
+    return 1 + Math.max(leftDepth, rightDepth);
 }
-const list = new LinkedList<number>();
+const tree = new TreeNode(1, 
+    new TreeNode(2, 
+        new TreeNode(4), 
+        new TreeNode(5)
+    ), 
+    new TreeNode(3)
+);
 
-// Add elements to the list
-list.add(10);
-list.add(20);
-list.add(30);
+console.log(maxDepth(tree)); // Output: 3
+function maxDepthIterative(root: TreeNode | null): number {
+    if (root === null) {
+        return 0; // Empty tree has depth 0
+    }
 
-// Print the list as an array
-console.log(list.toArray()); // Output: [10, 20, 30]
+    const queue: TreeNode[] = [root];
+    let depth = 0;
 
-// Check if the list contains a specific value
-console.log(list.contains(20)); // Output: true
-console.log(list.contains(40)); // Output: false
+    while (queue.length > 0) {
+        const levelSize = queue.length;
+        for (let i = 0; i < levelSize; i++) {
+            const currentNode = queue.shift()!; // Remove the front node from the queue
 
-// Remove an element
-list.remove(20);
-console.log(list.toArray()); // Output: [10, 30]
+            // Add the left and right children to the queue if they exist
+            if (currentNode.left !== null) {
+                queue.push(currentNode.left);
+            }
+            if (currentNode.right !== null) {
+                queue.push(currentNode.right);
+            }
+        }
+        depth++; // Increment depth after processing a level
+    }
 
-// Get the size of the list
-console.log(list.getSize()); // Output: 2
+    return depth;
+}
+const tree = new TreeNode(1, 
+    new TreeNode(2, 
+        new TreeNode(4), 
+        new TreeNode(5)
+    ), 
+    new TreeNode(3)
+);
 
-// Clear the list
-list.clear();
-console.log(list.toArray()); // Output: []
+console.log(maxDepthIterative(tree)); // Output: 3
