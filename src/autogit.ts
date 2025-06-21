@@ -1,48 +1,41 @@
-function boyerMooreSearch(text: string, pattern: string): number[] {
-    const n = text.length;
-    const m = pattern.length;
-
-    if (m === 0) return [];
-
-    // Step 1: Preprocess the bad character shift table
-    const badCharShift: { [key: string]: number } = {};
-    for (let i = 0; i < m - 1; i++) {
-        badCharShift[pattern[i]] = m - 1 - i;
-    }
-
-    // Step 2: Search for the pattern in the text
-    const result: number[] = [];
-    let i = 0; // Index in the text
-
-    while (i <= n - m) {
-        let j = m - 1; // Start comparing from the end of the pattern
-
-        // Compare characters from the end of the pattern
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            // Match found
-            result.push(i);
-            // Shift the pattern to align with the next possible match
-            i += badCharShift[text[i + m]] ?? m;
-        } else {
-            // Mismatch occurred at pattern[j]
-            const shift = badCharShift[text[i + j]] ?? m;
-            i += Math.max(1, shift - (m - 1 - j));
+function isSorted(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
     }
-
-    return result;
+    return true;
 }
 
-// Example usage
-const text = "HERE IS A SIMPLE EXAMPLE";
-const pattern = "EXAMPLE";
-const matches = boyerMooreSearch(text, pattern);
+function shuffleArray(arr: number[]): number[] {
+    const shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // Swap elements
+    }
+    return shuffled;
+}
 
-console.log("Pattern found at indices:", matches);
-const text = "HERE IS A SIMPLE EXAMPLE";
-const pattern = "EXAMPLE";
-Pattern found at indices: [17]
+function bogoSort(arr: number[]): number[] {
+    let attempts = 0;
+    while (!isSorted(arr)) {
+        arr = shuffleArray(arr);
+        attempts++;
+        console.log(`Attempt ${attempts}: ${arr}`);
+    }
+    console.log(`Sorted after ${attempts} attempts.`);
+    return arr;
+}
+
+// Example usage:
+const unsortedArray = [3, 1, 4, 2];
+console.log("Original array:", unsortedArray);
+
+const sortedArray = bogoSort(unsortedArray);
+console.log("Sorted array:", sortedArray);
+Original array: [3, 1, 4, 2]
+Attempt 1: [4, 3, 2, 1]
+Attempt 2: [2, 4, 1, 3]
+Attempt 3: [1, 2, 3, 4]
+Sorted after 3 attempts.
+Sorted array: [1, 2, 3, 4]
