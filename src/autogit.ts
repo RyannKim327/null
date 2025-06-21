@@ -1,114 +1,75 @@
-// Define the structure of a binary tree node
-class TreeNode<T> {
-    value: T;
-    left: TreeNode<T> | null;
-    right: TreeNode<T> | null;
+type Node = string | number; // Define the type for nodes (can be strings or numbers)
+type Graph = Map<Node, Node[]>; // A graph represented as an adjacency list
 
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+/**
+ * Depth-Limited Search function
+ * @param graph - The graph represented as an adjacency list
+ * @param start - The starting node
+ * @param goal - The goal node to search for
+ * @param limit - The maximum depth limit
+ * @returns A tuple [boolean, Node[]] indicating success/failure and the path
+ */
+function depthLimitedSearch(
+  graph: Graph,
+  start: Node,
+  goal: Node,
+  limit: number
+): [boolean, Node[]] {
+  /**
+   * Recursive helper function for DLS
+   * @param node - Current node being explored
+   * @param depth - Current depth in the search
+   * @param path - Path taken to reach the current node
+   * @returns A tuple [boolean, Node[]] indicating success/failure and the path
+   */
+  function dlsRecursive(node: Node, depth: number, path: Node[]): [boolean, Node[]] {
+    // If the current node is the goal, return success and the path
+    if (node === goal) {
+      return [true, path];
     }
+
+    // If the depth limit is reached, stop exploring further
+    if (depth === 0) {
+      return [false, path];
+    }
+
+    // Explore all neighbors of the current node
+    const neighbors = graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      const [found, resultPath] = dlsRecursive(neighbor, depth - 1, [...path, neighbor]);
+      if (found) {
+        return [true, resultPath]; // Goal found, return the path
+      }
+    }
+
+    // Goal not found in this branch
+    return [false, path];
+  }
+
+  // Start the recursive search from the start node
+  return dlsRecursive(start, limit, [start]);
 }
 
-// Define the binary tree class
-class BinaryTree<T> {
-    root: TreeNode<T> | null;
+// Example usage
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D', 'E']],
+  ['C', ['F']],
+  ['D', []],
+  ['E', []],
+  ['F', []],
+]);
 
-    constructor() {
-        this.root = null; // The tree starts with no nodes
-    }
+const startNode: Node = 'A';
+const goalNode: Node = 'F';
+const depthLimit: number = 2;
 
-    // Insert a new value into the binary tree
-    insert(value: T): void {
-        const newNode = new TreeNode(value);
+const [found, path] = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
 
-        if (!this.root) {
-            // If the tree is empty, set the new node as the root
-            this.root = newNode;
-            return;
-        }
-
-        // Traverse the tree to find the correct position for the new node
-        let current = this.root;
-        while (true) {
-            if (value < current.value) {
-                // Go to the left subtree
-                if (!current.left) {
-                    current.left = newNode;
-                    return;
-                }
-                current = current.left;
-            } else {
-                // Go to the right subtree
-                if (!current.right) {
-                    current.right = newNode;
-                    return;
-                }
-                current = current.right;
-            }
-        }
-    }
-
-    // In-order traversal: Left -> Root -> Right
-    inOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-        if (node) {
-            this.inOrderTraversal(node.left, result); // Traverse left subtree
-            result.push(node.value); // Visit the root
-            this.inOrderTraversal(node.right, result); // Traverse right subtree
-        }
-        return result;
-    }
-
-    // Pre-order traversal: Root -> Left -> Right
-    preOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-        if (node) {
-            result.push(node.value); // Visit the root
-            this.preOrderTraversal(node.left, result); // Traverse left subtree
-            this.preOrderTraversal(node.right, result); // Traverse right subtree
-        }
-        return result;
-    }
-
-    // Post-order traversal: Left -> Right -> Root
-    postOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-        if (node) {
-            this.postOrderTraversal(node.left, result); // Traverse left subtree
-            this.postOrderTraversal(node.right, result); // Traverse right subtree
-            result.push(node.value); // Visit the root
-        }
-        return result;
-    }
-
-    // Search for a value in the binary tree
-    search(value: T): boolean {
-        let current = this.root;
-        while (current) {
-            if (value === current.value) {
-                return true; // Found the value
-            } else if (value < current.value) {
-                current = current.left; // Search in the left subtree
-            } else {
-                current = current.right; // Search in the right subtree
-            }
-        }
-        return false; // Value not found
-    }
+if (found) {
+  console.log(`Goal found! Path: ${path.join(' -> ')}`);
+} else {
+  console.log('Goal not found within the depth limit.');
 }
-const tree = new BinaryTree<number>();
-
-// Insert values into the tree
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
-
-// Perform traversals
-console.log("In-order traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
-console.log("Pre-order traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
-console.log("Post-order traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
-
-// Search for values
-console.log("Search for 7:", tree.search(7)); // true
-console.log("Search for 20:", tree.search(20)); // false
+Goal found! Path: A -> C -> F
+Goal not found within the depth limit.
