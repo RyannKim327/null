@@ -1,29 +1,51 @@
-function shellSort(arr: number[]): number[] {
-    let n = arr.length;
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
 
-    // Start with a large gap and reduce it over time
-    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        // Perform a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Store the current element
-            let temp = arr[i];
+    // Edge case: if the pattern is empty, return an empty array
+    if (m === 0) return [];
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            let j: number;
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                arr[j] = arr[j - gap];
-            }
+    // Step 1: Build the shift table
+    const shiftTable: Map<string, number> = new Map();
 
-            // Place the stored element at its correct location
-            arr[j] = temp;
+    // Initialize the shift table with default values
+    for (let i = 0; i < m - 1; i++) {
+        const char = pattern[i];
+        shiftTable.set(char, m - 1 - i);
+    }
+
+    // Default shift for characters not in the pattern
+    const defaultShift = m;
+
+    // Step 2: Search for the pattern in the text
+    const result: number[] = [];
+    let i = 0;
+
+    while (i <= n - m) {
+        let j = m - 1;
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the entire pattern matches, record the position
+        if (j < 0) {
+            result.push(i);
+            i += defaultShift; // Shift by the length of the pattern
+        } else {
+            // Use the shift table to determine the shift distance
+            const char = text[i + m - 1];
+            const shift = shiftTable.get(char) || defaultShift;
+            i += shift;
         }
     }
 
-    return arr;
+    return result;
 }
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
 
-// Example usage:
-const unsortedArray = [35, 33, 42, 10, 14, 19, 27, 44, 26, 31];
-const sortedArray = shellSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
-Sorted Array: [10, 14, 19, 26, 27, 31, 33, 35, 42, 44]
+const matches = boyerMooreHorspool(text, pattern);
+console.log("Matches found at indices:", matches);
+// Output: Matches found at indices: [17]
