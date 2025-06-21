@@ -1,55 +1,79 @@
-// Function to fetch data from a public API
-async function fetchData<T>(url: string): Promise<T | null> {
-  try {
-    console.log(`Fetching data from: ${url}`);
-    
-    // Make the HTTP GET request using fetch
-    const response = await fetch(url);
+// Define the structure of a linked list node
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Check if the response status is OK (status code 200-299)
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Parse the response body as JSON
-    const data = await response.json();
-
-    // Return the parsed JSON data
-    return data;
-  } catch (error) {
-    // Handle any errors that occurred during the fetch process
-    console.error("Error fetching data:", error);
-    return null;
-  }
 }
 
-// Example usage of the fetchData function
-(async () => {
-  // Define the API endpoint URL
-  const apiUrl = "https://jsonplaceholder.typicode.com/posts/1";
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        // An empty list or a single-node list is always a palindrome
+        return true;
+    }
 
-  // Call the fetchData function and handle the result
-  const postData = await fetchData<{ userId: number; id: number; title: string; body: string }>(apiUrl);
+    // Step 1: Find the middle of the linked list using slow and fast pointers
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+    while (fast && fast.next) {
+        slow = slow!.next;
+        fast = fast.next.next;
+    }
 
-  if (postData) {
-    console.log("Fetched Post Data:");
-    console.log(`User ID: ${postData.userId}`);
-    console.log(`Post ID: ${postData.id}`);
-    console.log(`Title: ${postData.title}`);
-    console.log(`Body: ${postData.body}`);
-  } else {
-    console.log("Failed to fetch post data.");
-  }
-})();
-Fetching data from: https://jsonplaceholder.typicode.com/posts/1
-Fetched Post Data:
-User ID: 1
-Post ID: 1
-Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
-Body: quia et suscipit
-suscipit recusandae consequuntur expedita et cum
-reprehenderit molestiae ut ut quas totam
-nostrum rerum est autem sunt rem eveniet architecto
-Fetching data from: https://jsonplaceholder.typicode.com/posts/1
-Error fetching data: TypeError: Failed to fetch
-Failed to fetch post data.
+    // Step 2: Reverse the second half of the linked list
+    let secondHalfHead: ListNode | null = reverseList(slow);
+
+    // Step 3: Compare the first half and the reversed second half
+    let firstHalfHead: ListNode | null = head;
+    let tempSecondHalfHead: ListNode | null = secondHalfHead;
+    let isPalindrome = true;
+
+    while (tempSecondHalfHead) {
+        if (firstHalfHead!.value !== tempSecondHalfHead.value) {
+            isPalindrome = false;
+            break;
+        }
+        firstHalfHead = firstHalfHead!.next;
+        tempSecondHalfHead = tempSecondHalfHead.next;
+    }
+
+    // Step 4: Restore the second half of the linked list (optional)
+    reverseList(secondHalfHead);
+
+    return isPalindrome;
+}
+
+// Helper function to reverse a linked list
+function reverseList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+
+    while (current) {
+        const nextNode = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextNode;
+    }
+
+    return prev;
+}
+// Create a linked list: 1 -> 2 -> 3 -> 2 -> 1
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(2);
+head.next.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
+
+// Create another linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head2 = new ListNode(1);
+head2.next = new ListNode(2);
+head2.next.next = new ListNode(3);
+head2.next.next.next = new ListNode(4);
+head2.next.next.next.next = new ListNode(5);
+
+console.log(isPalindrome(head2)); // Output: false
