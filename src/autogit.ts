@@ -1,66 +1,87 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let len = 0; // Length of the previous longest prefix suffix
-    let i = 1;
+class BoyerMoore {
+    private badCharTable: Map<string, number>;
+    private goodSuffixShift: number[];
+    private pattern: string;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[len]) {
-            len++;
-            lps[i] = len;
-            i++;
-        } else {
-            if (len !== 0) {
-                len = lps[len - 1]; // Try to find a shorter prefix that matches
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
+        this.goodSuffixShift = this.buildGoodSuffixTable(pattern);
     }
 
-    return lps;
-}
-
-function KMPSearch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const n = text.length;
-    const m = pattern.length;
-
-    if (m === 0) return result; // Edge case: empty pattern
-
-    const lps = computeLPSArray(pattern);
-
-    let i = 0; // Index for text
-    let j = 0; // Index for pattern
-
-    while (i < n) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
+    // Preprocess the bad character table
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        for (let i = 0; i < pattern.length - 1; i++) {
+            table.set(pattern[i], pattern.length - 1 - i);
         }
-
-        if (j === m) {
-            // Match found at index (i - j)
-            result.push(i - j);
-            j = lps[j - 1]; // Continue searching for next occurrence
-        } else if (i < n && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS array to skip characters
-            } else {
-                i++; // Move to the next character in the text
-            }
-        }
+        return table;
     }
 
-    return result;
+    // Preprocess the good suffix table
+    private buildGoodSuffixTable(pattern: string): number[] {
+        const m = pattern.length;
+        const shift = Array(m + 1).fill(m); // Initialize all shifts to the length of the pattern
+        const z = Array(m).fill(0); // Z-array for pattern matching
+
+        // Compute the Z-array for the reverse of the pattern
+        for (let i = 1; i < m; i++) {
+            if (i <= shift[m]) {
+                let j = Math.max(0, i - shift[m]);
+                while (j < m && pattern[m - 1 - j] === pattern[m - 1 - (i - j)]) {
+                    j++;
+                }
+                z[i] = j;
+                shift[m - z[i]] = m - i;
+            }
+        }
+
+        // Handle matches at the end of the pattern
+        for (let i = 0; i < m; i++) {
+            shift[i] = Math.max(shift[i], m - i - 1);
+        }
+
+        return shift;
+    }
+
+    // Search for the pattern in the text
+    public search(text: string): number[] {
+        const n = text.length;
+        const m = this.pattern.length;
+        const result: number[] = [];
+        let i = 0;
+
+        while (i <= n - m) {
+            let j = m - 1;
+
+            // Compare the pattern with the text from right to left
+            while (j >= 0 && this.pattern[j] === text[i + j]) {
+                j--;
+            }
+
+            if (j < 0) {
+                // Pattern found at index i
+                result.push(i);
+                i += this.goodSuffixShift[0]; // Shift based on the good suffix rule
+            } else {
+                // Calculate the shift using both rules
+                const badCharShift = this.badCharTable.get(text[i + j]) || m;
+                const goodSuffixShift = this.goodSuffixShift[j];
+                i += Math.max(badCharShift, goodSuffixShift);
+            }
+        }
+
+        return result;
+    }
 }
 
-// Example Usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
+// Example usage
+const pattern = "ABCD";
+const text = "ABC ABCDAB ABCDABCDABDE";
+const bm = new BoyerMoore(pattern);
+const matches = bm.search(text);
 
-const matches = KMPSearch(text, pattern);
 console.log("Pattern found at indices:", matches);
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-Pattern found at indices: [10]
+const pattern = "ABCD";
+const text = "ABC ABCDAB ABCDABCDABDE";
+Pattern found at indices: [4, 11, 15]
