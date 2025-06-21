@@ -1,55 +1,48 @@
-^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
-^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$
-function validateEmailSimple(email: string): boolean {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
-}
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
 
-// Usage examples:
-console.log(validateEmailSimple("example@example.com")); // true
-console.log(validateEmailSimple("user.name+tag+sorting@example.co.uk")); // true
-console.log(validateEmailSimple("invalid-email@.com")); // false
-function validateEmailComprehensive(email: string): boolean {
-    const regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-    return regex.test(email);
-}
-
-// Usage examples:
-console.log(validateEmailComprehensive("example@example.com")); // true
-console.log(validateEmailComprehensive("user.name+tag+sorting@example.co.uk")); // true
-console.log(validateEmailComprehensive("invalid-email@.com")); // false
-console.log(validateEmailComprehensive("very.long.email.address.that.exceeds.the.maximum.length.allowed.by.the.regex@domain.com")); // false
-const regex = new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$');
-<input type="email" id="emailInput" />
-const input = document.getElementById('emailInput') as HTMLInputElement;
-
-if (input.checkValidity()) {
-    console.log('HTML5 validation passed.');
-    if (validateEmailSimple(input.value)) {
-        console.log('Regex validation passed.');
-    } else {
-        console.log('Invalid email according to regex.');
+    // Edge case: If the pattern is empty or longer than the text, return an empty array
+    if (m === 0 || m > n) {
+        return [];
     }
-} else {
-    console.log('Invalid email according to HTML5 validation.');
-}
-function validateEmail(email: string): boolean {
-    const regex = /^(?=.{1,254}$)(?=.{1,64}@)[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/;
-    return regex.test(email);
+
+    // Step 1: Build the shift table
+    const shiftTable: { [key: string]: number } = {};
+    for (let i = 0; i < m - 1; i++) {
+        shiftTable[pattern[i]] = m - 1 - i;
+    }
+
+    // Default shift for characters not in the pattern
+    const defaultShift = m;
+
+    // Step 2: Search for the pattern in the text
+    const matches: number[] = [];
+    let i = 0; // Index in the text
+
+    while (i <= n - m) {
+        let j = m - 1; // Start comparing from the last character of the pattern
+
+        // Compare characters from right to left
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If all characters matched, record the starting index
+        if (j < 0) {
+            matches.push(i);
+        }
+
+        // Shift the pattern based on the mismatched character in the text
+        const charInText = text[i + m - 1];
+        i += shiftTable[charInText] ?? defaultShift;
+    }
+
+    return matches;
 }
 
-// Example usage:
-const testEmails = [
-    "example@example.com",
-    "user.name+tag+sorting@example.co.uk",
-    "invalid-email@.com",
-    "very.long.email.address.that.exceeds.the.maximum.length.allowed.by.the.regex@domain.com"
-];
-
-testEmails.forEach(email => {
-    console.log(`${email}: ${validateEmail(email)}`);
-});
-example@example.com: true
-user.name+tag+sorting@example.co.uk: true
-invalid-email@.com: false
-very.long.email.address.that.exceeds.the.maximum.length.allowed.by.the.regex@domain.com: false
+// Example usage
+const text = "abracadabra";
+const pattern = "abra";
+const result = boyerMooreHorspool(text, pattern);
+console.log("Pattern found at indices:", result); // Output: [0, 7]
