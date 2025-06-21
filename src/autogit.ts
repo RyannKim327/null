@@ -1,89 +1,59 @@
-type State = any; // Replace `any` with the specific type of your state
-type Score = number;
+type Edge = {
+  source: number;
+  target: number;
+  weight: number;
+};
 
-interface BeamSearchOptions {
-  beamWidth: number; // Number of top candidates to keep
-  maxSteps: number; // Maximum number of steps to run the search
-}
+function bellmanFord(edges: Edge[], V: number, source: number): { distances: number[]; hasNegativeCycle: boolean } {
+  // Step 1: Initialize distances
+  const distances: number[] = Array(V).fill(Infinity);
+  distances[source] = 0;
 
-/**
- * Beam Search Algorithm
- * @param initialState - The starting state(s) for the search.
- * @param expandFunction - A function that generates new states from a given state.
- * @param scoreFunction - A function that evaluates and scores a state.
- * @param isGoalFunction - A function that checks if a state is a goal state.
- * @param options - Configuration options for the beam search.
- * @returns The best state found, or null if no solution is found.
- */
-function beamSearch(
-  initialState: State[],
-  expandFunction: (state: State) => State[],
-  scoreFunction: (state: State) => Score,
-  isGoalFunction: (state: State) => boolean,
-  options: BeamSearchOptions
-): State | null {
-  let { beamWidth, maxSteps } = options;
-  let beam: State[] = initialState;
-
-  for (let step = 0; step < maxSteps; step++) {
-    // Expand all states in the current beam
-    let candidates: { state: State; score: Score }[] = [];
-    for (const state of beam) {
-      const newStates = expandFunction(state);
-      for (const newState of newStates) {
-        candidates.push({ state: newState, score: scoreFunction(newState) });
+  // Step 2: Relax edges repeatedly (V-1 times)
+  for (let i = 0; i < V - 1; i++) {
+    for (const edge of edges) {
+      const { source: u, target: v, weight: w } = edge;
+      if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
+        distances[v] = distances[u] + w;
       }
     }
+  }
 
-    // Sort candidates by score in descending order
-    candidates.sort((a, b) => b.score - a.score);
-
-    // Retain only the top-k candidates
-    beam = candidates.slice(0, beamWidth).map(candidate => candidate.state);
-
-    // Check if any of the current states are goal states
-    for (const state of beam) {
-      if (isGoalFunction(state)) {
-        return state; // Return the first goal state found
-      }
-    }
-
-    // If the beam is empty, terminate early
-    if (beam.length === 0) {
+  // Step 3: Check for negative weight cycles
+  let hasNegativeCycle = false;
+  for (const edge of edges) {
+    const { source: u, target: v, weight: w } = edge;
+    if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
+      hasNegativeCycle = true;
       break;
     }
   }
 
-  // Return the best state found after all steps
-  return beam.length > 0 ? beam[0] : null;
+  return { distances, hasNegativeCycle };
 }
-type GridState = { x: number; y: number };
 
-// Example: Find a path in a 2D grid from (0, 0) to (3, 3)
-const initialState: GridState[] = [{ x: 0, y: 0 }];
+// Example usage
+const edges: Edge[] = [
+  { source: 0, target: 1, weight: 4 },
+  { source: 0, target: 2, weight: 3 },
+  { source: 1, target: 2, weight: -2 },
+  { source: 2, target: 3, weight: 2 },
+  { source: 3, target: 1, weight: 1 },
+];
 
-const expandFunction = (state: GridState): GridState[] => {
-  const moves = [
-    { dx: 1, dy: 0 }, // Move right
-    { dx: 0, dy: 1 }, // Move down
-  ];
-  return moves.map(({ dx, dy }) => ({ x: state.x + dx, y: state.y + dy }));
-};
+const V = 4; // Number of vertices
+const source = 0; // Source vertex
 
-const scoreFunction = (state: GridState): number => {
-  // Higher score for states closer to the goal (3, 3)
-  return -(Math.abs(3 - state.x) + Math.abs(3 - state.y));
-};
+const result = bellmanFord(edges, V, source);
+console.log("Distances:", result.distances);
+console.log("Has Negative Cycle:", result.hasNegativeCycle);
+Edges:
+0 -> 1 (weight 4)
+0 -> 2 (weight 3)
+1 -> 2 (weight -2)
+2 -> 3 (weight 2)
+3 -> 1 (weight 1)
 
-const isGoalFunction = (state: GridState): boolean => {
-  return state.x === 3 && state.y === 3;
-};
-
-const options: BeamSearchOptions = {
-  beamWidth: 2,
-  maxSteps: 10,
-};
-
-const result = beamSearch(initialState, expandFunction, scoreFunction, isGoalFunction, options);
-
-console.log("Best path found:", result);
+Source: 0
+Distances: [ 0, 2, 0, 2 ]
+Has Negative Cycle: false
