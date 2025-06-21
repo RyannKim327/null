@@ -1,54 +1,53 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Helper function to clean and sort the string
-    const normalize = (str: string): string => {
-        return str
-            .replace(/\s+/g, '')  // Remove all whitespace
-            .toLowerCase()        // Convert to lowercase
-            .split('')            // Split into array of characters
-            .sort()               // Sort the array alphabetically
-            .join('');            // Join back into a string
-    };
+function factorial(n: number): number {
+    // Input validation: Ensure n is a non-negative integer
+    if (!Number.isInteger(n) || n < 0) {
+        throw new Error("Factorial is only defined for non-negative integers.");
+    }
 
-    // Normalize and compare both strings
-    return normalize(str1) === normalize(str2);
+    // Base case: 0! = 1
+    if (n === 0) {
+        return 1;
+    }
+
+    // Recursive calculation of factorial
+    return n * factorial(n - 1);
 }
 
 // Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("triangle", "integral")); // true
-console.log(areAnagrams("apple", "pale")); // false
-function areAnagrams(str1: string, str2: string): boolean {
-    const normalize = (str: string): string => {
-        return str.replace(/\s+/g, '').toLowerCase();
-    };
-
-    const charCount = (str: string): { [key: string]: number } => {
-        const count: { [key: string]: number } = {};
-        for (const char of str) {
-            count[char] = (count[char] || 0) + 1;
-        }
-        return count;
-    };
-
-    const normalizedStr1 = normalize(str1);
-    const normalizedStr2 = normalize(str2);
-
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+console.log(factorial(5)); // Output: 120
+console.log(factorial(0)); // Output: 1
+function factorialIterative(n: number): number {
+    // Input validation: Ensure n is a non-negative integer
+    if (!Number.isInteger(n) || n < 0) {
+        throw new Error("Factorial is only defined for non-negative integers.");
     }
 
-    const count1 = charCount(normalizedStr1);
-    const count2 = charCount(normalizedStr2);
+    let result = 1;
 
-    for (const char in count1) {
-        if (count1[char] !== count2[char]) {
-            return false;
-        }
+    // Multiply all integers from 1 to n
+    for (let i = 1; i <= n; i++) {
+        result *= i;
     }
 
-    return true;
+    return result;
 }
 
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("triangle", "integral")); // true
-console.log(areAnagrams("apple", "pale")); // false
+// Example usage:
+console.log(factorialIterative(5)); // Output: 120
+console.log(factorialIterative(0)); // Output: 1
+function factorialBigInt(n: number): bigint {
+    if (!Number.isInteger(n) || n < 0) {
+        throw new Error("Factorial is only defined for non-negative integers.");
+    }
+
+    let result: bigint = 1n;
+
+    for (let i = 1; i <= n; i++) {
+        result *= BigInt(i);
+    }
+
+    return result;
+}
+
+// Example usage:
+console.log(factorialBigInt(20)); // Output: 2432902008176640000n
