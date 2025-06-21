@@ -1,52 +1,62 @@
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function rabinKarp(text: string, pattern: string): number[] {
+    const d = 256; // Number of characters in the input alphabet (ASCII)
+    const q = 101; // A prime number for modulo operation to reduce hash collisions
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+    const n = text.length;
+    const m = pattern.length;
+
+    if (m > n) return []; // If the pattern is longer than the text, no match is possible
+
+    let h = 1; // Used to calculate the highest power of d for rolling hash
+    let p = 0; // Hash value for the pattern
+    let t = 0; // Hash value for the current text window
+    const result: number[] = [];
+
+    // Precompute h = (d^(m-1)) % q
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * d) % q;
     }
-}
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    // Variable to store the maximum diameter found
-    let maxDiameter = 0;
+    // Calculate the hash value of the pattern and the first window of the text
+    for (let i = 0; i < m; i++) {
+        p = (d * p + pattern.charCodeAt(i)) % q;
+        t = (d * t + text.charCodeAt(i)) % q;
+    }
 
-    // Helper function to calculate the height of the tree and update the diameter
-    function calculateHeight(node: TreeNode | null): number {
-        if (node === null) {
-            return 0; // Base case: height of an empty tree is 0
+    // Slide the pattern over the text one by one
+    for (let i = 0; i <= n - m; i++) {
+        // Check if the hash values match
+        if (p === t) {
+            // Check for characters one by one to avoid false positives
+            let j;
+            for (j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) break;
+            }
+            if (j === m) {
+                // Match found at index i
+                result.push(i);
+            }
         }
 
-        // Recursively calculate the height of the left and right subtrees
-        const leftHeight = calculateHeight(node.left);
-        const rightHeight = calculateHeight(node.right);
+        // Calculate the hash value for the next window of text
+        if (i < n - m) {
+            t = (d * (t - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % q;
 
-        // Calculate the diameter for the current node
-        const currentDiameter = leftHeight + rightHeight;
-
-        // Update the global maximum diameter
-        maxDiameter = Math.max(maxDiameter, currentDiameter);
-
-        // Return the height of the current node
-        return Math.max(leftHeight, rightHeight) + 1;
+            // Ensure the hash value is non-negative
+            if (t < 0) {
+                t += q;
+            }
+        }
     }
 
-    // Start the recursive calculation
-    calculateHeight(root);
-
-    // Return the maximum diameter found
-    return maxDiameter;
+    return result;
 }
 
-// Example Usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log("Diameter of the binary tree:", diameterOfBinaryTree(root)); // Output: 3
+// Example usage:
+const text = "GEEKS FOR GEEKS";
+const pattern = "GEEK";
+const matches = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", matches);
+const text = "GEEKS FOR GEEKS";
+const pattern = "GEEK";
+Pattern found at indices: [0, 10]
