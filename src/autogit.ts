@@ -1,58 +1,150 @@
-str.includes(searchString, position?)
-const mainStr: string = "Hello, welcome to TypeScript!";
-const subStr: string = "TypeScript";
+// Define the structure of a linked list node
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-const containsSubStr: boolean = mainStr.includes(subStr);
-
-console.log(containsSubStr); // Output: true
-const str: string = "Hello World";
-console.log(str.includes("world")); // Output: false
-console.log(str.includes("World")); // Output: true
-str.indexOf(searchValue, fromIndex?)
-const mainStr: string = "Hello, welcome to TypeScript!";
-const subStr: string = "TypeScript";
-
-const index: number = mainStr.indexOf(subStr);
-
-if (index !== -1) {
-    console.log(`"${subStr}" found at index ${index}.`);
-} else {
-    console.log(`"${subStr}" not found.`);
-}
-// Output: "TypeScript" found at index 18.
-const mainStr: string = "Hello, welcome to TypeScript!";
-const regex: RegExp = /TypeScript/;
-
-const containsSubStr: boolean = regex.test(mainStr);
-
-console.log(containsSubStr); // Output: true
-const str: string = "Hello World";
-const regex: RegExp = /world/i; // 'i' flag for case-insensitive
-
-console.log(regex.test(str)); // Output: true
-function checkSubstring(mainStr: string, subStr: string): void {
-    // Using includes()
-    const includesResult: boolean = mainStr.includes(subStr);
-    console.log(`Using includes(): ${includesResult}`);
-
-    // Using indexOf()
-    const index: number = mainStr.indexOf(subStr);
-    const indexOfResult: boolean = index !== -1;
-    console.log(`Using indexOf(): ${indexOfResult} (found at index ${index})`);
-
-    // Using RegExp
-    const regex = new RegExp(subStr);
-    const regexResult: boolean = regex.test(mainStr);
-    console.log(`Using RegExp: ${regexResult}`);
+    constructor(value: number = 0, next: ListNode | null = null) {
+        this.value = value;
+        this.next = next;
+    }
 }
 
-const mainString: string = "Learning TypeScript is fun!";
-const substring: string = "TypeScript";
+/**
+ * Function to find the nth node from the end of a linked list
+ * @param head - The head of the linked list
+ * @param n - The position from the end
+ * @returns The nth node from the end or null if it doesn't exist
+ */
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (!head) {
+        return null; // Empty list case
+    }
 
-checkSubstring(mainString, substring);
-/*
-Output:
-Using includes(): true
-Using indexOf(): true (found at index 9)
-Using RegExp: true
-*/
+    let fast: ListNode | null = head;
+    let slow: ListNode | null = head;
+
+    // Move the fast pointer n steps forward
+    for (let i = 0; i < n; i++) {
+        if (!fast) {
+            return null; // n is larger than the length of the list
+        }
+        fast = fast.next;
+    }
+
+    // Move both pointers until fast reaches the end
+    while (fast) {
+        fast = fast.next;
+        slow = slow!.next; // Non-null assertion since we've already checked
+    }
+
+    return slow;
+}
+
+// Example usage:
+function main() {
+    // Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
+    const head = new ListNode(1);
+    head.next = new ListNode(2);
+    head.next.next = new ListNode(3);
+    head.next.next.next = new ListNode(4);
+    head.next.next.next.next = new ListNode(5);
+
+    const n = 2; // Find the 2nd node from the end
+
+    const result = findNthFromEnd(head, n);
+    if (result) {
+        console.log(`The ${n}nd node from the end is: ${result.value}`);
+    } else {
+        console.log("Node not found.");
+    }
+}
+
+main();
+The 2nd node from the end is: 4
+function findNthFromEndWithCounter(head: ListNode | null, n: number): ListNode | null {
+    if (!head) return null;
+
+    let length = 0;
+    let current = head;
+
+    // First pass to get the length of the list
+    while (current) {
+        length++;
+        current = current.next;
+    }
+
+    // Check if n is within the bounds of the list length
+    if (n > length || n <= 0) {
+        return null;
+    }
+
+    // Second pass to find the (length - n)th node from the start
+    current = head;
+    for (let i = 0; i < length - n; i++) {
+        current = current!.next;
+    }
+
+    return current;
+}
+// Define the structure of a linked list node
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number = 0, next: ListNode | null = null) {
+        this.value = value;
+        this.next = next;
+    }
+}
+
+/**
+ * Function to find the nth node from the end of a linked list
+ * @param head - The head of the linked list
+ * @param n - The position from the end
+ * @returns The nth node from the end or null if it doesn't exist
+ */
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (!head) {
+        return null; // Empty list case
+    }
+
+    let fast: ListNode | null = head;
+    let slow: ListNode | null = head;
+
+    // Move the fast pointer n steps forward
+    for (let i = 0; i < n; i++) {
+        if (!fast) {
+            return null; // n is larger than the length of the list
+        }
+        fast = fast.next;
+    }
+
+    // Move both pointers until fast reaches the end
+    while (fast) {
+        fast = fast.next;
+        slow = slow!.next; // Non-null assertion since we've already checked
+    }
+
+    return slow;
+}
+
+// Example usage:
+function main() {
+    // Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
+    const head = new ListNode(1);
+    head.next = new ListNode(2);
+    head.next.next = new ListNode(3);
+    head.next.next.next = new ListNode(4);
+    head.next.next.next.next = new ListNode(5);
+
+    const n = 2; // Find the 2nd node from the end
+
+    const result = findNthFromEnd(head, n);
+    if (result) {
+        console.log(`The ${n}nd node from the end is: ${result.value}`);
+    } else {
+        console.log("Node not found.");
+    }
+}
+
+main();
