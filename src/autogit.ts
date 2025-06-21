@@ -1,16 +1,20 @@
-function isSortedAscending(array: number[]): boolean {
-    // Loop through the array and compare adjacent elements
-    for (let i = 0; i < array.length - 1; i++) {
-        if (array[i] > array[i + 1]) {
-            return false; // If any element is greater than the next, the array is not sorted
-        }
-    }
-    return true; // If no violations are found, the array is sorted
+function getRandomInt(min: number, max: number): number {
+    min = Math.ceil(min); // Ensure min is an integer
+    max = Math.floor(max); // Ensure max is an integer
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [5, 3, 8, 1];
-const array3 = [10, 20, 20, 30]; // Allows duplicates
-
-console.log(isSortedAscending(array1)); // Output: true
-console.log(isSortedAscending(array2)); // Output: false
-console.log(isSortedAscending(array3)); // Output: true
+const randomNumber = getRandomInt(10, 20);
+console.log(randomNumber); // Outputs a random integer between 10 and 20 (inclusive)
+function getRandomFloat(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+}
+const randomFloat = getRandomFloat(5.5, 10.2);
+console.log(randomFloat); // Outputs a random float between 5.5 and 10.2
+function getRandomInt(min: number, max: number): number {
+    if (min > max) {
+        throw new Error("Invalid range: min must be <= max");
+    }
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
