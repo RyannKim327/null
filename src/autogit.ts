@@ -1,29 +1,73 @@
-function findFirstNonRepeatingCharacter(input: string): string | null {
-    // Step 1: Create a Map to store character frequencies
-    const charFrequency = new Map<string, number>();
+type Node = string | number; // Define the type for nodes (can be strings or numbers)
+type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
 
-    // Populate the Map with character frequencies
-    for (const char of input) {
-        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
+/**
+ * Breadth-Limited Search Algorithm
+ * @param graph - The graph represented as an adjacency list
+ * @param startNode - The starting node for the search
+ * @param goalNode - The target node to find
+ * @param depthLimit - The maximum depth to explore
+ * @returns The path from startNode to goalNode if found, otherwise null
+ */
+function breadthLimitedSearch(
+  graph: Graph,
+  startNode: Node,
+  goalNode: Node,
+  depthLimit: number
+): Node[] | null {
+  // Queue stores tuples of [currentNode, currentPath, currentDepth]
+  const queue: [Node, Node[], number][] = [[startNode, [startNode], 0]];
+
+  while (queue.length > 0) {
+    const [currentNode, path, currentDepth] = queue.shift()!;
+
+    // If the current node is the goal and within the depth limit, return the path
+    if (currentNode === goalNode && currentDepth <= depthLimit) {
+      return path;
     }
 
-    // Step 2: Find the first character with a frequency of 1
-    for (const char of input) {
-        if (charFrequency.get(char) === 1) {
-            return char; // Return the first non-repeating character
-        }
+    // Stop exploring further if the depth limit is reached
+    if (currentDepth >= depthLimit) {
+      continue;
     }
 
-    // If no non-repeating character is found, return null
-    return null;
+    // Explore neighbors of the current node
+    const neighbors = graph.get(currentNode) || [];
+    for (const neighbor of neighbors) {
+      queue.push([neighbor, [...path, neighbor], currentDepth + 1]);
+    }
+  }
+
+  // If the goal is not found within the depth limit, return null
+  return null;
 }
 
-// Example usage
-const inputString = "swiss";
-const result = findFirstNonRepeatingCharacter(inputString);
+// Example Usage
+const graph: Graph = new Map([
+  ["A", ["B", "C"]],
+  ["B", ["D", "E"]],
+  ["C", ["F"]],
+  ["D", []],
+  ["E", ["G"]],
+  ["F", []],
+  ["G", []],
+]);
 
-if (result !== null) {
-    console.log(`The first non-repeating character is: ${result}`);
+const startNode: Node = "A";
+const goalNode: Node = "G";
+const depthLimit: number = 3;
+
+const result = breadthLimitedSearch(graph, startNode, goalNode, depthLimit);
+
+if (result) {
+  console.log("Path found:", result);
 } else {
-    console.log("No non-repeating character found.");
+  console.log("No path found within the depth limit.");
 }
+        A
+       / \
+      B   C
+     / \   \
+    D   E   F
+         \
+          G
