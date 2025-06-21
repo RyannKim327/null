@@ -1,58 +1,64 @@
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+// Define the type for the adjacency list
+type AdjacencyList = Map<number, number[]>;
 
-    constructor(val: number = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
-}
+/**
+ * Breadth-First Search (BFS) function
+ * @param graph - The graph represented as an adjacency list
+ * @param startNode - The node to start the BFS traversal from
+ */
+function breadthFirstSearch(graph: AdjacencyList, startNode: number): void {
+    // Queue for BFS traversal
+    const queue: number[] = [];
+    // Set to track visited nodes
+    const visited: Set<number> = new Set();
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: empty tree has depth 0
-    }
+    // Initialize the queue with the start node and mark it as visited
+    queue.push(startNode);
+    visited.add(startNode);
 
-    // Recursively find the depth of left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // Return the greater depth of the two subtrees, plus one for the current node
-    return Math.max(leftDepth, rightDepth) + 1;
-}
-function maxDepthIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Empty tree has depth 0
-    }
-
-    const queue: TreeNode[] = [root];
-    let depth = 0;
-
+    console.log("BFS Traversal:");
     while (queue.length > 0) {
-        const levelSize = queue.length; // Number of nodes at the current level
-        for (let i = 0; i < levelSize; i++) {
-            const currentNode = queue.shift()!; // Remove the first node from the queue
-            if (currentNode.left !== null) {
-                queue.push(currentNode.left); // Add left child to the queue
-            }
-            if (currentNode.right !== null) {
-                queue.push(currentNode.right); // Add right child to the queue
+        // Dequeue the front node
+        const currentNode = queue.shift()!;
+        console.log(currentNode); // Process the current node
+
+        // Get the neighbors of the current node
+        const neighbors = graph.get(currentNode) || [];
+
+        // Enqueue unvisited neighbors
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                queue.push(neighbor);
+                visited.add(neighbor);
             }
         }
-        depth++; // Increment depth after processing all nodes at the current level
     }
-
-    return depth;
 }
-// Create a sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-console.log("Maximum Depth (Recursive):", maxDepth(root)); // Output: 3
-console.log("Maximum Depth (Iterative):", maxDepthIterative(root)); // Output: 3
+// Example usage
+const graph: AdjacencyList = new Map([
+    [0, [1, 2]],
+    [1, [0, 3, 4]],
+    [2, [0, 5]],
+    [3, [1]],
+    [4, [1]],
+    [5, [2]]
+]);
+
+console.log("Graph:", graph);
+breadthFirstSearch(graph, 0);
+Graph: Map(6) {
+  0 => [ 1, 2 ],
+  1 => [ 0, 3, 4 ],
+  2 => [ 0, 5 ],
+  3 => [ 1 ],
+  4 => [ 1 ],
+  5 => [ 2 ]
+}
+BFS Traversal:
+0
+1
+2
+3
+4
+5
