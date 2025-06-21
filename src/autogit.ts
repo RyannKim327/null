@@ -1,59 +1,84 @@
-/**
- * Function to preprocess the last occurrence of each character in the pattern.
- * @param pattern - The pattern string to search for.
- * @returns A Map where keys are characters and values are their last occurrence indices.
- */
-function preprocessBadCharacterTable(pattern: string): Map<string, number> {
-    const badCharTable = new Map<string, number>();
-    for (let i = 0; i < pattern.length; i++) {
-        badCharTable.set(pattern[i], i); // Store the last occurrence index of each character
-    }
-    return badCharTable;
-}
+type Graph = Map<string, string[]>; // Adjacency list representation of the graph
 
 /**
- * Boyer-Moore algorithm for string searching using the bad character rule.
- * @param text - The text in which to search.
- * @param pattern - The pattern to search for.
- * @returns An array of starting indices where the pattern is found in the text.
+ * Function to perform Depth-Limited Search (DLS)
+ * @param graph - The graph represented as an adjacency list
+ * @param start - The starting node
+ * @param goal - The goal node to search for
+ * @param limit - The maximum depth limit for the search
+ * @returns A boolean indicating success or failure, and optionally the path if found
  */
-function boyerMooreSearch(text: string, pattern: string): number[] {
-    const n = text.length;
-    const m = pattern.length;
-    if (m === 0) return []; // Edge case: empty pattern
-
-    const badCharTable = preprocessBadCharacterTable(pattern);
-    const result: number[] = [];
-
-    let s = 0; // Shift of the pattern with respect to the text
-    while (s <= n - m) {
-        let j = m - 1; // Start from the end of the pattern
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[s + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            // Pattern matched
-            result.push(s);
-            // Shift the pattern to align with the next possible match
-            s += (s + m < n) ? m - (badCharTable.get(text[s + m]) ?? -1) : 1;
-        } else {
-            // Mismatch occurred at pattern[j]
-            const badCharShift = j - (badCharTable.get(text[s + j]) ?? -1);
-            s += Math.max(1, badCharShift); // Ensure we shift at least one position
-        }
+function depthLimitedSearch(
+  graph: Graph,
+  start: string,
+  goal: string,
+  limit: number
+): { found: boolean; path?: string[] } {
+  // Helper function for recursive DLS
+  function dlsRecursive(
+    node: string,
+    currentLimit: number,
+    visited: Set<string>,
+    path: string[]
+  ): { found: boolean; path?: string[] } {
+    // Base case: If the current node is the goal, return success and the path
+    if (node === goal) {
+      return { found: true, path: [...path, node] };
     }
 
-    return result;
+    // Base case: If the depth limit is reached, stop further exploration
+    if (currentLimit <= 0) {
+      return { found: false };
+    }
+
+    // Mark the current node as visited and add it to the path
+    visited.add(node);
+    path.push(node);
+
+    // Explore all neighbors of the current node
+    const neighbors = graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        const result = dlsRecursive(neighbor, currentLimit - 1, visited, path);
+        if (result.found) {
+          return result; // Goal found, propagate the result
+        }
+      }
+    }
+
+    // Backtrack: Remove the current node from the path and unvisit it
+    path.pop();
+    visited.delete(node);
+
+    return { found: false }; // Goal not found in this branch
+  }
+
+  // Initialize the search with the start node, depth limit, and empty visited set
+  const visited = new Set<string>();
+  const path: string[] = [];
+  return dlsRecursive(start, limit, visited, path);
 }
 
-// Example usage
-const text = "HERE IS A SIMPLE EXAMPLE";
-const pattern = "EXAMPLE";
-const matches = boyerMooreSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
-const text = "HERE IS A SIMPLE EXAMPLE";
-const pattern = "EXAMPLE";
-Pattern found at indices: [17]
+// Example usage:
+const graph: Graph = new Map([
+  ["A", ["B", "C"]],
+  ["B", ["D", "E"]],
+  ["C", ["F"]],
+  ["D", []],
+  ["E", ["G"]],
+  ["F", []],
+  ["G", []],
+]);
+
+const startNode = "A";
+const goalNode = "G";
+const depthLimit = 3;
+
+const result = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
+if (result.found) {
+  console.log(`Goal found! Path: ${result.path?.join(" -> ")}`);
+} else {
+  console.log("Goal not found within the depth limit.");
+}
+Goal found! Path: A -> B -> E -> G
+Goal not found within the depth limit.
