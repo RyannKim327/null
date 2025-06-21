@@ -1,46 +1,38 @@
-import axios, { AxiosError } from 'axios';
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
+// Function to determine voting eligibility based on age
+function isEligibleToVote(age: number): boolean {
+    return age >= 18;
 }
 
-async function fetchUsers(): Promise<void> {
-  try {
-    // Make a GET request to a mock API endpoint
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-
-    // Extract the data from the response
-    const users = response.data;
-
-    // Log the user details
-    console.log('List of Users:');
-    users.forEach((user) => {
-      console.log(`ID: ${user.id}, Name: ${user.name}, Email: ${user.email}`);
+// Main function to handle user input and output
+function main(): void {
+    // Simulating user input (in a real environment, you might use prompts or forms)
+    const readline = require('readline').createInterface({
+        input: process.stdin,
+        output: process.stdout
     });
-  } catch (error) {
-    // Handle any errors that occur during the request
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-      if (axiosError.response) {
-        console.error('Error Response Data:', axiosError.response.data);
-        console.error('Error Status Code:', axiosError.response.status);
-      } else if (axiosError.request) {
-        console.error('No response received from the server.');
-      } else {
-        console.error('Error Message:', axiosError.message);
-      }
-    } else {
-      console.error('An unexpected error occurred:', error);
-    }
-  }
+
+    readline.question('Please enter your name: ', (name: string) => {
+        readline.question('Please enter your age: ', (ageInput: string) => {
+            const age = parseInt(ageInput, 10);
+
+            if (isNaN(age)) {
+                console.log('Invalid age entered. Please enter a valid number.');
+            } else {
+                const canVote = isEligibleToVote(age);
+                if (canVote) {
+                    console.log(`Hello, ${name}! You are eligible to vote.`);
+                } else {
+                    console.log(`Hello, ${name}! You are not yet eligible to vote.`);
+                }
+            }
+
+            readline.close();
+        });
+    });
 }
 
-// Call the function to fetch and log users
-fetchUsers();
-List of Users:
-ID: 1, Name: Leanne Graham, Email: Sincere@april.biz
-ID: 2, Name: Ervin Howell, Email: Shanna@melissa.tv
-ID: 3, Name: Clementine Bauch, Email: Nathan@yesenia.net
-...
+// Run the main function
+main();
+Please enter your name: Alice
+Please enter your age: 25
+Hello, Alice! You are eligible to vote.
