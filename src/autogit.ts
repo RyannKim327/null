@@ -1,48 +1,85 @@
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const n = text.length;
-    const m = pattern.length;
+const numbers: number[] = [10, 5, 8, 20, 3];
 
-    // Edge case: If the pattern is empty or longer than the text, return an empty array
-    if (m === 0 || m > n) {
-        return [];
-    }
+// Use Math.max with the spread operator
+const maxValue: number = Math.max(...numbers);
 
-    // Step 1: Build the shift table
-    const shiftTable: { [key: string]: number } = {};
-    for (let i = 0; i < m - 1; i++) {
-        shiftTable[pattern[i]] = m - 1 - i;
-    }
+console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
+const numbers: number[] = [10, 5, 8, 20, 3];
 
-    // Default shift for characters not in the pattern
-    const defaultShift = m;
+// Use reduce to find the maximum value
+const maxValue: number = numbers.reduce((max, current) => {
+  return current > max ? current : max;
+}, numbers[0]); // Initialize with the first element
 
-    // Step 2: Search for the pattern in the text
-    const matches: number[] = [];
-    let i = 0; // Index in the text
+console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
+const numbers: number[] = [];
 
-    while (i <= n - m) {
-        let j = m - 1; // Start comparing from the last character of the pattern
+const maxValue: number | undefined = numbers.reduce<number | undefined>((max, current) => {
+  return current > (max ?? -Infinity) ? current : max;
+}, undefined);
 
-        // Compare characters from right to left
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
+if (maxValue !== undefined) {
+  console.log(`The maximum value is: ${maxValue}`);
+} else {
+  console.log('The array is empty.');
+}
+const numbers: number[] = [10, 5, 8, 20, 3];
+let maxValue: number = numbers[0];
 
-        // If all characters matched, record the starting index
-        if (j < 0) {
-            matches.push(i);
-        }
-
-        // Shift the pattern based on the mismatched character in the text
-        const charInText = text[i + m - 1];
-        i += shiftTable[charInText] ?? defaultShift;
-    }
-
-    return matches;
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > maxValue) {
+    maxValue = numbers[i];
+  }
 }
 
-// Example usage
-const text = "abracadabra";
-const pattern = "abra";
-const result = boyerMooreHorspool(text, pattern);
-console.log("Pattern found at indices:", result); // Output: [0, 7]
+console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
+const numbers: number[] = [];
+let maxValue: number | undefined;
+
+if (numbers.length === 0) {
+  maxValue = undefined;
+} else {
+  maxValue = numbers[0];
+  for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > maxValue) {
+      maxValue = numbers[i];
+    }
+  }
+}
+
+if (maxValue !== undefined) {
+  console.log(`The maximum value is: ${maxValue}`);
+} else {
+  console.log('The array is empty.');
+}
+const numbers: number[] = [10, 5, 8, 20, 3];
+
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
+
+// The last element is the maximum
+const maxValue: number = numbers[numbers.length - 1];
+
+console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
+function findMaxValue(arr: (number | string)[]): number | undefined {
+  // Filter out non-number and NaN values
+  const numbers = arr
+    .filter((item): item is number => typeof item === 'number' && !isNaN(item));
+
+  if (numbers.length === 0) {
+    return undefined; // Return undefined if no valid numbers are found
+  }
+
+  // Find the maximum value using reduce
+  return numbers.reduce((max, current) => (current > max ? current : max), numbers[0]);
+}
+
+// Usage
+const mixedArray: (number | string)[] = [10, '5', NaN, 20, 'three', 3];
+const maxValue = findMaxValue(mixedArray);
+
+if (maxValue !== undefined) {
+  console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
+} else {
+  console.log('No valid numbers found in the array.');
+}
