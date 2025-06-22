@@ -1,26 +1,39 @@
-npm install node-cron
-import cron from "node-cron";
+function binarySearchRecursive<T>(arr: T[], target: T, low: number = 0, high: number = arr.length - 1): number {
+    // Base case: if the search space is invalid, return -1 (not found)
+    if (low > high) {
+        return -1;
+    }
 
-// Define a function to be executed by the cron job
-const performTask = () => {
-    console.log("Task executed!");
-};
+    // Calculate the middle index
+    const mid = Math.floor((low + high) / 2);
 
-// Schedule the task using cron syntax
-// This example runs the task every minute
-const task = cron.schedule("* * * * *", performTask, {
-    scheduled: true, // Ensure the task is scheduled immediately
-    timezone: "UTC", // Specify the timezone (optional)
-});
+    // Compare the middle element with the target
+    if (arr[mid] === target) {
+        return mid; // Target found at index mid
+    } else if (arr[mid] < target) {
+        // Search in the right half
+        return binarySearchRecursive(arr, target, mid + 1, high);
+    } else {
+        // Search in the left half
+        return binarySearchRecursive(arr, target, low, mid - 1);
+    }
+}
 
-console.log("Cron job has been scheduled. Waiting for execution...");
+// Example usage:
+const sortedArray = [1, 3, 5, 7, 9, 11, 13];
+const targetValue = 7;
 
-// Optionally, you can stop the cron job after some time
-setTimeout(() => {
-    console.log("Stopping the cron job...");
-    task.stop(); // Stop the cron job
-}, 60000); // Stops the job after 60 seconds
-Cron job has been scheduled. Waiting for execution...
-Task executed!
-Task executed!
-Stopping the cron job...
+const resultIndex = binarySearchRecursive(sortedArray, targetValue);
+
+if (resultIndex !== -1) {
+    console.log(`Element found at index: ${resultIndex}`);
+} else {
+    console.log("Element not found in the array.");
+}
+function binarySearchRecursive<T>(arr: T[], target: T, low: number = 0, high: number = arr.length - 1): number {
+    if (low > high) return -1;
+    const mid = Math.floor((low + high) / 2);
+    if (arr[mid] === target) return mid;
+    if (arr[mid] < target) return binarySearchRecursive(arr, target, mid + 1, high);
+    return binarySearchRecursive(arr, target, low, mid - 1);
+}
