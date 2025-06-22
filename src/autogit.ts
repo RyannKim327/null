@@ -1,32 +1,36 @@
-function countingSort(arr: number[]): number[] {
-    if (arr.length === 0) return arr; // Handle empty array case
+function radixSort(arr: number[]): number[] {
+    // Helper function to get the digit at a specific position
+    const getDigit = (num: number, place: number): number => {
+        return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+    };
 
-    // Step 1: Find the minimum and maximum values in the array
-    const min = Math.min(...arr);
-    const max = Math.max(...arr);
+    // Helper function to find the maximum number of digits in the array
+    const getMaxDigits = (arr: number[]): number => {
+        let max = Math.max(...arr);
+        return max.toString().length;
+    };
 
-    // Step 2: Initialize the counting array
-    const range = max - min + 1;
-    const count: number[] = new Array(range).fill(0);
+    const maxDigits = getMaxDigits(arr);
 
-    // Step 3: Count the frequency of each element
-    for (const num of arr) {
-        count[num - min]++;
-    }
+    // Perform Counting Sort for each digit position
+    for (let i = 0; i < maxDigits; i++) {
+        // Create 10 buckets (0-9)
+        const buckets: number[][] = Array.from({ length: 10 }, () => []);
 
-    // Step 4: Reconstruct the sorted array
-    const sortedArray: number[] = [];
-    for (let i = 0; i < count.length; i++) {
-        while (count[i] > 0) {
-            sortedArray.push(i + min);
-            count[i]--;
+        // Place each number in the corresponding bucket based on the current digit
+        for (const num of arr) {
+            const digit = getDigit(num, i);
+            buckets[digit].push(num);
         }
+
+        // Flatten the buckets back into the array
+        arr = ([] as number[]).concat(...buckets);
     }
 
-    return sortedArray;
+    return arr;
 }
 
 // Example usage:
-const unsortedArray = [4, 2, 2, 8, 3, 3, 1];
-const sortedArray = countingSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
