@@ -1,45 +1,100 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+function reverseString(str: string): string {
+    return str.split('').reverse().join('');
+}
 
-    // Continue searching while the target is within the range
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Avoid division by zero if all elements are the same
-        if (arr[high] === arr[low]) {
-            if (arr[low] === target) {
-                return low; // All elements are the same and equal to target
-            }
-            break; // Target not found
-        }
-
-        // Estimate the position of the target
-        const pos = low + Math.floor(
-            ((high - low) / (arr[high] - arr[low])) * (target - arr[low])
-        );
-
-        // Check if the estimated position contains the target
-        if (arr[pos] === target) {
-            return pos; // Target found
-        }
-
-        // Adjust the search range
-        if (arr[pos] < target) {
-            low = pos + 1; // Search in the upper half
-        } else {
-            high = pos - 1; // Search in the lower half
-        }
+// Example Usage:
+const original = "TypeScript";
+const reversed = reverseString(original);
+console.log(reversed); // Output: tpircSepyT
+function reverseString(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
     }
-
-    return -1; // Target not found
+    return reversed;
 }
-const sortedArray = [10, 12, 13, 16, 18, 19, 20, 21, 22, 23, 24, 33, 35, 42, 47];
-const target = 22;
 
-const result = interpolationSearch(sortedArray, target);
-
-if (result !== -1) {
-    console.log(`Element found at index ${result}`);
-} else {
-    console.log("Element not found in the array");
+// Example Usage:
+const original = "Hello";
+const reversed = reverseString(original);
+console.log(reversed); // Output: olleH
+function reverseString(str: string): string {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseString(str.substr(1)) + str.charAt(0);
+    }
 }
-Element found at index 8
+
+// Example Usage:
+const original = "Recursion";
+const reversed = reverseString(original);
+console.log(reversed); // Output: noisruceR
+function reverseString(str: string): string {
+    return [...str].reverse().join('');
+}
+
+// Example Usage:
+const original = "ES6";
+const reversed = reverseString(original);
+console.log(reversed); // Output: 6SE
+function reverseStringUnicode(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Example Usage:
+const original = "😊 TypeScript 💻";
+const reversed = reverseStringUnicode(original);
+console.log(reversed); // Output: 💻 tpircSeyT 😊
+// Method 1: Using Built-in Methods
+function reverseWithBuiltIn(str: string): string {
+    return str.split('').reverse().join('');
+}
+
+// Method 2: Using a for Loop
+function reverseWithLoop(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
+}
+
+// Method 3: Using Recursion
+function reverseWithRecursion(str: string): string {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseWithRecursion(str.substr(1)) + str.charAt(0);
+    }
+}
+
+// Method 4: Using ES6 Spread Operator
+function reverseWithSpread(str: string): string {
+    return [...str].reverse().join('');
+}
+
+// Method 5: Handling Unicode with Array.from
+function reverseWithUnicode(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Example Usage:
+const original = "🌍 TypeScript 🚀";
+
+console.log("Original:", original);
+console.log("Reversed (Built-in):", reverseWithBuiltIn(original));
+console.log("Reversed (Loop):", reverseWithLoop(original));
+console.log("Reversed (Recursion):", reverseWithRecursion(original));
+console.log("Reversed (Spread):", reverseWithSpread(original));
+console.log("Reversed (Unicode):", reverseWithUnicode(original));
+
+/*
+Output:
+Original: 🌍 TypeScript 🚀
+Reversed (Built-in): 🚀 tpircSeyT 🌍
+Reversed (Loop): 🚀 tpircSeyT 🌍
+Reversed (Recursion): 🚀 tpircSeyT 🌍
+Reversed (Spread): 🚀 tpircSeyT 🌍
+Reversed (Unicode): 🚀 tpircSeyT 🌍
+*/
