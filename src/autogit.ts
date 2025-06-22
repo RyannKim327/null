@@ -1,40 +1,23 @@
-// Define an interface for the expected structure of the data
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
+function isPrime(num: number): boolean {
+    // Step 1: Handle edge cases
+    if (num <= 1) return false; // Numbers <= 1 are not prime
+    if (num === 2) return true; // 2 is the smallest prime number
+    if (num % 2 === 0) return false; // Even numbers > 2 are not prime
 
-// Function to fetch data from the API
-async function fetchPosts(): Promise<void> {
-  try {
-    // Make a GET request using fetch
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-
-    // Check if the response status is OK (status code 200)
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+    // Step 2: Check divisors from 3 to √num
+    const sqrt = Math.sqrt(num);
+    for (let i = 3; i <= sqrt; i += 2) { // Skip even numbers
+        if (num % i === 0) {
+            return false; // Found a divisor, so it's not prime
+        }
     }
 
-    // Parse the response as JSON
-    const posts: Post[] = await response.json();
-
-    // Process and display the data
-    console.log('Fetched Posts:');
-    posts.forEach((post) => {
-      console.log(`ID: ${post.id}, Title: ${post.title}`);
-    });
-  } catch (error) {
-    // Handle any errors that occurred during the fetch
-    console.error('Error fetching posts:', error);
-  }
+    // Step 3: No divisors found, so it's prime
+    return true;
 }
 
-// Call the function to fetch and display posts
-fetchPosts();
-Fetched Posts:
-ID: 1, Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
-ID: 2, Title: qui est esse
-ID: 3, Title: ea molestias quasi exercitationem repellat qui ipsa sit aut
-...
+// Example usage:
+console.log(isPrime(2)); // true
+console.log(isPrime(4)); // false
+console.log(isPrime(17)); // true
+console.log(isPrime(18)); // false
