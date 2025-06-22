@@ -1,46 +1,44 @@
-function factorialIterative(n: number): number {
-    // Factorial is undefined for negative numbers
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers");
+function longestCommonPrefix(strings: string[]): string {
+    // Handle edge case: if the array is empty, return an empty string
+    if (strings.length === 0) {
+        return "";
     }
 
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
+    // Start with the first string as the initial prefix
+    let prefix = strings[0];
+
+    // Iterate through the rest of the strings
+    for (let i = 1; i < strings.length; i++) {
+        const currentString = strings[i];
+        let j = 0;
+
+        // Compare characters of the current string with the prefix
+        while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
+            j++;
+        }
+
+        // Update the prefix to the matched portion
+        prefix = prefix.substring(0, j);
+
+        // If the prefix becomes empty, no common prefix exists
+        if (prefix === "") {
+            return "";
+        }
     }
-    return result;
+
+    return prefix;
 }
+const strings1 = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings1)); // Output: "fl"
 
-// Example usage
-console.log(factorialIterative(5)); // Output: 120
-function factorialRecursive(n: number): number {
-    // Factorial is undefined for negative numbers
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers");
-    }
+const strings2 = ["dog", "racecar", "car"];
+console.log(longestCommonPrefix(strings2)); // Output: ""
 
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
-    }
+const strings3 = ["interspecies", "interstellar", "interstate"];
+console.log(longestCommonPrefix(strings3)); // Output: "inters"
 
-    // Recursive case
-    return n * factorialRecursive(n - 1);
-}
+const strings4 = [];
+console.log(longestCommonPrefix(strings4)); // Output: ""
 
-// Example usage
-console.log(factorialRecursive(5)); // Output: 120
-function factorialBigInt(n: bigint): bigint {
-    if (n < 0n) {
-        throw new Error("Factorial is not defined for negative numbers");
-    }
-
-    let result = 1n;
-    for (let i = 2n; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
-
-// Example usage
-console.log(factorialBigInt(50n).toString()); // Output: "30414093201713378043612608166064768844377641568960512000000000000"
+const strings5 = ["single"];
+console.log(longestCommonPrefix(strings5)); // Output: "single"
