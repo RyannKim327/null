@@ -1,39 +1,38 @@
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
+function findFirstRepeatedCharacter(input: string): string | null {
+    // Create a Set to store characters we've seen
+    const seenCharacters = new Set<string>();
+
+    // Iterate through each character in the string
+    for (const char of input) {
+        // If the character is already in the Set, it's the first repeated character
+        if (seenCharacters.has(char)) {
+            return char;
+        }
+        // Otherwise, add the character to the Set
+        seenCharacters.add(char);
     }
 
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
+    // If no repeated character is found, return null
+    return null;
 }
 
-// Example usage:
-console.log(factorialIterative(5)); // Output: 120
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
+// Example Usage
+const result = findFirstRepeatedCharacter("programming");
+console.log(result); // Output: "r"
+function findFirstRepeatedCharacterCaseInsensitive(input: string): string | null {
+    const seenCharacters = new Set<string>();
+    const lowerCaseInput = input.toLowerCase();
+
+    for (const char of lowerCaseInput) {
+        if (seenCharacters.has(char)) {
+            return char;
+        }
+        seenCharacters.add(char);
     }
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * factorialRecursive(n - 1);
+
+    return null;
 }
 
-// Example usage:
-console.log(factorialRecursive(5)); // Output: 120
-function factorialBigInt(n: number): bigint {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    let result: bigint = 1n;
-    for (let i = 2; i <= n; i++) {
-        result *= BigInt(i);
-    }
-    return result;
-}
-
-// Example usage:
-console.log(factorialBigInt(20).toString()); // Output: "2432902008176640000"
+// Example Usage
+const result = findFirstRepeatedCharacterCaseInsensitive("Programming");
+console.log(result); // Output: "r"
