@@ -1,71 +1,56 @@
-// Define the structure of a binary tree node
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function longestCommonSubsequence(str1: string, str2: string): { length: number; sequence: string } {
+    const m = str1.length;
+    const n = str2.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+    // Initialize a 2D array filled with zeros
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-// Function to count the number of leaf nodes recursively
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
-
-    // If the node is a leaf (no left or right child), return 1
-    if (root.left === null && root.right === null) {
-        return 1;
-    }
-
-    // Recursively count leaf nodes in the left and right subtrees
-    const leftCount = countLeafNodes(root.left);
-    const rightCount = countLeafNodes(root.right);
-
-    // Return the total count
-    return leftCount + rightCount;
-}
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-
-// Count the leaf nodes
-console.log(countLeafNodes(root)); // Output: 3 (nodes 4, 5, and 6 are leaves)
-function countLeafNodesIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
-    }
-
-    let count = 0;
-    const stack: TreeNode[] = [root];
-
-    while (stack.length > 0) {
-        const current = stack.pop()!;
-
-        // Check if the current node is a leaf
-        if (current.left === null && current.right === null) {
-            count++;
-        }
-
-        // Push the left and right children onto the stack
-        if (current.left !== null) {
-            stack.push(current.left);
-        }
-        if (current.right !== null) {
-            stack.push(current.right);
+    // Build the dp table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
     }
 
-    return count;
+    // Length of LCS is in dp[m][n]
+    const lcsLength = dp[m][n];
+
+    // To find the actual LCS string, we need to backtrack through the dp table
+    let i = m;
+    let j = n;
+    const lcs: string[] = [];
+
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            // If characters match, it's part of LCS
+            lcs.push(str1[i - 1]);
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            // Move in the direction of the greater value
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    // Since we've built the LCS from the end, reverse it
+    const lcsStr = lcs.reverse().join('');
+
+    return {
+        length: lcsLength,
+        sequence: lcsStr,
+    };
 }
-// Using the same binary tree as above
-console.log(countLeafNodesIterative(root)); // Output: 3
+
+// Example usage:
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+
+const result = longestCommonSubsequence(str1, str2);
+console.log(`Length of LCS: ${result.length}`);      // Output: 4
+console.log(`LCS: "${result.sequence}"`);           // Output: "GTAB"
