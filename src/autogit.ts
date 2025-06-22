@@ -1,33 +1,204 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+class AVLNode {
+    key: number;
+    left: AVLNode | null;
+    right: AVLNode | null;
+    height: number;
+
+    constructor(key: number) {
+        this.key = key;
+        this.left = null;
+        this.right = null;
+        this.height = 1; // Height of a new node is 1
+    }
+}
+class AVLTree {
+    root: AVLNode | null;
+
+    constructor() {
+        this.root = null;
     }
 
-    // Step 1: Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
+    // Get the height of a node
+    private getHeight(node: AVLNode | null): number {
+        return node ? node.height : 0;
+    }
 
-    // Step 2: Partition the array into two subarrays
-    const left: number[] = [];
-    const right: number[] = [];
+    // Get the balance factor of a node
+    private getBalanceFactor(node: AVLNode | null): number {
+        if (!node) return 0;
+        return this.getHeight(node.left) - this.getHeight(node.right);
+    }
 
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]); // Elements less than pivot go to the left
+    // Update the height of a node
+    private updateHeight(node: AVLNode): void {
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+    }
+
+    // Right rotation
+    private rotateRight(y: AVLNode): AVLNode {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        this.updateHeight(y);
+        this.updateHeight(x);
+
+        return x;
+    }
+
+    // Left rotation
+    private rotateLeft(x: AVLNode): AVLNode {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        this.updateHeight(x);
+        this.updateHeight(y);
+
+        return y;
+    }
+
+    // Rebalance the tree
+    private rebalance(node: AVLNode): AVLNode {
+        // Update height of the current node
+        this.updateHeight(node);
+
+        // Get the balance factor
+        const balance = this.getBalanceFactor(node);
+
+        // Left-heavy case
+        if (balance > 1) {
+            if (this.getBalanceFactor(node.left) >= 0) {
+                // Left-Left case
+                return this.rotateRight(node);
+            } else {
+                // Left-Right case
+                node.left = this.rotateLeft(node.left!);
+                return this.rotateRight(node);
+            }
+        }
+
+        // Right-heavy case
+        if (balance < -1) {
+            if (this.getBalanceFactor(node.right) <= 0) {
+                // Right-Right case
+                return this.rotateLeft(node);
+            } else {
+                // Right-Left case
+                node.right = this.rotateRight(node.right!);
+                return this.rotateLeft(node);
+            }
+        }
+
+        // No imbalance, return the node as is
+        return node;
+    }
+
+    // Insert a key into the AVL tree
+    public insert(key: number): void {
+        this.root = this.insertNode(this.root, key);
+    }
+
+    private insertNode(node: AVLNode | null, key: number): AVLNode {
+        // Perform standard BST insertion
+        if (!node) return new AVLNode(key);
+
+        if (key < node.key) {
+            node.left = this.insertNode(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.insertNode(node.right, key);
         } else {
-            right.push(arr[i]); // Elements greater than or equal to pivot go to the right
+            // Duplicate keys are not allowed
+            return node;
+        }
+
+        // Rebalance the tree
+        return this.rebalance(node);
+    }
+
+    // Delete a key from the AVL tree
+    public delete(key: number): void {
+        this.root = this.deleteNode(this.root, key);
+    }
+
+    private deleteNode(node: AVLNode | null, key: number): AVLNode | null {
+        if (!node) return null;
+
+        // Perform standard BST deletion
+        if (key < node.key) {
+            node.left = this.deleteNode(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.deleteNode(node.right, key);
+        } else {
+            // Node with only one child or no child
+            if (!node.left || !node.right) {
+                const temp = node.left || node.right;
+                if (!temp) {
+                    // No child case
+                    return null;
+                } else {
+                    // One child case
+                    return temp;
+                }
+            } else {
+                // Node with two children: Get the inorder successor (smallest in the right subtree)
+                const temp = this.getMinValueNode(node.right);
+                node.key = temp.key;
+                node.right = this.deleteNode(node.right, temp.key);
+            }
+        }
+
+        // Rebalance the tree
+        return this.rebalance(node);
+    }
+
+    // Find the node with the minimum value in a subtree
+    private getMinValueNode(node: AVLNode): AVLNode {
+        let current = node;
+        while (current.left) {
+            current = current.left;
+        }
+        return current;
+    }
+
+    // In-order traversal for debugging or verification
+    public inOrderTraversal(): number[] {
+        const result: number[] = [];
+        this.inOrderHelper(this.root, result);
+        return result;
+    }
+
+    private inOrderHelper(node: AVLNode | null, result: number[]): void {
+        if (node) {
+            this.inOrderHelper(node.left, result);
+            result.push(node.key);
+            this.inOrderHelper(node.right, result);
         }
     }
-
-    // Step 3: Recursively sort the left and right subarrays
-    const sortedLeft = quicksort(left);
-    const sortedRight = quicksort(right);
-
-    // Step 4: Combine the sorted subarrays with the pivot
-    return [...sortedLeft, pivot, ...sortedRight];
 }
+const avlTree = new AVLTree();
 
-// Example usage
-const unsortedArray = [10, 7, 8, 9, 1, 5];
-const sortedArray = quicksort(unsortedArray);
-console.log(sortedArray); // Output: [1, 5, 7, 8, 9, 10]
+// Insert elements
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+avlTree.insert(40);
+avlTree.insert(50);
+avlTree.insert(25);
+
+// Print in-order traversal
+console.log("In-order traversal:", avlTree.inOrderTraversal());
+
+// Delete an element
+avlTree.delete(30);
+
+// Print in-order traversal after deletion
+console.log("In-order traversal after deletion:", avlTree.inOrderTraversal());
