@@ -1,115 +1,35 @@
-type Graph = Map<number, { node: number; weight: number }[]>;
-
-class MinHeap {
-    private heap: { node: number; distance: number }[] = [];
-
-    // Insert a new element into the heap
-    insert(node: number, distance: number): void {
-        this.heap.push({ node, distance });
-        this.bubbleUp(this.heap.length - 1);
+function quickSort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
     }
 
-    // Extract the element with the smallest distance
-    extractMin(): { node: number; distance: number } | null {
-        if (this.heap.length === 0) return null;
-        const min = this.heap[0];
-        const last = this.heap.pop();
-        if (this.heap.length > 0 && last) {
-            this.heap[0] = last;
-            this.bubbleDown(0);
-        }
-        return min;
-    }
+    // Choose a pivot (we'll pick the last element)
+    const pivot = arr[arr.length - 1];
 
-    // Bubble up to maintain the heap property
-    private bubbleUp(index: number): void {
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            if (this.heap[parentIndex].distance <= this.heap[index].distance) break;
-            [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
-            index = parentIndex;
+    // Partition the array into two sub-arrays:
+    // - `left` contains elements less than or equal to the pivot
+    // - `right` contains elements greater than the pivot
+    const left: number[] = [];
+    const right: number[] = [];
+
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] <= pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
         }
     }
 
-    // Bubble down to maintain the heap property
-    private bubbleDown(index: number): void {
-        const length = this.heap.length;
-        while (true) {
-            const leftChildIndex = 2 * index + 1;
-            const rightChildIndex = 2 * index + 2;
-            let smallest = index;
-
-            if (leftChildIndex < length && this.heap[leftChildIndex].distance < this.heap[smallest].distance) {
-                smallest = leftChildIndex;
-            }
-            if (rightChildIndex < length && this.heap[rightChildIndex].distance < this.heap[smallest].distance) {
-                smallest = rightChildIndex;
-            }
-            if (smallest === index) break;
-            [this.heap[smallest], this.heap[index]] = [this.heap[index], this.heap[smallest]];
-            index = smallest;
-        }
-    }
-
-    isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
+    // Recursively sort the left and right sub-arrays, then combine them with the pivot
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
-function dijkstra(graph: Graph, startNode: number): Map<number, number> {
-    const distances = new Map<number, number>();
-    const visited = new Set<number>();
-    const pq = new MinHeap();
+// Example usage:
+const unsortedArray = [34, 7, 23, 32, 5, 62];
+const sortedArray = quickSort(unsortedArray);
 
-    // Initialize distances
-    for (const node of graph.keys()) {
-        distances.set(node, Infinity);
-    }
-    distances.set(startNode, 0);
-
-    // Insert the start node into the priority queue
-    pq.insert(startNode, 0);
-
-    // Process the priority queue
-    while (!pq.isEmpty()) {
-        const current = pq.extractMin();
-        if (!current) break;
-
-        const currentNode = current.node;
-        const currentDistance = current.distance;
-
-        // Skip if already visited
-        if (visited.has(currentNode)) continue;
-        visited.add(currentNode);
-
-        // Update distances for neighbors
-        const neighbors = graph.get(currentNode) || [];
-        for (const { node: neighbor, weight } of neighbors) {
-            if (visited.has(neighbor)) continue;
-
-            const newDistance = currentDistance + weight;
-            if (newDistance < (distances.get(neighbor) || Infinity)) {
-                distances.set(neighbor, newDistance);
-                pq.insert(neighbor, newDistance);
-            }
-        }
-    }
-
-    return distances;
-}
-
-// Example usage
-const graph: Graph = new Map([
-    [0, [{ node: 1, weight: 4 }, { node: 2, weight: 1 }]],
-    [1, [{ node: 3, weight: 1 }]],
-    [2, [{ node: 1, weight: 2 }, { node: 3, weight: 5 }]],
-    [3, []],
-]);
-
-const startNode = 0;
-const shortestDistances = dijkstra(graph, startNode);
-
-console.log("Shortest distances from node", startNode, ":");
-for (const [node, distance] of shortestDistances.entries()) {
-    console.log(`Node ${node}: ${distance}`);
-}
+console.log("Unsorted Array:", unsortedArray);
+console.log("Sorted Array:", sortedArray);
+Unsorted Array: [34, 7, 23, 32, 5, 62]
+Sorted Array: [5, 7, 23, 32, 34, 62]
