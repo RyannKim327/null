@@ -1,33 +1,45 @@
-function isPrime(num: number): boolean {
-    // Step 1: Handle edge cases for numbers less than or equal to 1
-    if (num <= 1) return false;
+function buildBadCharTable(pattern: string): Map<string, number> {
+    const table = new Map<string, number>();
+    for (let i = 0; i < pattern.length; i++) {
+        table.set(pattern[i], i); // Store the last occurrence of each character
+    }
+    return table;
+}
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
+    if (m === 0) return []; // Edge case: empty pattern
 
-    // Step 2: Check divisors from 2 up to the square root of the number
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // If divisible by any number, it's not prime
+    const badCharTable = buildBadCharTable(pattern);
+    const result: number[] = [];
+    let s = 0; // Shift of the pattern with respect to the text
+
+    while (s <= n - m) {
+        let j = m - 1; // Start comparing from the rightmost character of the pattern
+
+        // Match the pattern from right to left
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // Pattern found at index `s`
+            result.push(s);
+
+            // Shift the pattern to align the next character in the text
+            s += (s + m < n) ? m - (badCharTable.get(text[s + m]) ?? -1) : 1;
+        } else {
+            // Mismatch occurred at `pattern[j]` and `text[s + j]`
+            const charShift = badCharTable.get(text[s + j]) ?? -1;
+            s += Math.max(1, j - charShift);
         }
     }
 
-    // Step 3: If no divisors were found, the number is prime
-    return true;
+    return result; // Return all starting indices where the pattern is found
 }
-console.log(isPrime(2));    // Output: true (2 is prime)
-console.log(isPrime(4));    // Output: false (4 is not prime)
-console.log(isPrime(17));   // Output: true (17 is prime)
-console.log(isPrime(1));    // Output: false (1 is not prime)
-console.log(isPrime(-5));   // Output: false (negative numbers are not prime)
-console.log(isPrime(29));   // Output: true (29 is prime)
-function isPrimeOptimized(num: number): boolean {
-    if (num <= 1) return false;
-    if (num <= 3) return true; // 2 and 3 are prime
-    if (num % 2 === 0 || num % 3 === 0) return false;
+const text = "ABAAABCDABCABCD";
+const pattern = "ABC";
 
-    for (let i = 5; i <= Math.sqrt(num); i += 6) {
-        if (num % i === 0 || num % (i + 2) === 0) {
-            return false;
-        }
-    }
-
-    return true;
-}
+const matches = boyerMooreSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
+Pattern found at indices: [4, 9]
