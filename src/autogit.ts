@@ -1,34 +1,26 @@
-// Define the structure of a Node
-class ListNode {
-    data: number;  // You can change this type to suit your needs (e.g., string)
-    next: ListNode | null;
+function getStringLength(input: string): number {
+    let count = 0;
 
-    constructor(data: number) {
-        this.data = data;
-        this.next = null;
-    }
-}
-
-// Function to calculate the length of the linked list
-function getLength(head: ListNode | null): number {
-    let length = 0;
-    let currentNode = head;
-
-    // Traverse the linked list
-    while (currentNode !== null) {
-        length++;
-        currentNode = currentNode.next;  // Move to the next node
+    // Iterate through the string until we reach the end
+    while (input[count] !== undefined) {
+        count++;
     }
 
-    return length;
+    return count;
 }
 
 // Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
+const myString = "Hello, TypeScript!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`);
+function getStringLengthRecursive(input: string, index: number = 0): number {
+    if (input[index] === undefined) {
+        return index; // Base case: end of string reached
+    }
+    return getStringLengthRecursive(input, index + 1); // Recursive call
+}
 
-node1.next = node2;
-node2.next = node3;
-
-console.log("Length of the linked list:", getLength(node1));  // Output: 3
+// Example usage:
+const myString = "Recursion!";
+const length = getStringLengthRecursive(myString);
+console.log(`The length of the string is: ${length}`);
