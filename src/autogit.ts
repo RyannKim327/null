@@ -1,45 +1,44 @@
-function boyerMooreSearch(text: string, pattern: string): number[] {
-    const n = text.length;
-    const m = pattern.length;
+function radixSort(arr: number[]): number[] {
+    // Helper function to get the digit at a specific place
+    const getDigit = (num: number, place: number): number => {
+        return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+    };
 
-    if (m === 0) return [];
+    // Helper function to count the number of digits in a number
+    const digitCount = (num: number): number => {
+        if (num === 0) return 1;
+        return Math.floor(Math.log10(Math.abs(num))) + 1;
+    };
 
-    // Step 1: Preprocess the bad character table
-    const badCharTable: { [key: string]: number } = {};
-    for (let i = 0; i < m; i++) {
-        badCharTable[pattern[i]] = i; // Store the last occurrence of each character
-    }
+    // Helper function to find the maximum number of digits in the array
+    const mostDigits = (nums: number[]): number => {
+        let maxDigits = 0;
+        for (const num of nums) {
+            maxDigits = Math.max(maxDigits, digitCount(num));
+        }
+        return maxDigits;
+    };
 
-    const result: number[] = [];
-    let s = 0; // Shift of the pattern with respect to the text
+    // Main Radix Sort logic
+    const maxDigits = mostDigits(arr);
+    for (let k = 0; k < maxDigits; k++) {
+        // Create buckets for digits 0-9
+        const buckets: number[][] = Array.from({ length: 10 }, () => []);
 
-    // Step 2: Search process
-    while (s <= n - m) {
-        let j = m - 1;
-
-        // Compare characters from right to left
-        while (j >= 0 && pattern[j] === text[s + j]) {
-            j--;
+        // Place each number in the corresponding bucket based on the current digit
+        for (const num of arr) {
+            const digit = getDigit(num, k);
+            buckets[digit].push(num);
         }
 
-        if (j < 0) {
-            // Match found
-            result.push(s);
-            // Shift the pattern to align with the next possible match
-            s += (s + m < n) ? m - (badCharTable[text[s + m]] ?? -1) : 1;
-        } else {
-            // Mismatch occurred at pattern[j]
-            const charShift = badCharTable[text[s + j]] ?? -1;
-            s += Math.max(1, j - charShift); // Apply the bad character rule
-        }
+        // Flatten the buckets back into the array
+        arr = ([] as number[]).concat(...buckets);
     }
 
-    return result;
+    return arr;
 }
 
 // Example usage
-const text = "ABAAABCDABCD";
-const pattern = "ABCD";
-const matches = boyerMooreSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
-Pattern found at indices: [5, 9]
+const unsortedArray = [329, 457, 657, 839, 436, 720, 355];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [329, 355, 436, 457, 657, 720, 839]
