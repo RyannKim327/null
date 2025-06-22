@@ -1,37 +1,30 @@
-function findSecondLargest(arr: number[]): number | undefined {
-    if (arr.length < 2) {
-        // Not enough elements to determine the second largest
-        return undefined;
-    }
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    let first: number | undefined = undefined;
-    let second: number | undefined = undefined;
+    // Outer loop to control the number of passes
+    for (let i = 0; i < n - 1; i++) {
+        // A flag to check if any swap occurred in the current pass
+        let swapped = false;
 
-    for (const num of arr) {
-        if (first === undefined || num > first) {
-            // Update second largest before updating the largest
-            second = first;
-            first = num;
-        } else if (num !== first && (second === undefined || num > second)) {
-            // Update second largest if the number is not equal to the largest
-            second = num;
+        // Inner loop to compare adjacent elements
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap elements if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+
+                // Mark that a swap occurred
+                swapped = true;
+            }
         }
+
+        // If no swaps occurred, the array is already sorted
+        if (!swapped) break;
     }
 
-    // Return the second largest if it exists
-    return second;
+    return arr;
 }
 
-// Example usage:
-const array = [12, 35, 1, 10, 34, 1];
-const result = findSecondLargest(array);
-console.log("The second largest element is:", result); // Output: 34
-function findSecondLargestBySorting(arr: number[]): number | undefined {
-    const uniqueSorted = Array.from(new Set(arr)).sort((a, b) => b - a);
-    return uniqueSorted[1];
-}
-
-// Example usage:
-const array = [12, 35, 1, 10, 34, 1];
-const result = findSecondLargestBySorting(array);
-console.log("The second largest element is:", result); // Output: 34
+// Example usage
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
