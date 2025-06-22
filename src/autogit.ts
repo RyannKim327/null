@@ -1,44 +1,26 @@
-function radixSort(arr: number[]): number[] {
-    // Helper function to get the digit at a specific place
-    const getDigit = (num: number, place: number): number => {
-        return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
-    };
+function removeVowels(input: string): string {
+    // Define a regex pattern to match vowels (case-insensitive)
+    const vowelsRegex = /[aeiou]/gi;
 
-    // Helper function to count the number of digits in a number
-    const digitCount = (num: number): number => {
-        if (num === 0) return 1;
-        return Math.floor(Math.log10(Math.abs(num))) + 1;
-    };
-
-    // Helper function to find the maximum number of digits in the array
-    const mostDigits = (nums: number[]): number => {
-        let maxDigits = 0;
-        for (const num of nums) {
-            maxDigits = Math.max(maxDigits, digitCount(num));
-        }
-        return maxDigits;
-    };
-
-    // Main Radix Sort logic
-    const maxDigits = mostDigits(arr);
-    for (let k = 0; k < maxDigits; k++) {
-        // Create buckets for digits 0-9
-        const buckets: number[][] = Array.from({ length: 10 }, () => []);
-
-        // Place each number in the corresponding bucket based on the current digit
-        for (const num of arr) {
-            const digit = getDigit(num, k);
-            buckets[digit].push(num);
-        }
-
-        // Flatten the buckets back into the array
-        arr = ([] as number[]).concat(...buckets);
-    }
-
-    return arr;
+    // Replace all vowels with an empty string
+    return input.replace(vowelsRegex, '');
 }
 
 // Example usage
-const unsortedArray = [329, 457, 657, 839, 436, 720, 355];
-const sortedArray = radixSort(unsortedArray);
-console.log(sortedArray); // Output: [329, 355, 436, 457, 657, 720, 839]
+const originalString = "Hello, World!";
+const result = removeVowels(originalString);
+console.log(result); // Output: "Hll, Wrld!"
+function removeVowels(input: string): string {
+    // Define a set of vowels for quick lookup
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']);
+
+    // Use Array.from to iterate through characters and filter out vowels
+    return Array.from(input)
+        .filter(char => !vowels.has(char))
+        .join('');
+}
+
+// Example usage
+const originalString = "TypeScript is awesome!";
+const result = removeVowels(originalString);
+console.log(result); // Output: "TypScrpt s wsm!"
