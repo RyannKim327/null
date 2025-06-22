@@ -1,14 +1,32 @@
-const originalString: string = "HELLO WORLD";
-const lowerCaseString: string = originalString.toLowerCase();
+function countingSort(arr: number[]): number[] {
+    if (arr.length === 0) return arr; // Handle empty array case
 
-console.log(lowerCaseString); // Output: "hello world"
-function toLowerCase(input: unknown): string {
-    if (typeof input === 'string') {
-        return input.toLowerCase();
-    } else {
-        throw new Error("Input must be a string");
+    // Step 1: Find the minimum and maximum values in the array
+    const min = Math.min(...arr);
+    const max = Math.max(...arr);
+
+    // Step 2: Initialize the counting array
+    const range = max - min + 1;
+    const count: number[] = new Array(range).fill(0);
+
+    // Step 3: Count the frequency of each element
+    for (const num of arr) {
+        count[num - min]++;
     }
+
+    // Step 4: Reconstruct the sorted array
+    const sortedArray: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            sortedArray.push(i + min);
+            count[i]--;
+        }
+    }
+
+    return sortedArray;
 }
 
-console.log(toLowerCase("TypeScript")); // Output: "typescript"
-console.log(toLowerCase(123)); // Throws an error: "Input must be a string"
+// Example usage:
+const unsortedArray = [4, 2, 2, 8, 3, 3, 1];
+const sortedArray = countingSort(unsortedArray);
+console.log(sortedArray); // Output: [1, 2, 2, 3, 3, 4, 8]
