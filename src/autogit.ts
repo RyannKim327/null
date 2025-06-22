@@ -1,65 +1,40 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
-    }
-
-    const m = nums1.length;
-    const n = nums2.length;
-
-    let low = 0;
-    let high = m;
-
-    while (low <= high) {
-        const partitionNums1 = Math.floor((low + high) / 2);
-        const partitionNums2 = Math.floor((m + n + 1) / 2) - partitionNums1;
-
-        const maxLeftNums1 = partitionNums1 === 0 ? Number.NEGATIVE_INFINITY : nums1[partitionNums1 - 1];
-        const minRightNums1 = partitionNums1 === m ? Number.POSITIVE_INFINITY : nums1[partitionNums1];
-
-        const maxLeftNums2 = partitionNums2 === 0 ? Number.NEGATIVE_INFINITY : nums2[partitionNums2 - 1];
-        const minRightNums2 = partitionNums2 === n ? Number.POSITIVE_INFINITY : nums2[partitionNums2];
-
-        if (maxLeftNums1 <= minRightNums2 && maxLeftNums2 <= minRightNums1) {
-            // Found the correct partitions
-            if ((m + n) % 2 === 0) {
-                return (Math.max(maxLeftNums1, maxLeftNums2) + Math.min(minRightNums1, minRightNums2)) / 2;
-            } else {
-                return Math.max(maxLeftNums1, maxLeftNums2);
-            }
-        } else if (maxLeftNums1 > minRightNums2) {
-            // Move towards the left side of nums1
-            high = partitionNums1 - 1;
-        } else {
-            // Move towards the right side of nums1
-            low = partitionNums1 + 1;
-        }
-    }
-
-    throw new Error("Input arrays are not sorted.");
+// Define an interface for the expected structure of the data
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
-// Example usage:
-const array1 = [1, 3];
-const array2 = [2];
+// Function to fetch data from the API
+async function fetchPosts(): Promise<void> {
+  try {
+    // Make a GET request using fetch
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
 
-console.log(findMedianSortedArrays(array1, array2)); // Output: 2
+    // Check if the response status is OK (status code 200)
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
 
-const array3 = [1, 2];
-const array4 = [3, 4];
+    // Parse the response as JSON
+    const posts: Post[] = await response.json();
 
-console.log(findMedianSortedArrays(array3, array4)); // Output: 2.5
-// Test Case 1: Odd total elements
-console.log(findMedianSortedArrays([1, 3], [2])); // Expected Output: 2
+    // Process and display the data
+    console.log('Fetched Posts:');
+    posts.forEach((post) => {
+      console.log(`ID: ${post.id}, Title: ${post.title}`);
+    });
+  } catch (error) {
+    // Handle any errors that occurred during the fetch
+    console.error('Error fetching posts:', error);
+  }
+}
 
-// Test Case 2: Even total elements
-console.log(findMedianSortedArrays([1, 2], [3, 4])); // Expected Output: 2.5
-
-// Test Case 3: One array is empty
-console.log(findMedianSortedArrays([], [1, 2, 3])); // Expected Output: 2
-
-// Test Case 4: Both arrays have one element each
-console.log(findMedianSortedArrays([1], [2])); // Expected Output: 1.5
-
-// Test Case 5: Arrays with negative numbers
-console.log(findMedianSortedArrays([-5, -3, -1], [-4, -2, 0])); // Expected Output: -2
+// Call the function to fetch and display posts
+fetchPosts();
+Fetched Posts:
+ID: 1, Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
+ID: 2, Title: qui est esse
+ID: 3, Title: ea molestias quasi exercitationem repellat qui ipsa sit aut
+...
