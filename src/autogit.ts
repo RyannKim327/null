@@ -1,56 +1,81 @@
-function longestCommonSubsequence(str1: string, str2: string): { length: number; sequence: string } {
-    const m = str1.length;
-    const n = str2.length;
+/**
+ * Function to compute the Longest Prefix Suffix (LPS) array.
+ * @param pattern The pattern string.
+ * @returns An array representing the LPS values for each position in the pattern.
+ */
+function computeLPS(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // Length of the previous longest prefix suffix
+    let i = 1;
 
-    // Initialize a 2D array filled with zeros
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Build the dp table
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                // Fall back in the LPS array
+                length = lps[length - 1];
+                // Note: Do not increment 'i' here
             } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                lps[i] = 0;
+                i++;
             }
         }
     }
 
-    // Length of LCS is in dp[m][n]
-    const lcsLength = dp[m][n];
+    return lps;
+}
 
-    // To find the actual LCS string, we need to backtrack through the dp table
-    let i = m;
-    let j = n;
-    const lcs: string[] = [];
+/**
+ * KMP Search Algorithm.
+ * @param text The text string where the pattern is to be searched.
+ * @param pattern The pattern string to search for.
+ * @returns An array of starting indices where the pattern is found in the text.
+ */
+function KMPSearch(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
 
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            // If characters match, it's part of LCS
-            lcs.push(str1[i - 1]);
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            // Move in the direction of the greater value
-            i--;
-        } else {
-            j--;
+    if (m === 0) {
+        throw new Error("Pattern must not be empty.");
+    }
+
+    const lps = computeLPS(pattern);
+    const result: number[] = [];
+
+    let i = 0; // Index for text
+    let j = 0; // Index for pattern
+
+    while (i < n) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
+        }
+
+        if (j === m) {
+            // Match found at index i - j
+            result.push(i - j);
+            j = lps[j - 1]; // Continue searching for next possible match
+        } else if (i < n && pattern[j] !== text[i]) {
+            // Mismatch after j matches
+            if (j !== 0) {
+                j = lps[j - 1];
+                // Do not increment 'i' here
+            } else {
+                i++;
+            }
         }
     }
 
-    // Since we've built the LCS from the end, reverse it
-    const lcsStr = lcs.reverse().join('');
-
-    return {
-        length: lcsLength,
-        sequence: lcsStr,
-    };
+    return result;
 }
 
-// Example usage:
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
+// Example Usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
 
-const result = longestCommonSubsequence(str1, str2);
-console.log(`Length of LCS: ${result.length}`);      // Output: 4
-console.log(`LCS: "${result.sequence}"`);           // Output: "GTAB"
+const occurrences = KMPSearch(text, pattern);
+console.log(`Pattern found at indices: ${occurrences}`);
+Pattern found at indices: 10
