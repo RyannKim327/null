@@ -1,65 +1,125 @@
-function rabinKarpSearch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const n = text.length;
-    const m = pattern.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Edge case: if pattern is empty or longer than text
-    if (m === 0 || m > n) {
-        return result;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+function findMiddle(head: ListNode | null): ListNode | null {
+    if (!head) return null; // Handle the case of an empty list
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        slow = slow!.next;          // Move slow pointer by one step
+        fast = fast.next.next;      // Move fast pointer by two steps
     }
 
-    // Constants for the hash function
-    const base = 256; // Number of possible characters (ASCII)
-    const prime = 101; // A prime number to reduce collisions
+    return slow; // Slow pointer is now at the middle
+}
+// Helper function to create a linked list from an array
+function createLinkedList(values: number[]): ListNode | null {
+    if (values.length === 0) return null;
 
-    // Precompute base^(m-1) % prime for rolling hash
-    let h = 1;
-    for (let i = 0; i < m - 1; i++) {
-        h = (h * base) % prime;
+    const head = new ListNode(values[0]);
+    let current = head;
+
+    for (let i = 1; i < values.length; i++) {
+        current.next = new ListNode(values[i]);
+        current = current.next;
     }
 
-    // Compute initial hash values for pattern and first substring of text
-    let patternHash = 0;
-    let textHash = 0;
-    for (let i = 0; i < m; i++) {
-        patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
-        textHash = (base * textHash + text.charCodeAt(i)) % prime;
-    }
-
-    // Slide the pattern over the text
-    for (let i = 0; i <= n - m; i++) {
-        // Check if hash values match
-        if (patternHash === textHash) {
-            // Character-by-character comparison to confirm a match
-            let match = true;
-            for (let j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) {
-                result.push(i); // Add starting index of match
-            }
-        }
-
-        // Update hash value for the next substring
-        if (i < n - m) {
-            textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
-
-            // Ensure the hash value is non-negative
-            if (textHash < 0) {
-                textHash += prime;
-            }
-        }
-    }
-
-    return result;
+    return head;
 }
 
-// Example usage:
-const text = "abracadabra";
-const pattern = "abra";
-const matches = rabinKarpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
-Pattern found at indices: [0, 7]
+// Helper function to print the linked list
+function printLinkedList(head: ListNode | null): void {
+    const result: number[] = [];
+    let current = head;
+
+    while (current) {
+        result.push(current.value);
+        current = current.next;
+    }
+
+    console.log(result.join(" -> "));
+}
+
+// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = createLinkedList([1, 2, 3, 4, 5]);
+
+// Find the middle element
+const middle = findMiddle(head);
+
+if (middle) {
+    console.log("Middle element:", middle.value); // Output: 3
+} else {
+    console.log("The list is empty.");
+}
+
+// Print the linked list
+printLinkedList(head); // Output: 1 -> 2 -> 3 -> 4 -> 5
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+function findMiddle(head: ListNode | null): ListNode | null {
+    if (!head) return null;
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        slow = slow!.next;
+        fast = fast.next.next;
+    }
+
+    return slow;
+}
+
+function createLinkedList(values: number[]): ListNode | null {
+    if (values.length === 0) return null;
+
+    const head = new ListNode(values[0]);
+    let current = head;
+
+    for (let i = 1; i < values.length; i++) {
+        current.next = new ListNode(values[i]);
+        current = current.next;
+    }
+
+    return head;
+}
+
+function printLinkedList(head: ListNode | null): void {
+    const result: number[] = [];
+    let current = head;
+
+    while (current) {
+        result.push(current.value);
+        current = current.next;
+    }
+
+    console.log(result.join(" -> "));
+}
+
+// Test the implementation
+const head = createLinkedList([1, 2, 3, 4, 5]);
+const middle = findMiddle(head);
+
+if (middle) {
+    console.log("Middle element:", middle.value); // Output: 3
+} else {
+    console.log("The list is empty.");
+}
+
+printLinkedList(head); // Output: 1 -> 2 -> 3 -> 4 -> 5
