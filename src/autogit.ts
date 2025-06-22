@@ -1,191 +1,71 @@
-enum Color {
-  RED = "RED",
-  BLACK = "BLACK",
+// Define the structure of a binary tree node
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-class RBTreeNode<T> {
-  value: T;
-  color: Color;
-  left: RBTreeNode<T> | null;
-  right: RBTreeNode<T> | null;
-  parent: RBTreeNode<T> | null;
+// Function to count the number of leaf nodes recursively
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
 
-  constructor(value: T, color: Color = Color.RED) {
-    this.value = value;
-    this.color = color;
-    this.left = null;
-    this.right = null;
-    this.parent = null;
-  }
+    // If the node is a leaf (no left or right child), return 1
+    if (root.left === null && root.right === null) {
+        return 1;
+    }
+
+    // Recursively count leaf nodes in the left and right subtrees
+    const leftCount = countLeafNodes(root.left);
+    const rightCount = countLeafNodes(root.right);
+
+    // Return the total count
+    return leftCount + rightCount;
 }
-class RedBlackTree<T> {
-  root: RBTreeNode<T> | null;
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.left = new TreeNode(6);
 
-  constructor() {
-    this.root = null;
-  }
-
-  // Helper method to perform a left rotation
-  private rotateLeft(node: RBTreeNode<T>): void {
-    const rightChild = node.right!;
-    node.right = rightChild.left;
-
-    if (rightChild.left !== null) {
-      rightChild.left.parent = node;
+// Count the leaf nodes
+console.log(countLeafNodes(root)); // Output: 3 (nodes 4, 5, and 6 are leaves)
+function countLeafNodesIterative(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
     }
 
-    rightChild.parent = node.parent;
+    let count = 0;
+    const stack: TreeNode[] = [root];
 
-    if (node.parent === null) {
-      this.root = rightChild;
-    } else if (node === node.parent.left) {
-      node.parent.left = rightChild;
-    } else {
-      node.parent.right = rightChild;
-    }
+    while (stack.length > 0) {
+        const current = stack.pop()!;
 
-    rightChild.left = node;
-    node.parent = rightChild;
-  }
-
-  // Helper method to perform a right rotation
-  private rotateRight(node: RBTreeNode<T>): void {
-    const leftChild = node.left!;
-    node.left = leftChild.right;
-
-    if (leftChild.right !== null) {
-      leftChild.right.parent = node;
-    }
-
-    leftChild.parent = node.parent;
-
-    if (node.parent === null) {
-      this.root = leftChild;
-    } else if (node === node.parent.right) {
-      node.parent.right = leftChild;
-    } else {
-      node.parent.left = leftChild;
-    }
-
-    leftChild.right = node;
-    node.parent = leftChild;
-  }
-
-  // Insert a new value into the tree
-  insert(value: T): void {
-    const newNode = new RBTreeNode(value);
-
-    // Standard BST insertion
-    this.insertNode(this.root, newNode);
-
-    // Fix any violations of Red-Black Tree properties
-    this.fixInsert(newNode);
-  }
-
-  private insertNode(parent: RBTreeNode<T> | null, newNode: RBTreeNode<T>): void {
-    if (parent === null) {
-      this.root = newNode;
-      return;
-    }
-
-    if (newNode.value < parent.value) {
-      if (parent.left === null) {
-        parent.left = newNode;
-        newNode.parent = parent;
-      } else {
-        this.insertNode(parent.left, newNode);
-      }
-    } else {
-      if (parent.right === null) {
-        parent.right = newNode;
-        newNode.parent = parent;
-      } else {
-        this.insertNode(parent.right, newNode);
-      }
-    }
-  }
-
-  private fixInsert(node: RBTreeNode<T>): void {
-    while (node.parent?.color === Color.RED) {
-      const parent = node.parent;
-      const grandParent = parent.parent;
-
-      if (parent === grandParent?.left) {
-        const uncle = grandParent.right;
-
-        // Case 1: Uncle is red
-        if (uncle?.color === Color.RED) {
-          parent.color = Color.BLACK;
-          uncle.color = Color.BLACK;
-          grandParent.color = Color.RED;
-          node = grandParent;
-        } else {
-          // Case 2: Node is a right child
-          if (node === parent.right) {
-            node = parent;
-            this.rotateLeft(node);
-          }
-
-          // Case 3: Node is a left child
-          parent.color = Color.BLACK;
-          grandParent!.color = Color.RED;
-          this.rotateRight(grandParent!);
+        // Check if the current node is a leaf
+        if (current.left === null && current.right === null) {
+            count++;
         }
-      } else {
-        const uncle = grandParent?.left;
 
-        // Case 1: Uncle is red
-        if (uncle?.color === Color.RED) {
-          parent.color = Color.BLACK;
-          uncle.color = Color.BLACK;
-          grandParent!.color = Color.RED;
-          node = grandParent!;
-        } else {
-          // Case 2: Node is a left child
-          if (node === parent.left) {
-            node = parent;
-            this.rotateRight(node);
-          }
-
-          // Case 3: Node is a right child
-          parent.color = Color.BLACK;
-          grandParent!.color = Color.RED;
-          this.rotateLeft(grandParent!);
+        // Push the left and right children onto the stack
+        if (current.left !== null) {
+            stack.push(current.left);
         }
-      }
+        if (current.right !== null) {
+            stack.push(current.right);
+        }
     }
 
-    this.root!.color = Color.BLACK;
-  }
-
-  // Search for a value in the tree
-  search(value: T): RBTreeNode<T> | null {
-    return this.searchNode(this.root, value);
-  }
-
-  private searchNode(node: RBTreeNode<T> | null, value: T): RBTreeNode<T> | null {
-    if (node === null || node.value === value) {
-      return node;
-    }
-
-    if (value < node.value) {
-      return this.searchNode(node.left, value);
-    } else {
-      return this.searchNode(node.right, value);
-    }
-  }
-
-  // Delete a value from the tree (not implemented here for brevity)
-  delete(value: T): void {
-    throw new Error("Delete operation not implemented");
-  }
+    return count;
 }
-const rbTree = new RedBlackTree<number>();
-
-rbTree.insert(10);
-rbTree.insert(20);
-rbTree.insert(30);
-rbTree.insert(15);
-
-console.log(rbTree.search(20)); // Should return the node with value 20
-console.log(rbTree.search(25)); // Should return null
+// Using the same binary tree as above
+console.log(countLeafNodesIterative(root)); // Output: 3
