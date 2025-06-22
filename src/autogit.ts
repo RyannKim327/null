@@ -1,54 +1,42 @@
-function mergeSortIterative(arr: number[]): number[] {
-    const n = arr.length;
-    let temp: number[] = new Array(n); // Temporary array for merging
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    // Merge function to merge two sorted subarrays
-    function merge(left: number, mid: number, right: number): void {
-        let i = left;    // Starting index of the left subarray
-        let j = mid + 1; // Starting index of the right subarray
-        let k = left;    // Index for the temporary array
+    // Create a 2D DP table initialized to 0
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-        // Merge the two subarrays into the temporary array
-        while (i <= mid && j <= right) {
-            if (arr[i] <= arr[j]) {
-                temp[k++] = arr[i++];
+    // Fill the DP table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
             } else {
-                temp[k++] = arr[j++];
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
+    }
 
-        // Copy any remaining elements from the left subarray
-        while (i <= mid) {
-            temp[k++] = arr[i++];
-        }
+    // Backtrack to find the LCS string
+    let i = m, j = n;
+    const lcs: string[] = [];
 
-        // Copy any remaining elements from the right subarray
-        while (j <= right) {
-            temp[k++] = arr[j++];
-        }
-
-        // Copy the merged elements back into the original array
-        for (let x = left; x <= right; x++) {
-            arr[x] = temp[x];
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs.push(str1[i - 1]); // Common character found
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up in the DP table
+        } else {
+            j--; // Move left in the DP table
         }
     }
 
-    // Main iterative merge sort logic
-    for (let size = 1; size < n; size *= 2) { // Size of subarrays to merge
-        for (let left = 0; left < n; left += 2 * size) {
-            const mid = Math.min(left + size - 1, n - 1); // End of the left subarray
-            const right = Math.min(left + 2 * size - 1, n - 1); // End of the right subarray
-            merge(left, mid, right);
-        }
-    }
-
-    return arr;
+    // The LCS is constructed in reverse order, so reverse it
+    return lcs.reverse().join('');
 }
 
 // Example usage
-const array = [38, 27, 43, 3, 9, 82, 10];
-console.log("Original array:", array);
-const sortedArray = mergeSortIterative(array);
-console.log("Sorted array:", sortedArray);
-Original array: [38, 27, 43, 3, 9, 82, 10]
-Sorted array: [3, 9, 10, 27, 38, 43, 82]
+const str1 = "ABCBDAB";
+const str2 = "BDCAB";
+console.log("LCS:", longestCommonSubsequence(str1, str2)); // Output: "BCAB"
