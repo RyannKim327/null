@@ -1,71 +1,13 @@
-// Definition of a linked list node
-class ListNode {
-    val: number;
-    next: ListNode | null;
-
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
+function removeAllSpaces(input: string): string {
+    return input.replace(/\s/g, '');
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) return true; // An empty or single-node list is a palindrome
+// Usage example:
+const originalString = "Hello World! This is TypeScript.";
+const stringWithoutSpaces = removeAllSpaces(originalString);
 
-    // Step 1: Find the middle of the linked list using slow and fast pointers
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-    while (fast && fast.next) {
-        slow = slow!.next;
-        fast = fast.next.next;
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let secondHalfHead: ListNode | null = reverseList(slow);
-
-    // Step 3: Compare the first half and the reversed second half
-    let firstHalfHead: ListNode | null = head;
-    let isPalindrome: boolean = true;
-    while (secondHalfHead) {
-        if (firstHalfHead!.val !== secondHalfHead.val) {
-            isPalindrome = false;
-            break;
-        }
-        firstHalfHead = firstHalfHead!.next;
-        secondHalfHead = secondHalfHead.next;
-    }
-
-    // Step 4 (Optional): Restore the second half of the list
-    reverseList(secondHalfHead);
-
-    return isPalindrome;
+console.log(stringWithoutSpaces); // Output: "HelloWorld!ThisisTypeScript."
+function removeAllSpaces(input: string): string {
+    return input.split(' ').join('');
 }
-
-// Helper function to reverse a linked list
-function reverseList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let curr: ListNode | null = head;
-
-    while (curr) {
-        const nextTemp: ListNode | null = curr.next;
-        curr.next = prev;
-        prev = curr;
-        curr = nextTemp;
-    }
-
-    return prev;
-}
-// Create a linked list: 1 -> 2 -> 2 -> 1
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(head)); // Output: true
-
-// Create another linked list: 1 -> 2 -> 3
-const head2 = new ListNode(1);
-head2.next = new ListNode(2);
-head2.next.next = new ListNode(3);
-
-console.log(isPalindrome(head2)); // Output: false
+input.replace(/\s/g, '');
