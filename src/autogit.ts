@@ -1,107 +1,99 @@
-class TreeNode<T> {
-    value: T;
-    left: TreeNode<T> | null;
-    right: TreeNode<T> | null;
+const numbers: number[] = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+const filteredNumbers = numbers.filter(num => num !== valueToRemove);
+
+console.log(filteredNumbers); // Output: [1, 2, 4, 5]
+const fruits: string[] = ['apple', 'banana', 'cherry', 'date'];
+const fruitToRemove = 'cherry';
+
+const index = fruits.indexOf(fruitToRemove);
+if (index !== -1) {
+    fruits.splice(index, 1);
+}
+
+console.log(fruits); // Output: ['apple', 'banana', 'date']
+interface Item {
+    id: number;
+    name: string;
+}
+
+const items: Item[] = [
+    { id: 1, name: 'Item One' },
+    { id: 2, name: 'Item Two' },
+    { id: 3, name: 'Item Three' }
+];
+
+const idToRemove = 2;
+
+const index = items.findIndex(item => item.id === idToRemove);
+if (index !== -1) {
+    items.splice(index, 1);
+}
+
+console.log(items);
+// Output:
+// [
+//     { id: 1, name: 'Item One' },
+//     { id: 3, name: 'Item Three' }
+// ]
+const numbers: number[] = [10, 20, 30, 40, 50];
+const valuesToRemove = [20, 40];
+
+const reducedNumbers = numbers.reduce((acc, num) => {
+    if (!valuesToRemove.includes(num)) {
+        acc.push(num);
+    }
+    return acc;
+}, [] as number[]);
+
+console.log(reducedNumbers); // Output: [10, 30, 50]
+const letters: string[] = ['a', 'b', 'c', 'b', 'd'];
+const letterToRemove = 'b';
+
+const filteredLetters = letters.filter(letter => letter !== letterToRemove);
+
+console.log(filteredLetters); // Output: ['a', 'c', 'd']
+const letters: string[] = ['a', 'b', 'c', 'b', 'd'];
+const letterToRemove = 'b';
+
+for (let i = letters.length - 1; i >= 0; i--) {
+    if (letters[i] === letterToRemove) {
+        letters.splice(i, 1);
     }
 }
-class BinaryTree<T> {
-    root: TreeNode<T> | null;
 
-    constructor() {
-        this.root = null;
-    }
+console.log(letters); // Output: ['a', 'c', 'd']
+type Todo = {
+    id: number;
+    task: string;
+};
 
-    // Insert a value into the binary tree
-    insert(value: T): void {
-        const newNode = new TreeNode(value);
+const todos: Todo[] = [
+    { id: 1, task: 'Buy groceries' },
+    { id: 2, task: 'Clean the house' },
+    { id: 3, task: 'Pay bills' }
+];
 
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
+const todoIdToRemove = 2;
 
-        let current = this.root;
-        while (true) {
-            if (value < current.value) {
-                if (current.left === null) {
-                    current.left = newNode;
-                    break;
-                }
-                current = current.left;
-            } else {
-                if (current.right === null) {
-                    current.right = newNode;
-                    break;
-                }
-                current = current.right;
-            }
-        }
-    }
+// Non-mutating approach using filter()
+const updatedTodos = todos.filter(todo => todo.id !== todoIdToRemove);
+console.log('Updated Todos (non-mutating):', updatedTodos);
+// Output:
+// [
+//     { id: 1, task: 'Buy groceries' },
+//     { id: 3, task: 'Pay bills' }
+// ]
 
-    // In-order traversal (left -> root -> right)
-    inOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            this.inOrderTraversal(node.left, result);
-            result.push(node.value);
-            this.inOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // Pre-order traversal (root -> left -> right)
-    preOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            result.push(node.value);
-            this.preOrderTraversal(node.left, result);
-            this.preOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // Post-order traversal (left -> right -> root)
-    postOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            this.postOrderTraversal(node.left, result);
-            this.postOrderTraversal(node.right, result);
-            result.push(node.value);
-        }
-        return result;
-    }
-
-    // Search for a value in the binary tree
-    search(value: T): boolean {
-        let current = this.root;
-        while (current !== null) {
-            if (value === current.value) {
-                return true;
-            } else if (value < current.value) {
-                current = current.left;
-            } else {
-                current = current.right;
-            }
-        }
-        return false;
-    }
+// Mutating approach using findIndex() and splice()
+const indexToRemove = todos.findIndex(todo => todo.id === todoIdToRemove);
+if (indexToRemove !== -1) {
+    todos.splice(indexToRemove, 1);
 }
-const tree = new BinaryTree<number>();
-
-// Insert values into the binary tree
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
-
-// Perform traversals
-console.log("In-order Traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
-console.log("Pre-order Traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
-console.log("Post-order Traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
-
-// Search for a value
-console.log("Search for 7:", tree.search(7)); // true
-console.log("Search for 20:", tree.search(20)); // false
+console.log('Original Todos after mutation:', todos);
+// Output:
+// [
+//     { id: 1, task: 'Buy groceries' },
+//     { id: 3, task: 'Pay bills' }
+// ]
