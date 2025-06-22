@@ -1,68 +1,77 @@
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+type Graph = Map<number, number[]>;
 
-    constructor(val: number = 0, left: TreeNode | null = null, right: TreeNode | null = null) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
-    }
-}
+function tarjanSCC(graph: Graph): number[][] {
+    const index: number = 0; // Global discovery time counter
+    const stack: number[] = []; // Stack to track nodes in the current DFS path
+    const onStack: Set<number> = new Set(); // Set to check if a node is on the stack
+    const indices: Map<number, number> = new Map(); // Discovery times for each node
+    const lowLinks: Map<number, number> = new Map(); // Lowest reachable node for each node
+    const sccs: number[][] = []; // List to store all SCCs
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: empty tree has depth 0
-    }
+    function dfs(node: number): void {
+        // Initialize discovery time and low-link value for the current node
+        indices.set(node, index);
+        lowLinks.set(node, index);
+        index++;
 
-    // Recursively calculate the depth of left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+        stack.push(node); // Push the node onto the stack
+        onStack.add(node); // Mark it as being on the stack
 
-    // The maximum depth is 1 (current node) + the greater of the two subtree depths
-    return 1 + Math.max(leftDepth, rightDepth);
-}
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-console.log(maxDepth(root)); // Output: 3
-function maxDepthIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Empty tree has depth 0
-    }
-
-    const queue: [TreeNode, number][] = [[root, 1]]; // Queue stores [node, current depth]
-    let maxDepth = 0;
-
-    while (queue.length > 0) {
-        const [node, depth] = queue.shift()!; // Dequeue the front node
-        maxDepth = Math.max(maxDepth, depth); // Update max depth
-
-        // Enqueue left and right children with incremented depth
-        if (node.left !== null) {
-            queue.push([node.left, depth + 1]);
+        // Explore all neighbors of the current node
+        const neighbors = graph.get(node) || [];
+        for (const neighbor of neighbors) {
+            if (!indices.has(neighbor)) {
+                // Neighbor has not been visited yet
+                dfs(neighbor);
+                // Update the low-link value of the current node
+                lowLinks.set(node, Math.min(lowLinks.get(node)!, lowLinks.get(neighbor)!));
+            } else if (onStack.has(neighbor)) {
+                // Neighbor is on the stack, meaning it's part of the current SCC
+                lowLinks.set(node, Math.min(lowLinks.get(node)!, indices.get(neighbor)!));
+            }
         }
-        if (node.right !== null) {
-            queue.push([node.right, depth + 1]);
+
+        // If the current node is the root of an SCC, pop the stack
+        if (lowLinks.get(node) === indices.get(node)) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = stack.pop()!;
+                onStack.delete(w);
+                scc.push(w);
+            } while (w !== node);
+            sccs.push(scc);
         }
     }
 
-    return maxDepth;
-}
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
+    // Iterate through all nodes in the graph
+    for (const node of graph.keys()) {
+        if (!indices.has(node)) {
+            dfs(node);
+        }
+    }
 
-console.log(maxDepthIterative(root)); // Output: 3
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) return 0;
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-    return 1 + Math.max(leftDepth, rightDepth);
+    return sccs;
 }
+
+// Example usage
+const graph: Graph = new Map([
+    [0, [1]],
+    [1, [2]],
+    [2, [0, 3]],
+    [3, [4]],
+    [4, [5]],
+    [5, [3, 6]],
+    [6, []],
+]);
+
+const sccs = tarjanSCC(graph);
+console.log("Strongly Connected Components:", sccs);
+0 -> 1
+1 -> 2
+2 -> 0, 3
+3 -> 4
+4 -> 5
+5 -> 3, 6
+6 -> []
+Strongly Connected Components: [[2, 1, 0], [5, 4, 3], [6]]
