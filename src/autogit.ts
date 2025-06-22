@@ -1,91 +1,84 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
+let numbers: number[] = [1, 2, 3, 4, 5];
+numbers.reverse();
+console.log(numbers); // Output: [5, 4, 3, 2, 1]
+let original: string[] = ['a', 'b', 'c', 'd'];
+let reversed: string[] = [...original].reverse(); // Using spread operator to copy
+console.log(original); // Output: ['a', 'b', 'c', 'd']
+console.log(reversed); // Output: ['d', 'c', 'b', 'a']
+const fruits: string[] = ['apple', 'banana', 'cherry'];
+const reversedFruits: string[] = [...fruits].reverse();
 
-    // Create a 2D DP array initialized with 0
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Build the dp table
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+console.log(fruits);         // Output: ['apple', 'banana', 'cherry']
+console.log(reversedFruits); // Output: ['cherry', 'banana', 'apple']
+function reverseArray<T>(arr: T[]): T[] {
+    const reversed: T[] = [];
+    for (let i = arr.length - 1; i >= 0; i--) {
+        reversed.push(arr[i]);
     }
-
-    // Reconstruct the LCS from the dp table
-    let lcs = "";
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // prepend the matching character
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return lcs;
+    return reversed;
 }
 
-// Example usage:
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-const lcs = longestCommonSubsequence(str1, str2);
-console.log("Longest Common Subsequence:", lcs); // Output: "GTAB"
-function longestCommonSubsequenceOptimized(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
+const letters: string[] = ['x', 'y', 'z'];
+const reversedLetters = reverseArray(letters);
+console.log(letters);          // Output: ['x', 'y', 'z']
+console.log(reversedLetters);  // Output: ['z', 'y', 'x']
+const nums: number[] = [10, 20, 30, 40];
+const reversedNums = nums.reduce((acc: number[], current: number) => {
+    acc.unshift(current);
+    return acc;
+}, []);
 
-    // Ensure str1 is the shorter string to use less space
-    if (m < n) {
-        [str1, str2] = [str2, str1];
-        [m, n] = [n, m];
+console.log(nums);         // Output: [10, 20, 30, 40]
+console.log(reversedNums); // Output: [40, 30, 20, 10]
+function reverseRecursively<T>(arr: T[]): T[] {
+    if (arr.length <= 1) {
+        return arr;
     }
-
-    // Initialize two arrays
-    let previous = Array(n + 1).fill(0);
-    let current = Array(n + 1).fill(0);
-
-    // Fill the dp arrays
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                current[j] = previous[j - 1] + 1;
-            } else {
-                current[j] = Math.max(previous[j], current[j - 1]);
-            }
-        }
-        // Swap previous and current for next iteration
-        [previous, current] = [current, previous];
-    }
-
-    // Reconstruct the LCS
-    let lcs = "";
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (previous[j] > current[j - 1]) {
-            i--;
-        } else {
-            j--;
-        }
-        // After moving, swap references again to access correct previous values
-        [previous, current] = [current, previous];
-    }
-
-    return lcs;
+    return [arr[arr.length - 1], ...reverseRecursively(arr.slice(0, -1))];
 }
 
-// Example usage remains the same
-const lcsOptimized = longestCommonSubsequenceOptimized(str1, str2);
-console.log("Optimized Longest Common Subsequence:", lcsOptimized); // Output: "GTAB"
+const colors: string[] = ['red', 'green', 'blue'];
+const reversedColors = reverseRecursively(colors);
+
+console.log(colors);         // Output: ['red', 'green', 'blue']
+console.log(reversedColors); // Output: ['blue', 'green', 'red']
+// Original array
+const vehicles: string[] = ['car', 'bike', 'bus', 'train'];
+
+// Method 1: Using reverse() – mutates the original array
+const reversedVehicles1 = [...vehicles].reverse();
+console.log('Method 1:', reversedVehicles1); // ['train', 'bus', 'bike', 'car']
+
+// Method 2: Using a for loop
+function reverseWithLoop<T>(arr: T[]): T[] {
+    const reversed: T[] = [];
+    for (let i = arr.length - 1; i >= 0; i--) {
+        reversed.push(arr[i]);
+    }
+    return reversed;
+}
+const reversedVehicles2 = reverseWithLoop(vehicles);
+console.log('Method 2:', reversedVehicles2); // ['train', 'bus', 'bike', 'car']
+
+// Method 3: Using reduce
+const reversedVehicles3 = vehicles.reduce((acc: string[], current: string) => {
+    acc.unshift(current);
+    return acc;
+}, []);
+console.log('Method 3:', reversedVehicles3); // ['train', 'bus', 'bike', 'car']
+
+// Method 4: Using recursion
+function reverseRecursively<T>(arr: T[]): T[] {
+    if (arr.length <= 1) return arr;
+    return [arr[arr.length - 1], ...reverseRecursively(arr.slice(0, -1))];
+}
+const reversedVehicles4 = reverseRecursively(vehicles);
+console.log('Method 4:', reversedVehicles4); // ['train', 'bus', 'bike', 'car']
+
+// Original array remains unchanged
+console.log('Original:', vehicles); // ['car', 'bike', 'bus', 'train']
+Method 1: [ 'train', 'bus', 'bike', 'car' ]
+Method 2: [ 'train', 'bus', 'bike', 'car' ]
+Method 3: [ 'train', 'bus', 'bike', 'car' ]
+Method 4: [ 'train', 'bus', 'bike', 'car' ]
+Original: [ 'car', 'bike', 'bus', 'train' ]
