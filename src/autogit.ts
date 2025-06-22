@@ -1,120 +1,89 @@
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null;
-  right: TreeNode<T> | null;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-  constructor(value: T) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
-class BinaryTree<T> {
-  root: TreeNode<T> | null;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-  constructor() {
-    this.root = null;
-  }
-
-  // Insert a new value into the binary tree
-  insert(value: T): void {
-    const newNode = new TreeNode(value);
-
-    if (!this.root) {
-      // If the tree is empty, set the new node as the root
-      this.root = newNode;
-      return;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Use a queue to find the first available position
-    const queue: TreeNode<T>[] = [];
-    queue.push(this.root);
-
-    while (queue.length > 0) {
-      const current = queue.shift()!; // Get the first node in the queue
-
-      if (!current.left) {
-        // If the left child is empty, insert the new node here
-        current.left = newNode;
-        return;
-      } else {
-        queue.push(current.left);
-      }
-
-      if (!current.right) {
-        // If the right child is empty, insert the new node here
-        current.right = newNode;
-        return;
-      } else {
-        queue.push(current.right);
-      }
-    }
-  }
-
-  // In-order traversal (left-root-right)
-  inOrderTraversal(node: TreeNode<T> | null = this.root): void {
-    if (node) {
-      this.inOrderTraversal(node.left);
-      console.log(node.value);
-      this.inOrderTraversal(node.right);
-    }
-  }
-
-  // Pre-order traversal (root-left-right)
-  preOrderTraversal(node: TreeNode<T> | null = this.root): void {
-    if (node) {
-      console.log(node.value);
-      this.preOrderTraversal(node.left);
-      this.preOrderTraversal(node.right);
-    }
-  }
-
-  // Post-order traversal (left-right-root)
-  postOrderTraversal(node: TreeNode<T> | null = this.root): void {
-    if (node) {
-      this.postOrderTraversal(node.left);
-      this.postOrderTraversal(node.right);
-      console.log(node.value);
-    }
-  }
-
-  // Search for a value in the binary tree
-  search(value: T): boolean {
-    const queue: TreeNode<T>[] = [];
-    queue.push(this.root!);
-
-    while (queue.length > 0) {
-      const current = queue.shift()!;
-      if (current.value === value) {
-        return true;
-      }
-      if (current.left) {
-        queue.push(current.left);
-      }
-      if (current.right) {
-        queue.push(current.right);
-      }
-    }
-
-    return false;
-  }
 }
-const tree = new BinaryTree<number>();
 
-tree.insert(10);
-tree.insert(20);
-tree.insert(30);
-tree.insert(40);
-tree.insert(50);
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    if (!head || n <= 0) {
+        throw new Error("Invalid input: head is null or n is non-positive.");
+    }
 
-console.log("In-order Traversal:");
-tree.inOrderTraversal(); // Output: 40, 20, 50, 10, 30
+    let first: ListNode | null = head;
+    let second: ListNode | null = head;
 
-console.log("Pre-order Traversal:");
-tree.preOrderTraversal(); // Output: 10, 20, 40, 50, 30
+    // Move first pointer n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (!first) {
+            throw new Error(`List has fewer than ${n} nodes.`);
+        }
+        first = first.next;
+    }
 
-console.log("Post-order Traversal:");
-tree.postOrderTraversal(); // Output: 40, 50, 20, 30, 10
+    // Move first to the end, maintaining the gap
+    while (first !== null) {
+        first = first.next;
+        second = second!.next;
+    }
 
-console.log("Search for 30:", tree.search(30)); // Output: true
-console.log("Search for 60:", tree.search(60)); // Output: false
+    return second;
+}
+
+// Example Usage:
+
+// Helper function to create a linked list from an array
+function createLinkedList(arr: number[]): ListNode | null {
+    if (arr.length === 0) return null;
+    const head = new ListNode(arr[0]);
+    let current = head;
+    for (let i = 1; i < arr.length; i++) {
+        current.next = new ListNode(arr[i]);
+        current = current.next;
+    }
+    return head;
+}
+
+// Helper function to print the linked list
+function printLinkedList(head: ListNode | null): void {
+    let current = head;
+    const result: number[] = [];
+    while (current) {
+        result.push(current.value);
+        current = current.next;
+    }
+    console.log(result.join(" -> "));
+}
+
+// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
+const list = createLinkedList([1, 2, 3, 4, 5]);
+console.log("Linked List:");
+printLinkedList(list);
+
+// Find the 2nd node from the end
+const n = 2;
+try {
+    const nthNode = findNthFromEnd(list, n);
+    if (nthNode) {
+        console.log(`The ${n}nd node from the end is:`, nthNode.value);
+    } else {
+        console.log(`No node found.`);
+    }
+} catch (error) {
+    console.error(error.message);
+}
+Linked List:
+1 -> 2 -> 3 -> 4 -> 5
+The 2nd node from the end is: 4
