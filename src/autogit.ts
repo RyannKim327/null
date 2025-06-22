@@ -1,31 +1,26 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = 0;
-
-    // Divide out all factors of 2
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n = n / 2;
-    }
-
-    // Check odd factors from 3 onwards
-    let factor = 3;
-    while (factor * factor <= n) {
-        while (n % factor === 0) {
-            largestFactor = factor;
-            n = n / factor;
+function isSortedAscending(array: number[]): boolean {
+    for (let i = 0; i < array.length - 1; i++) {
+        if (array[i] > array[i + 1]) {
+            return false; // The array is not sorted in ascending order
         }
-        factor += 2; // Increment by 2 to check only odd numbers
     }
-
-    // If n is still greater than 2, it must be a prime number
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    return true; // The array is sorted in ascending order
 }
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [1, 3, 2, 4, 5];
+const array3 = [];
 
-// Example usage
-const number = 600851475143;
-console.log(`The largest prime factor of ${number} is:`, largestPrimeFactor(number));
-The largest prime factor of 600851475143 is: 6857
+console.log(isSortedAscending(array1)); // Output: true
+console.log(isSortedAscending(array2)); // Output: false
+console.log(isSortedAscending(array3)); // Output: true (empty arrays are considered sorted)
+function isSortedAscending(array: number[]): boolean {
+    return array.every((value, index) => index === 0 || value >= array[index - 1]);
+}
+function isSortedAscending(array: number[]): boolean {
+    for (let i = 0; i < array.length - 1; i++) {
+        if (array[i] > array[i + 1]) {
+            return false;
+        }
+    }
+    return true;
+}
