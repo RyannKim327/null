@@ -1,48 +1,75 @@
-// Define the structure of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Node = number;
+type Graph = Map<Node, Node[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function tarjanSCC(graph: Graph): Node[][] {
+    // Initialize variables
+    const index: Map<Node, number> = new Map(); // Discovery time of each node
+    const lowLink: Map<Node, number> = new Map(); // Lowest reachable vertex
+    const onStack: Set<Node> = new Set(); // Tracks nodes currently on the stack
+    const stack: Node[] = []; // Stack for DFS traversal
+    const sccs: Node[][] = []; // List of strongly connected components
+    let currentIndex = 0; // Global counter for discovery time
+
+    // Helper function to perform DFS
+    function dfs(node: Node): void {
+        // Set the discovery time and low-link value for the current node
+        index.set(node, currentIndex);
+        lowLink.set(node, currentIndex);
+        currentIndex++;
+
+        // Push the current node onto the stack
+        stack.push(node);
+        onStack.add(node);
+
+        // Explore all neighbors of the current node
+        const neighbors = graph.get(node) || [];
+        for (const neighbor of neighbors) {
+            if (!index.has(neighbor)) {
+                // Neighbor has not been visited yet
+                dfs(neighbor);
+                // Update the low-link value of the current node
+                lowLink.set(node, Math.min(lowLink.get(node)!, lowLink.get(neighbor)!));
+            } else if (onStack.has(neighbor)) {
+                // Neighbor is on the stack, meaning it's part of the current SCC
+                lowLink.set(node, Math.min(lowLink.get(node)!, index.get(neighbor)!));
+            }
+        }
+
+        // If the current node is a root node, pop the stack and generate an SCC
+        if (lowLink.get(node) === index.get(node)) {
+            const scc: Node[] = [];
+            while (true) {
+                const top = stack.pop()!;
+                onStack.delete(top);
+                scc.push(top);
+                if (top === node) break;
+            }
+            sccs.push(scc);
+        }
     }
-}
 
-// Function to find the middle element of the linked list
-function findMiddle(head: ListNode | null): number | null {
-    if (!head) return null; // Handle empty list case
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next;          // Move slow pointer by 1 step
-        fast = fast.next.next;      // Move fast pointer by 2 steps
+    // Perform DFS for each unvisited node in the graph
+    for (const node of graph.keys()) {
+        if (!index.has(node)) {
+            dfs(node);
+        }
     }
 
-    // When the loop ends, the slow pointer will be at the middle
-    return slow!.value;
+    return sccs;
 }
 
 // Example usage
-function createLinkedList(values: number[]): ListNode | null {
-    if (values.length === 0) return null;
+const graph: Graph = new Map([
+    [0, [1]],
+    [1, [2]],
+    [2, [0, 3]],
+    [3, [4]],
+    [4, [5, 6]],
+    [5, [3]],
+    [6, [7]],
+    [7, [8]],
+    [8, [6]]
+]);
 
-    const head = new ListNode(values[0]);
-    let current = head;
-
-    for (let i = 1; i < values.length; i++) {
-        current.next = new ListNode(values[i]);
-        current = current.next;
-    }
-
-    return head;
-}
-
-// Test the function
-const list = createLinkedList([1, 2, 3, 4, 5]);
-console.log(findMiddle(list)); // Output: 3
-
-const evenList = createLinkedList([1, 2, 3, 4, 5, 6]);
-console.log(findMiddle(evenList)); // Output: 4
+console.log("Strongly Connected Components:", tarjanSCC(graph));
+Strongly Connected Components: [ [ 2, 1, 0 ], [ 5, 4, 3 ], [ 8, 7, 6 ] ]
