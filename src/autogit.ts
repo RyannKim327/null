@@ -1,67 +1,67 @@
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function rabinKarp(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
+    if (m === 0 || n < m) {
+        return []; // No matches possible
     }
-}
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    // Helper function to compute height and diameter simultaneously
-    function dfs(node: TreeNode | null): { height: number; diameter: number } {
-        if (!node) {
-            return { height: 0, diameter: 0 }; // Base case: empty tree
+    const result: number[] = [];
+    const base = 256; // Base for polynomial hashing
+    const prime = 101; // A prime number to reduce hash collisions
+
+    // Compute the hash of the pattern and the first substring of the text
+    let patternHash = 0;
+    let textHash = 0;
+    let h = 1; // Used to calculate the highest power of base modulo prime
+
+    // Precompute h = (base^(m-1)) % prime
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * base) % prime;
+    }
+
+    // Calculate initial hash values for pattern and first substring of text
+    for (let i = 0; i < m; i++) {
+        patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
+        textHash = (base * textHash + text.charCodeAt(i)) % prime;
+    }
+
+    // Slide the pattern over the text
+    for (let i = 0; i <= n - m; i++) {
+        // Check if hash values match
+        if (patternHash === textHash) {
+            // Verify character-by-character
+            let match = true;
+            for (let j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                result.push(i); // Add starting index of match
+            }
         }
 
-        // Recursively calculate height and diameter for left and right subtrees
-        const left = dfs(node.left);
-        const right = dfs(node.right);
+        // Compute hash for the next substring using rolling hash
+        if (i < n - m) {
+            textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
 
-        // Height of the current node is 1 + max(height of left, height of right)
-        const height = 1 + Math.max(left.height, right.height);
-
-        // Diameter through the current node is the sum of heights of left and right subtrees
-        const diameterThroughNode = left.height + right.height;
-
-        // The diameter of the tree rooted at the current node is the maximum of:
-        // 1. Diameter of the left subtree
-        // 2. Diameter of the right subtree
-        // 3. Diameter through the current node
-        const diameter = Math.max(left.diameter, right.diameter, diameterThroughNode);
-
-        return { height, diameter };
+            // Ensure textHash is non-negative
+            if (textHash < 0) {
+                textHash += prime;
+            }
+        }
     }
 
-    // Call the helper function and return the diameter of the entire tree
-    return dfs(root).diameter;
+    return result;
 }
-// Constructing a binary tree
-//         1
-//        / \
-//       2   3
-//      / \     
-//     4   5    
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    function dfs(node: TreeNode | null): { height: number; diameter: number } {
-        if (!node) return { height: 0, diameter: 0 };
-        const left = dfs(node.left);
-        const right = dfs(node.right);
-        const height = 1 + Math.max(left.height, right.height);
-        const diameterThroughNode = left.height + right.height;
-        const diameter = Math.max(left.diameter, right.diameter, diameterThroughNode);
-        return { height, diameter };
-    }
-    return dfs(root).diameter;
-}
+// Example usage
+const text = "abracadabra";
+const pattern = "abra";
+const matches = rabinKarp(text, pattern);
+console.log("Pattern found at indices:", matches);
+const text = "abracadabra";
+const pattern = "abra";
+Pattern found at indices: [0, 7]
