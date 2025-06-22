@@ -1,21 +1,34 @@
-function findFirstRepeatedCharacter(input: string): string | null {
-    // Create a Set to track seen characters
-    const seen = new Set<string>();
+function binarySearchRecursive(
+  arr: number[], 
+  target: number, 
+  low: number = 0, 
+  high: number = arr.length - 1
+): number {
+  // Base case: if the search range is invalid, the target is not in the array
+  if (low > high) {
+    return -1;
+  }
 
-    // Iterate through each character in the string
-    for (const char of input) {
-        // Check if the character is already in the Set
-        if (seen.has(char)) {
-            return char; // Return the first repeated character
-        }
-        // Add the character to the Set
-        seen.add(char);
-    }
+  // Calculate the middle index
+  const mid = Math.floor((low + high) / 2);
 
-    // If no repeated character is found, return null
-    return null;
+  // Check if the middle element is the target
+  if (arr[mid] === target) {
+    return mid;
+  }
+
+  // If the target is smaller, search the left half
+  if (target < arr[mid]) {
+    return binarySearchRecursive(arr, target, low, mid - 1);
+  }
+
+  // If the target is larger, search the right half
+  return binarySearchRecursive(arr, target, mid + 1, high);
 }
 
 // Example usage:
-const result = findFirstRepeatedCharacter("hello");
-console.log(result); // Output: "l"
+const sortedArray = [1, 3, 5, 7, 9, 11, 13];
+const targetValue = 7;
+
+const result = binarySearchRecursive(sortedArray, targetValue);
+console.log(`Index of ${targetValue}:`, result); // Output: Index of 7: 3
