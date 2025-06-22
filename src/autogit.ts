@@ -1,73 +1,29 @@
-type Graph = Map<number, number[]>;
-function depthLimitedSearch(
-  graph: Graph,
-  startNode: number,
-  goalNode: number,
-  limit: number
-): boolean {
-  // Helper function for recursive DLS
-  function dlsRecursive(node: number, depth: number): boolean {
-    // Base case: If the depth exceeds the limit, stop searching
-    if (depth > limit) {
-      return false;
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
+
+    // Traverse through all elements in the array
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the current index is the minimum
+        let minIndex = i;
+
+        // Find the index of the smallest element in the remaining unsorted portion
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        // Swap the found minimum element with the first element of the unsorted portion
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+        }
     }
 
-    console.log(`Visiting node ${node} at depth ${depth}`);
-
-    // Check if the current node is the goal node
-    if (node === goalNode) {
-      console.log(`Goal node ${goalNode} found at depth ${depth}`);
-      return true;
-    }
-
-    // Explore all neighbors of the current node
-    const neighbors = graph.get(node) || [];
-    for (const neighbor of neighbors) {
-      if (dlsRecursive(neighbor, depth + 1)) {
-        return true; // Goal found in the subtree
-      }
-    }
-
-    return false; // Goal not found in this subtree
-  }
-
-  // Start the recursive search from the start node at depth 0
-  return dlsRecursive(startNode, 0);
+    return arr;
 }
-// Create a sample graph
-const graph: Graph = new Map([
-  [1, [2, 3]],
-  [2, [4, 5]],
-  [3, [6]],
-  [4, []],
-  [5, []],
-  [6, []],
-]);
 
-// Test the depth-limited search
-const startNode = 1;
-const goalNode = 6;
-const limit = 2;
-
-console.log("Starting depth-limited search...");
-const result = depthLimitedSearch(graph, startNode, goalNode, limit);
-
-if (result) {
-  console.log(`Goal node ${goalNode} found within the depth limit.`);
-} else {
-  console.log(`Goal node ${goalNode} not found within the depth limit.`);
-}
-Starting depth-limited search...
-Visiting node 1 at depth 0
-Visiting node 2 at depth 1
-Visiting node 4 at depth 2
-Visiting node 5 at depth 2
-Visiting node 3 at depth 1
-Visiting node 6 at depth 2
-Goal node 6 found at depth 2
-Goal node 6 found within the depth limit.
-Starting depth-limited search...
-Visiting node 1 at depth 0
-Visiting node 2 at depth 1
-Visiting node 3 at depth 1
-Goal node 6 not found within the depth limit.
+// Example usage
+const unsortedArray = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
+Sorted Array: [11, 12, 22, 25, 64]
