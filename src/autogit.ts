@@ -1,125 +1,41 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-function findMiddle(head: ListNode | null): ListNode | null {
-    if (!head) return null; // Handle the case of an empty list
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next;          // Move slow pointer by one step
-        fast = fast.next.next;      // Move fast pointer by two steps
+function maxSubArray(nums: number[]): { maxSum: number, subArray: number[] } {
+    if (nums.length === 0) {
+        throw new Error("The input array is empty.");
     }
 
-    return slow; // Slow pointer is now at the middle
-}
-// Helper function to create a linked list from an array
-function createLinkedList(values: number[]): ListNode | null {
-    if (values.length === 0) return null;
+    let currentSum = nums[0];
+    let maxSum = nums[0];
 
-    const head = new ListNode(values[0]);
-    let current = head;
+    // Variables to track the start and end indices of the max subarray
+    let tempStart = 0;
+    let start = 0;
+    let end = 0;
 
-    for (let i = 1; i < values.length; i++) {
-        current.next = new ListNode(values[i]);
-        current = current.next;
+    for (let i = 1; i < nums.length; i++) {
+        // Decide whether to extend the current subarray or start a new one
+        if (currentSum + nums[i] > nums[i]) {
+            currentSum += nums[i];
+        } else {
+            currentSum = nums[i];
+            tempStart = i;
+        }
+
+        // Update maxSum and the indices if a new maximum is found
+        if (currentSum > maxSum) {
+            maxSum = currentSum;
+            start = tempStart;
+            end = i;
+        }
     }
 
-    return head;
+    // Extract the subarray corresponding to the maximum sum
+    const subArray = nums.slice(start, end + 1);
+
+    return { maxSum, subArray };
 }
 
-// Helper function to print the linked list
-function printLinkedList(head: ListNode | null): void {
-    const result: number[] = [];
-    let current = head;
-
-    while (current) {
-        result.push(current.value);
-        current = current.next;
-    }
-
-    console.log(result.join(" -> "));
-}
-
-// Create a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = createLinkedList([1, 2, 3, 4, 5]);
-
-// Find the middle element
-const middle = findMiddle(head);
-
-if (middle) {
-    console.log("Middle element:", middle.value); // Output: 3
-} else {
-    console.log("The list is empty.");
-}
-
-// Print the linked list
-printLinkedList(head); // Output: 1 -> 2 -> 3 -> 4 -> 5
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findMiddle(head: ListNode | null): ListNode | null {
-    if (!head) return null;
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next;
-        fast = fast.next.next;
-    }
-
-    return slow;
-}
-
-function createLinkedList(values: number[]): ListNode | null {
-    if (values.length === 0) return null;
-
-    const head = new ListNode(values[0]);
-    let current = head;
-
-    for (let i = 1; i < values.length; i++) {
-        current.next = new ListNode(values[i]);
-        current = current.next;
-    }
-
-    return head;
-}
-
-function printLinkedList(head: ListNode | null): void {
-    const result: number[] = [];
-    let current = head;
-
-    while (current) {
-        result.push(current.value);
-        current = current.next;
-    }
-
-    console.log(result.join(" -> "));
-}
-
-// Test the implementation
-const head = createLinkedList([1, 2, 3, 4, 5]);
-const middle = findMiddle(head);
-
-if (middle) {
-    console.log("Middle element:", middle.value); // Output: 3
-} else {
-    console.log("The list is empty.");
-}
-
-printLinkedList(head); // Output: 1 -> 2 -> 3 -> 4 -> 5
+// Example usage:
+const nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSubArray(nums);
+console.log(`Maximum Sum: ${result.maxSum}`);
+console.log(`Subarray: ${result.subArray}`);
