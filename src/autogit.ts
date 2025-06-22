@@ -1,24 +1,57 @@
-function isPrime(num: number): boolean {
-    // Step 1: Handle edge cases
-    if (num <= 1) return false; // Numbers <= 1 are not prime
-    if (num === 2 || num === 3) return true; // 2 and 3 are prime
-    if (num % 2 === 0) return false; // Eliminate even numbers
+class Stack<T> {
+  private stack: T[] = [];
 
-    // Step 2: Check divisors from 3 to √num
-    const sqrt = Math.sqrt(num);
-    for (let i = 3; i <= sqrt; i += 2) {
-        if (num % i === 0) {
-            return false; // Found a divisor, so not prime
-        }
+  // Push an element onto the stack
+  push(element: T): void {
+    this.stack.push(element);
+  }
+
+  // Pop the top element from the stack
+  pop(): T | undefined {
+    if (this.isEmpty()) {
+      throw new Error("Stack Underflow: Cannot pop from an empty stack.");
     }
+    return this.stack.pop();
+  }
 
-    // Step 3: No divisors found, so it's prime
-    return true;
+  // Peek at the top element of the stack
+  peek(): T | undefined {
+    if (this.isEmpty()) {
+      return undefined;
+    }
+    return this.stack[this.stack.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty(): boolean {
+    return this.stack.length === 0;
+  }
+
+  // Get the size of the stack
+  size(): number {
+    return this.stack.length;
+  }
+
+  // Clear the stack
+  clear(): void {
+    this.stack = [];
+  }
 }
 
-// Example usage
-console.log(isPrime(2));  // true
-console.log(isPrime(4));  // false
-console.log(isPrime(17)); // true
-console.log(isPrime(18)); // false
-console.log(isPrime(19)); // true
+// Example usage:
+const stack = new Stack<number>();
+
+stack.push(10);
+stack.push(20);
+stack.push(30);
+
+console.log("Top element:", stack.peek()); // Output: 30
+console.log("Stack size:", stack.size());   // Output: 3
+
+console.log("Popped element:", stack.pop()); // Output: 30
+console.log("Stack size after pop:", stack.size()); // Output: 2
+
+console.log("Is stack empty?", stack.isEmpty()); // Output: false
+
+stack.clear();
+console.log("Is stack empty after clear?", stack.isEmpty()); // Output: true
