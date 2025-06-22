@@ -1,88 +1,91 @@
-function findMajorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    // Step 1: Find the potential candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += num === candidate ? 1 : -1;
-    }
+    // Create a 2D DP array initialized with 0
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    // Step 2: Verify if the candidate is indeed the majority element
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
+    // Build the dp table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
         }
     }
 
-    return count > nums.length / 2 ? candidate : null;
+    // Reconstruct the LCS from the dp table
+    let lcs = "";
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // prepend the matching character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return lcs;
 }
 
 // Example usage:
-const array = [3, 2, 3];
-console.log(findMajorityElement(array)); // Output: 3
-function findMajorityElementWithMap(nums: number[]): number | null {
-    const frequencyMap: Record<number, number> = {};
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+const lcs = longestCommonSubsequence(str1, str2);
+console.log("Longest Common Subsequence:", lcs); // Output: "GTAB"
+function longestCommonSubsequenceOptimized(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    // Count the frequency of each element
-    for (const num of nums) {
-        frequencyMap[num] = (frequencyMap[num] || 0) + 1;
+    // Ensure str1 is the shorter string to use less space
+    if (m < n) {
+        [str1, str2] = [str2, str1];
+        [m, n] = [n, m];
     }
 
-    // Find the element with frequency > n/2
-    for (const [num, count] of Object.entries(frequencyMap)) {
-        if (count > nums.length / 2) {
-            return parseInt(num);
+    // Initialize two arrays
+    let previous = Array(n + 1).fill(0);
+    let current = Array(n + 1).fill(0);
+
+    // Fill the dp arrays
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                current[j] = previous[j - 1] + 1;
+            } else {
+                current[j] = Math.max(previous[j], current[j - 1]);
+            }
         }
+        // Swap previous and current for next iteration
+        [previous, current] = [current, previous];
     }
 
-    return null;
+    // Reconstruct the LCS
+    let lcs = "";
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (previous[j] > current[j - 1]) {
+            i--;
+        } else {
+            j--;
+        }
+        // After moving, swap references again to access correct previous values
+        [previous, current] = [current, previous];
+    }
+
+    return lcs;
 }
 
-// Example usage:
-const array = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElementWithMap(array)); // Output: 2
-function findMajorityElementBySorting(nums: number[]): number | null {
-    if (nums.length === 0) return null;
-
-    nums.sort((a, b) => a - b); // Sort the array
-    const middleIndex = Math.floor(nums.length / 2);
-
-    // Verify if the middle element is the majority
-    const candidate = nums[middleIndex];
-    let count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    return count > nums.length / 2 ? candidate : null;
-}
-
-// Example usage:
-const array = [6, 5, 5];
-console.log(findMajorityElementBySorting(array)); // Output: 5
-function findMajorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
-
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += num === candidate ? 1 : -1;
-    }
-
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    return count > nums.length / 2 ? candidate : null;
-}
+// Example usage remains the same
+const lcsOptimized = longestCommonSubsequenceOptimized(str1, str2);
+console.log("Optimized Longest Common Subsequence:", lcsOptimized); // Output: "GTAB"
