@@ -1,89 +1,115 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+type Graph = Map<number, { node: number; weight: number }[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class MinHeap {
+    private heap: { node: number; distance: number }[] = [];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head || n <= 0) {
-        throw new Error("Invalid input: head is null or n is non-positive.");
+    // Insert a new element into the heap
+    insert(node: number, distance: number): void {
+        this.heap.push({ node, distance });
+        this.bubbleUp(this.heap.length - 1);
     }
 
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    // Move first pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (!first) {
-            throw new Error(`List has fewer than ${n} nodes.`);
+    // Extract the element with the smallest distance
+    extractMin(): { node: number; distance: number } | null {
+        if (this.heap.length === 0) return null;
+        const min = this.heap[0];
+        const last = this.heap.pop();
+        if (this.heap.length > 0 && last) {
+            this.heap[0] = last;
+            this.bubbleDown(0);
         }
-        first = first.next;
+        return min;
     }
 
-    // Move first to the end, maintaining the gap
-    while (first !== null) {
-        first = first.next;
-        second = second!.next;
+    // Bubble up to maintain the heap property
+    private bubbleUp(index: number): void {
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            if (this.heap[parentIndex].distance <= this.heap[index].distance) break;
+            [this.heap[parentIndex], this.heap[index]] = [this.heap[index], this.heap[parentIndex]];
+            index = parentIndex;
+        }
     }
 
-    return second;
+    // Bubble down to maintain the heap property
+    private bubbleDown(index: number): void {
+        const length = this.heap.length;
+        while (true) {
+            const leftChildIndex = 2 * index + 1;
+            const rightChildIndex = 2 * index + 2;
+            let smallest = index;
+
+            if (leftChildIndex < length && this.heap[leftChildIndex].distance < this.heap[smallest].distance) {
+                smallest = leftChildIndex;
+            }
+            if (rightChildIndex < length && this.heap[rightChildIndex].distance < this.heap[smallest].distance) {
+                smallest = rightChildIndex;
+            }
+            if (smallest === index) break;
+            [this.heap[smallest], this.heap[index]] = [this.heap[index], this.heap[smallest]];
+            index = smallest;
+        }
+    }
+
+    isEmpty(): boolean {
+        return this.heap.length === 0;
+    }
 }
 
-// Example Usage:
+function dijkstra(graph: Graph, startNode: number): Map<number, number> {
+    const distances = new Map<number, number>();
+    const visited = new Set<number>();
+    const pq = new MinHeap();
 
-// Helper function to create a linked list from an array
-function createLinkedList(arr: number[]): ListNode | null {
-    if (arr.length === 0) return null;
-    const head = new ListNode(arr[0]);
-    let current = head;
-    for (let i = 1; i < arr.length; i++) {
-        current.next = new ListNode(arr[i]);
-        current = current.next;
+    // Initialize distances
+    for (const node of graph.keys()) {
+        distances.set(node, Infinity);
     }
-    return head;
+    distances.set(startNode, 0);
+
+    // Insert the start node into the priority queue
+    pq.insert(startNode, 0);
+
+    // Process the priority queue
+    while (!pq.isEmpty()) {
+        const current = pq.extractMin();
+        if (!current) break;
+
+        const currentNode = current.node;
+        const currentDistance = current.distance;
+
+        // Skip if already visited
+        if (visited.has(currentNode)) continue;
+        visited.add(currentNode);
+
+        // Update distances for neighbors
+        const neighbors = graph.get(currentNode) || [];
+        for (const { node: neighbor, weight } of neighbors) {
+            if (visited.has(neighbor)) continue;
+
+            const newDistance = currentDistance + weight;
+            if (newDistance < (distances.get(neighbor) || Infinity)) {
+                distances.set(neighbor, newDistance);
+                pq.insert(neighbor, newDistance);
+            }
+        }
+    }
+
+    return distances;
 }
 
-// Helper function to print the linked list
-function printLinkedList(head: ListNode | null): void {
-    let current = head;
-    const result: number[] = [];
-    while (current) {
-        result.push(current.value);
-        current = current.next;
-    }
-    console.log(result.join(" -> "));
-}
+// Example usage
+const graph: Graph = new Map([
+    [0, [{ node: 1, weight: 4 }, { node: 2, weight: 1 }]],
+    [1, [{ node: 3, weight: 1 }]],
+    [2, [{ node: 1, weight: 2 }, { node: 3, weight: 5 }]],
+    [3, []],
+]);
 
-// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
-const list = createLinkedList([1, 2, 3, 4, 5]);
-console.log("Linked List:");
-printLinkedList(list);
+const startNode = 0;
+const shortestDistances = dijkstra(graph, startNode);
 
-// Find the 2nd node from the end
-const n = 2;
-try {
-    const nthNode = findNthFromEnd(list, n);
-    if (nthNode) {
-        console.log(`The ${n}nd node from the end is:`, nthNode.value);
-    } else {
-        console.log(`No node found.`);
-    }
-} catch (error) {
-    console.error(error.message);
+console.log("Shortest distances from node", startNode, ":");
+for (const [node, distance] of shortestDistances.entries()) {
+    console.log(`Node ${node}: ${distance}`);
 }
-Linked List:
-1 -> 2 -> 3 -> 4 -> 5
-The 2nd node from the end is: 4
