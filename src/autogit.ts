@@ -1,35 +1,93 @@
-function quickSort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+// Step 1: Define the structure of a binary tree node
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+// Step 2: Implement the function to count leaf nodes
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: if the current node is null, it's not a leaf
+    if (root === null) {
+        return 0;
     }
 
-    // Choose a pivot (we'll pick the last element)
-    const pivot = arr[arr.length - 1];
-
-    // Partition the array into two sub-arrays:
-    // - `left` contains elements less than or equal to the pivot
-    // - `right` contains elements greater than the pivot
-    const left: number[] = [];
-    const right: number[] = [];
-
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] <= pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
+    // Check if the current node is a leaf
+    if (root.left === null && root.right === null) {
+        return 1;
     }
 
-    // Recursively sort the left and right sub-arrays, then combine them with the pivot
-    return [...quickSort(left), pivot, ...quickSort(right)];
+    // Recursively count leaf nodes in the left and right subtrees
+    const leftLeaves = countLeafNodes(root.left);
+    const rightLeaves = countLeafNodes(root.right);
+
+    // Total leaves is the sum of leaves in both subtrees
+    return leftLeaves + rightLeaves;
 }
 
 // Example usage:
-const unsortedArray = [34, 7, 23, 32, 5, 62];
-const sortedArray = quickSort(unsortedArray);
+function main() {
+    // Create nodes
+    const root = new TreeNode(1);
+    const node2 = new TreeNode(2);
+    const node3 = new TreeNode(3);
+    const node4 = new TreeNode(4);
+    const node5 = new TreeNode(5);
+    const node6 = new TreeNode(6);
 
-console.log("Unsorted Array:", unsortedArray);
-console.log("Sorted Array:", sortedArray);
-Unsorted Array: [34, 7, 23, 32, 5, 62]
-Sorted Array: [5, 7, 23, 32, 34, 62]
+    // Build the tree
+    /*
+          1
+         / \
+        2   3
+       / \   \
+      4   5   6
+    */
+    root.left = node2;
+    root.right = node3;
+    node2.left = node4;
+    node2.right = node5;
+    node3.right = node6;
+
+    // Count leaf nodes
+    const numberOfLeaves = countLeafNodes(root);
+    console.log(`Number of leaf nodes: ${numberOfLeaves}`); // Output should be 3
+}
+
+main();
+function countLeafNodesIterative(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
+
+    let count = 0;
+    const stack: TreeNode[] = [root];
+
+    while (stack.length > 0) {
+        const current = stack.pop()!;
+        
+        if (current.left === null && current.right === null) {
+            count++;
+        }
+
+        if (current.right !== null) {
+            stack.push(current.right);
+        }
+        
+        if (current.left !== null) {
+            stack.push(current.left);
+        }
+    }
+
+    return count;
+}
+
+// Example usage remains the same; just replace the function call:
+const numberOfLeaves = countLeafNodesIterative(root);
+console.log(`Number of leaf nodes (iterative): ${numberOfLeaves}`);
