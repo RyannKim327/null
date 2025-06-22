@@ -1,75 +1,73 @@
-type Node = number;
-type Graph = Map<Node, Node[]>;
-
-function tarjanSCC(graph: Graph): Node[][] {
-    // Initialize variables
-    const index: Map<Node, number> = new Map(); // Discovery time of each node
-    const lowLink: Map<Node, number> = new Map(); // Lowest reachable vertex
-    const onStack: Set<Node> = new Set(); // Tracks nodes currently on the stack
-    const stack: Node[] = []; // Stack for DFS traversal
-    const sccs: Node[][] = []; // List of strongly connected components
-    let currentIndex = 0; // Global counter for discovery time
-
-    // Helper function to perform DFS
-    function dfs(node: Node): void {
-        // Set the discovery time and low-link value for the current node
-        index.set(node, currentIndex);
-        lowLink.set(node, currentIndex);
-        currentIndex++;
-
-        // Push the current node onto the stack
-        stack.push(node);
-        onStack.add(node);
-
-        // Explore all neighbors of the current node
-        const neighbors = graph.get(node) || [];
-        for (const neighbor of neighbors) {
-            if (!index.has(neighbor)) {
-                // Neighbor has not been visited yet
-                dfs(neighbor);
-                // Update the low-link value of the current node
-                lowLink.set(node, Math.min(lowLink.get(node)!, lowLink.get(neighbor)!));
-            } else if (onStack.has(neighbor)) {
-                // Neighbor is on the stack, meaning it's part of the current SCC
-                lowLink.set(node, Math.min(lowLink.get(node)!, index.get(neighbor)!));
-            }
-        }
-
-        // If the current node is a root node, pop the stack and generate an SCC
-        if (lowLink.get(node) === index.get(node)) {
-            const scc: Node[] = [];
-            while (true) {
-                const top = stack.pop()!;
-                onStack.delete(top);
-                scc.push(top);
-                if (top === node) break;
-            }
-            sccs.push(scc);
-        }
+type Graph = Map<number, number[]>;
+function depthLimitedSearch(
+  graph: Graph,
+  startNode: number,
+  goalNode: number,
+  limit: number
+): boolean {
+  // Helper function for recursive DLS
+  function dlsRecursive(node: number, depth: number): boolean {
+    // Base case: If the depth exceeds the limit, stop searching
+    if (depth > limit) {
+      return false;
     }
 
-    // Perform DFS for each unvisited node in the graph
-    for (const node of graph.keys()) {
-        if (!index.has(node)) {
-            dfs(node);
-        }
+    console.log(`Visiting node ${node} at depth ${depth}`);
+
+    // Check if the current node is the goal node
+    if (node === goalNode) {
+      console.log(`Goal node ${goalNode} found at depth ${depth}`);
+      return true;
     }
 
-    return sccs;
+    // Explore all neighbors of the current node
+    const neighbors = graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      if (dlsRecursive(neighbor, depth + 1)) {
+        return true; // Goal found in the subtree
+      }
+    }
+
+    return false; // Goal not found in this subtree
+  }
+
+  // Start the recursive search from the start node at depth 0
+  return dlsRecursive(startNode, 0);
 }
-
-// Example usage
+// Create a sample graph
 const graph: Graph = new Map([
-    [0, [1]],
-    [1, [2]],
-    [2, [0, 3]],
-    [3, [4]],
-    [4, [5, 6]],
-    [5, [3]],
-    [6, [7]],
-    [7, [8]],
-    [8, [6]]
+  [1, [2, 3]],
+  [2, [4, 5]],
+  [3, [6]],
+  [4, []],
+  [5, []],
+  [6, []],
 ]);
 
-console.log("Strongly Connected Components:", tarjanSCC(graph));
-Strongly Connected Components: [ [ 2, 1, 0 ], [ 5, 4, 3 ], [ 8, 7, 6 ] ]
+// Test the depth-limited search
+const startNode = 1;
+const goalNode = 6;
+const limit = 2;
+
+console.log("Starting depth-limited search...");
+const result = depthLimitedSearch(graph, startNode, goalNode, limit);
+
+if (result) {
+  console.log(`Goal node ${goalNode} found within the depth limit.`);
+} else {
+  console.log(`Goal node ${goalNode} not found within the depth limit.`);
+}
+Starting depth-limited search...
+Visiting node 1 at depth 0
+Visiting node 2 at depth 1
+Visiting node 4 at depth 2
+Visiting node 5 at depth 2
+Visiting node 3 at depth 1
+Visiting node 6 at depth 2
+Goal node 6 found at depth 2
+Goal node 6 found within the depth limit.
+Starting depth-limited search...
+Visiting node 1 at depth 0
+Visiting node 2 at depth 1
+Visiting node 3 at depth 1
+Goal node 6 not found within the depth limit.
