@@ -1,71 +1,24 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
+function isPrime(num: number): boolean {
+    // Step 1: Handle edge cases
+    if (num <= 1) return false; // Numbers <= 1 are not prime
+    if (num === 2 || num === 3) return true; // 2 and 3 are prime
+    if (num % 2 === 0) return false; // Eliminate even numbers
 
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
-}
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) return true; // Empty or single-node list is a palindrome
-
-    // Step 1: Find the middle of the linked list using slow and fast pointers
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next;
-        fast = fast.next.next;
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let secondHalfStart: ListNode | null = reverseList(slow);
-
-    // Step 3: Compare the first half with the reversed second half
-    let firstHalfStart: ListNode | null = head;
-    let secondHalfCopy: ListNode | null = secondHalfStart;
-
-    let isPalindrome: boolean = true;
-    while (secondHalfCopy) {
-        if (firstHalfStart!.val !== secondHalfCopy.val) {
-            isPalindrome = false;
-            break;
+    // Step 2: Check divisors from 3 to √num
+    const sqrt = Math.sqrt(num);
+    for (let i = 3; i <= sqrt; i += 2) {
+        if (num % i === 0) {
+            return false; // Found a divisor, so not prime
         }
-        firstHalfStart = firstHalfStart!.next;
-        secondHalfCopy = secondHalfCopy.next;
     }
 
-    // Step 4: Restore the original linked list (optional)
-    reverseList(secondHalfStart);
-
-    return isPalindrome;
+    // Step 3: No divisors found, so it's prime
+    return true;
 }
 
-// Helper function to reverse a linked list
-function reverseList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let curr: ListNode | null = head;
-
-    while (curr) {
-        const nextTemp: ListNode | null = curr.next;
-        curr.next = prev;
-        prev = curr;
-        curr = nextTemp;
-    }
-
-    return prev;
-}
-// Create a linked list: 1 -> 2 -> 2 -> 1
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
-
-console.log(isPalindrome(head)); // Output: true
-
-// Create a linked list: 1 -> 2
-const head2 = new ListNode(1);
-head2.next = new ListNode(2);
-
-console.log(isPalindrome(head2)); // Output: false
+// Example usage
+console.log(isPrime(2));  // true
+console.log(isPrime(4));  // false
+console.log(isPrime(17)); // true
+console.log(isPrime(18)); // false
+console.log(isPrime(19)); // true
