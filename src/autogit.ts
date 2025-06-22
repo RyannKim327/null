@@ -1,91 +1,65 @@
-/**
- * Calculates the area of a triangle given its base and height.
- * 
- * @param base - The length of the base of the triangle.
- * @param height - The height of the triangle corresponding to the base.
- * @returns The area of the triangle.
- */
-function calculateTriangleArea(base: number, height: number): number {
-    if (base <= 0 || height <= 0) {
-        throw new Error("Base and height must be positive numbers.");
+function rabinKarpSearch(text: string, pattern: string): number[] {
+    const result: number[] = [];
+    const n = text.length;
+    const m = pattern.length;
+
+    // Edge case: if pattern is empty or longer than text
+    if (m === 0 || m > n) {
+        return result;
     }
-    return 0.5 * base * height;
+
+    // Constants for the hash function
+    const base = 256; // Number of possible characters (ASCII)
+    const prime = 101; // A prime number to reduce collisions
+
+    // Precompute base^(m-1) % prime for rolling hash
+    let h = 1;
+    for (let i = 0; i < m - 1; i++) {
+        h = (h * base) % prime;
+    }
+
+    // Compute initial hash values for pattern and first substring of text
+    let patternHash = 0;
+    let textHash = 0;
+    for (let i = 0; i < m; i++) {
+        patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
+        textHash = (base * textHash + text.charCodeAt(i)) % prime;
+    }
+
+    // Slide the pattern over the text
+    for (let i = 0; i <= n - m; i++) {
+        // Check if hash values match
+        if (patternHash === textHash) {
+            // Character-by-character comparison to confirm a match
+            let match = true;
+            for (let j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                result.push(i); // Add starting index of match
+            }
+        }
+
+        // Update hash value for the next substring
+        if (i < n - m) {
+            textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
+
+            // Ensure the hash value is non-negative
+            if (textHash < 0) {
+                textHash += prime;
+            }
+        }
+    }
+
+    return result;
 }
 
 // Example usage:
-const base = 10; // units
-const height = 5; // units
-const area = calculateTriangleArea(base, height);
-console.log(`The area of the triangle is ${area} square units.`);
-The area of the triangle is 25 square units.
-/**
- * Calculates the area of a triangle using Heron's formula.
- * 
- * @param a - Length of side a.
- * @param b - Length of side b.
- * @param c - Length of side c.
- * @returns The area of the triangle.
- * @throws Will throw an error if the sides cannot form a valid triangle.
- */
-function calculateTriangleAreaHeron(a: number, b: number, c: number): number {
-    if (a <= 0 || b <= 0 || c <= 0) {
-        throw new Error("All sides must be positive numbers.");
-    }
-
-    // Check if the sides can form a triangle
-    if (a + b <= c || a + c <= b || b + c <= a) {
-        throw new Error("The given sides do not form a valid triangle.");
-    }
-
-    const s = (a + b + c) / 2;
-    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
-    return area;
-}
-
-// Example usage:
-const sideA = 7; // units
-const sideB = 10; // units
-const sideC = 5; // units
-const areaHeron = calculateTriangleAreaHeron(sideA, sideB, sideC);
-console.log(`The area of the triangle is ${areaHeron.toFixed(2)} square units.`);
-The area of the triangle is 16.25 square units.
-/**
- * Converts degrees to radians.
- * 
- * @param degrees - Angle in degrees.
- * @returns Angle in radians.
- */
-function degreesToRadians(degrees: number): number {
-    return degrees * (Math.PI / 180);
-}
-
-/**
- * Calculates the area of a triangle given two sides and the included angle.
- * 
- * @param a - Length of side a.
- * @param b - Length of side b.
- * @param angleDegrees - The included angle between sides a and b in degrees.
- * @returns The area of the triangle.
- * @throws Will throw an error if any side length is non-positive or if angle is invalid.
- */
-function calculateTriangleAreaWithAngle(a: number, b: number, angleDegrees: number): number {
-    if (a <= 0 || b <= 0) {
-        throw new Error("Side lengths must be positive numbers.");
-    }
-
-    if (angleDegrees <= 0 || angleDegrees >= 180) {
-        throw new Error("Angle must be between 0 and 180 degrees.");
-    }
-
-    const angleRadians = degreesToRadians(angleDegrees);
-    const area = 0.5 * a * b * Math.sin(angleRadians);
-    return area;
-}
-
-// Example usage:
-const sideA_angle = 8; // units
-const sideB_angle = 6; // units
-const angle = 60; // degrees
-const areaWithAngle = calculateTriangleAreaWithAngle(sideA_angle, sideB_angle, angle);
-console.log(`The area of the triangle is ${areaWithAngle.toFixed(2)} square units.`);
-The area of the triangle is 20.78 square units.
+const text = "abracadabra";
+const pattern = "abra";
+const matches = rabinKarpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
+Pattern found at indices: [0, 7]
