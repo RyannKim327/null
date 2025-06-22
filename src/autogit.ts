@@ -1,44 +1,34 @@
-function longestCommonPrefix(strings: string[]): string {
-    // Handle edge case: if the array is empty, return an empty string
-    if (strings.length === 0) {
-        return "";
+// Define the structure of a Node
+class ListNode {
+    data: number;  // You can change this type to suit your needs (e.g., string)
+    next: ListNode | null;
+
+    constructor(data: number) {
+        this.data = data;
+        this.next = null;
     }
-
-    // Start with the first string as the initial prefix
-    let prefix = strings[0];
-
-    // Iterate through the rest of the strings
-    for (let i = 1; i < strings.length; i++) {
-        const currentString = strings[i];
-        let j = 0;
-
-        // Compare characters of the current string with the prefix
-        while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
-            j++;
-        }
-
-        // Update the prefix to the matched portion
-        prefix = prefix.substring(0, j);
-
-        // If the prefix becomes empty, no common prefix exists
-        if (prefix === "") {
-            return "";
-        }
-    }
-
-    return prefix;
 }
-const strings1 = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings1)); // Output: "fl"
 
-const strings2 = ["dog", "racecar", "car"];
-console.log(longestCommonPrefix(strings2)); // Output: ""
+// Function to calculate the length of the linked list
+function getLength(head: ListNode | null): number {
+    let length = 0;
+    let currentNode = head;
 
-const strings3 = ["interspecies", "interstellar", "interstate"];
-console.log(longestCommonPrefix(strings3)); // Output: "inters"
+    // Traverse the linked list
+    while (currentNode !== null) {
+        length++;
+        currentNode = currentNode.next;  // Move to the next node
+    }
 
-const strings4 = [];
-console.log(longestCommonPrefix(strings4)); // Output: ""
+    return length;
+}
 
-const strings5 = ["single"];
-console.log(longestCommonPrefix(strings5)); // Output: "single"
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+
+node1.next = node2;
+node2.next = node3;
+
+console.log("Length of the linked list:", getLength(node1));  // Output: 3
