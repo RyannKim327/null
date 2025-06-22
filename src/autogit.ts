@@ -1,81 +1,89 @@
-/**
- * Function to compute the Longest Prefix Suffix (LPS) array.
- * @param pattern The pattern string.
- * @returns An array representing the LPS values for each position in the pattern.
- */
-function computeLPS(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                // Fall back in the LPS array
-                length = lps[length - 1];
-                // Note: Do not increment 'i' here
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
-}
-
-/**
- * KMP Search Algorithm.
- * @param text The text string where the pattern is to be searched.
- * @param pattern The pattern string to search for.
- * @returns An array of starting indices where the pattern is found in the text.
- */
-function KMPSearch(text: string, pattern: string): number[] {
-    const n = text.length;
-    const m = pattern.length;
-
-    if (m === 0) {
-        throw new Error("Pattern must not be empty.");
-    }
-
-    const lps = computeLPS(pattern);
-    const result: number[] = [];
-
-    let i = 0; // Index for text
-    let j = 0; // Index for pattern
-
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            // Match found at index i - j
-            result.push(i - j);
-            j = lps[j - 1]; // Continue searching for next possible match
-        } else if (i < n && pattern[j] !== text[i]) {
-            // Mismatch after j matches
-            if (j !== 0) {
-                j = lps[j - 1];
-                // Do not increment 'i' here
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result;
+function reverseString(str: string): string {
+    return str.split('').reverse().join('');
 }
 
 // Example Usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
+}
 
-const occurrences = KMPSearch(text, pattern);
-console.log(`Pattern found at indices: ${occurrences}`);
-Pattern found at indices: 10
+// Example Usage:
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseString(str.substr(1)) + str[0];
+    }
+}
+
+// Example Usage:
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    return [...str].reverse().join('');
+}
+
+// Example Usage:
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseStringUnicodeSafe(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Example Usage:
+const original = "Hello, 🌍!";
+const reversed = reverseStringUnicodeSafe(original);
+console.log(reversed); // Output: "!🌍 ,olleH"
+// Method 1: Using split, reverse, join
+function reverseWithBuiltIn(str: string): string {
+    return str.split('').reverse().join('');
+}
+
+// Method 2: Using a for loop
+function reverseWithLoop(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
+}
+
+// Method 3: Using recursion
+function reverseWithRecursion(str: string): string {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseWithRecursion(str.substr(1)) + str[0];
+    }
+}
+
+// Method 4: Using ES6 spread operator
+function reverseWithSpread(str: string): string {
+    return [...str].reverse().join('');
+}
+
+// Method 5: Unicode safe reversal
+function reverseUnicodeSafe(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Example Usage:
+const original = "Hello, 🌍!";
+
+console.log(reverseWithBuiltIn(original));      // Output: "!🌍 ,olleH"
+console.log(reverseWithLoop(original));         // Output: "!🌍 ,olleH"
+console.log(reverseWithRecursion(original));    // Output: "!🌍 ,olleH"
+console.log(reverseWithSpread(original));       // Output: "!🌍 ,olleH"
+console.log(reverseUnicodeSafe(original));      // Output: "!🌍 ,olleH"
