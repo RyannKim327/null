@@ -1,37 +1,27 @@
-const arrayWithDuplicates = [1, 2, 3, 4, 2, 3, 5];
-const uniqueArray = [...new Set(arrayWithDuplicates)];
+import cron from 'node-cron';
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const arrayWithDuplicates = [1, 2, 3, 4, 2, 3, 5];
-const uniqueArray = arrayWithDuplicates.filter((item, index) => {
-  return arrayWithDuplicates.indexOf(item) === index;
-});
+// Function to execute the scheduled task
+const performTask = () => {
+    console.log('Good morning! This task runs every day at 9:00 AM.');
+};
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const arrayWithDuplicates = [1, 2, 3, 4, 2, 3, 5];
-const uniqueArray = arrayWithDuplicates.reduce((accumulator, currentValue) => {
-  if (!accumulator.includes(currentValue)) {
-    accumulator.push(currentValue);
-  }
-  return accumulator;
-}, []);
+// Schedule the task using cron syntax
+const scheduleTask = () => {
+    // Cron format: "minute hour day-of-month month day-of-week"
+    const task = cron.schedule('0 9 * * *', performTask, {
+        scheduled: true, // Ensures the task is scheduled immediately
+        timezone: 'UTC', // Optional: Set your desired timezone
+    });
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-interface Item {
-  id: number;
-  name: string;
-}
+    console.log('Task has been scheduled to run every day at 9:00 AM UTC.');
+    return task;
+};
 
-const arrayWithDuplicates: Item[] = [
-  { id: 1, name: 'Alice' },
-  { id: 2, name: 'Bob' },
-  { id: 1, name: 'Alice' },
-];
+// Start the scheduler
+const scheduledTask = scheduleTask();
 
-const uniqueArray = Array.from(
-  new Map(arrayWithDuplicates.map(item => [item.id, item])).values()
-);
-
-console.log(uniqueArray);
-// Output: [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }]
-const uniqueArray = [...new Set(arrayWithDuplicates)];
+// Optionally, you can stop the task after some time (e.g., for testing purposes)
+setTimeout(() => {
+    console.log('Stopping the scheduled task...');
+    scheduledTask.stop();
+}, 60000); // Stops the task after 60 seconds
