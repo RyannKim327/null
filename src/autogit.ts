@@ -1,93 +1,108 @@
-/**
- * Finds the longest common substring between two strings.
- * 
- * @param str1 - First string.
- * @param str2 - Second string.
- * @returns The longest common substring.
- */
-function longestCommonSubstring(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
+class BoyerMoore {
+    private badCharTable: Map<string, number>;
+    private goodSuffixTable: number[];
+    private pattern: string;
 
-    // Edge case: if either string is empty
-    if (m === 0 || n === 0) {
-        return "";
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
+        this.goodSuffixTable = this.buildGoodSuffixTable(pattern);
     }
 
-    // Initialize the DP table with zeros
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    /**
+     * Builds the Bad Character Table.
+     * This table determines how far to shift the pattern when a mismatch occurs.
+     */
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        for (let i = 0; i < pattern.length - 1; i++) {
+            table.set(pattern[i], pattern.length - 1 - i);
+        }
+        return table;
+    }
 
-    let maxLength = 0;      // To store the length of the longest common substring
-    let endIndexStr1 = 0;   // To store the ending index of the substring in str1
+    /**
+     * Builds the Good Suffix Table.
+     * This table determines how far to shift the pattern based on matched suffixes.
+     */
+    private buildGoodSuffixTable(pattern: string): number[] {
+        const m = pattern.length;
+        const table = Array(m).fill(0);
+        const border = Array(m + 1).fill(0);
 
-    // Build the DP table
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-                if (dp[i][j] > maxLength) {
-                    maxLength = dp[i][j];
-                    endIndexStr1 = i;
+        let i = m;
+        let j = m + 1;
+        border[i] = j;
+
+        while (i > 0) {
+            while (j <= m && pattern[i - 1] !== pattern[j - 1]) {
+                if (table[j] === 0) {
+                    table[j] = j - i;
                 }
-            } else {
-                dp[i][j] = 0; // No common substring at this cell
+                j = border[j];
+            }
+            i--;
+            j--;
+            border[i] = j;
+        }
+
+        j = border[0];
+        for (i = 0; i <= m; i++) {
+            if (table[i] === 0) {
+                table[i] = j;
+            }
+            if (i === j) {
+                j = border[j];
             }
         }
+
+        return table;
     }
 
-    // If no common substring found
-    if (maxLength === 0) {
-        return "";
-    }
+    /**
+     * Searches for the pattern in the given text.
+     * Returns the starting index of the first occurrence or -1 if not found.
+     */
+    public search(text: string): number {
+        const n = text.length;
+        const m = this.pattern.length;
 
-    // Extract the longest common substring from str1
-    return str1.substring(endIndexStr1 - maxLength, endIndexStr1);
+        let s = 0; // Shift of the pattern with respect to the text
+        while (s <= n - m) {
+            let j = m - 1;
+
+            // Compare the pattern from right to left
+            while (j >= 0 && this.pattern[j] === text[s + j]) {
+                j--;
+            }
+
+            if (j < 0) {
+                // Match found
+                return s;
+            } else {
+                // Compute the shift using the Bad Character Rule and Good Suffix Rule
+                const badCharShift = this.badCharTable.get(text[s + j]) || m;
+                const goodSuffixShift = this.goodSuffixTable[j + 1];
+                s += Math.max(badCharShift, goodSuffixShift);
+            }
+        }
+
+        // No match found
+        return -1;
+    }
 }
 
 // Example usage:
-const str1 = "abcdef";
-const str2 = "zcdemf";
+const pattern = "example";
+const text = "This is an example of the Boyer-Moore algorithm.";
+const bm = new BoyerMoore(pattern);
+const result = bm.search(text);
 
-const result = longestCommonSubstring(str1, str2);
-console.log("Longest Common Substring:", result); // Output: "cde"
-function longestCommonSubstringOptimized(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-
-    if (m === 0 || n === 0) {
-        return "";
-    }
-
-    // Ensure str1 is the shorter string to use less space
-    if (m > n) {
-        [str1, str2] = [str2, str1];
-        [m, n] = [n, m];
-    }
-
-    const dp: number[] = Array(n + 1).fill(0);
-    let maxLength = 0;
-    let endIndexStr1 = 0;
-
-    for (let i = 1; i <= m; i++) {
-        // Traverse backwards to avoid overwriting needed values
-        for (let j = n; j >= 1; j--) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[j] = dp[j - 1] + 1;
-                if (dp[j] > maxLength) {
-                    maxLength = dp[j];
-                    endIndexStr1 = i;
-                }
-            } else {
-                dp[j] = 0;
-            }
-        }
-    }
-
-    if (maxLength === 0) {
-        return "";
-    }
-
-    return str1.substring(endIndexStr1 - maxLength, endIndexStr1);
+if (result !== -1) {
+    console.log(`Pattern found at index ${result}`);
+} else {
+    console.log("Pattern not found.");
 }
-
-// Example usage remains the same
+Pattern: "example"
+Text: "This is an example of the Boyer-Moore algorithm."
+Output: Pattern found at index 11
