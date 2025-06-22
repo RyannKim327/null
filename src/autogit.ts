@@ -1,38 +1,54 @@
-function findFirstRepeatedCharacter(input: string): string | null {
-    // Create a Set to store characters we've seen
-    const seenCharacters = new Set<string>();
+function mergeSortIterative(arr: number[]): number[] {
+    const n = arr.length;
+    let temp: number[] = new Array(n); // Temporary array for merging
 
-    // Iterate through each character in the string
-    for (const char of input) {
-        // If the character is already in the Set, it's the first repeated character
-        if (seenCharacters.has(char)) {
-            return char;
+    // Merge function to merge two sorted subarrays
+    function merge(left: number, mid: number, right: number): void {
+        let i = left;    // Starting index of the left subarray
+        let j = mid + 1; // Starting index of the right subarray
+        let k = left;    // Index for the temporary array
+
+        // Merge the two subarrays into the temporary array
+        while (i <= mid && j <= right) {
+            if (arr[i] <= arr[j]) {
+                temp[k++] = arr[i++];
+            } else {
+                temp[k++] = arr[j++];
+            }
         }
-        // Otherwise, add the character to the Set
-        seenCharacters.add(char);
+
+        // Copy any remaining elements from the left subarray
+        while (i <= mid) {
+            temp[k++] = arr[i++];
+        }
+
+        // Copy any remaining elements from the right subarray
+        while (j <= right) {
+            temp[k++] = arr[j++];
+        }
+
+        // Copy the merged elements back into the original array
+        for (let x = left; x <= right; x++) {
+            arr[x] = temp[x];
+        }
     }
 
-    // If no repeated character is found, return null
-    return null;
-}
-
-// Example Usage
-const result = findFirstRepeatedCharacter("programming");
-console.log(result); // Output: "r"
-function findFirstRepeatedCharacterCaseInsensitive(input: string): string | null {
-    const seenCharacters = new Set<string>();
-    const lowerCaseInput = input.toLowerCase();
-
-    for (const char of lowerCaseInput) {
-        if (seenCharacters.has(char)) {
-            return char;
+    // Main iterative merge sort logic
+    for (let size = 1; size < n; size *= 2) { // Size of subarrays to merge
+        for (let left = 0; left < n; left += 2 * size) {
+            const mid = Math.min(left + size - 1, n - 1); // End of the left subarray
+            const right = Math.min(left + 2 * size - 1, n - 1); // End of the right subarray
+            merge(left, mid, right);
         }
-        seenCharacters.add(char);
     }
 
-    return null;
+    return arr;
 }
 
-// Example Usage
-const result = findFirstRepeatedCharacterCaseInsensitive("Programming");
-console.log(result); // Output: "r"
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+console.log("Original array:", array);
+const sortedArray = mergeSortIterative(array);
+console.log("Sorted array:", sortedArray);
+Original array: [38, 27, 43, 3, 9, 82, 10]
+Sorted array: [3, 9, 10, 27, 38, 43, 82]
