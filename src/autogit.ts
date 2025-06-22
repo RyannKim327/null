@@ -1,99 +1,67 @@
-const numbers: number[] = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
+// Definition of a binary tree node
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-const filteredNumbers = numbers.filter(num => num !== valueToRemove);
-
-console.log(filteredNumbers); // Output: [1, 2, 4, 5]
-const fruits: string[] = ['apple', 'banana', 'cherry', 'date'];
-const fruitToRemove = 'cherry';
-
-const index = fruits.indexOf(fruitToRemove);
-if (index !== -1) {
-    fruits.splice(index, 1);
-}
-
-console.log(fruits); // Output: ['apple', 'banana', 'date']
-interface Item {
-    id: number;
-    name: string;
-}
-
-const items: Item[] = [
-    { id: 1, name: 'Item One' },
-    { id: 2, name: 'Item Two' },
-    { id: 3, name: 'Item Three' }
-];
-
-const idToRemove = 2;
-
-const index = items.findIndex(item => item.id === idToRemove);
-if (index !== -1) {
-    items.splice(index, 1);
-}
-
-console.log(items);
-// Output:
-// [
-//     { id: 1, name: 'Item One' },
-//     { id: 3, name: 'Item Three' }
-// ]
-const numbers: number[] = [10, 20, 30, 40, 50];
-const valuesToRemove = [20, 40];
-
-const reducedNumbers = numbers.reduce((acc, num) => {
-    if (!valuesToRemove.includes(num)) {
-        acc.push(num);
-    }
-    return acc;
-}, [] as number[]);
-
-console.log(reducedNumbers); // Output: [10, 30, 50]
-const letters: string[] = ['a', 'b', 'c', 'b', 'd'];
-const letterToRemove = 'b';
-
-const filteredLetters = letters.filter(letter => letter !== letterToRemove);
-
-console.log(filteredLetters); // Output: ['a', 'c', 'd']
-const letters: string[] = ['a', 'b', 'c', 'b', 'd'];
-const letterToRemove = 'b';
-
-for (let i = letters.length - 1; i >= 0; i--) {
-    if (letters[i] === letterToRemove) {
-        letters.splice(i, 1);
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
     }
 }
 
-console.log(letters); // Output: ['a', 'c', 'd']
-type Todo = {
-    id: number;
-    task: string;
-};
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    // Helper function to compute height and diameter simultaneously
+    function dfs(node: TreeNode | null): { height: number; diameter: number } {
+        if (!node) {
+            return { height: 0, diameter: 0 }; // Base case: empty tree
+        }
 
-const todos: Todo[] = [
-    { id: 1, task: 'Buy groceries' },
-    { id: 2, task: 'Clean the house' },
-    { id: 3, task: 'Pay bills' }
-];
+        // Recursively calculate height and diameter for left and right subtrees
+        const left = dfs(node.left);
+        const right = dfs(node.right);
 
-const todoIdToRemove = 2;
+        // Height of the current node is 1 + max(height of left, height of right)
+        const height = 1 + Math.max(left.height, right.height);
 
-// Non-mutating approach using filter()
-const updatedTodos = todos.filter(todo => todo.id !== todoIdToRemove);
-console.log('Updated Todos (non-mutating):', updatedTodos);
-// Output:
-// [
-//     { id: 1, task: 'Buy groceries' },
-//     { id: 3, task: 'Pay bills' }
-// ]
+        // Diameter through the current node is the sum of heights of left and right subtrees
+        const diameterThroughNode = left.height + right.height;
 
-// Mutating approach using findIndex() and splice()
-const indexToRemove = todos.findIndex(todo => todo.id === todoIdToRemove);
-if (indexToRemove !== -1) {
-    todos.splice(indexToRemove, 1);
+        // The diameter of the tree rooted at the current node is the maximum of:
+        // 1. Diameter of the left subtree
+        // 2. Diameter of the right subtree
+        // 3. Diameter through the current node
+        const diameter = Math.max(left.diameter, right.diameter, diameterThroughNode);
+
+        return { height, diameter };
+    }
+
+    // Call the helper function and return the diameter of the entire tree
+    return dfs(root).diameter;
 }
-console.log('Original Todos after mutation:', todos);
-// Output:
-// [
-//     { id: 1, task: 'Buy groceries' },
-//     { id: 3, task: 'Pay bills' }
-// ]
+// Constructing a binary tree
+//         1
+//        / \
+//       2   3
+//      / \     
+//     4   5    
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+console.log(diameterOfBinaryTree(root)); // Output: 3
+function diameterOfBinaryTree(root: TreeNode | null): number {
+    function dfs(node: TreeNode | null): { height: number; diameter: number } {
+        if (!node) return { height: 0, diameter: 0 };
+        const left = dfs(node.left);
+        const right = dfs(node.right);
+        const height = 1 + Math.max(left.height, right.height);
+        const diameterThroughNode = left.height + right.height;
+        const diameter = Math.max(left.diameter, right.diameter, diameterThroughNode);
+        return { height, diameter };
+    }
+    return dfs(root).diameter;
+}
