@@ -1,54 +1,55 @@
-// Define the structure of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+function mergeSort(arr: number[]): number[] {
+    // Base case: if the array has 1 or no elements, it's already sorted.
+    if (arr.length <= 1) {
+        return arr;
     }
+
+    // Step 1: Split the array into two halves.
+    const middle = Math.floor(arr.length / 2);
+    const left = arr.slice(0, middle);
+    const right = arr.slice(middle);
+
+    // Step 2: Recursively sort both halves.
+    const sortedLeft = mergeSort(left);
+    const sortedRight = mergeSort(right);
+
+    // Step 3: Merge the sorted halves.
+    return merge(sortedLeft, sortedRight);
 }
 
-// Function to detect a cycle in a linked list
-function hasCycle(head: ListNode | null): boolean {
-    // Initialize two pointers
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+function merge(left: number[], right: number[]): number[] {
+    const result: number[] = [];
+    let leftIndex = 0;
+    let rightIndex = 0;
 
-    // Traverse the list
-    while (fast !== null && fast.next !== null) {
-        slow = slow!.next;          // Move slow pointer one step
-        fast = fast.next.next;      // Move fast pointer two steps
-
-        // Check if the two pointers meet
-        if (slow === fast) {
-            return true;            // Cycle detected
+    // Compare elements from both arrays and add the smaller one to the result.
+    while (leftIndex < left.length && rightIndex < right.length) {
+        if (left[leftIndex] < right[rightIndex]) {
+            result.push(left[leftIndex]);
+            leftIndex++;
+        } else {
+            result.push(right[rightIndex]);
+            rightIndex++;
         }
     }
 
-    return false;                   // No cycle detected
-}
-// Helper function to create a linked list with a cycle
-function createLinkedListWithCycle(values: number[], cycleIndex: number): ListNode | null {
-    if (values.length === 0) return null;
-
-    const nodes = values.map(value => new ListNode(value));
-    for (let i = 0; i < nodes.length - 1; i++) {
-        nodes[i].next = nodes[i + 1];
+    // Add any remaining elements from the left array.
+    while (leftIndex < left.length) {
+        result.push(left[leftIndex]);
+        leftIndex++;
     }
 
-    // Create a cycle if cycleIndex is valid
-    if (cycleIndex >= 0 && cycleIndex < nodes.length) {
-        nodes[nodes.length - 1].next = nodes[cycleIndex];
+    // Add any remaining elements from the right array.
+    while (rightIndex < right.length) {
+        result.push(right[rightIndex]);
+        rightIndex++;
     }
 
-    return nodes[0]; // Return the head of the list
+    return result;
 }
 
-// Test case 1: Linked list without a cycle
-const list1 = createLinkedListWithCycle([1, 2, 3, 4, 5], -1); // No cycle
-console.log(hasCycle(list1)); // Output: false
-
-// Test case 2: Linked list with a cycle
-const list2 = createLinkedListWithCycle([1, 2, 3, 4, 5], 2); // Cycle back to index 2
-console.log(hasCycle(list2)); // Output: true
+// Example usage:
+const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
+const sortedArray = mergeSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
+Sorted Array: [3, 9, 10, 27, 38, 43, 82]
