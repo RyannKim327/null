@@ -1,44 +1,22 @@
-class ListNode {
-    data: number;
-    next: ListNode | null;
+function isPalindrome(input: string): boolean {
+    // Step 1: Normalize the string
+    const normalized = input
+        .toLowerCase() // Convert to lowercase
+        .replace(/[^a-z0-9]/g, ''); // Remove non-alphanumeric characters
 
-    constructor(data: number) {
-        this.data = data;
-        this.next = null;
-    }
-}
-function findMiddle(head: ListNode | null): number | null {
-    if (!head) return null; // Handle the case where the list is empty
+    // Step 2: Reverse the normalized string
+    const reversed = normalized.split('').reverse().join('');
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow!.next;          // Move slow pointer by one step
-        fast = fast.next.next;      // Move fast pointer by two steps
-    }
-
-    // When the loop ends, slow points to the middle element
-    return slow!.data;
-}
-// Helper function to create a linked list from an array
-function createLinkedList(arr: number[]): ListNode | null {
-    if (arr.length === 0) return null;
-
-    const head = new ListNode(arr[0]);
-    let current = head;
-
-    for (let i = 1; i < arr.length; i++) {
-        current.next = new ListNode(arr[i]);
-        current = current.next;
-    }
-
-    return head;
+    // Step 3: Compare the original and reversed strings
+    return normalized === reversed;
 }
 
-// Example usage
-const list = createLinkedList([1, 2, 3, 4, 5]); // Odd-length list
-console.log(findMiddle(list)); // Output: 3
-
-const list2 = createLinkedList([1, 2, 3, 4, 5, 6]); // Even-length list
-console.log(findMiddle(list2)); // Output: 4 (second middle element)
+// Example Usage
+console.log(isPalindrome("A man, a plan, a canal, Panama")); // true
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("hello")); // false
+console.log(isPalindrome("")); // true (empty string)
+console.log(isPalindrome("a")); // true (single character)
+console.log(isPalindrome("Madam")); // true (case insensitive)
+console.log(isPalindrome("No 'x' in Nixon")); // true (ignores spaces and punctuation)
+console.log(isPalindrome("Hello, World!")); // false
