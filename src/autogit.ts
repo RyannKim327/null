@@ -1,83 +1,88 @@
-// Define the structure of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+// Node class to represent each element in the linked list
+class Node<T> {
+    data: T;
+    next: Node<T> | null;
 
-    constructor(value: number, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
+    constructor(data: T) {
+        this.data = data;
+        this.next = null; // Initially, there's no next node
     }
 }
 
-// Function to reverse a linked list
-function reverseList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
+// Queue class implementing FIFO behavior using a linked list
+class Queue<T> {
+    private front: Node<T> | null; // Points to the front of the queue
+    private rear: Node<T> | null;  // Points to the rear of the queue
+    private size: number;          // Tracks the number of elements in the queue
 
-    while (current !== null) {
-        const nextNode = current.next; // Store the next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to current
-        current = nextNode; // Move to the next node
+    constructor() {
+        this.front = null;
+        this.rear = null;
+        this.size = 0;
     }
 
-    return prev; // New head of the reversed list
-}
+    // Method to add an element to the queue
+    enqueue(data: T): void {
+        const newNode = new Node(data);
 
-// Function to check if a linked list is a palindrome
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) return true; // Empty or single-node list is a palindrome
-
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    // Step 1: Find the middle of the linked list using slow and fast pointers
-    while (fast !== null && fast.next !== null) {
-        slow = slow!.next;
-        fast = fast.next.next;
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let secondHalfHead: ListNode | null = reverseList(slow);
-
-    // Step 3: Compare the first half and the reversed second half
-    let firstHalfHead: ListNode | null = head;
-    let secondHalfPointer: ListNode | null = secondHalfHead;
-
-    let isPalindrome = true;
-    while (secondHalfPointer !== null) {
-        if (firstHalfHead!.value !== secondHalfPointer.value) {
-            isPalindrome = false;
-            break;
+        if (this.isEmpty()) {
+            // If the queue is empty, both front and rear point to the new node
+            this.front = newNode;
+            this.rear = newNode;
+        } else {
+            // Add the new node at the rear and update the rear pointer
+            this.rear!.next = newNode;
+            this.rear = newNode;
         }
-        firstHalfHead = firstHalfHead!.next;
-        secondHalfPointer = secondHalfPointer.next;
+
+        this.size++;
     }
 
-    // Step 4: Restore the second half of the linked list (optional)
-    reverseList(secondHalfHead);
+    // Method to remove and return the front element from the queue
+    dequeue(): T | undefined {
+        if (this.isEmpty()) {
+            throw new Error("Queue is empty. Cannot dequeue.");
+        }
 
-    return isPalindrome;
-}
-// Helper function to create a linked list from an array
-function createLinkedList(values: number[]): ListNode | null {
-    if (values.length === 0) return null;
+        const dequeuedData = this.front!.data; // Store the data of the front node
+        this.front = this.front!.next;       // Move the front pointer to the next node
 
-    const head = new ListNode(values[0]);
-    let current = head;
+        if (this.front === null) {
+            // If the queue becomes empty, reset the rear pointer as well
+            this.rear = null;
+        }
 
-    for (let i = 1; i < values.length; i++) {
-        current.next = new ListNode(values[i]);
-        current = current.next;
+        this.size--;
+        return dequeuedData;
     }
 
-    return head;
+    // Method to peek at the front element without removing it
+    peek(): T | undefined {
+        if (this.isEmpty()) {
+            throw new Error("Queue is empty. Nothing to peek.");
+        }
+
+        return this.front!.data;
+    }
+
+    // Method to check if the queue is empty
+    isEmpty(): boolean {
+        return this.size === 0;
+    }
+
+    // Method to get the current size of the queue
+    getSize(): number {
+        return this.size;
+    }
 }
 
-// Example 1: Palindrome
-const list1 = createLinkedList([1, 2, 3, 2, 1]);
-console.log(isPalindrome(list1)); // Output: true
+// Example usage
+const queue = new Queue<number>();
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
 
-// Example 2: Not a Palindrome
-const list2 = createLinkedList([1, 2, 3, 4, 5]);
-console.log(isPalindrome(list2)); // Output: false
+console.log(queue.peek()); // Output: 10
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.getSize()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
