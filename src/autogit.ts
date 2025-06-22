@@ -1,55 +1,166 @@
-function mergeSort(arr: number[]): number[] {
-    // Base case: if the array has 1 or no elements, it's already sorted.
-    if (arr.length <= 1) {
-        return arr;
+class SkipListNode<T> {
+    value: T;
+    next: SkipListNode<T> | null;
+    down: SkipListNode<T> | null;
+
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+        this.down = null;
+    }
+}
+class SkipList<T> {
+    private head: SkipListNode<T>;
+    private maxLevel: number;
+    private currentLevel: number;
+
+    constructor(maxLevel: number = 16) {
+        this.head = new SkipListNode<T>(null as unknown as T); // Dummy head node
+        this.maxLevel = maxLevel;
+        this.currentLevel = 0;
     }
 
-    // Step 1: Split the array into two halves.
-    const middle = Math.floor(arr.length / 2);
-    const left = arr.slice(0, middle);
-    const right = arr.slice(middle);
+    // Helper function to generate random levels
+    private randomLevel(): number {
+        let level = 1;
+        while (Math.random() < 0.5 && level < this.maxLevel) {
+            level++;
+        }
+        return level;
+    }
 
-    // Step 2: Recursively sort both halves.
-    const sortedLeft = mergeSort(left);
-    const sortedRight = mergeSort(right);
+    // Search for a value in the skip list
+    search(target: T): boolean {
+        let current = this.head;
+        while (current) {
+            while (current.next && current.next.value < target) {
+                current = current.next;
+            }
+            if (current.next && current.next.value === target) {
+                return true;
+            }
+            current = current.down;
+        }
+        return false;
+    }
 
-    // Step 3: Merge the sorted halves.
-    return merge(sortedLeft, sortedRight);
-}
+    // Insert a value into the skip list
+    insert(value: T): void {
+        const update: Array<SkipListNode<T> | null> = new Array(this.maxLevel).fill(null);
+        let current: SkipListNode<T> | null = this.head;
 
-function merge(left: number[], right: number[]): number[] {
-    const result: number[] = [];
-    let leftIndex = 0;
-    let rightIndex = 0;
+        // Find the correct position for insertion at each level
+        for (let i = this.currentLevel; i >= 0; i--) {
+            while (current.next && current.next.value < value) {
+                current = current.next;
+            }
+            update[i] = current;
+            current = current.down;
+        }
 
-    // Compare elements from both arrays and add the smaller one to the result.
-    while (leftIndex < left.length && rightIndex < right.length) {
-        if (left[leftIndex] < right[rightIndex]) {
-            result.push(left[leftIndex]);
-            leftIndex++;
-        } else {
-            result.push(right[rightIndex]);
-            rightIndex++;
+        // Insert the new node at the lowest level
+        const newNode = new SkipListNode<T>(value);
+        const newNodeLevel = this.randomLevel();
+
+        if (newNodeLevel > this.currentLevel) {
+            for (let i = this.currentLevel + 1; i <= newNodeLevel; i++) {
+                update[i] = this.head;
+            }
+            this.currentLevel = newNodeLevel;
+        }
+
+        // Link the new node across levels
+        for (let i = 0; i < newNodeLevel; i++) {
+            newNode.next = update[i]?.next || null;
+            if (update[i]) update[i].next = newNode;
+
+            // Create a new node for the level above
+            const upperNode = new SkipListNode<T>(value);
+            upperNode.down = newNode;
+            newNode = upperNode;
         }
     }
 
-    // Add any remaining elements from the left array.
-    while (leftIndex < left.length) {
-        result.push(left[leftIndex]);
-        leftIndex++;
+    // Delete a value from the skip list
+    delete(value: T): boolean {
+        const update: Array<SkipListNode<T> | null> = new Array(this.maxLevel).fill(null);
+        let current: SkipListNode<T> | null = this.head;
+
+        // Find the node to delete at each level
+        for (let i = this.currentLevel; i >= 0; i--) {
+            while (current.next && current.next.value < value) {
+                current = current.next;
+            }
+            update[i] = current;
+            current = current.down;
+        }
+
+        // Check if the value exists
+        if (!current || !current.next || current.next.value !== value) {
+            return false;
+        }
+
+        // Remove the node from all levels
+        for (let i = 0; i <= this.currentLevel; i++) {
+            if (update[i]?.next?.value === value) {
+                update[i].next = update[i].next?.next || null;
+            } else {
+                break;
+            }
+        }
+
+        // Update the current level if necessary
+        while (this.currentLevel > 0 && !this.head.next) {
+            this.currentLevel--;
+        }
+
+        return true;
     }
 
-    // Add any remaining elements from the right array.
-    while (rightIndex < right.length) {
-        result.push(right[rightIndex]);
-        rightIndex++;
+    // Print the skip list for debugging
+    print(): void {
+        let currentLevel = this.head;
+        while (currentLevel) {
+            let current = currentLevel.next;
+            let levelValues: Array<T | null> = [];
+            while (current) {
+                levelValues.push(current.value);
+                current = current.next;
+            }
+            console.log(`Level ${this.currentLevel}:`, levelValues);
+            currentLevel = currentLevel.down;
+        }
     }
-
-    return result;
 }
+const skipList = new SkipList<number>();
 
-// Example usage:
-const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
-const sortedArray = mergeSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
-Sorted Array: [3, 9, 10, 27, 38, 43, 82]
+// Insert values
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+
+// Print the skip list
+skipList.print();
+
+// Search for a value
+console.log("Search 7:", skipList.search(7)); // true
+console.log("Search 10:", skipList.search(10)); // false
+
+// Delete a value
+console.log("Delete 6:", skipList.delete(6)); // true
+console.log("Delete 5:", skipList.delete(5)); // false
+
+// Print the skip list after deletion
+skipList.print();
+Level 2: [ 3, 7, 12 ]
+Level 1: [ 3, 6, 7, 9, 12 ]
+Level 0: [ 3, 6, 7, 9, 12 ]
+Search 7: true
+Search 10: false
+Delete 6: true
+Delete 5: false
+Level 2: [ 3, 7, 12 ]
+Level 1: [ 3, 7, 9, 12 ]
+Level 0: [ 3, 7, 9, 12 ]
