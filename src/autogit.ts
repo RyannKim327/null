@@ -1,65 +1,130 @@
-// Define a generic Node type
-type Node<T> = {
-    value: T; // The value stored in the node
-    children: Node<T>[]; // Array of child nodes
-};
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    start: number;
+    end: number;
 
-/**
- * Depth-Limited Search Algorithm
- * @param node - The current node being explored
- * @param goal - The value we are searching for
- * @param depthLimit - The maximum depth to explore
- * @returns true if the goal is found within the depth limit, false otherwise
- */
-function depthLimitedSearch<T>(node: Node<T>, goal: T, depthLimit: number): boolean {
-    // Base case: If the depth limit is reached, stop exploring further
-    if (depthLimit < 0) {
-        return false;
+    constructor(start: number = -1, end: number = -1) {
+        this.children = new Map<string, SuffixTreeNode>();
+        this.start = start; // Start index of the substring on the edge
+        this.end = end;     // End index of the substring on the edge
     }
 
-    // Check if the current node contains the goal
-    if (node.value === goal) {
-        console.log(`Goal found: ${goal}`);
-        return true;
+    // Length of the edge represented by this node
+    getEdgeLength(): number {
+        return this.end - this.start + 1;
+    }
+}
+
+class SuffixTree {
+    root: SuffixTreeNode;
+    text: string;
+
+    constructor(text: string) {
+        this.text = text;
+        this.root = new SuffixTreeNode();
+        this.buildSuffixTree();
     }
 
-    // Recursively explore each child node with reduced depth limit
-    for (const child of node.children) {
-        if (depthLimitedSearch(child, goal, depthLimit - 1)) {
-            return true; // Goal found in the subtree
+    // Build the suffix tree by inserting all suffixes
+    buildSuffixTree(): void {
+        for (let i = 0; i < this.text.length; i++) {
+            this.insertSuffix(i);
         }
     }
 
-    // If no child contains the goal, return false
-    return false;
+    // Insert a suffix starting at index `start`
+    insertSuffix(start: number): void {
+        let currentNode = this.root;
+        let currentSuffixIndex = start;
+
+        while (currentSuffixIndex < this.text.length) {
+            const char = this.text[currentSuffixIndex];
+
+            // Check if the current node has an edge starting with `char`
+            if (currentNode.children.has(char)) {
+                const childNode = currentNode.children.get(char)!;
+                const edgeLength = childNode.getEdgeLength();
+
+                // Compare the current suffix with the edge label
+                let matchLength = 0;
+                while (
+                    matchLength < edgeLength &&
+                    this.text[childNode.start + matchLength] === this.text[currentSuffixIndex + matchLength]
+                ) {
+                    matchLength++;
+                }
+
+                if (matchLength === edgeLength) {
+                    // Full match, move to the child node
+                    currentNode = childNode;
+                    currentSuffixIndex += matchLength;
+                } else {
+                    // Partial match, split the edge
+                    const newInternalNode = new SuffixTreeNode(
+                        childNode.start,
+                        childNode.start + matchLength - 1
+                    );
+
+                    // Update the child node's start index
+                    childNode.start += matchLength;
+
+                    // Add the new internal node and update pointers
+                    newInternalNode.children.set(this.text[childNode.start], childNode);
+                    currentNode.children.set(char, newInternalNode);
+
+                    // Create a new leaf node for the remaining suffix
+                    const newLeafNode = new SuffixTreeNode(currentSuffixIndex + matchLength, this.text.length - 1);
+                    newInternalNode.children.set(this.text[currentSuffixIndex + matchLength], newLeafNode);
+                    break;
+                }
+            } else {
+                // No matching edge, create a new leaf node
+                const newLeafNode = new SuffixTreeNode(currentSuffixIndex, this.text.length - 1);
+                currentNode.children.set(char, newLeafNode);
+                break;
+            }
+        }
+    }
+
+    // Search for a pattern in the suffix tree
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+        let patternIndex = 0;
+
+        while (patternIndex < pattern.length) {
+            const char = pattern[patternIndex];
+            if (!currentNode.children.has(char)) {
+                return false; // Pattern not found
+            }
+
+            const childNode = currentNode.children.get(char)!;
+            const edgeLabel = this.text.substring(childNode.start, childNode.end + 1);
+
+            let matchLength = 0;
+            while (
+                matchLength < edgeLabel.length &&
+                patternIndex + matchLength < pattern.length &&
+                edgeLabel[matchLength] === pattern[patternIndex + matchLength]
+            ) {
+                matchLength++;
+            }
+
+            if (matchLength === edgeLabel.length) {
+                // Full match, move to the child node
+                currentNode = childNode;
+                patternIndex += matchLength;
+            } else {
+                return false; // Partial match means pattern not found
+            }
+        }
+
+        return true; // Pattern fully matched
+    }
 }
 
-// Example Usage
-const tree: Node<string> = {
-    value: "A",
-    children: [
-        {
-            value: "B",
-            children: [
-                { value: "D", children: [] },
-                { value: "E", children: [] },
-            ],
-        },
-        {
-            value: "C",
-            children: [
-                { value: "F", children: [] },
-                { value: "G", children: [] },
-            ],
-        },
-    ],
-};
+// Example usage
+const text = "banana$";
+const suffixTree = new SuffixTree(text);
 
-const goal = "G";
-const depthLimit = 2;
-
-console.log("Starting Depth-Limited Search...");
-const result = depthLimitedSearch(tree, goal, depthLimit);
-console.log(`Goal "${goal}" found within depth limit ${depthLimit}:`, result);
-Starting Depth-Limited Search...
-Goal "G" found within depth limit 1: false
+console.log(suffixTree.search("ana")); // Output: true
+console.log(suffixTree.search("xyz")); // Output: false
