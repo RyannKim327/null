@@ -1,56 +1,66 @@
-type Edge = {
-  source: number;
-  destination: number;
-  weight: number;
+type State = {
+  value: string; // Example: Represents the state (could be a string, array, etc.)
+  score: number; // Heuristic score for the state
 };
 
-function bellmanFord(edges: Edge[], V: number, source: number): number[] | string {
-  // Step 1: Initialize distances
-  const distance: number[] = Array(V).fill(Infinity);
-  distance[source] = 0;
+type SuccessorFunction = (state: State) => State[];
+type TerminationCondition = (state: State) => boolean;
 
-  // Step 2: Relax all edges V-1 times
-  for (let i = 0; i < V - 1; i++) {
-    for (const edge of edges) {
-      const { source: u, destination: v, weight: w } = edge;
-      if (distance[u] !== Infinity && distance[u] + w < distance[v]) {
-        distance[v] = distance[u] + w;
+function beamSearch(
+  initialState: State,
+  beamWidth: number,
+  successorFunction: SuccessorFunction,
+  terminationCondition: TerminationCondition
+): State | null {
+  let beam: State[] = [initialState];
+
+  while (beam.length > 0) {
+    const allSuccessors: State[] = [];
+
+    // Expand all states in the current beam
+    for (const state of beam) {
+      const successors = successorFunction(state);
+      allSuccessors.push(...successors);
+    }
+
+    // Sort successors by their score in descending order
+    allSuccessors.sort((a, b) => b.score - a.score);
+
+    // Check if any successor meets the termination condition
+    for (const successor of allSuccessors) {
+      if (terminationCondition(successor)) {
+        return successor; // Return the first solution found
       }
     }
+
+    // Retain only the top `beamWidth` successors
+    beam = allSuccessors.slice(0, beamWidth);
   }
 
-  // Step 3: Check for negative weight cycles
-  for (const edge of edges) {
-    const { source: u, destination: v, weight: w } = edge;
-    if (distance[u] !== Infinity && distance[u] + w < distance[v]) {
-      return "Graph contains a negative weight cycle";
-    }
-  }
-
-  // Step 4: Return the shortest distances
-  return distance;
+  // No solution found
+  return null;
 }
 
 // Example Usage
-const edges: Edge[] = [
-  { source: 0, destination: 1, weight: -1 },
-  { source: 0, destination: 2, weight: 4 },
-  { source: 1, destination: 2, weight: 3 },
-  { source: 1, destination: 3, weight: 2 },
-  { source: 1, destination: 4, weight: 2 },
-  { source: 3, destination: 2, weight: 5 },
-  { source: 3, destination: 1, weight: 1 },
-  { source: 4, destination: 3, weight: -3 },
-];
+const initialState: State = { value: "start", score: 0 };
 
-const V = 5; // Number of vertices
-const source = 0; // Source vertex
+const successorFunction: SuccessorFunction = (state) => {
+  // Example: Generate 3 random successors for demonstration
+  return Array.from({ length: 3 }, (_, i) => ({
+    value: `${state.value}->${i}`,
+    score: Math.random(), // Random score for simplicity
+  }));
+};
 
-const result = bellmanFord(edges, V, source);
+const terminationCondition: TerminationCondition = (state) => {
+  // Example: Terminate if the state value contains "goal"
+  return state.value.includes("goal");
+};
 
-if (typeof result === "string") {
-  console.log(result); // Negative weight cycle detected
+const result = beamSearch(initialState, 2, successorFunction, terminationCondition);
+
+if (result) {
+  console.log("Solution Found:", result);
 } else {
-  console.log("Shortest distances from source:", result);
+  console.log("No solution found.");
 }
-Shortest distances from source: [0, -1, 2, -2, 1]
