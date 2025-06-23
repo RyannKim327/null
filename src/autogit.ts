@@ -1,62 +1,95 @@
-function rabinKarpSearch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const n = text.length;
-    const m = pattern.length;
+function findMajorityElement(nums: number[]): number | null {
+    const counts: { [key: number]: number } = {};
+    const n = nums.length;
 
-    if (m > n || m === 0) return result;
-
-    // Constants for the hash function
-    const prime = 31; // A prime number to reduce collisions
-    const mod = 1e9 + 7; // A large prime number to prevent overflow
-
-    // Precompute powers of the prime number
-    const primePowers: number[] = new Array(m).fill(1);
-    for (let i = 1; i < m; i++) {
-        primePowers[i] = (primePowers[i - 1] * prime) % mod;
-    }
-
-    // Compute the hash of the pattern
-    let patternHash = 0;
-    for (let i = 0; i < m; i++) {
-        patternHash = (patternHash + (pattern.charCodeAt(i) - 96) * primePowers[i]) % mod;
-    }
-
-    // Compute the hash of the first window of the text
-    let textHash = 0;
-    for (let i = 0; i < m; i++) {
-        textHash = (textHash + (text.charCodeAt(i) - 96) * primePowers[i]) % mod;
-    }
-
-    // Slide the window over the text
-    for (let i = 0; i <= n - m; i++) {
-        // If the hashes match, compare the strings to confirm
-        if (textHash === patternHash) {
-            let match = true;
-            for (let j = 0; j < m; j++) {
-                if (text[i + j] !== pattern[j]) {
-                    match = false;
-                    break;
-                }
-            }
-            if (match) result.push(i); // Match found at index i
-        }
-
-        // Update the hash for the next window
-        if (i < n - m) {
-            textHash = (textHash - (text.charCodeAt(i) - 96)) / prime; // Remove the first character
-            textHash = (textHash + (text.charCodeAt(i + m) - 96) * primePowers[m - 1]) % mod; // Add the next character
-            textHash = (textHash + mod) % mod; // Ensure non-negative hash
+    for (const num of nums) {
+        counts[num] = (counts[num] || 0) + 1;
+        // Early exit if a majority element is found
+        if (counts[num] > n / 2) {
+            return num;
         }
     }
 
-    return result;
+    // If no majority element found
+    return null;
 }
 
-// Example usage
-const text = "abracadabra";
-const pattern = "abra";
-const matches = rabinKarpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
-const text = "abracadabra";
-const pattern = "abra";
-Pattern found at indices: [0, 7]
+// Example usage:
+const array = [3, 2, 3];
+const majority = findMajorityElement(array);
+console.log(majority); // Output: 3
+function findMajorityElement(nums: number[]): number | null {
+    let count = 0;
+    let candidate: number | null = null;
+
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
+    }
+
+    // Verify if the candidate is indeed the majority element
+    if (candidate !== null) {
+        const totalCount = nums.filter(n => n === candidate).length;
+        if (totalCount > nums.length / 2) {
+            return candidate;
+        }
+    }
+
+    return null;
+}
+
+// Example usage:
+const array = [2, 2, 1, 1, 1, 2, 2];
+const majority = findMajorityElement(array);
+console.log(majority); // Output: 2
+function findMajorityElement(nums: number[]): number | null {
+    const sorted = nums.slice().sort((a, b) => a - b);
+    const candidate = sorted[Math.floor(sorted.length / 2)];
+    
+    // Verify if the candidate is indeed the majority element
+    const totalCount = nums.filter(n => n === candidate).length;
+    if (totalCount > nums.length / 2) {
+        return candidate;
+    }
+
+    return null;
+}
+
+// Example usage:
+const array = [6, 5, 5];
+const majority = findMajorityElement(array);
+console.log(majority); // Output: 5
+function findMajorityElement(nums: number[]): number | null {
+    // First pass to find a candidate
+    let count = 0;
+    let candidate: number | null = null;
+
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
+    }
+
+    // Second pass to confirm the candidate is the majority
+    if (candidate !== null) {
+        const totalCount = nums.reduce((acc, curr) => acc + (curr === candidate ? 1 : 0), 0);
+        if (totalCount > nums.length / 2) {
+            return candidate;
+        }
+    }
+
+    return null;
+}
+
+// Example usage:
+const array1 = [3, 2, 3];
+console.log(findMajorityElement(array1)); // Output: 3
+
+const array2 = [2, 2, 1, 1, 1, 2, 2];
+console.log(findMajorityElement(array2)); // Output: 2
+
+const array3 = [1, 2, 3, 4, 5];
+console.log(findMajorityElement(array3)); // Output: null (no majority element)
