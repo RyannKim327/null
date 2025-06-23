@@ -1,43 +1,53 @@
-type Graph = Map<number, number[]>;
+function boyerMooreSearch(text: string, pattern: string): number {
+    const n = text.length;
+    const m = pattern.length;
 
-function bfs(graph: Graph, startNode: number): void {
-    // Queue to manage nodes to visit
-    const queue: number[] = [startNode];
-    // Set to track visited nodes
-    const visited: Set<number> = new Set([startNode]);
+    // Edge case: if the pattern is empty or longer than the text
+    if (m === 0 || m > n) {
+        return -1;
+    }
 
-    console.log("Breadth-First Search Traversal:");
-    while (queue.length > 0) {
-        // Dequeue the front node
-        const currentNode = queue.shift()!;
-        console.log(currentNode);
+    // Step 1: Build the shift table (bad character rule)
+    const shiftTable: Map<string, number> = new Map();
+    for (let i = 0; i < m; i++) {
+        shiftTable.set(pattern[i], i); // Store the last occurrence of each character
+    }
 
-        // Get neighbors of the current node
-        const neighbors = graph.get(currentNode) || [];
+    // Step 2: Perform the search
+    let skip = 0; // Number of characters to skip
+    while (skip <= n - m) {
+        let j = m - 1; // Start comparing from the rightmost character of the pattern
 
-        // Enqueue unvisited neighbors
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push(neighbor);
-            }
+        // Compare characters from right to left
+        while (j >= 0 && pattern[j] === text[skip + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // Pattern found at index `skip`
+            return skip;
+        } else {
+            // Use the shift table to determine how much to shift
+            const charInText = text[skip + m - 1]; // The mismatched character in the text
+            const shiftValue = shiftTable.get(charInText);
+            skip += (shiftValue !== undefined) ? Math.max(1, m - 1 - shiftValue) : m;
         }
     }
+
+    // Pattern not found
+    return -1;
 }
 
-// Example usage
-const graph: Graph = new Map([
-    [0, [1, 2]],
-    [1, [2]],
-    [2, [0, 3]],
-    [3, [3]]
-]);
+// Example usage:
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
+const result = boyerMooreSearch(text, pattern);
 
-console.log("Graph Representation:", graph);
-bfs(graph, 2); // Start BFS from node 2
-Graph Representation: Map(4) { 0 => [ 1, 2 ], 1 => [ 2 ], 2 => [ 0, 3 ], 3 => [ 3 ] }
-Breadth-First Search Traversal:
-2
-0
-3
-1
+if (result !== -1) {
+    console.log(`Pattern found at index ${result}`);
+} else {
+    console.log("Pattern not found");
+}
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
+Pattern found at index 17
