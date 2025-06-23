@@ -1,40 +1,59 @@
-function insertionSort(arr: number[]): number[] {
-    // Traverse through the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        // Store the current element to be inserted
-        const key = arr[i];
-        let j = i - 1;
+function computeLPSArray(pattern: string): number[] {
+    const lps: number[] = new Array(pattern.length).fill(0);
+    let length = 0; // Length of the previous longest prefix suffix
+    let i = 1;
 
-        // Move elements of arr[0..i-1] that are greater than key
-        // to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                // Try to find a smaller prefix that matches
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
         }
-
-        // Insert the key into its correct position
-        arr[j + 1] = key;
     }
 
-    return arr;
+    return lps;
 }
 
-// Example usage
-const unsortedArray = [12, 11, 13, 5, 6];
-console.log("Unsorted Array:", unsortedArray);
-const sortedArray = insertionSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
-Unsorted Array: [12, 11, 13, 5, 6]
-Sorted Array: [5, 6, 11, 12, 13]
-function insertionSort(arr: number[]): number[] {
-    for (let i = 1; i < arr.length; i++) {
-        const key = arr[i];
-        let j = i - 1;
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j];
-            j--;
+function KMPSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // Index for text
+    let j = 0; // Index for pattern
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
         }
-        arr[j + 1] = key;
+
+        if (j === pattern.length) {
+            // Pattern found at index (i - j)
+            result.push(i - j);
+            j = lps[j - 1]; // Continue searching for next occurrence
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
-    return arr;
+
+    return result;
 }
+
+// Example Usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+
+const occurrences = KMPSearch(text, pattern);
+console.log("Pattern found at indices:", occurrences);
+Pattern found at indices: [10]
