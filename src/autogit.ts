@@ -1,69 +1,52 @@
-// Define the structure of a binary tree node
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+/**
+ * Calculates the mean (average) of a list of numbers.
+ * 
+ * @param numbers - An array of numbers.
+ * @returns The mean of the numbers or `null` if the array is empty.
+ */
+function calculateMean(numbers: number[]): number | null {
+    const count = numbers.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    // Handle empty array to avoid division by zero
+    if (count === 0) {
+        return null;
     }
+
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / count;
+    return mean;
 }
 
-// Function to count the number of leaf nodes in a binary tree
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: If the node is null, return 0
-    if (root === null) {
-        return 0;
+// Example Usage:
+const dataPoints: number[] = [10, 20, 30, 40, 50];
+const mean = calculateMean(dataPoints);
+
+if (mean !== null) {
+    console.log(`The mean is: ${mean}`);
+} else {
+    console.log("Cannot calculate the mean of an empty list.");
+}
+function calculateMeanWithLoop(numbers: number[]): number | null {
+    const count = numbers.length;
+
+    if (count === 0) {
+        return null;
     }
 
-    // Check if the current node is a leaf node
-    if (root.left === null && root.right === null) {
-        return 1; // This is a leaf node
+    let sum = 0;
+    for (let num of numbers) {
+        sum += num;
     }
 
-    // Recursively count leaf nodes in the left and right subtrees
-    const leftCount = countLeafNodes(root.left);
-    const rightCount = countLeafNodes(root.right);
-
-    // Return the total count of leaf nodes
-    return leftCount + rightCount;
+    return sum / count;
 }
 
-// Example Usage
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
+// Example Usage:
+const dataPointsLoop: number[] = [5, 15, 25, 35, 45];
+const meanLoop = calculateMeanWithLoop(dataPointsLoop);
 
-console.log("Number of leaf nodes:", countLeafNodes(root)); // Output: 3
-function countLeafNodesIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
-    }
-
-    let count = 0;
-    const stack: TreeNode[] = [root];
-
-    while (stack.length > 0) {
-        const currentNode = stack.pop()!;
-
-        // Check if the current node is a leaf node
-        if (currentNode.left === null && currentNode.right === null) {
-            count++;
-        }
-
-        // Push the right and left children onto the stack
-        if (currentNode.right !== null) {
-            stack.push(currentNode.right);
-        }
-        if (currentNode.left !== null) {
-            stack.push(currentNode.left);
-        }
-    }
-
-    return count;
+if (meanLoop !== null) {
+    console.log(`The mean using loop is: ${meanLoop}`);
+} else {
+    console.log("Cannot calculate the mean of an empty list using loop.");
 }
