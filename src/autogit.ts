@@ -1,80 +1,38 @@
-function countOccurrences(text: string, word: string): number {
-    const parts = text.split(word);
-    return parts.length - 1;
-}
+function radixSort(arr: number[]): number[] {
+    // Helper function to get the digit at a specific place
+    const getDigit = (num: number, place: number): number => {
+        return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+    };
 
-// Example usage:
-const text = "This is a test. This test works.";
-const word = "test";
-console.log(countOccurrences(text, word)); // Output: 2
-function countOccurrences(text: string, word: string): number {
-    const regex = new RegExp(`\\b${word}\\b`, 'gi');
-    const matches = text.match(regex);
-    return matches ? matches.length : 0;
-}
+    // Helper function to find the maximum number of digits in the array
+    const getMaxDigits = (arr: number[]): number => {
+        let maxDigits = 0;
+        for (const num of arr) {
+            maxDigits = Math.max(maxDigits, num.toString().length);
+        }
+        return maxDigits;
+    };
 
-// Example usage:
-const text = "This is a test. This test works.";
-const word = "test";
-console.log(countOccurrences(text, word)); // Output: 2
-function countOccurrences(text: string, word: string): number {
-    let count = 0;
-    let index = text.indexOf(word);
+    const maxDigits = getMaxDigits(arr);
 
-    while (index !== -1) {
-        count++;
-        index = text.indexOf(word, index + word.length);
+    // Perform counting sort for each digit position
+    for (let place = 0; place < maxDigits; place++) {
+        const buckets: number[][] = Array.from({ length: 10 }, () => []);
+
+        // Distribute numbers into buckets based on the current digit
+        for (const num of arr) {
+            const digit = getDigit(num, place);
+            buckets[digit].push(num);
+        }
+
+        // Flatten the buckets back into the array
+        arr = ([] as number[]).concat(...buckets);
     }
 
-    return count;
+    return arr;
 }
 
-// Example usage:
-const text = "This is a test. This test works.";
-const word = "test";
-console.log(countOccurrences(text, word)); // Output: 2
-function countOccurrences(text: string, word: string): number {
-    const lowerText = text.toLowerCase();
-    const lowerWord = word.toLowerCase();
-    const parts = lowerText.split(lowerWord);
-    return parts.length - 1;
-}
-function countOccurrences(text: string, word: string): number {
-    const regex = new RegExp(`\\b${word}\\b`, 'gi'); // 'i' flag for case-insensitivity
-    const matches = text.match(regex);
-    return matches ? matches.length : 0;
-}
-function countOccurrences(text: string, word: string): number {
-    const lowerText = text.toLowerCase();
-    const lowerWord = word.toLowerCase();
-    let count = 0;
-    let index = lowerText.indexOf(lowerWord);
-
-    while (index !== -1) {
-        count++;
-        index = lowerText.indexOf(lowerWord, index + lowerWord.length);
-    }
-
-    return count;
-}
-function countOccurrences(
-    text: string,
-    word: string,
-    caseSensitive: boolean = false
-): number {
-    const searchWord = caseSensitive ? word : word.toLowerCase();
-    const searchText = caseSensitive ? text : text.toLowerCase();
-
-    // Create a regex pattern to match whole words only
-    const regex = new RegExp(`\\b${searchWord}\\b`, 'g');
-    const matches = searchText.match(regex);
-
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const text = "Test this TEST and test again!";
-const word = "test";
-
-console.log(countOccurrences(text, word)); // Output: 3 (case-insensitive)
-console.log(countOccurrences(text, word, true)); // Output: 1 (case-sensitive)
+// Example usage
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
