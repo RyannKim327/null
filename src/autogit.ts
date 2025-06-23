@@ -1,94 +1,94 @@
-function topologicalSortKahn(graph: Map<number, number[]>): number[] {
-    const indegree: Map<number, number> = new Map();
-    const result: number[] = [];
-    const queue: number[] = [];
+class PriorityQueue<T> {
+  private heap: T[] = [];
+  private compare: (a: T, b: T) => boolean;
 
-    // Initialize indegree map
-    for (const [node] of graph) {
-        indegree.set(node, 0);
+  constructor(compareFn: (a: T, b: T) => boolean) {
+    this.compare = compareFn; // Comparison function to define priority
+  }
+
+  // Insert an element into the priority queue
+  insert(value: T): void {
+    this.heap.push(value);
+    this.bubbleUp(this.heap.length - 1);
+  }
+
+  // Extract the root element (highest priority)
+  extractMin(): T | undefined {
+    if (this.heap.length === 0) return undefined;
+    const min = this.heap[0];
+    const last = this.heap.pop();
+    if (this.heap.length > 0 && last !== undefined) {
+      this.heap[0] = last;
+      this.sinkDown(0);
     }
+    return min;
+  }
 
-    // Calculate indegree for each node
-    for (const [node, neighbors] of graph) {
-        for (const neighbor of neighbors) {
-            indegree.set(neighbor, (indegree.get(neighbor) || 0) + 1);
-        }
+  // Peek at the root element without removing it
+  peek(): T | undefined {
+    return this.heap[0];
+  }
+
+  // Get the size of the priority queue
+  size(): number {
+    return this.heap.length;
+  }
+
+  // Bubble up the element at the given index to maintain the heap property
+  private bubbleUp(index: number): void {
+    while (index > 0) {
+      const parentIndex = Math.floor((index - 1) / 2);
+      if (!this.compare(this.heap[index], this.heap[parentIndex])) break;
+      [this.heap[index], this.heap[parentIndex]] = [
+        this.heap[parentIndex],
+        this.heap[index],
+      ];
+      index = parentIndex;
     }
+  }
 
-    // Add all nodes with indegree 0 to the queue
-    for (const [node, degree] of indegree) {
-        if (degree === 0) {
-            queue.push(node);
-        }
+  // Sink down the element at the given index to maintain the heap property
+  private sinkDown(index: number): void {
+    const length = this.heap.length;
+    while (true) {
+      const leftChildIndex = 2 * index + 1;
+      const rightChildIndex = 2 * index + 2;
+      let smallest = index;
+
+      if (
+        leftChildIndex < length &&
+        this.compare(this.heap[leftChildIndex], this.heap[smallest])
+      ) {
+        smallest = leftChildIndex;
+      }
+
+      if (
+        rightChildIndex < length &&
+        this.compare(this.heap[rightChildIndex], this.heap[smallest])
+      ) {
+        smallest = rightChildIndex;
+      }
+
+      if (smallest === index) break;
+      [this.heap[index], this.heap[smallest]] = [
+        this.heap[smallest],
+        this.heap[index],
+      ];
+      index = smallest;
     }
-
-    // Process the queue
-    while (queue.length > 0) {
-        const current = queue.shift()!;
-        result.push(current);
-
-        // Update neighbors
-        for (const neighbor of graph.get(current) || []) {
-            const newDegree = (indegree.get(neighbor) || 0) - 1;
-            indegree.set(neighbor, newDegree);
-
-            if (newDegree === 0) {
-                queue.push(neighbor);
-            }
-        }
-    }
-
-    // Check if there is a cycle
-    if (result.length !== graph.size) {
-        throw new Error("The graph contains a cycle, topological sort is not possible.");
-    }
-
-    return result;
-}
-function topologicalSortDFS(graph: Map<number, number[]>): number[] {
-    const visited: Set<number> = new Set();
-    const stack: number[] = [];
-
-    function dfs(node: number) {
-        visited.add(node);
-
-        // Visit all neighbors
-        for (const neighbor of graph.get(node) || []) {
-            if (!visited.has(neighbor)) {
-                dfs(neighbor);
-            }
-        }
-
-        // Push the current node to the stack after visiting all neighbors
-        stack.push(node);
-    }
-
-    // Perform DFS for all nodes
-    for (const [node] of graph) {
-        if (!visited.has(node)) {
-            dfs(node);
-        }
-    }
-
-    // The stack contains the nodes in reverse topological order
-    return stack.reverse();
-}
-// Define a DAG using an adjacency list
-const graph = new Map<number, number[]>([
-    [0, [1, 2]],
-    [1, [3]],
-    [2, [3]],
-    [3, []],
-]);
-
-// Using Kahn's Algorithm
-try {
-    const sortedOrderKahn = topologicalSortKahn(graph);
-    console.log("Topological Sort (Kahn's Algorithm):", sortedOrderKahn);
-} catch (error) {
-    console.error(error.message);
+  }
 }
 
-// Using DFS
-const sortedOrderDFS = topologicalSortDFS(graph);
-console.log("Topological Sort (DFS):", sortedOrderDFS);
+// Example Usage
+const pq = new PriorityQueue<number>((a, b) => a < b); // Min-Heap for numbers
+
+pq.insert(5);
+pq.insert(3);
+pq.insert(8);
+pq.insert(1);
+
+console.log(pq.extractMin()); // Output: 1
+console.log(pq.extractMin()); // Output: 3
+console.log(pq.peek());       // Output: 5
+console.log(pq.size());       // Output: 2
+const maxPQ = new PriorityQueue<number>((a, b) => a > b); // Max-Heap for numbers
