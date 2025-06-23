@@ -1,30 +1,33 @@
-function isSorted(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
-        }
-    }
-    return true;
-}
+// Define the structure of a Node in the linked list
+class ListNode {
+    data: number;
+    next: ListNode | null;
 
-function shuffleArray(arr: number[]): void {
-    for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+    constructor(data: number) {
+        this.data = data;
+        this.next = null;
     }
 }
 
-function bogoSort(arr: number[]): number[] {
-    while (!isSorted(arr)) {
-        shuffleArray(arr);
+// Function to calculate the length of the linked list
+function getLength(head: ListNode | null): number {
+    let length = 0; // Initialize the counter
+    let currentNode = head; // Start from the head of the list
+
+    // Traverse the list until the end
+    while (currentNode !== null) {
+        length++; // Increment the counter for each node
+        currentNode = currentNode.next; // Move to the next node
     }
-    return arr;
+
+    return length; // Return the total count
 }
 
 // Example usage:
-const array = [3, 2, 5, 1, 4];
-console.log("Original Array:", array);
-const sortedArray = bogoSort(array);
-console.log("Sorted Array:", sortedArray);
-Original Array: [3, 2, 5, 1, 4]
-Sorted Array: [1, 2, 3, 4, 5]
+const head = new ListNode(1); // Create the head node
+head.next = new ListNode(2);  // Add a second node
+head.next.next = new ListNode(3); // Add a third node
+
+console.log("Length of the linked list:", getLength(head)); // Output: 3
+console.log("Length of an empty list:", getLength(null)); // Output: 0
+console.log("Length of a single-node list:", getLength(new ListNode(10))); // Output: 1
