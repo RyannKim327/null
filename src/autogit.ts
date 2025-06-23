@@ -1,56 +1,91 @@
-import axios, { AxiosResponse, AxiosError } from 'axios';
+function countOccurrences(input: string, char: string): number {
+    let count = 0;
 
-// Define an interface for the expected response data structure
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
-
-// Function to fetch posts using Axios
-async function fetchPosts(): Promise<void> {
-  try {
-    // Make a GET request to the JSONPlaceholder API
-    const response: AxiosResponse<Post[]> = await axios.get(
-      'https://jsonplaceholder.typicode.com/posts'
-    );
-
-    // Extract the data from the response
-    const posts: Post[] = response.data;
-
-    // Log each post's title and body
-    posts.forEach((post) => {
-      console.log(`Post ID: ${post.id}`);
-      console.log(`Title: ${post.title}`);
-      console.log(`Body: ${post.body}`);
-      console.log('-------------------------');
-    });
-  } catch (error) {
-    // Handle any errors that occur during the request
-    const axiosError = error as AxiosError;
-    if (axiosError.response) {
-      // The request was made and the server responded with a status code
-      console.error('Error Response:', axiosError.response.data);
-      console.error('Status Code:', axiosError.response.status);
-    } else if (axiosError.request) {
-      // The request was made but no response was received
-      console.error('No response received:', axiosError.request);
-    } else {
-      // Something happened in setting up the request
-      console.error('Error Message:', axiosError.message);
+    for (let i = 0; i < input.length; i++) {
+        if (input[i] === char) {
+            count++;
+        }
     }
-  }
+
+    return count;
 }
 
-// Call the function to fetch and display posts
-fetchPosts();
-Post ID: 1
-Title: sunt aut facere repellat provident occaecati excepturi optio reprehenderit
-Body: quia et suscipit\nsuscipit...
--------------------------
-Post ID: 2
-Title: qui est esse
-Body: est rerum tempore vitae\nsequi sint...
--------------------------
-...
+// Example usage:
+const text = "hello world";
+const character = "l";
+console.log(countOccurrences(text, character)); // Output: 3
+function countOccurrences(input: string, char: string): number {
+    return input.split(char).length - 1;
+}
+
+// Example usage:
+const text = "hello world";
+const character = "l";
+console.log(countOccurrences(text, character)); // Output: 3
+function countOccurrences(input: string, char: string): number {
+    const regex = new RegExp(char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    const matches = input.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const text = "hello world";
+const character = "l";
+console.log(countOccurrences(text, character)); // Output: 3
+function countOccurrences(input: string, char: string): number {
+    return [...input].reduce((count, currentChar) => 
+        currentChar === char ? count + 1 : count, 0);
+}
+
+// Example usage:
+const text = "hello world";
+const character = "l";
+console.log(countOccurrences(text, character)); // Output: 3
+function countOccurrences(input: string, char: string): number {
+    return [...input].filter(currentChar => currentChar === char).length;
+}
+
+// Example usage:
+const text = "hello world";
+const character = "l";
+console.log(countOccurrences(text, character)); // Output: 3
+function countWithLoop(input: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < input.length; i++) {
+        if (input[i] === char) count++;
+    }
+    return count;
+}
+
+function countWithSplit(input: string, char: string): number {
+    return input.split(char).length - 1;
+}
+
+function countWithRegex(input: string, char: string): number {
+    const regex = new RegExp(char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    const matches = input.match(regex);
+    return matches ? matches.length : 0;
+}
+
+function countWithReduce(input: string, char: string): number {
+    return [...input].reduce((count, currentChar) => 
+        currentChar === char ? count + 1 : count, 0);
+}
+
+function countWithFilter(input: string, char: string): number {
+    return [...input].filter(currentChar => currentChar === char).length;
+}
+
+const text = "hello world";
+const character = "l";
+
+console.log("Count with Loop:", countWithLoop(text, character)); // 3
+console.log("Count with Split:", countWithSplit(text, character)); // 3
+console.log("Count with Regex:", countWithRegex(text, character)); // 3
+console.log("Count with Reduce:", countWithReduce(text, character)); // 3
+console.log("Count with Filter:", countWithFilter(text, character)); // 3
+Count with Loop: 3
+Count with Split: 3
+Count with Regex: 3
+Count with Reduce: 3
+Count with Filter: 3
