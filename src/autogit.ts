@@ -1,41 +1,80 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
+function countOccurrences(text: string, word: string): number {
+    const parts = text.split(word);
+    return parts.length - 1;
+}
 
-    while (left < right) {
-        // Skip non-alphanumeric characters from the left
-        while (left < right && !isAlphanumeric(s[left])) {
-            left++;
-        }
+// Example usage:
+const text = "This is a test. This test works.";
+const word = "test";
+console.log(countOccurrences(text, word)); // Output: 2
+function countOccurrences(text: string, word: string): number {
+    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+    const matches = text.match(regex);
+    return matches ? matches.length : 0;
+}
 
-        // Skip non-alphanumeric characters from the right
-        while (left < right && !isAlphanumeric(s[right])) {
-            right--;
-        }
+// Example usage:
+const text = "This is a test. This test works.";
+const word = "test";
+console.log(countOccurrences(text, word)); // Output: 2
+function countOccurrences(text: string, word: string): number {
+    let count = 0;
+    let index = text.indexOf(word);
 
-        // Compare characters (case insensitive)
-        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false;
-        }
-
-        // Move pointers inward
-        left++;
-        right--;
+    while (index !== -1) {
+        count++;
+        index = text.indexOf(word, index + word.length);
     }
 
-    return true;
+    return count;
 }
 
-// Helper function to check if a character is alphanumeric
-function isAlphanumeric(char: string): boolean {
-    const code = char.charCodeAt(0);
-    return (
-        (code >= 48 && code <= 57) ||  // Digits ('0'-'9')
-        (code >= 65 && code <= 90) ||  // Uppercase letters ('A'-'Z')
-        (code >= 97 && code <= 122)    // Lowercase letters ('a'-'z')
-    );
+// Example usage:
+const text = "This is a test. This test works.";
+const word = "test";
+console.log(countOccurrences(text, word)); // Output: 2
+function countOccurrences(text: string, word: string): number {
+    const lowerText = text.toLowerCase();
+    const lowerWord = word.toLowerCase();
+    const parts = lowerText.split(lowerWord);
+    return parts.length - 1;
 }
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race a car"));                      // Output: false
-console.log(isPalindrome(" "));                               // Output: true
-console.log(isPalindrome(".,"));                              // Output: true
+function countOccurrences(text: string, word: string): number {
+    const regex = new RegExp(`\\b${word}\\b`, 'gi'); // 'i' flag for case-insensitivity
+    const matches = text.match(regex);
+    return matches ? matches.length : 0;
+}
+function countOccurrences(text: string, word: string): number {
+    const lowerText = text.toLowerCase();
+    const lowerWord = word.toLowerCase();
+    let count = 0;
+    let index = lowerText.indexOf(lowerWord);
+
+    while (index !== -1) {
+        count++;
+        index = lowerText.indexOf(lowerWord, index + lowerWord.length);
+    }
+
+    return count;
+}
+function countOccurrences(
+    text: string,
+    word: string,
+    caseSensitive: boolean = false
+): number {
+    const searchWord = caseSensitive ? word : word.toLowerCase();
+    const searchText = caseSensitive ? text : text.toLowerCase();
+
+    // Create a regex pattern to match whole words only
+    const regex = new RegExp(`\\b${searchWord}\\b`, 'g');
+    const matches = searchText.match(regex);
+
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const text = "Test this TEST and test again!";
+const word = "test";
+
+console.log(countOccurrences(text, word)); // Output: 3 (case-insensitive)
+console.log(countOccurrences(text, word, true)); // Output: 1 (case-sensitive)
