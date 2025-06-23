@@ -1,58 +1,109 @@
-function radixSort(arr: number[]): number[] {
-    // Helper function to get the maximum number in the array
-    const getMax = (array: number[]): number => {
-        let max = array[0];
-        for (let i = 1; i < array.length; i++) {
-            if (array[i] > max) {
-                max = array[i];
-            }
-        }
-        return max;
-    };
+type Node = string | number; // Define the type of nodes in the graph
 
-    // Helper function to perform counting sort based on a specific digit
-    const countingSortForDigit = (array: number[], digit: number): void => {
-        const n = array.length;
-        const output: number[] = new Array(n).fill(0);
-        const count: number[] = new Array(10).fill(0);
+function bidirectionalSearch(
+  graph: Map<Node, Node[]>, // Adjacency list representation of the graph
+  start: Node,              // Starting node
+  goal: Node                // Target node
+): { path: Node[]; found: boolean } {
+  // Helper function to reconstruct the path from the intersection point
+  const reconstructPath = (
+    forwardParent: Map<Node, Node>,
+    backwardParent: Map<Node, Node>,
+    intersection: Node
+  ): Node[] => {
+    const path: Node[] = [];
+    let currentNode: Node | undefined = intersection;
 
-        // Store the count of occurrences in count[]
-        for (let i = 0; i < n; i++) {
-            const index = Math.floor((array[i] / digit) % 10);
-            count[index]++;
-        }
-
-        // Update count[i] to store the actual position of this digit in output[]
-        for (let i = 1; i < 10; i++) {
-            count[i] += count[i - 1];
-        }
-
-        // Build the output array
-        for (let i = n - 1; i >= 0; i--) {
-            const index = Math.floor((array[i] / digit) % 10);
-            output[count[index] - 1] = array[i];
-            count[index]--;
-        }
-
-        // Copy the output array back to the original array
-        for (let i = 0; i < n; i++) {
-            array[i] = output[i];
-        }
-    };
-
-    // Main Radix Sort logic
-    const max = getMax(arr);
-
-    // Perform counting sort for every digit
-    for (let digit = 1; Math.floor(max / digit) > 0; digit *= 10) {
-        countingSortForDigit(arr, digit);
+    // Traverse from intersection to start
+    while (currentNode !== undefined) {
+      path.unshift(currentNode);
+      currentNode = forwardParent.get(currentNode);
     }
 
-    return arr;
+    currentNode = backwardParent.get(intersection); // Start from intersection to goal
+    while (currentNode !== undefined) {
+      path.push(currentNode);
+      currentNode = backwardParent.get(currentNode);
+    }
+
+    return path;
+  };
+
+  // Initialize data structures
+  const forwardQueue: Node[] = [start];
+  const backwardQueue: Node[] = [goal];
+
+  const forwardVisited = new Set<Node>();
+  const backwardVisited = new Set<Node>();
+
+  const forwardParent = new Map<Node, Node>();
+  const backwardParent = new Map<Node, Node>();
+
+  forwardVisited.add(start);
+  backwardVisited.add(goal);
+
+  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+    // Perform one step of the forward BFS
+    const forwardNode = forwardQueue.shift()!;
+    for (const neighbor of graph.get(forwardNode) || []) {
+      if (!forwardVisited.has(neighbor)) {
+        forwardVisited.add(neighbor);
+        forwardParent.set(neighbor, forwardNode);
+        forwardQueue.push(neighbor);
+
+        // Check if the neighbor has been visited by the backward search
+        if (backwardVisited.has(neighbor)) {
+          const path = reconstructPath(forwardParent, backwardParent, neighbor);
+          return { path, found: true };
+        }
+      }
+    }
+
+    // Perform one step of the backward BFS
+    const backwardNode = backwardQueue.shift()!;
+    for (const neighbor of graph.get(backwardNode) || []) {
+      if (!backwardVisited.has(neighbor)) {
+        backwardVisited.add(neighbor);
+        backwardParent.set(neighbor, backwardNode);
+        backwardQueue.push(neighbor);
+
+        // Check if the neighbor has been visited by the forward search
+        if (forwardVisited.has(neighbor)) {
+          const path = reconstructPath(forwardParent, backwardParent, neighbor);
+          return { path, found: true };
+        }
+      }
+    }
+  }
+
+  // If no intersection is found, return failure
+  return { path: [], found: false };
 }
 
-// Example usage:
-const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArray = radixSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
-Sorted Array: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage
+const graph = new Map<string, string[]>([
+  ["A", ["B", "C"]],
+  ["B", ["A", "D", "E"]],
+  ["C", ["A", "F"]],
+  ["D", ["B"]],
+  ["E", ["B", "F"]],
+  ["F", ["C", "E"]],
+]);
+
+const result = bidirectionalSearch(graph, "A", "F");
+console.log("Path:", result.path);
+console.log("Found:", result.found);
+Graph:
+A -> B, C
+B -> A, D, E
+C -> A, F
+D -> B
+E -> B, F
+F -> C, E
+
+Start: A
+Goal: F
+
+Output:
+Path: ["A", "C", "F"]
+Found: true
