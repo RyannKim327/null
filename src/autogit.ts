@@ -1,58 +1,46 @@
-function majorityElement(nums: number[]): number {
-    let candidate: number | null = null;
-    let count: number = 0;
+function getRandomIntInRange(min: number, max: number): number {
+    min = Math.ceil(min); // Ensure min is an integer
+    max = Math.floor(max); // Ensure max is an integer
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+const randomInt = getRandomIntInRange(5, 15);
+console.log(randomInt); // Outputs a random integer between 5 and 15 (inclusive)
+function getRandomFloatInRange(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
+}
+const randomFloat = getRandomFloatInRange(2.5, 7.5);
+console.log(randomFloat); // Outputs a random float between 2.5 (inclusive) and 7.5 (exclusive)
+function getRandomIntInRangeSafe(min: number, max: number): number {
+    if (min > max) {
+        throw new Error("min must be less than or equal to max");
+    }
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+type Range = { min: number; max: number };
 
-    // First pass to find a potential candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
+function getRandomNumberInRange(range: Range, isInteger: boolean = true): number {
+    const { min, max } = range;
+    if (min > max) {
+        throw new Error("min must be less than or equal to max");
     }
 
-    // Second pass to confirm the candidate is indeed the majority
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    if (count > Math.floor(nums.length / 2)) {
-        return candidate!;
+    if (isInteger) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
     } else {
-        throw new Error("No majority element found");
+        return Math.random() * (max - min) + min;
     }
 }
-
-// Example usage:
-const arr = [3, 2, 3];
-console.log(majorityElement(arr)); // Output: 3
-function majorityElementWithHashMap(nums: number[]): number {
-    const frequencyMap: Map<number, number> = new Map();
-
-    // Count the frequency of each element
-    for (const num of nums) {
-        frequencyMap.set(num, (frequencyMap.get(num) || 0) + 1);
-    }
-
-    // Find the element with frequency > n/2
-    const threshold = Math.floor(nums.length / 2);
-    for (const [num, count] of frequencyMap.entries()) {
-        if (count > threshold) {
-            return num;
-        }
-    }
-
-    throw new Error("No majority element found");
+const range: Range = { min: 10, max: 20 };
+console.log(getRandomNumberInRange(range)); // Random integer between 10 and 20
+console.log(getRandomNumberInRange(range, false)); // Random float between 10 and 20
+function getRandomIntInRange(min: number, max: number): number {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-// Example usage:
-const arr = [2, 2, 1, 1, 1, 2, 2];
-console.log(majorityElementWithHashMap(arr)); // Output: 2
-function majorityElement(nums: number[]): number | null {
-    if (nums.length === 0) return null;
-
-    // Rest of the implementation remains the same
-    // ...
+function getRandomFloatInRange(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
 }
