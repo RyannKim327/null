@@ -1,61 +1,36 @@
-type Edge = {
-  source: number;
-  destination: number;
-  weight: number;
-};
+const numbers = [10, 5, 20, 1];
+numbers.sort();
+console.log(numbers); // Output: [1, 10, 20, 5]
+const numbersAscending = [10, 5, 20, 1];
+numbersAscending.sort((a, b) => a - b);
+console.log(numbersAscending); // Output: [1, 5, 10, 20]
+const numbersDescending = [10, 5, 20, 1];
+numbersDescending.sort((a, b) => b - a);
+console.log(numbersDescending); // Output: [20, 10, 5, 1]
+// Define an array of numbers
+const numbers: number[] = [45, 12, 8, 130, 44];
 
-function bellmanFord(edges: Edge[], V: number, source: number): number[] | string {
-  // Step 1: Initialize distances
-  const distances: number[] = Array(V).fill(Infinity);
-  distances[source] = 0;
+// Sort in ascending order
+const sortedAscending = [...numbers].sort((a, b) => a - b);
+console.log('Ascending:', sortedAscending); // Output: [8, 12, 44, 45, 130]
 
-  // Step 2: Relax all edges V-1 times
-  for (let i = 0; i < V - 1; i++) {
-    for (const edge of edges) {
-      const { source, destination, weight } = edge;
-      if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-        distances[destination] = distances[source] + weight;
-      }
-    }
-  }
+// Sort in descending order
+const sortedDescending = [...numbers].sort((a, b) => b - a);
+console.log('Descending:', sortedDescending); // Output: [130, 45, 44, 12, 8]
+type NumberArray = number[];
 
-  // Step 3: Check for negative weight cycles
-  for (const edge of edges) {
-    const { source, destination, weight } = edge;
-    if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
-      return "Graph contains a negative weight cycle";
-    }
-  }
-
-  return distances;
+function sortNumbers(array: NumberArray, ascending: boolean = true): NumberArray {
+    const compareFunction = ascending 
+        ? (a: number, b: number) => a - b 
+        : (a: number, b: number) => b - a;
+    
+    return [...array].sort(compareFunction);
 }
 
-// Example Usage
-const edges: Edge[] = [
-  { source: 0, destination: 1, weight: 4 },
-  { source: 0, destination: 2, weight: 3 },
-  { source: 1, destination: 2, weight: -2 },
-  { source: 2, destination: 3, weight: 2 },
-  { source: 3, destination: 1, weight: 1 },
-];
+// Usage
+const myNumbers: NumberArray = [7, 3, 9, 1, 5];
+const sortedAsc = sortNumbers(myNumbers);
+console.log('Sorted Ascending:', sortedAsc); // Output: [1, 3, 5, 7, 9]
 
-const V = 4; // Number of vertices
-const source = 0; // Source vertex
-
-const result = bellmanFord(edges, V, source);
-
-if (typeof result === "string") {
-  console.log(result); // Negative weight cycle detected
-} else {
-  console.log("Shortest distances from source:", result);
-}
-Vertices: 4
-Edges:
-  0 -> 1 (weight 4)
-  0 -> 2 (weight 3)
-  1 -> 2 (weight -2)
-  2 -> 3 (weight 2)
-  3 -> 1 (weight 1)
-Source: 0
-Shortest distances from source: [0, 2, 0, 2]
-Graph contains a negative weight cycle
+const sortedDesc = sortNumbers(myNumbers, false);
+console.log('Sorted Descending:', sortedDesc); // Output: [9, 7, 5, 3, 1]
