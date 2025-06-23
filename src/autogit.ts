@@ -1,28 +1,24 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+function isSortedAscending(arr: number[]): boolean {
+    // Handle edge cases: empty array or single-element array
+    if (arr.length <= 1) {
+        return true;
+    }
 
-    // Outer loop to iterate over each element in the array
-    for (let i = 0; i < n - 1; i++) {
-        // Assume the current index is the minimum
-        let minIndex = i;
-
-        // Inner loop to find the actual minimum in the unsorted portion
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j; // Update the index of the minimum element
-            }
-        }
-
-        // Swap the found minimum element with the first element of the unsorted portion
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swap using destructuring
+    // Iterate through the array and check the sorting condition
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false; // The array is not sorted
         }
     }
 
-    return arr;
+    return true; // The array is sorted
 }
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [5, 3, 8, 1];
+const arr3 = [];
+const arr4 = [42];
 
-// Example usage:
-const unsortedArray = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+console.log(isSortedAscending(arr1)); // Output: true
+console.log(isSortedAscending(arr2)); // Output: false
+console.log(isSortedAscending(arr3)); // Output: true
+console.log(isSortedAscending(arr4)); // Output: true
