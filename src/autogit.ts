@@ -1,59 +1,31 @@
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
-}
+    // Outer loop to control the number of passes
+    for (let i = 0; i < n - 1; i++) {
+        let swapped = false; // Optimized flag to detect if any swaps occurred
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: empty tree has depth 0
-    }
-
-    const leftDepth = maxDepth(root.left);  // Recursively find depth of left subtree
-    const rightDepth = maxDepth(root.right); // Recursively find depth of right subtree
-
-    return Math.max(leftDepth, rightDepth) + 1; // Add 1 for the current node
-}
-function maxDepthIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Empty tree has depth 0
-    }
-
-    const queue: TreeNode[] = [root]; // Initialize queue with the root node
-    let depth = 0;
-
-    while (queue.length > 0) {
-        const levelSize = queue.length; // Number of nodes at the current level
-        for (let i = 0; i < levelSize; i++) {
-            const currentNode = queue.shift()!; // Remove the front node from the queue
-            if (currentNode.left !== null) {
-                queue.push(currentNode.left); // Add left child to the queue
-            }
-            if (currentNode.right !== null) {
-                queue.push(currentNode.right); // Add right child to the queue
+        // Inner loop to compare adjacent elements
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap the elements if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true; // Mark that a swap occurred
             }
         }
-        depth++; // Increment depth after processing a level
+
+        // If no swaps occurred during this pass, the array is already sorted
+        if (!swapped) break;
     }
 
-    return depth;
+    return arr;
 }
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-// Calculate maximum depth using the recursive approach
-console.log(maxDepth(root)); // Output: 3
-
-// Calculate maximum depth using the iterative approach
-console.log(maxDepthIterative(root)); // Output: 3
+// Example usage:
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
+console.log(bubbleSort([5, 3, 8, 4, 2])); // Output: [2, 3, 4, 5, 8]
+console.log(bubbleSort([1, 2, 3, 4, 5])); // Output: [1, 2, 3, 4, 5] (already sorted)
+console.log(bubbleSort([]));              // Output: [] (empty array)
+console.log(bubbleSort([10]));            // Output: [10] (single element)
