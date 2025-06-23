@@ -1,32 +1,39 @@
-function shellSort(arr: number[]): number[] {
-    let n = arr.length;
+function findSecondLargest(arr: number[]): number | null {
+    // Check if the array has at least two elements
+    if (arr.length < 2) {
+        console.error("Array must contain at least two elements.");
+        return null; // Return null for invalid input
+    }
 
-    // Start with a large gap and reduce it over time
-    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        // Perform insertion sort for elements separated by the gap
-        for (let i = gap; i < n; i++) {
-            // Store the current element
-            let temp = arr[i];
-            let j = i;
+    let firstLargest: number | null = null;
+    let secondLargest: number | null = null;
 
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            while (j >= gap && arr[j - gap] > temp) {
-                arr[j] = arr[j - gap];
-                j -= gap;
-            }
-
-            // Place the stored element at its correct location
-            arr[j] = temp;
+    for (const num of arr) {
+        // Update firstLargest and secondLargest
+        if (firstLargest === null || num > firstLargest) {
+            secondLargest = firstLargest; // Move the current largest to secondLargest
+            firstLargest = num; // Update the largest
+        } else if (num !== firstLargest && (secondLargest === null || num > secondLargest)) {
+            secondLargest = num; // Update secondLargest if num is not equal to firstLargest
         }
     }
 
-    return arr;
-}
+    // Check if a valid secondLargest was found
+    if (secondLargest === null) {
+        console.error("No second largest element found (array might have identical elements).");
+        return null;
+    }
 
-// Example usage
-const array = [12, 34, 54, 2, 3];
-console.log("Original Array:", array);
-const sortedArray = shellSort(array);
-console.log("Sorted Array:", sortedArray);
-Original Array: [12, 34, 54, 2, 3]
-Sorted Array: [2, 3, 12, 34, 54]
+    return secondLargest;
+}
+const arr1 = [10, 20, 30, 40, 50];
+console.log(findSecondLargest(arr1)); // Output: 40
+
+const arr2 = [5, 5, 5, 5];
+console.log(findSecondLargest(arr2)); // Output: null (all elements are identical)
+
+const arr3 = [7];
+console.log(findSecondLargest(arr3)); // Output: null (not enough elements)
+
+const arr4 = [-10, -20, -30, -5];
+console.log(findSecondLargest(arr4)); // Output: -10
