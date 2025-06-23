@@ -1,87 +1,48 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+// Define the structure of a node in the linked list
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    constructor(value: T) {
+    constructor(value: number) {
         this.value = value;
         this.next = null;
     }
 }
-class Queue<T> {
-    private head: Node<T> | null; // Front of the queue
-    private tail: Node<T> | null; // Rear of the queue
-    private size: number;         // Number of elements in the queue
 
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.size = 0;
+// Function to find the middle element of the linked list
+function findMiddle(head: ListNode | null): number | null {
+    if (!head) return null; // If the list is empty, return null
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow!.next;          // Move slow pointer by 1 step
+        fast = fast.next.next;      // Move fast pointer by 2 steps
     }
 
-    // Add an element to the rear of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-
-        if (this.tail === null) {
-            // If the queue is empty, set both head and tail to the new node
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            // Otherwise, add the new node to the end and update the tail
-            this.tail.next = newNode;
-            this.tail = newNode;
-        }
-
-        this.size++;
-    }
-
-    // Remove and return the element from the front of the queue
-    dequeue(): T | undefined {
-        if (this.head === null) {
-            // If the queue is empty, return undefined
-            return undefined;
-        }
-
-        const removedNode = this.head;
-        this.head = this.head.next;
-
-        // If the queue becomes empty, also update the tail to null
-        if (this.head === null) {
-            this.tail = null;
-        }
-
-        this.size--;
-        return removedNode.value;
-    }
-
-    // Return the element at the front of the queue without removing it
-    peek(): T | undefined {
-        return this.head?.value;
-    }
-
-    // Check if the queue is empty
-    isEmpty(): boolean {
-        return this.size === 0;
-    }
-
-    // Get the number of elements in the queue
-    getSize(): number {
-        return this.size;
-    }
+    // When the loop ends, the slow pointer will be at the middle
+    return slow!.value;
 }
-const queue = new Queue<number>();
 
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
+// Helper function to create a linked list from an array
+function createLinkedList(values: number[]): ListNode | null {
+    if (values.length === 0) return null;
 
-console.log(queue.peek()); // Output: 10
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.getSize()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
+    const head = new ListNode(values[0]);
+    let current = head;
 
-queue.dequeue();
-queue.dequeue();
+    for (let i = 1; i < values.length; i++) {
+        current.next = new ListNode(values[i]);
+        current = current.next;
+    }
 
-console.log(queue.isEmpty()); // Output: true
-console.log(queue.dequeue()); // Output: undefined
+    return head;
+}
+
+// Example usage:
+const values = [1, 2, 3, 4, 5]; // Example linked list: 1 -> 2 -> 3 -> 4 -> 5
+const head = createLinkedList(values);
+
+const middle = findMiddle(head);
+console.log("Middle element:", middle); // Output: Middle element: 3
