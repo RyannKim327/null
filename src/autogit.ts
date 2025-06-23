@@ -1,46 +1,90 @@
-function getRandomIntInRange(min: number, max: number): number {
-    min = Math.ceil(min); // Ensure min is an integer
-    max = Math.floor(max); // Ensure max is an integer
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-const randomInt = getRandomIntInRange(5, 15);
-console.log(randomInt); // Outputs a random integer between 5 and 15 (inclusive)
-function getRandomFloatInRange(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
-}
-const randomFloat = getRandomFloatInRange(2.5, 7.5);
-console.log(randomFloat); // Outputs a random float between 2.5 (inclusive) and 7.5 (exclusive)
-function getRandomIntInRangeSafe(min: number, max: number): number {
-    if (min > max) {
-        throw new Error("min must be less than or equal to max");
-    }
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-type Range = { min: number; max: number };
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-function getRandomNumberInRange(range: Range, isInteger: boolean = true): number {
-    const { min, max } = range;
-    if (min > max) {
-        throw new Error("min must be less than or equal to max");
-    }
-
-    if (isInteger) {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-    } else {
-        return Math.random() * (max - min) + min;
+    constructor() {
+        this.children = new Map<string, TrieNode>(); // Stores child nodes
+        this.isEndOfWord = false; // Marks if the node is the end of a word
     }
 }
-const range: Range = { min: 10, max: 20 };
-console.log(getRandomNumberInRange(range)); // Random integer between 10 and 20
-console.log(getRandomNumberInRange(range, false)); // Random float between 10 and 20
-function getRandomIntInRange(min: number, max: number): number {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+class Trie {
+    private root: TrieNode;
 
-function getRandomFloatInRange(min: number, max: number): number {
-    return Math.random() * (max - min) + min;
+    constructor() {
+        this.root = new TrieNode(); // Initialize the root node
+    }
+
+    /**
+     * Inserts a word into the trie.
+     * @param word - The word to insert.
+     */
+    insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                // Create a new node if the character doesn't exist
+                currentNode.children.set(char, new TrieNode());
+            }
+            // Move to the next node
+            currentNode = currentNode.children.get(char)!;
+        }
+
+        // Mark the end of the word
+        currentNode.isEndOfWord = true;
+    }
+
+    /**
+     * Searches for a word in the trie.
+     * @param word - The word to search for.
+     * @returns True if the word exists, false otherwise.
+     */
+    search(word: string): boolean {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return false; // Word not found
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+
+        // Check if the last node marks the end of a word
+        return currentNode.isEndOfWord;
+    }
+
+    /**
+     * Checks if there is any word in the trie that starts with the given prefix.
+     * @param prefix - The prefix to check.
+     * @returns True if the prefix exists, false otherwise.
+     */
+    startsWith(prefix: string): boolean {
+        let currentNode = this.root;
+
+        for (const char of prefix) {
+            if (!currentNode.children.has(char)) {
+                return false; // Prefix not found
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+
+        return true; // Prefix exists
+    }
 }
+// Create a new Trie instance
+const trie = new Trie();
+
+// Insert words into the trie
+trie.insert("apple");
+trie.insert("app");
+trie.insert("banana");
+
+// Search for words
+console.log(trie.search("apple")); // Output: true
+console.log(trie.search("app"));   // Output: true
+console.log(trie.search("appl"));  // Output: false
+
+// Check for prefixes
+console.log(trie.startsWith("app")); // Output: true
+console.log(trie.startsWith("ban")); // Output: true
+console.log(trie.startsWith("bat")); // Output: false
