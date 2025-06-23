@@ -1,95 +1,89 @@
-function findMajorityElement(nums: number[]): number | null {
-    const counts: { [key: number]: number } = {};
-    const n = nums.length;
-
-    for (const num of nums) {
-        counts[num] = (counts[num] || 0) + 1;
-        // Early exit if a majority element is found
-        if (counts[num] > n / 2) {
-            return num;
-        }
-    }
-
-    // If no majority element found
-    return null;
+function reverseString(str: string): string {
+    return str.split('').reverse().join('');
 }
 
-// Example usage:
-const array = [3, 2, 3];
-const majority = findMajorityElement(array);
-console.log(majority); // Output: 3
-function findMajorityElement(nums: number[]): number | null {
-    let count = 0;
-    let candidate: number | null = null;
-
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
+// Usage
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
     }
-
-    // Verify if the candidate is indeed the majority element
-    if (candidate !== null) {
-        const totalCount = nums.filter(n => n === candidate).length;
-        if (totalCount > nums.length / 2) {
-            return candidate;
-        }
-    }
-
-    return null;
+    return reversed;
 }
 
-// Example usage:
-const array = [2, 2, 1, 1, 1, 2, 2];
-const majority = findMajorityElement(array);
-console.log(majority); // Output: 2
-function findMajorityElement(nums: number[]): number | null {
-    const sorted = nums.slice().sort((a, b) => a - b);
-    const candidate = sorted[Math.floor(sorted.length / 2)];
-    
-    // Verify if the candidate is indeed the majority element
-    const totalCount = nums.filter(n => n === candidate).length;
-    if (totalCount > nums.length / 2) {
-        return candidate;
+// Usage
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseString(str.substr(1)) + str.charAt(0);
     }
-
-    return null;
 }
 
-// Example usage:
-const array = [6, 5, 5];
-const majority = findMajorityElement(array);
-console.log(majority); // Output: 5
-function findMajorityElement(nums: number[]): number | null {
-    // First pass to find a candidate
-    let count = 0;
-    let candidate: number | null = null;
-
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
-    }
-
-    // Second pass to confirm the candidate is the majority
-    if (candidate !== null) {
-        const totalCount = nums.reduce((acc, curr) => acc + (curr === candidate ? 1 : 0), 0);
-        if (totalCount > nums.length / 2) {
-            return candidate;
-        }
-    }
-
-    return null;
+// Usage
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    return [...str].reverse().join('');
 }
 
-// Example usage:
-const array1 = [3, 2, 3];
-console.log(findMajorityElement(array1)); // Output: 3
+// Usage
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSyeT ,olleH"
+function reverseString(str: string): string {
+    return Array.from(str).reverse().join('');
+}
 
-const array2 = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElement(array2)); // Output: 2
+// Usage
+const original = "Hello, 🌍!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!🌍 ,olleH"
+// Method 1: Using split, reverse, join
+function reverseStringBuiltIn(str: string): string {
+    return str.split('').reverse().join('');
+}
 
-const array3 = [1, 2, 3, 4, 5];
-console.log(findMajorityElement(array3)); // Output: null (no majority element)
+// Method 2: Using a for loop
+function reverseStringLoop(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
+}
+
+// Method 3: Using recursion
+function reverseStringRecursive(str: string): string {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseStringRecursive(str.substr(1)) + str.charAt(0);
+    }
+}
+
+// Method 4: Using ES6 spread operator
+function reverseStringSpread(str: string): string {
+    return [...str].reverse().join('');
+}
+
+// Method 5: Using Array.from for Unicode support
+function reverseStringUnicode(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Usage
+const original = "Hello, 🌍!";
+
+console.log(reverseStringBuiltIn(original));     // Output: "!🌍 ,olleH"
+console.log(reverseStringLoop(original));        // Output: "!🌍 ,olleH"
+console.log(reverseStringRecursive(original));   // Output: "!🌍 ,olleH"
+console.log(reverseStringSpread(original));      // Output: "!🌍 ,olleH"
+console.log(reverseStringUnicode(original));     // Output: "!🌍 ,olleH"
