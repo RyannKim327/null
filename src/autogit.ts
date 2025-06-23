@@ -1,91 +1,96 @@
-function factorial(n: number): number {
-    // Input validation
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (!Number.isInteger(n)) {
-        throw new Error("Factorial is only defined for integers.");
+class Node {
+    x: number; // X-coordinate
+    y: number; // Y-coordinate
+    g: number; // Cost from start to this node
+    h: number; // Heuristic cost to goal
+    f: number; // Total cost (g + h)
+    parent: Node | null; // Parent node for path reconstruction
+
+    constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+        this.g = 0;
+        this.h = 0;
+        this.f = 0;
+        this.parent = null;
     }
 
-    // Base case
-    if (n === 0) {
-        return 1;
+    // Helper method to calculate the Manhattan distance heuristic
+    heuristic(goal: Node): number {
+        return Math.abs(this.x - goal.x) + Math.abs(this.y - goal.y);
+    }
+}
+function aStar(start: Node, goal: Node, grid: boolean[][]): Node[] | null {
+    const openSet: Node[] = [start];
+    const closedSet: Set<string> = new Set();
+
+    while (openSet.length > 0) {
+        // Find the node with the lowest f-cost in the open set
+        let current = openSet[0];
+        let currentIndex = 0;
+
+        for (let i = 1; i < openSet.length; i++) {
+            if (openSet[i].f < current.f || (openSet[i].f === current.f && openSet[i].h < current.h)) {
+                current = openSet[i];
+                currentIndex = i;
+            }
+        }
+
+        // Remove the current node from the open set and add it to the closed set
+        openSet.splice(currentIndex, 1);
+        closedSet.add(`${current.x},${current.y}`);
+
+        // Check if we've reached the goal
+        if (current.x === goal.x && current.y === goal.y) {
+            return reconstructPath(current);
+        }
+
+        // Get neighbors of the current node
+        const neighbors = getNeighbors(current, grid);
+
+        for (const neighbor of neighbors) {
+            // Skip neighbors already in the closed set
+            if (closedSet.has(`${neighbor.x},${neighbor.y}`)) continue;
+
+            const tentativeG = current.g + 1; // Assume uniform cost of 1
+
+            // If the neighbor is not in the open set, add it
+            if (!openSet.some(node => node.x === neighbor.x && node.y === neighbor.y)) {
+                openSet.push(neighbor);
+            } else if (tentativeG >= neighbor.g) {
+                continue; // This path is not better than the previously found one
+            }
+
+            // Update the neighbor's details
+            neighbor.g = tentativeG;
+            neighbor.h = neighbor.heuristic(goal);
+            neighbor.f = neighbor.g + neighbor.h;
+            neighbor.parent = current;
+        }
     }
 
-    // Recursive case
-    return n * factorial(n - 1);
+    // If we exit the loop, no path was found
+    return null;
 }
-try {
-    console.log(factorial(5)); // Output: 120
-    console.log(factorial(0)); // Output: 1
-    console.log(factorial(10)); // Output: 3628800
-    console.log(factorial(-1)); // Throws Error
-} catch (error) {
-    console.error(error.message);
-}
-function factorialBig(n: bigint): bigint {
-    if (n < 0n) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (n === 0n) {
-        return 1n;
-    }
-    return n * factorialBig(n - 1n);
-}
+// Define a grid where false represents free space and true represents obstacles
+const grid: boolean[][] = [
+    [false, false, false, false],
+    [false, true, true, false],
+    [false, false, false, false],
+    [false, false, false, false],
+];
 
-// Example Usage
-console.log(factorialBig(20n).toString()); // Output: "2432902008176640000"
-console.log(factorialBig(50n).toString()); // A very large number
-// Standard number-based factorial
-function factorial(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (!Number.isInteger(n)) {
-        throw new Error("Factorial is only defined for integers.");
-    }
-    if (n === 0) {
-        return 1;
-    }
-    return n * factorial(n - 1);
-}
+// Define start and goal nodes
+const start = new Node(0, 0);
+const goal = new Node(3, 3);
 
-// BigInt-based factorial for large numbers
-function factorialBig(n: bigint): bigint {
-    if (n < 0n) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (n === 0n) {
-        return 1n;
-    }
-    return n * factorialBig(n - 1n);
-}
+// Run A* algorithm
+const path = aStar(start, goal, grid);
 
-// Example usage
-try {
-    console.log("5! =", factorial(5)); // 120
-    console.log("0! =", factorial(0)); // 1
-    console.log("10! =", factorial(10)); // 3628800
-
-    console.log("20! =", factorialBig(20n).toString()); // "2432902008176640000"
-    console.log("50! =", factorialBig(50n).toString()); // A very large number
-} catch (error) {
-    console.error(error.message);
+if (path) {
+    console.log("Path found:");
+    path.forEach(node => console.log(`(${node.x}, ${node.y})`));
+} else {
+    console.log("No path found.");
 }
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (!Number.isInteger(n)) {
-        throw new Error("Factorial is only defined for integers.");
-    }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
-
-// Example usage
-console.log(factorialIterative(5)); // 120
-console.log(factorialIterative(0)); // 1
+// Full implementation provided above.
