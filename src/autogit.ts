@@ -1,112 +1,94 @@
-// Definition for a binary tree node.
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+type Node = string | number; // Define the type for nodes (can be strings or numbers)
+type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
 
-    constructor(val?: number, left?: TreeNode | null, right?: TreeNode | null) {
-        this.val = val === undefined ? 0 : val;
-        this.left = left === undefined ? null : left;
-        this.right = right === undefined ? null : right;
-    }
-}
+function bidirectionalSearch(graph: Graph, start: Node, goal: Node): Node[] | null {
+    // Initialize queues and visited sets for both directions
+    const forwardQueue: Node[] = [start];
+    const backwardQueue: Node[] = [goal];
 
-function maxDepth(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
-    }
+    const forwardVisited: Map<Node, Node | null> = new Map([[start, null]]);
+    const backwardVisited: Map<Node, Node | null> = new Map([[goal, null]]);
 
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
+    // Helper function to perform BFS in one direction
+    function bfsStep(queue: Node[], visited: Map<Node, Node | null>, otherVisited: Map<Node, Node | null>): Node | null {
+        if (queue.length === 0) return null;
 
-    return Math.max(leftDepth, rightDepth) + 1;
-}
+        const current = queue.shift()!;
+        for (const neighbor of graph.get(current) || []) {
+            if (!visited.has(neighbor)) {
+                visited.set(neighbor, current); // Track the parent for path reconstruction
+                queue.push(neighbor);
 
-// Example Usage:
-const tree = new TreeNode(1,
-    new TreeNode(2,
-        new TreeNode(4),
-        new TreeNode(5)
-    ),
-    new TreeNode(3)
-);
-
-console.log(maxDepth(tree)); // Output: 3
-function maxDepthIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
-    }
-
-    const queue: TreeNode[] = [root];
-    let depth = 0;
-
-    while (queue.length > 0) {
-        let levelSize = queue.length;
-        depth++;
-
-        for (let i = 0; i < levelSize; i++) {
-            const currentNode = queue.shift()!;
-            
-            if (currentNode.left !== null) {
-                queue.push(currentNode.left);
+                // Check if the neighbor is in the other direction's visited set
+                if (otherVisited.has(neighbor)) {
+                    return neighbor; // Intersection found
+                }
             }
-            if (currentNode.right !== null) {
-                queue.push(currentNode.right);
-            }
+        }
+        return null;
+    }
+
+    // Main loop for bi-directional search
+    while (forwardQueue.length > 0 && backwardQueue.length > 0) {
+        // Perform one step of BFS in the forward direction
+        const intersectionForward = bfsStep(forwardQueue, forwardVisited, backwardVisited);
+        if (intersectionForward) {
+            return reconstructPath(intersectionForward, forwardVisited, backwardVisited);
+        }
+
+        // Perform one step of BFS in the backward direction
+        const intersectionBackward = bfsStep(backwardQueue, backwardVisited, forwardVisited);
+        if (intersectionBackward) {
+            return reconstructPath(intersectionBackward, forwardVisited, backwardVisited);
         }
     }
 
-    return depth;
+    // If no path is found
+    return null;
 }
 
-// Example Usage:
-const tree = new TreeNode(1,
-    new TreeNode(2,
-        new TreeNode(4),
-        new TreeNode(5)
-    ),
-    new TreeNode(3)
-);
+// Helper function to reconstruct the path from the intersection node
+function reconstructPath(
+    intersection: Node,
+    forwardVisited: Map<Node, Node | null>,
+    backwardVisited: Map<Node, Node | null>
+): Node[] {
+    const path: Node[] = [];
 
-console.log(maxDepthIterative(tree)); // Output: 3
-// TreeNode definition remains the same
-
-// Recursive DFS
-function maxDepthRecursive(root: TreeNode | null): number {
-    if (root === null) return 0;
-    const left = maxDepthRecursive(root.left);
-    const right = maxDepthRecursive(root.right);
-    return Math.max(left, right) + 1;
-}
-
-// Iterative BFS
-function maxDepthIterative(root: TreeNode | null): number {
-    if (root === null) return 0;
-    const queue: TreeNode[] = [root];
-    let depth = 0;
-
-    while (queue.length > 0) {
-        let size = queue.length;
-        depth++;
-        for (let i = 0; i < size; i++) {
-            const node = queue.shift()!;
-            if (node.left) queue.push(node.left);
-            if (node.right) queue.push(node.right);
-        }
+    // Trace the path from the intersection to the start node
+    let current: Node | null = intersection;
+    while (current !== null) {
+        path.unshift(current);
+        current = forwardVisited.get(current);
     }
 
-    return depth;
+    // Trace the path from the intersection to the goal node
+    current = backwardVisited.get(intersection);
+    while (current !== null) {
+        path.push(current);
+        current = backwardVisited.get(current);
+    }
+
+    return path;
 }
+// Example graph
+const graph: Graph = new Map([
+    ['A', ['B', 'C']],
+    ['B', ['A', 'D', 'E']],
+    ['C', ['A', 'F']],
+    ['D', ['B']],
+    ['E', ['B', 'F']],
+    ['F', ['C', 'E']]
+]);
 
-// Example Tree
-const tree = new TreeNode(1,
-    new TreeNode(2,
-        new TreeNode(4),
-        new TreeNode(5)
-    ),
-    new TreeNode(3)
-);
+// Perform bi-directional search
+const startNode: Node = 'A';
+const goalNode: Node = 'F';
+const path = bidirectionalSearch(graph, startNode, goalNode);
 
-// Testing Both Methods
-console.log("Recursive Max Depth:", maxDepthRecursive(tree)); // Output: 3
-console.log("Iterative Max Depth:", maxDepthIterative(tree)); // Output: 3
+if (path) {
+    console.log('Path found:', path.join(' -> '));
+} else {
+    console.log('No path found.');
+}
+Path found: A -> C -> F
