@@ -1,32 +1,30 @@
-function isSorted(arr: number[]): boolean {
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] > arr[i + 1]) {
-            return false;
+function countingSort(arr: number[]): number[] {
+    // Step 1: Find the maximum value in the array to determine the range
+    const max = Math.max(...arr);
+    const min = Math.min(...arr);
+
+    // Step 2: Create a count array to store the frequency of each element
+    const countArrayLength = max - min + 1;
+    const count: number[] = new Array(countArrayLength).fill(0);
+
+    // Step 3: Populate the count array with the frequency of each element
+    for (const num of arr) {
+        count[num - min]++;
+    }
+
+    // Step 4: Reconstruct the sorted array using the count array
+    const sorted: number[] = [];
+    for (let i = 0; i < count.length; i++) {
+        while (count[i] > 0) {
+            sorted.push(i + min);
+            count[i]--;
         }
     }
-    return true;
-}
 
-function shuffleArray(arr: number[]): number[] {
-    const shuffled = [...arr];
-    for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-    }
-    return shuffled;
-}
-
-function bogosort(arr: number[]): number[] {
-    let sortedArray = [...arr];
-    while (!isSorted(sortedArray)) {
-        sortedArray = shuffleArray(sortedArray);
-    }
-    return sortedArray;
+    return sorted;
 }
 
 // Example usage:
-const unsortedArray = [3, 1, 4, 2, 5];
-console.log("Unsorted Array:", unsortedArray);
-
-const sortedArray = bogosort(unsortedArray);
+const unsortedArray = [4, 2, 2, 8, 3, 3, 1];
+const sortedArray = countingSort(unsortedArray);
 console.log("Sorted Array:", sortedArray);
