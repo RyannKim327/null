@@ -1,91 +1,31 @@
-function countOccurrences(input: string, char: string): number {
-    let count = 0;
+function shellSort(arr: number[]): number[] {
+    let n = arr.length;
 
-    for (let i = 0; i < input.length; i++) {
-        if (input[i] === char) {
-            count++;
+    // Start with a large gap and reduce it over time
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        // Perform a gapped insertion sort for this gap size.
+        for (let i = gap; i < n; i++) {
+            // Store the current element to be positioned
+            let temp = arr[i];
+            let j = i;
+
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
+            }
+
+            // Place the stored element at its correct location
+            arr[j] = temp;
         }
     }
 
-    return count;
+    return arr;
 }
 
 // Example usage:
-const text = "hello world";
-const character = "l";
-console.log(countOccurrences(text, character)); // Output: 3
-function countOccurrences(input: string, char: string): number {
-    return input.split(char).length - 1;
-}
+const unsortedArray = [12, 34, 54, 2, 3];
+console.log("Unsorted Array:", unsortedArray);
 
-// Example usage:
-const text = "hello world";
-const character = "l";
-console.log(countOccurrences(text, character)); // Output: 3
-function countOccurrences(input: string, char: string): number {
-    const regex = new RegExp(char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-    const matches = input.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const text = "hello world";
-const character = "l";
-console.log(countOccurrences(text, character)); // Output: 3
-function countOccurrences(input: string, char: string): number {
-    return [...input].reduce((count, currentChar) => 
-        currentChar === char ? count + 1 : count, 0);
-}
-
-// Example usage:
-const text = "hello world";
-const character = "l";
-console.log(countOccurrences(text, character)); // Output: 3
-function countOccurrences(input: string, char: string): number {
-    return [...input].filter(currentChar => currentChar === char).length;
-}
-
-// Example usage:
-const text = "hello world";
-const character = "l";
-console.log(countOccurrences(text, character)); // Output: 3
-function countWithLoop(input: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < input.length; i++) {
-        if (input[i] === char) count++;
-    }
-    return count;
-}
-
-function countWithSplit(input: string, char: string): number {
-    return input.split(char).length - 1;
-}
-
-function countWithRegex(input: string, char: string): number {
-    const regex = new RegExp(char.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-    const matches = input.match(regex);
-    return matches ? matches.length : 0;
-}
-
-function countWithReduce(input: string, char: string): number {
-    return [...input].reduce((count, currentChar) => 
-        currentChar === char ? count + 1 : count, 0);
-}
-
-function countWithFilter(input: string, char: string): number {
-    return [...input].filter(currentChar => currentChar === char).length;
-}
-
-const text = "hello world";
-const character = "l";
-
-console.log("Count with Loop:", countWithLoop(text, character)); // 3
-console.log("Count with Split:", countWithSplit(text, character)); // 3
-console.log("Count with Regex:", countWithRegex(text, character)); // 3
-console.log("Count with Reduce:", countWithReduce(text, character)); // 3
-console.log("Count with Filter:", countWithFilter(text, character)); // 3
-Count with Loop: 3
-Count with Split: 3
-Count with Regex: 3
-Count with Reduce: 3
-Count with Filter: 3
+const sortedArray = shellSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
