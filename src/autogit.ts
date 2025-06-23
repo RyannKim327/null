@@ -1,55 +1,79 @@
-let numbers: number[] = [1, 2, 3, 4, 5, 3];
+type Graph = Map<number, number[]>;
+function bidirectionalSearch(graph: Graph, start: number, goal: number): number[] | null {
+    // Check if start and goal are the same
+    if (start === goal) return [start];
 
-// Remove all instances of the number 3
-numbers = numbers.filter(num => num !== 3);
+    // Initialize queues and visited sets for both directions
+    const queueStart: number[] = [start];
+    const queueGoal: number[] = [goal];
 
-console.log(numbers); // Output: [1, 2, 4, 5]
-let fruits: string[] = ['apple', 'banana', 'cherry', 'banana', 'date'];
+    const visitedStart: Map<number, number[]> = new Map();
+    const visitedGoal: Map<number, number[]> = new Map();
 
-function removeFirstInstance<T>(array: T[], value: T): void {
-    const index = array.indexOf(value);
-    if (index > -1) {
-        array.splice(index, 1);
+    visitedStart.set(start, [start]);
+    visitedGoal.set(goal, [goal]);
+
+    // Helper function to check if two paths meet
+    function getPath(intersection: number): number[] {
+        const pathFromStart = visitedStart.get(intersection)!;
+        const pathToGoal = visitedGoal.get(intersection)!.slice(1); // Exclude the intersection node
+        return [...pathFromStart, ...pathToGoal.reverse()];
     }
-}
 
-removeFirstInstance(fruits, 'banana');
+    // Perform the bi-directional search
+    while (queueStart.length > 0 && queueGoal.length > 0) {
+        // Expand the forward search
+        const currentStart = queueStart.shift()!;
+        for (const neighbor of graph.get(currentStart) || []) {
+            if (!visitedStart.has(neighbor)) {
+                const path = [...visitedStart.get(currentStart)!, neighbor];
+                visitedStart.set(neighbor, path);
+                queueStart.push(neighbor);
 
-console.log(fruits); // Output: ['apple', 'cherry', 'banana', 'date']
-interface User {
-    id: number;
-    name: string;
-}
+                // Check if this node has been visited by the backward search
+                if (visitedGoal.has(neighbor)) {
+                    return getPath(neighbor);
+                }
+            }
+        }
 
-let users: User[] = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' },
-    { id: 3, name: 'Charlie' }
-];
+        // Expand the backward search
+        const currentGoal = queueGoal.shift()!;
+        for (const neighbor of graph.get(currentGoal) || []) {
+            if (!visitedGoal.has(neighbor)) {
+                const path = [...visitedGoal.get(currentGoal)!, neighbor];
+                visitedGoal.set(neighbor, path);
+                queueGoal.push(neighbor);
 
-const userIdToRemove = 2;
-
-const index = users.findIndex(user => user.id === userIdToRemove);
-if (index > -1) {
-    users.splice(index, 1);
-}
-
-console.log(users);
-// Output: [{ id: 1, name: 'Alice' }, { id: 3, name: 'Charlie' }]
-let letters: string[] = ['a', 'b', 'c', 'b', 'd'];
-
-for (let i = letters.length - 1; i >= 0; i--) {
-    if (letters[i] === 'b') {
-        letters.splice(i, 1);
+                // Check if this node has been visited by the forward search
+                if (visitedStart.has(neighbor)) {
+                    return getPath(neighbor);
+                }
+            }
+        }
     }
+
+    // If no path is found, return null
+    return null;
 }
+// Create a sample graph as an adjacency list
+const graph: Graph = new Map([
+    [0, [1, 2]],
+    [1, [0, 3, 4]],
+    [2, [0, 5]],
+    [3, [1]],
+    [4, [1, 5]],
+    [5, [2, 4, 6]],
+    [6, [5]]
+]);
 
-console.log(letters); // Output: ['a', 'c', 'd']
-npm install lodash
-import _ from 'lodash';
+// Perform bi-directional search
+const start = 0;
+const goal = 6;
+const path = bidirectionalSearch(graph, start, goal);
 
-let items: number[] = [10, 20, 30, 40, 30, 50];
-
-_.remove(items, item => item === 30);
-
-console.log(items); // Output: [10, 20, 40, 50]
+if (path) {
+    console.log("Path found:", path);
+} else {
+    console.log("No path exists between the start and goal nodes.");
+}
