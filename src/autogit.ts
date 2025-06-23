@@ -1,41 +1,70 @@
-class TreeNode {
-    data: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function mergeSortIterative(arr: number[]): number[] {
+    const n = arr.length;
+    const aux: number[] = new Array(n); // Auxiliary array for merging
 
-    constructor(data: number) {
-        this.data = data;
-        this.left = null;
-        this.right = null;
+    // Merge function to merge two sorted subarrays
+    function merge(left: number, mid: number, right: number): void {
+        // Copy the relevant portion of the array into the auxiliary array
+        for (let i = left; i <= right; i++) {
+            aux[i] = arr[i];
+        }
+
+        let i = left;    // Pointer for the left subarray
+        let j = mid + 1; // Pointer for the right subarray
+        let k = left;    // Pointer for the merged array
+
+        // Merge the two subarrays
+        while (i <= mid && j <= right) {
+            if (aux[i] <= aux[j]) {
+                arr[k++] = aux[i++];
+            } else {
+                arr[k++] = aux[j++];
+            }
+        }
+
+        // Copy any remaining elements from the left subarray
+        while (i <= mid) {
+            arr[k++] = aux[i++];
+        }
+
+        // Remaining elements from the right subarray are already in place
     }
+
+    // Iteratively merge subarrays of increasing sizes
+    for (let size = 1; size < n; size *= 2) {
+        for (let left = 0; left < n - size; left += 2 * size) {
+            const mid = left + size - 1;
+            const right = Math.min(left + 2 * size - 1, n - 1);
+            merge(left, mid, right);
+        }
+    }
+
+    return arr;
 }
-function countLeafNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
+
+// Example usage
+const array = [38, 27, 43, 3, 9, 82, 10];
+console.log("Sorted array:", mergeSortIterative(array));
+function mergeSortIterative(arr: number[]): number[] {
+    const n = arr.length;
+    const aux: number[] = new Array(n);
+
+    function merge(left: number, mid: number, right: number): void {
+        for (let i = left; i <= right; i++) aux[i] = arr[i];
+        let i = left, j = mid + 1, k = left;
+        while (i <= mid && j <= right) {
+            arr[k++] = aux[i] <= aux[j] ? aux[i++] : aux[j++];
+        }
+        while (i <= mid) arr[k++] = aux[i++];
     }
 
-    // Check if the current node is a leaf node
-    if (root.left === null && root.right === null) {
-        return 1;
+    for (let size = 1; size < n; size *= 2) {
+        for (let left = 0; left < n - size; left += 2 * size) {
+            const mid = left + size - 1;
+            const right = Math.min(left + 2 * size - 1, n - 1);
+            merge(left, mid, right);
+        }
     }
 
-    // Recursively count leaf nodes in the left and right subtrees
-    const leftCount = countLeafNodes(root.left);
-    const rightCount = countLeafNodes(root.right);
-
-    return leftCount + rightCount;
+    return arr;
 }
-// Create the binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.left = new TreeNode(6);
-
-// Count the leaf nodes
-const leafCount = countLeafNodes(root);
-console.log(`Number of leaf nodes: ${leafCount}`); // Output: Number of leaf nodes: 3
-console.log(countLeafNodes(null)); // Output: 0 (empty tree)
-console.log(countLeafNodes(new TreeNode(10))); // Output: 1 (single node tree)
