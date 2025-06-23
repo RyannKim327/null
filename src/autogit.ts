@@ -1,151 +1,103 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
 
-    constructor(value: number) {
+    constructor(value: T) {
         this.value = value;
         this.left = null;
         this.right = null;
     }
 }
-class BinarySearchTree {
-    root: TreeNode | null;
+class BinaryTree<T> {
+    root: TreeNode<T> | null;
 
     constructor() {
-        this.root = null;
+        this.root = null; // The tree starts with no nodes
     }
 
-    // Insert a new value into the BST
-    insert(value: number): void {
+    // Insert a value into the binary tree
+    insert(value: T): void {
         const newNode = new TreeNode(value);
 
         if (!this.root) {
-            this.root = newNode; // If the tree is empty, set the new node as the root
+            // If the tree is empty, set the new node as the root
+            this.root = newNode;
             return;
         }
 
-        let currentNode = this.root;
-
-        while (true) {
-            if (value < currentNode.value) {
-                // Go left
-                if (!currentNode.left) {
-                    currentNode.left = newNode;
-                    break;
+        // Use a helper function to find the correct position for the new node
+        const insertNode = (node: TreeNode<T>, newNode: TreeNode<T>): void => {
+            if (newNode.value < node.value) {
+                // Insert into the left subtree
+                if (!node.left) {
+                    node.left = newNode;
+                } else {
+                    insertNode(node.left, newNode);
                 }
-                currentNode = currentNode.left;
             } else {
-                // Go right
-                if (!currentNode.right) {
-                    currentNode.right = newNode;
-                    break;
+                // Insert into the right subtree
+                if (!node.right) {
+                    node.right = newNode;
+                } else {
+                    insertNode(node.right, newNode);
                 }
-                currentNode = currentNode.right;
-            }
-        }
-    }
-
-    // Search for a value in the BST
-    search(value: number): boolean {
-        let currentNode = this.root;
-
-        while (currentNode) {
-            if (value === currentNode.value) {
-                return true; // Value found
-            } else if (value < currentNode.value) {
-                currentNode = currentNode.left; // Go left
-            } else {
-                currentNode = currentNode.right; // Go right
-            }
-        }
-
-        return false; // Value not found
-    }
-
-    // Delete a value from the BST
-    delete(value: number): boolean {
-        const removeNode = (node: TreeNode | null, value: number): TreeNode | null => {
-            if (!node) return null;
-
-            if (value === node.value) {
-                // Case 1: No children
-                if (!node.left && !node.right) return null;
-
-                // Case 2: One child
-                if (!node.left) return node.right;
-                if (!node.right) return node.left;
-
-                // Case 3: Two children
-                let tempNode = node.right;
-                while (tempNode.left) {
-                    tempNode = tempNode.left;
-                }
-                node.value = tempNode.value;
-                node.right = removeNode(node.right, tempNode.value);
-                return node;
-            } else if (value < node.value) {
-                node.left = removeNode(node.left, value);
-                return node;
-            } else {
-                node.right = removeNode(node.right, value);
-                return node;
             }
         };
 
-        const initialRoot = this.root;
-        this.root = removeNode(this.root, value);
-        return this.root !== initialRoot;
+        insertNode(this.root, newNode);
     }
 
-    // In-order traversal (Left -> Root -> Right)
-    inOrderTraversal(node: TreeNode | null = this.root, result: number[] = []): number[] {
+    // In-order traversal (left, root, right)
+    inOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
         if (node) {
-            this.inOrderTraversal(node.left, result);
-            result.push(node.value);
-            this.inOrderTraversal(node.right, result);
+            this.inOrderTraversal(node.left, result); // Traverse left subtree
+            result.push(node.value); // Visit the current node
+            this.inOrderTraversal(node.right, result); // Traverse right subtree
         }
         return result;
     }
 
-    // Pre-order traversal (Root -> Left -> Right)
-    preOrderTraversal(node: TreeNode | null = this.root, result: number[] = []): number[] {
+    // Pre-order traversal (root, left, right)
+    preOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
         if (node) {
-            result.push(node.value);
-            this.preOrderTraversal(node.left, result);
-            this.preOrderTraversal(node.right, result);
+            result.push(node.value); // Visit the current node
+            this.preOrderTraversal(node.left, result); // Traverse left subtree
+            this.preOrderTraversal(node.right, result); // Traverse right subtree
         }
         return result;
     }
 
-    // Post-order traversal (Left -> Right -> Root)
-    postOrderTraversal(node: TreeNode | null = this.root, result: number[] = []): number[] {
+    // Post-order traversal (left, right, root)
+    postOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
         if (node) {
-            this.postOrderTraversal(node.left, result);
-            this.postOrderTraversal(node.right, result);
-            result.push(node.value);
+            this.postOrderTraversal(node.left, result); // Traverse left subtree
+            this.postOrderTraversal(node.right, result); // Traverse right subtree
+            result.push(node.value); // Visit the current node
         }
         return result;
     }
 }
-const bst = new BinarySearchTree();
+const tree = new BinaryTree<number>();
 
-// Insert values into the BST
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-
-// Search for values
-console.log(bst.search(7)); // Output: true
-console.log(bst.search(20)); // Output: false
+// Insert values into the tree
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
 
 // Perform traversals
-console.log("In-order traversal:", bst.inOrderTraversal()); // Output: [3, 5, 7, 10, 15]
-console.log("Pre-order traversal:", bst.preOrderTraversal()); // Output: [10, 5, 3, 7, 15]
-console.log("Post-order traversal:", bst.postOrderTraversal()); // Output: [3, 7, 5, 15, 10]
-
-// Delete a value
-bst.delete(5);
-console.log("In-order traversal after deletion:", bst.inOrderTraversal()); // Output: [3, 7, 10, 15]
+console.log("In-order Traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
+console.log("Pre-order Traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
+console.log("Post-order Traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
+search(value: T): boolean {
+    const searchNode = (node: TreeNode<T> | null): boolean => {
+        if (!node) return false;
+        if (value === node.value) return true;
+        return value < node.value
+            ? searchNode(node.left)
+            : searchNode(node.right);
+    };
+    return searchNode(this.root);
+}
