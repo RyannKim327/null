@@ -1,45 +1,87 @@
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-// Create a new array excluding the specified element
-const updatedArray = array.filter(item => item !== elementToRemove);
-
-console.log(updatedArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-// Find the index of the element to remove
-const index = array.indexOf(elementToRemove);
-
-if (index !== -1) {
-  // Remove the element at the found index
-  array.splice(index, 1);
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
 }
+class Queue<T> {
+    private head: Node<T> | null; // Front of the queue
+    private tail: Node<T> | null; // Rear of the queue
+    private size: number;         // Number of elements in the queue
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+    constructor() {
+        this.head = null;
+        this.tail = null;
+        this.size = 0;
+    }
 
-// Find the index of the element to remove
-const index = array.indexOf(elementToRemove);
+    // Add an element to the rear of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
 
-if (index !== -1) {
-  delete array[index];
+        if (this.tail === null) {
+            // If the queue is empty, set both head and tail to the new node
+            this.head = newNode;
+            this.tail = newNode;
+        } else {
+            // Otherwise, add the new node to the end and update the tail
+            this.tail.next = newNode;
+            this.tail = newNode;
+        }
+
+        this.size++;
+    }
+
+    // Remove and return the element from the front of the queue
+    dequeue(): T | undefined {
+        if (this.head === null) {
+            // If the queue is empty, return undefined
+            return undefined;
+        }
+
+        const removedNode = this.head;
+        this.head = this.head.next;
+
+        // If the queue becomes empty, also update the tail to null
+        if (this.head === null) {
+            this.tail = null;
+        }
+
+        this.size--;
+        return removedNode.value;
+    }
+
+    // Return the element at the front of the queue without removing it
+    peek(): T | undefined {
+        return this.head?.value;
+    }
+
+    // Check if the queue is empty
+    isEmpty(): boolean {
+        return this.size === 0;
+    }
+
+    // Get the number of elements in the queue
+    getSize(): number {
+        return this.size;
+    }
 }
+const queue = new Queue<number>();
 
-console.log(array); // Output: [1, 2, undefined, 4, 5]
-const array = [1, 2, 3, 3, 4, 5];
-const elementToRemove = 3;
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
 
-// Remove all occurrences of the element
-const updatedArray = array.filter(item => item !== elementToRemove);
+console.log(queue.peek()); // Output: 10
+console.log(queue.dequeue()); // Output: 10
+console.log(queue.getSize()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
 
-console.log(updatedArray); // Output: [1, 2, 4, 5]
-function removeElement<T>(array: T[], elementToRemove: T): T[] {
-  return array.filter(item => item !== elementToRemove);
-}
+queue.dequeue();
+queue.dequeue();
 
-const array = [1, 2, 3, 4, 5];
-const updatedArray = removeElement(array, 3);
-
-console.log(updatedArray); // Output: [1, 2, 4, 5]
+console.log(queue.isEmpty()); // Output: true
+console.log(queue.dequeue()); // Output: undefined
