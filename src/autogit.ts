@@ -1,55 +1,51 @@
-function fibonacciSearch(arr: number[], target: number): number {
+function mergeSortIterative(arr: number[]): number[] {
     const n = arr.length;
+    let tempArray = new Array(n); // Temporary array for merging
 
-    // Step 1: Generate Fibonacci numbers until fibM >= n
-    let fibM_minus_2 = 0; // (m-2)'th Fibonacci number
-    let fibM_minus_1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM_minus_1 + fibM_minus_2; // m'th Fibonacci number
+    // Merge function to merge two sorted subarrays
+    function merge(left: number, mid: number, right: number): void {
+        let i = left; // Starting index of the left subarray
+        let j = mid;  // Starting index of the right subarray
+        let k = left; // Index for the temporary array
 
-    while (fibM < n) {
-        fibM_minus_2 = fibM_minus_1;
-        fibM_minus_1 = fibM;
-        fibM = fibM_minus_1 + fibM_minus_2;
-    }
+        // Merge elements from both subarrays into tempArray
+        while (i < mid && j < right) {
+            if (arr[i] <= arr[j]) {
+                tempArray[k++] = arr[i++];
+            } else {
+                tempArray[k++] = arr[j++];
+            }
+        }
 
-    // Step 2: Initialize variables for the search
-    let offset = -1; // Offset to mark the eliminated range from the front
+        // Copy any remaining elements from the left subarray
+        while (i < mid) {
+            tempArray[k++] = arr[i++];
+        }
 
-    // Step 3: Perform the search
-    while (fibM > 1) {
-        // Check if fibM_minus_2 is a valid index
-        let i = Math.min(offset + fibM_minus_2, n - 1);
+        // Copy any remaining elements from the right subarray
+        while (j < right) {
+            tempArray[k++] = arr[j++];
+        }
 
-        // Compare target with the value at index i
-        if (arr[i] < target) {
-            // Move the offset to index i and reduce the range
-            fibM = fibM_minus_1;
-            fibM_minus_1 = fibM_minus_2;
-            fibM_minus_2 = fibM - fibM_minus_1;
-            offset = i;
-        } else if (arr[i] > target) {
-            // Reduce the range without changing the offset
-            fibM = fibM_minus_2;
-            fibM_minus_1 = fibM_minus_1 - fibM_minus_2;
-            fibM_minus_2 = fibM - fibM_minus_1;
-        } else {
-            // Target found at index i
-            return i;
+        // Copy the sorted elements back into the original array
+        for (let x = left; x < right; x++) {
+            arr[x] = tempArray[x];
         }
     }
 
-    // Step 4: Check the last remaining element
-    if (fibM_minus_1 === 1 && arr[offset + 1] === target) {
-        return offset + 1;
+    // Perform merge sort iteratively
+    for (let size = 1; size < n; size *= 2) { // Subarray size doubles each iteration
+        for (let left = 0; left < n; left += 2 * size) {
+            const mid = Math.min(left + size, n); // End of the left subarray
+            const right = Math.min(left + 2 * size, n); // End of the right subarray
+            merge(left, mid, right);
+        }
     }
 
-    // Step 5: Target not found
-    return -1;
+    return arr;
 }
 
-// Example usage:
-const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const targetValue = 85;
-
-const result = fibonacciSearch(sortedArray, targetValue);
-console.log(`Index of ${targetValue}:`, result); // Output: Index of 85: 8
+// Example usage
+const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
+console.log("Sorted Array:", mergeSortIterative(unsortedArray));
+Sorted Array: [3, 9, 10, 27, 38, 43, 82]
