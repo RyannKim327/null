@@ -1,124 +1,61 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number;
-    end: number;
+type Edge = {
+  source: number;
+  destination: number;
+  weight: number;
+};
 
-    constructor(start: number = -1, end: number = -0) {
-        this.children = new Map<string, SuffixTreeNode>();
-        this.start = start; // Start index of the edge label
-        this.end = end;     // End index of the edge label
-    }
+function bellmanFord(edges: Edge[], V: number, source: number): number[] | string {
+  // Step 1: Initialize distances
+  const distances: number[] = Array(V).fill(Infinity);
+  distances[source] = 0;
 
-    // Get the length of the edge label
-    getEdgeLength(): number {
-        return this.end - this.start;
+  // Step 2: Relax all edges V-1 times
+  for (let i = 0; i < V - 1; i++) {
+    for (const edge of edges) {
+      const { source, destination, weight } = edge;
+      if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+        distances[destination] = distances[source] + weight;
+      }
     }
+  }
+
+  // Step 3: Check for negative weight cycles
+  for (const edge of edges) {
+    const { source, destination, weight } = edge;
+    if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+      return "Graph contains a negative weight cycle";
+    }
+  }
+
+  return distances;
 }
-class SuffixTree {
-    root: SuffixTreeNode;
-    text: string;
 
-    constructor(text: string) {
-        this.root = new SuffixTreeNode();
-        this.text = text;
-        this.buildTree();
-    }
+// Example Usage
+const edges: Edge[] = [
+  { source: 0, destination: 1, weight: 4 },
+  { source: 0, destination: 2, weight: 3 },
+  { source: 1, destination: 2, weight: -2 },
+  { source: 2, destination: 3, weight: 2 },
+  { source: 3, destination: 1, weight: 1 },
+];
 
-    // Build the suffix tree by inserting all suffixes
-    private buildTree(): void {
-        for (let i = 0; i < this.text.length; i++) {
-            this.insertSuffix(i);
-        }
-    }
+const V = 4; // Number of vertices
+const source = 0; // Source vertex
 
-    // Insert a suffix starting at index `start`
-    private insertSuffix(start: number): void {
-        let currentNode = this.root;
-        let pos = start;
+const result = bellmanFord(edges, V, source);
 
-        while (pos < this.text.length) {
-            const char = this.text[pos];
-
-            if (currentNode.children.has(char)) {
-                const child = currentNode.children.get(char)!;
-                const edgeLength = child.getEdgeLength();
-
-                let matchLength = 0;
-                while (
-                    matchLength < edgeLength &&
-                    this.text[child.start + matchLength] === this.text[pos + matchLength]
-                ) {
-                    matchLength++;
-                }
-
-                if (matchLength === edgeLength) {
-                    // Fully matched the edge, move to the child node
-                    currentNode = child;
-                    pos += edgeLength;
-                } else {
-                    // Partial match, split the edge
-                    const newChild = new SuffixTreeNode(
-                        child.start + matchLength,
-                        child.end
-                    );
-                    child.end = child.start + matchLength;
-
-                    child.children.set(this.text[newChild.start], newChild);
-
-                    // Create a new leaf node for the remaining suffix
-                    const newLeaf = new SuffixTreeNode(pos + matchLength, this.text.length);
-                    child.children.set(this.text[pos + matchLength], newLeaf);
-                    break;
-                }
-            } else {
-                // No matching edge, create a new leaf node
-                const newLeaf = new SuffixTreeNode(pos, this.text.length);
-                currentNode.children.set(char, newLeaf);
-                break;
-            }
-        }
-    }
-
-    // Search for a substring in the suffix tree
-    public contains(substring: string): boolean {
-        let currentNode = this.root;
-        let pos = 0;
-
-        while (pos < substring.length) {
-            const char = substring[pos];
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-
-            const child = currentNode.children.get(char)!;
-            const edgeLabel = this.text.slice(child.start, child.end);
-
-            let matchLength = 0;
-            while (
-                matchLength < edgeLabel.length &&
-                pos + matchLength < substring.length &&
-                edgeLabel[matchLength] === substring[pos + matchLength]
-            ) {
-                matchLength++;
-            }
-
-            if (matchLength === edgeLabel.length) {
-                // Fully matched the edge, move to the child node
-                currentNode = child;
-                pos += matchLength;
-            } else {
-                // Partial match or mismatch
-                return false;
-            }
-        }
-
-        return true;
-    }
+if (typeof result === "string") {
+  console.log(result); // Negative weight cycle detected
+} else {
+  console.log("Shortest distances from source:", result);
 }
-const text = "banana";
-const suffixTree = new SuffixTree(text);
-
-console.log(suffixTree.contains("ana")); // true
-console.log(suffixTree.contains("xyz")); // false
-console.log(suffixTree.contains("ban")); // true
-console.log(suffixTree.contains("nana")); // true
+Vertices: 4
+Edges:
+  0 -> 1 (weight 4)
+  0 -> 2 (weight 3)
+  1 -> 2 (weight -2)
+  2 -> 3 (weight 2)
+  3 -> 1 (weight 1)
+Source: 0
+Shortest distances from source: [0, 2, 0, 2]
+Graph contains a negative weight cycle
