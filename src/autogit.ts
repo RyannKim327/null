@@ -1,49 +1,120 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
 }
-function reverseList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null; // Initialize previous node as null
-    let current: ListNode | null = head; // Start with the head of the list
+class BinarySearchTree {
+    root: TreeNode | null;
 
-    while (current !== null) {
-        const nextTemp: ListNode | null = current.next; // Store the next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to current
-        current = nextTemp; // Move to the next node
+    constructor() {
+        this.root = null; // Initially, the tree is empty
     }
 
-    // At the end, prev will be pointing to the new head of the reversed list
-    return prev;
-}
-// Helper function to print the linked list
-function printList(head: ListNode | null): void {
-    let current = head;
-    const result: number[] = [];
-    while (current !== null) {
-        result.push(current.val);
-        current = current.next;
+    // Insert a new value into the tree
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+
+        if (!this.root) {
+            // If the tree is empty, set the new node as the root
+            this.root = newNode;
+            return;
+        }
+
+        let currentNode = this.root;
+        while (true) {
+            if (value < currentNode.value) {
+                // Go to the left subtree
+                if (!currentNode.left) {
+                    currentNode.left = newNode;
+                    break;
+                }
+                currentNode = currentNode.left;
+            } else {
+                // Go to the right subtree
+                if (!currentNode.right) {
+                    currentNode.right = newNode;
+                    break;
+                }
+                currentNode = currentNode.right;
+            }
+        }
     }
-    console.log(result.join(" -> "));
+
+    // Search for a value in the tree
+    search(value: number): boolean {
+        let currentNode = this.root;
+
+        while (currentNode) {
+            if (value === currentNode.value) {
+                return true; // Value found
+            } else if (value < currentNode.value) {
+                currentNode = currentNode.left; // Search in the left subtree
+            } else {
+                currentNode = currentNode.right; // Search in the right subtree
+            }
+        }
+
+        return false; // Value not found
+    }
+
+    // In-order traversal (left, root, right)
+    inOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
+        if (node) {
+            this.inOrderTraversal(node.left, result);
+            result.push(node.value);
+            this.inOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Pre-order traversal (root, left, right)
+    preOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
+        if (node) {
+            result.push(node.value);
+            this.preOrderTraversal(node.left, result);
+            this.preOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Post-order traversal (left, right, root)
+    postOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
+        if (node) {
+            this.postOrderTraversal(node.left, result);
+            this.postOrderTraversal(node.right, result);
+            result.push(node.value);
+        }
+        return result;
+    }
 }
+const bst = new BinarySearchTree();
 
-// Create a sample linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1, new ListNode(2, new ListNode(3, new ListNode(4, new ListNode(5)))));
+// Insert values into the tree
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(20);
 
-console.log("Original List:");
-printList(head);
+// Search for values in the tree
+console.log(bst.search(7)); // Output: true
+console.log(bst.search(12)); // Output: false
 
-// Reverse the list
-const reversedHead = reverseList(head);
+// Perform in-order traversal
+console.log("In-order traversal:", bst.inOrderTraversal(bst.root));
+// Output: [3, 5, 7, 10, 15, 20]
 
-console.log("Reversed List:");
-printList(reversedHead);
-Original List:
-1 -> 2 -> 3 -> 4 -> 5
-Reversed List:
-5 -> 4 -> 3 -> 2 -> 1
+// Perform pre-order traversal
+console.log("Pre-order traversal:", bst.preOrderTraversal(bst.root));
+// Output: [10, 5, 3, 7, 15, 20]
+
+// Perform post-order traversal
+console.log("Post-order traversal:", bst.postOrderTraversal(bst.root));
+// Output: [3, 7, 5, 20, 15, 10]
