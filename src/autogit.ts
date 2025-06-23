@@ -1,60 +1,140 @@
-function fibonacciSearch(arr: number[], target: number): number {
-    const n = arr.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Step 1: Generate Fibonacci numbers until fibM >= n
-    let fibM_minus_2 = 0; // (m-2)'th Fibonacci number
-    let fibM_minus_1 = 1; // (m-1)'th Fibonacci number
-    let fibM = fibM_minus_1 + fibM_minus_2; // m'th Fibonacci number
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+function findMiddle(head: ListNode | null): number | null {
+    if (head === null) return null; // Handle empty list
 
-    while (fibM < n) {
-        fibM_minus_2 = fibM_minus_1;
-        fibM_minus_1 = fibM;
-        fibM = fibM_minus_1 + fibM_minus_2;
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow!.next;         // Move slow pointer by one step
+        fast = fast.next.next;     // Move fast pointer by two steps
     }
 
-    // Step 2: Initialize variables for the search
-    let offset = -1; // Offset to track the eliminated range
+    // When fast reaches the end, slow is at the middle
+    return slow!.value;
+}
+// Helper function to create a linked list from an array
+function createLinkedList(arr: number[]): ListNode | null {
+    if (arr.length === 0) return null;
 
-    // Step 3: Perform the search
-    while (fibM > 1) {
-        // Check if fibM_minus_2 is a valid index
-        let i = Math.min(offset + fibM_minus_2, n - 1);
+    const head = new ListNode(arr[0]);
+    let current = head;
 
-        // Compare the target with the element at index i
-        if (arr[i] < target) {
-            // Move the range forward
-            fibM = fibM_minus_1;
-            fibM_minus_1 = fibM_minus_2;
-            fibM_minus_2 = fibM - fibM_minus_1;
-            offset = i;
-        } else if (arr[i] > target) {
-            // Move the range backward
-            fibM = fibM_minus_2;
-            fibM_minus_1 = fibM_minus_1 - fibM_minus_2;
-            fibM_minus_2 = fibM - fibM_minus_1;
-        } else {
-            // Target found
-            return i;
-        }
+    for (let i = 1; i < arr.length; i++) {
+        current.next = new ListNode(arr[i]);
+        current = current.next;
     }
 
-    // Step 4: Check for the last element
-    if (fibM_minus_1 === 1 && arr[offset + 1] === target) {
-        return offset + 1;
-    }
-
-    // Target not found
-    return -1;
+    return head;
 }
 
-// Example usage
-const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
-const target = 85;
+// Helper function to print the linked list
+function printLinkedList(head: ListNode | null): void {
+    const elements: number[] = [];
+    let current = head;
 
-const result = fibonacciSearch(sortedArray, target);
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log("Element not found in the array.");
+    while (current !== null) {
+        elements.push(current.value);
+        current = current.next;
+    }
+
+    console.log(elements.join(" -> "));
 }
-Element found at index: 8
+
+// Example usage:
+const values = [10, 20, 30, 40, 50];
+const head = createLinkedList(values);
+
+console.log("Linked List:");
+printLinkedList(head); // Output: 10 -> 20 -> 30 -> 40 -> 50
+
+const middle = findMiddle(head);
+console.log(`Middle Element: ${middle}`); // Output: Middle Element: 30
+const evenValues = [10, 20, 30, 40];
+const evenHead = createLinkedList(evenValues);
+
+console.log("\nLinked List with Even Number of Elements:");
+printLinkedList(evenHead); // Output: 10 -> 20 -> 30 -> 40
+
+const evenMiddle = findMiddle(evenHead);
+console.log(`Middle Element: ${evenMiddle}`); // Output: Middle Element: 30
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+function findMiddle(head: ListNode | null): number | null {
+    if (head === null) return null; // Handle empty list
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow!.next;         // Move slow pointer by one step
+        fast = fast.next.next;     // Move fast pointer by two steps
+    }
+
+    // When fast reaches the end, slow is at the middle
+    return slow!.value;
+}
+
+// Helper function to create a linked list from an array
+function createLinkedList(arr: number[]): ListNode | null {
+    if (arr.length === 0) return null;
+
+    const head = new ListNode(arr[0]);
+    let current = head;
+
+    for (let i = 1; i < arr.length; i++) {
+        current.next = new ListNode(arr[i]);
+        current = current.next;
+    }
+
+    return head;
+}
+
+// Helper function to print the linked list
+function printLinkedList(head: ListNode | null): void {
+    const elements: number[] = [];
+    let current = head;
+
+    while (current !== null) {
+        elements.push(current.value);
+        current = current.next;
+    }
+
+    console.log(elements.join(" -> "));
+}
+
+// Example usage:
+const values = [10, 20, 30, 40, 50];
+const head = createLinkedList(values);
+
+console.log("Linked List:");
+printLinkedList(head); // Output: 10 -> 20 -> 30 -> 40 -> 50
+
+const middle = findMiddle(head);
+console.log(`Middle Element: ${middle}`); // Output: Middle Element: 30
+
+// Example with Even Number of Elements
+const evenValues = [10, 20, 30, 40];
+const evenHead = createLinkedList(evenValues);
+
+console.log("\nLinked List with Even Number of Elements:");
+printLinkedList(evenHead); // Output: 10 -> 20 -> 30 -> 40
+
+const evenMiddle = findMiddle(evenHead);
+console.log(`Middle Element: ${evenMiddle}`); // Output: Middle Element: 30
