@@ -1,169 +1,62 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function rabinKarpSearch(text: string, pattern: string): number[] {
+    const result: number[] = [];
+    const n = text.length;
+    const m = pattern.length;
 
-    constructor(value: number = 0, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
-    }
-}
-function findNthFromEndTwoPass(head: ListNode | null, n: number): ListNode | null {
-    if (!head) return null;
+    if (m > n || m === 0) return result;
 
-    let length = 0;
-    let current: ListNode | null = head;
+    // Constants for the hash function
+    const prime = 31; // A prime number to reduce collisions
+    const mod = 1e9 + 7; // A large prime number to prevent overflow
 
-    // First pass: calculate the length of the list
-    while (current !== null) {
-        length++;
-        current = current.next;
+    // Precompute powers of the prime number
+    const primePowers: number[] = new Array(m).fill(1);
+    for (let i = 1; i < m; i++) {
+        primePowers[i] = (primePowers[i - 1] * prime) % mod;
     }
 
-    // Check if n is within the bounds
-    if (n > length || n <= 0) {
-        throw new Error("Invalid value of n");
+    // Compute the hash of the pattern
+    let patternHash = 0;
+    for (let i = 0; i < m; i++) {
+        patternHash = (patternHash + (pattern.charCodeAt(i) - 96) * primePowers[i]) % mod;
     }
 
-    // Second pass: find the (length - n)th node
-    let targetIndex = length - n;
-    current = head;
+    // Compute the hash of the first window of the text
+    let textHash = 0;
+    for (let i = 0; i < m; i++) {
+        textHash = (textHash + (text.charCodeAt(i) - 96) * primePowers[i]) % mod;
+    }
 
-    for (let i = 0; i < targetIndex; i++) {
-        if (current === null) {
-            throw new Error("Unexpected error: list shorter than expected");
+    // Slide the window over the text
+    for (let i = 0; i <= n - m; i++) {
+        // If the hashes match, compare the strings to confirm
+        if (textHash === patternHash) {
+            let match = true;
+            for (let j = 0; j < m; j++) {
+                if (text[i + j] !== pattern[j]) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) result.push(i); // Match found at index i
         }
-        current = current.next;
-    }
 
-    return current;
-}
-// Helper function to create a linked list from an array
-function createLinkedList(arr: number[]): ListNode | null {
-    if (arr.length === 0) return null;
-    const head = new ListNode(arr[0]);
-    let current = head;
-    for (let i = 1; i < arr.length; i++) {
-        current.next = new ListNode(arr[i]);
-        current = current.next;
-    }
-    return head;
-}
-
-// Helper function to print the linked list
-function printList(head: ListNode | null): void {
-    const values: number[] = [];
-    let current = head;
-    while (current !== null) {
-        values.push(current.value);
-        current = current.next;
-    }
-    console.log(values.join(' -> '));
-}
-
-// Example usage:
-const list = createLinkedList([1, 2, 3, 4, 5]);
-printList(list); // 1 -> 2 -> 3 -> 4 -> 5
-
-const nthNode = findNthFromEndTwoPass(list, 2);
-if (nthNode) {
-    console.log(`The 2nd node from the end has value: ${nthNode.value}`); // Output: 4
-} else {
-    console.log("Node not found.");
-}
-function findNthFromEndOnePass(head: ListNode | null, n: number): ListNode | null {
-    if (!head) return null;
-
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    // Advance the first pointer by n steps
-    for (let i = 0; i < n; i++) {
-        if (first === null) {
-            throw new Error("n is larger than the length of the list");
+        // Update the hash for the next window
+        if (i < n - m) {
+            textHash = (textHash - (text.charCodeAt(i) - 96)) / prime; // Remove the first character
+            textHash = (textHash + (text.charCodeAt(i + m) - 96) * primePowers[m - 1]) % mod; // Add the next character
+            textHash = (textHash + mod) % mod; // Ensure non-negative hash
         }
-        first = first.next;
     }
 
-    // Move both pointers until the first pointer reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second!.next; // Non-null assertion since we've checked boundaries
-    }
-
-    return second;
-}
-// Using the same helper functions as above
-
-const nthNodeOnePass = findNthFromEndOnePass(list, 2);
-if (nthNodeOnePass) {
-    console.log(`The 2nd node from the end has value: ${nthNodeOnePass.value}`); // Output: 4
-} else {
-    console.log("Node not found.");
-}
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number = 0, next: ListNode | null = null) {
-        this.value = value;
-        this.next = next;
-    }
+    return result;
 }
 
-function createLinkedList(arr: number[]): ListNode | null {
-    if (arr.length === 0) return null;
-    const head = new ListNode(arr[0]);
-    let current = head;
-    for (let i = 1; i < arr.length; i++) {
-        current.next = new ListNode(arr[i]);
-        current = current.next;
-    }
-    return head;
-}
-
-function printList(head: ListNode | null): void {
-    const values: number[] = [];
-    let current = head;
-    while (current !== null) {
-        values.push(current.value);
-        current = current.next;
-    }
-    console.log(values.join(' -> '));
-}
-
-function findNthFromEndOnePass(head: ListNode | null, n: number): ListNode | null {
-    if (!head) return null;
-
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    for (let i = 0; i < n; i++) {
-        if (first === null) {
-            throw new Error("n is larger than the length of the list");
-        }
-        first = first.next;
-    }
-
-    while (first !== null) {
-        first = first.next;
-        second = second!.next;
-    }
-
-    return second;
-}
-
-// Example Usage
-try {
-    const list = createLinkedList([10, 20, 30, 40, 50]);
-    printList(list); // 10 -> 20 -> 30 -> 40 -> 50
-
-    const nth = 2;
-    const nthNode = findNthFromEndOnePass(list, nth);
-    if (nthNode) {
-        console.log(`The ${nth}nd node from the end has value: ${nthNode.value}`); // Output: 40
-    } else {
-        console.log("Node not found.");
-    }
-} catch (error) {
-    console.error(error.message);
-}
+// Example usage
+const text = "abracadabra";
+const pattern = "abra";
+const matches = rabinKarpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
+const text = "abracadabra";
+const pattern = "abra";
+Pattern found at indices: [0, 7]
