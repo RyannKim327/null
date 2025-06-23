@@ -1,166 +1,141 @@
-class TreeNode<T> {
-    value: T;
-    left: TreeNode<T> | null;
-    right: TreeNode<T> | null;
+class BTreeNode {
+    keys: number[];
+    children: (BTreeNode | null)[];
+    isLeaf: boolean;
 
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+    constructor(isLeaf: boolean = false) {
+        this.keys = [];
+        this.children = [];
+        this.isLeaf = isLeaf;
+    }
+
+    // Check if the node is full
+    isFull(t: number): boolean {
+        return this.keys.length === 2 * t - 1;
     }
 }
-class BinaryTree<T> {
-    root: TreeNode<T> | null;
+class BTree {
+    root: BTreeNode | null;
+    t: number; // Minimum degree (defines the range for keys)
 
-    constructor() {
+    constructor(t: number) {
         this.root = null;
+        this.t = t;
     }
 
-    // Insert a new value into the binary tree
-    insert(value: T): void {
-        const newNode = new TreeNode(value);
+    // Search for a key in the B-tree
+    search(key: number, node: BTreeNode | null = this.root): { found: boolean, node: BTreeNode | null } {
+        if (!node) return { found: false, node: null };
 
-        if (this.root === null) {
-            this.root = newNode;
+        let i = 0;
+        while (i < node.keys.length && key > node.keys[i]) {
+            i++;
+        }
+
+        if (i < node.keys.length && key === node.keys[i]) {
+            return { found: true, node };
+        }
+
+        if (node.isLeaf) {
+            return { found: false, node: null };
+        }
+
+        return this.search(key, node.children[i]);
+    }
+
+    // Insert a key into the B-tree
+    insert(key: number): void {
+        if (!this.root) {
+            this.root = new BTreeNode(true);
+            this.root.keys.push(key);
             return;
         }
 
-        let current = this.root;
-        while (true) {
-            if (value < current.value) {
-                if (current.left === null) {
-                    current.left = newNode;
-                    break;
-                }
-                current = current.left;
-            } else {
-                if (current.right === null) {
-                    current.right = newNode;
-                    break;
-                }
-                current = current.right;
+        if (this.root.isFull(this.t)) {
+            const newRoot = new BTreeNode(false);
+            newRoot.children.push(this.root);
+            this.splitChild(newRoot, 0);
+            this.root = newRoot;
+        }
+
+        this.insertNonFull(this.root, key);
+    }
+
+    private splitChild(parent: BTreeNode, index: number): void {
+        const t = this.t;
+        const child = parent.children[index] as BTreeNode;
+
+        const newNode = new BTreeNode(child.isLeaf);
+        newNode.keys = child.keys.splice(t);
+
+        if (!child.isLeaf) {
+            newNode.children = child.children.splice(t);
+        }
+
+        parent.keys.splice(index, 0, child.keys[t - 1]);
+        parent.children.splice(index + 1, 0, newNode);
+    }
+
+    private insertNonFull(node: BTreeNode, key: number): void {
+        let i = node.keys.length - 1;
+
+        if (node.isLeaf) {
+            while (i >= 0 && key < node.keys[i]) {
+                i--;
             }
-        }
-    }
-
-    // In-order traversal (left, root, right)
-    inOrderTraversal(node: TreeNode<T> | null = this.root): T[] {
-        const result: T[] = [];
-        if (node !== null) {
-            result.push(...this.inOrderTraversal(node.left));
-            result.push(node.value);
-            result.push(...this.inOrderTraversal(node.right));
-        }
-        return result;
-    }
-
-    // Pre-order traversal (root, left, right)
-    preOrderTraversal(node: TreeNode<T> | null = this.root): T[] {
-        const result: T[] = [];
-        if (node !== null) {
-            result.push(node.value);
-            result.push(...this.preOrderTraversal(node.left));
-            result.push(...this.preOrderTraversal(node.right));
-        }
-        return result;
-    }
-
-    // Post-order traversal (left, right, root)
-    postOrderTraversal(node: TreeNode<T> | null = this.root): T[] {
-        const result: T[] = [];
-        if (node !== null) {
-            result.push(...this.postOrderTraversal(node.left));
-            result.push(...this.postOrderTraversal(node.right));
-            result.push(node.value);
-        }
-        return result;
-    }
-}
-const tree = new BinaryTree<number>();
-
-// Insert values into the binary tree
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
-
-// Perform traversals
-console.log("In-order traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
-console.log("Pre-order traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
-console.log("Post-order traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
-class TreeNode<T> {
-    value: T;
-    left: TreeNode<T> | null;
-    right: TreeNode<T> | null;
-
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-
-class BinaryTree<T> {
-    root: TreeNode<T> | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value: T): void {
-        const newNode = new TreeNode(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-
-        let current = this.root;
-        while (true) {
-            if (value < current.value) {
-                if (current.left === null) {
-                    current.left = newNode;
-                    break;
-                }
-                current = current.left;
-            } else {
-                if (current.right === null) {
-                    current.right = newNode;
-                    break;
-                }
-                current = current.right;
+            node.keys.splice(i + 1, 0, key);
+        } else {
+            while (i >= 0 && key < node.keys[i]) {
+                i--;
             }
+            i++;
+
+            const child = node.children[i];
+            if (child && child.isFull(this.t)) {
+                this.splitChild(node, i);
+                if (key > node.keys[i]) {
+                    i++;
+                }
+            }
+            this.insertNonFull(node.children[i] as BTreeNode, key);
         }
     }
 
-    inOrderTraversal(node: TreeNode<T> | null = this.root): T[] {
-        const result: T[] = [];
-        if (node !== null) {
-            result.push(...this.inOrderTraversal(node.left));
-            result.push(node.value);
-            result.push(...this.inOrderTraversal(node.right));
-        }
-        return result;
-    }
+    // Traverse the B-tree (in-order traversal)
+    traverse(node: BTreeNode | null = this.root): void {
+        if (!node) return;
 
-    preOrderTraversal(node: TreeNode<T> | null = this.root): T[] {
-        const result: T[] = [];
-        if (node !== null) {
-            result.push(node.value);
-            result.push(...this.preOrderTraversal(node.left));
-            result.push(...this.preOrderTraversal(node.right));
+        for (let i = 0; i < node.keys.length; i++) {
+            if (!node.isLeaf) {
+                this.traverse(node.children[i]);
+            }
+            console.log(node.keys[i]);
         }
-        return result;
-    }
 
-    postOrderTraversal(node: TreeNode<T> | null = this.root): T[] {
-        const result: T[] = [];
-        if (node !== null) {
-            result.push(...this.postOrderTraversal(node.left));
-            result.push(...this.postOrderTraversal(node.right));
-            result.push(node.value);
+        if (!node.isLeaf) {
+            this.traverse(node.children[node.keys.length]);
         }
-        return result;
     }
 }
+const btree = new BTree(3); // Create a B-tree of order 3
+
+btree.insert(10);
+btree.insert(20);
+btree.insert(5);
+btree.insert(6);
+btree.insert(12);
+btree.insert(30);
+
+console.log("In-order traversal of the B-tree:");
+btree.traverse();
+
+const result = btree.search(6);
+console.log(`Search for key 6: ${result.found ? "Found" : "Not Found"}`);
+In-order traversal of the B-tree:
+5
+6
+10
+12
+20
+30
+Search for key 6: Found
