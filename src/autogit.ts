@@ -1,36 +1,45 @@
-const numbers = [10, 5, 20, 1];
-numbers.sort();
-console.log(numbers); // Output: [1, 10, 20, 5]
-const numbersAscending = [10, 5, 20, 1];
-numbersAscending.sort((a, b) => a - b);
-console.log(numbersAscending); // Output: [1, 5, 10, 20]
-const numbersDescending = [10, 5, 20, 1];
-numbersDescending.sort((a, b) => b - a);
-console.log(numbersDescending); // Output: [20, 10, 5, 1]
-// Define an array of numbers
-const numbers: number[] = [45, 12, 8, 130, 44];
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-// Sort in ascending order
-const sortedAscending = [...numbers].sort((a, b) => a - b);
-console.log('Ascending:', sortedAscending); // Output: [8, 12, 44, 45, 130]
+// Create a new array excluding the specified element
+const updatedArray = array.filter(item => item !== elementToRemove);
 
-// Sort in descending order
-const sortedDescending = [...numbers].sort((a, b) => b - a);
-console.log('Descending:', sortedDescending); // Output: [130, 45, 44, 12, 8]
-type NumberArray = number[];
+console.log(updatedArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-function sortNumbers(array: NumberArray, ascending: boolean = true): NumberArray {
-    const compareFunction = ascending 
-        ? (a: number, b: number) => a - b 
-        : (a: number, b: number) => b - a;
-    
-    return [...array].sort(compareFunction);
+// Find the index of the element to remove
+const index = array.indexOf(elementToRemove);
+
+if (index !== -1) {
+  // Remove the element at the found index
+  array.splice(index, 1);
 }
 
-// Usage
-const myNumbers: NumberArray = [7, 3, 9, 1, 5];
-const sortedAsc = sortNumbers(myNumbers);
-console.log('Sorted Ascending:', sortedAsc); // Output: [1, 3, 5, 7, 9]
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const elementToRemove = 3;
 
-const sortedDesc = sortNumbers(myNumbers, false);
-console.log('Sorted Descending:', sortedDesc); // Output: [9, 7, 5, 3, 1]
+// Find the index of the element to remove
+const index = array.indexOf(elementToRemove);
+
+if (index !== -1) {
+  delete array[index];
+}
+
+console.log(array); // Output: [1, 2, undefined, 4, 5]
+const array = [1, 2, 3, 3, 4, 5];
+const elementToRemove = 3;
+
+// Remove all occurrences of the element
+const updatedArray = array.filter(item => item !== elementToRemove);
+
+console.log(updatedArray); // Output: [1, 2, 4, 5]
+function removeElement<T>(array: T[], elementToRemove: T): T[] {
+  return array.filter(item => item !== elementToRemove);
+}
+
+const array = [1, 2, 3, 4, 5];
+const updatedArray = removeElement(array, 3);
+
+console.log(updatedArray); // Output: [1, 2, 4, 5]
