@@ -1,56 +1,38 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1;
+import axios, { AxiosResponse } from 'axios';
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
 }
 
-function kmpSearch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const lps = computeLPSArray(pattern);
+async function fetchPosts(): Promise<void> {
+  try {
+    console.log('Fetching posts...');
 
-    let i = 0; // Index for text
-    let j = 0; // Index for pattern
+    // Make a GET request to the JSONPlaceholder API
+    const response: AxiosResponse<Post[]> = await axios.get(
+      'https://jsonplaceholder.typicode.com/posts'
+    );
 
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
+    // Extract the data from the response
+    const posts: Post[] = response.data;
 
-        if (j === pattern.length) {
-            result.push(i - j); // Match found at index (i - j)
-            j = lps[j - 1];     // Continue searching for next match
-        } else if (i < text.length && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
+    // Log the fetched posts
+    console.log('Fetched Posts:');
+    posts.forEach((post: Post) => {
+      console.log(`Post ID: ${post.id}, Title: ${post.title}`);
+    });
+  } catch (error) {
+    // Handle errors gracefully
+    if (axios.isAxiosError(error)) {
+      console.error('Axios error:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
     }
-
-    return result;
+  }
 }
 
-// Example Usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = kmpSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+// Call the function to fetch and display posts
+fetchPosts();
