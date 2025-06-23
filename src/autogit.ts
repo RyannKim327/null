@@ -1,109 +1,105 @@
-type Node = string | number; // Define the type of nodes in the graph
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-function bidirectionalSearch(
-  graph: Map<Node, Node[]>, // Adjacency list representation of the graph
-  start: Node,              // Starting node
-  goal: Node                // Target node
-): { path: Node[]; found: boolean } {
-  // Helper function to reconstruct the path from the intersection point
-  const reconstructPath = (
-    forwardParent: Map<Node, Node>,
-    backwardParent: Map<Node, Node>,
-    intersection: Node
-  ): Node[] => {
-    const path: Node[] = [];
-    let currentNode: Node | undefined = intersection;
+    // Start with the first string as the initial prefix
+    let prefix = strs[0];
 
-    // Traverse from intersection to start
-    while (currentNode !== undefined) {
-      path.unshift(currentNode);
-      currentNode = forwardParent.get(currentNode);
-    }
-
-    currentNode = backwardParent.get(intersection); // Start from intersection to goal
-    while (currentNode !== undefined) {
-      path.push(currentNode);
-      currentNode = backwardParent.get(currentNode);
-    }
-
-    return path;
-  };
-
-  // Initialize data structures
-  const forwardQueue: Node[] = [start];
-  const backwardQueue: Node[] = [goal];
-
-  const forwardVisited = new Set<Node>();
-  const backwardVisited = new Set<Node>();
-
-  const forwardParent = new Map<Node, Node>();
-  const backwardParent = new Map<Node, Node>();
-
-  forwardVisited.add(start);
-  backwardVisited.add(goal);
-
-  while (forwardQueue.length > 0 && backwardQueue.length > 0) {
-    // Perform one step of the forward BFS
-    const forwardNode = forwardQueue.shift()!;
-    for (const neighbor of graph.get(forwardNode) || []) {
-      if (!forwardVisited.has(neighbor)) {
-        forwardVisited.add(neighbor);
-        forwardParent.set(neighbor, forwardNode);
-        forwardQueue.push(neighbor);
-
-        // Check if the neighbor has been visited by the backward search
-        if (backwardVisited.has(neighbor)) {
-          const path = reconstructPath(forwardParent, backwardParent, neighbor);
-          return { path, found: true };
+    // Iterate through each string in the array starting from the second one
+    for (let i = 1; i < strs.length; i++) {
+        // Compare the current prefix with the next string
+        while (strs[i].indexOf(prefix) !== 0) {
+            // Shorten the prefix by removing the last character
+            prefix = prefix.substring(0, prefix.length - 1);
+            // If there's no common prefix
+            if (prefix === "") return "";
         }
-      }
     }
 
-    // Perform one step of the backward BFS
-    const backwardNode = backwardQueue.shift()!;
-    for (const neighbor of graph.get(backwardNode) || []) {
-      if (!backwardVisited.has(neighbor)) {
-        backwardVisited.add(neighbor);
-        backwardParent.set(neighbor, backwardNode);
-        backwardQueue.push(neighbor);
-
-        // Check if the neighbor has been visited by the forward search
-        if (forwardVisited.has(neighbor)) {
-          const path = reconstructPath(forwardParent, backwardParent, neighbor);
-          return { path, found: true };
-        }
-      }
-    }
-  }
-
-  // If no intersection is found, return failure
-  return { path: [], found: false };
+    return prefix;
 }
 
-// Example usage
-const graph = new Map<string, string[]>([
-  ["A", ["B", "C"]],
-  ["B", ["A", "D", "E"]],
-  ["C", ["A", "F"]],
-  ["D", ["B"]],
-  ["E", ["B", "F"]],
-  ["F", ["C", "E"]],
-]);
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
+function longestCommonPrefixBinarySearch(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-const result = bidirectionalSearch(graph, "A", "F");
-console.log("Path:", result.path);
-console.log("Found:", result.found);
-Graph:
-A -> B, C
-B -> A, D, E
-C -> A, F
-D -> B
-E -> B, F
-F -> C, E
+    // Find the minimum length among all strings
+    let minLen = Math.min(...strs.map(s => s.length));
 
-Start: A
-Goal: F
+    let low = 0;
+    let high = minLen;
 
-Output:
-Path: ["A", "C", "F"]
-Found: true
+    while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        if (isCommonPrefix(strs, mid)) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
+
+    return strs[0].substring(0, Math.floor((low + high) / 2));
+}
+
+function isCommonPrefix(strs: string[], len: number): boolean {
+    const str1 = strs[0].substring(0, len);
+    for (let i = 1; i < strs.length; i++) {
+        if (!strs[i].startsWith(str1)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefixBinarySearch(strings)); // Output: "fl"
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return ""; // Edge case: empty array
+    if (strs.length === 1) return strs[0]; // Edge case: single string
+
+    // Initialize prefix with the first string
+    let prefix = strs[0];
+
+    // Iterate over the rest of the strings
+    for (let i = 1; i < strs.length; i++) {
+        // Reduce the prefix until it matches the start of strs[i]
+        while (strs[i].indexOf(prefix) !== 0) {
+            prefix = prefix.substring(0, prefix.length - 1);
+            if (prefix === "") return ""; // No common prefix found
+        }
+    }
+
+    return prefix;
+}
+
+// Test cases
+const testCases: string[][] = [
+    ["flower", "flow", "flight"],
+    ["dog", "racecar", "car"],
+    ["interspecies", "interstellar", "interstate"],
+    ["throne", "dungeon"],
+    ["throne"],
+    [""],
+    []
+];
+
+testCases.forEach((testCase, index) => {
+    console.log(`Test Case ${index + 1}:`, testCase);
+    console.log("Longest Common Prefix:", longestCommonPrefix(testCase));
+});
+Test Case 1: [ 'flower', 'flow', 'flight' ]
+Longest Common Prefix: fl
+Test Case 2: [ 'dog', 'racecar', 'car' ]
+Longest Common Prefix: 
+Test Case 3: [ 'interspecies', 'interstellar', 'interstate' ]
+Longest Common Prefix: inters
+Test Case 4: [ 'throne', 'dungeon' ]
+Longest Common Prefix: 
+Test Case 5: [ 'throne' ]
+Longest Common Prefix: throne
+Test Case 6: [ '' ]
+Longest Common Prefix: 
+Test Case 7: []
+Longest Common Prefix: 
