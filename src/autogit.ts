@@ -1,38 +1,32 @@
-import axios, { AxiosResponse } from 'axios';
-
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
-}
-
-async function fetchPosts(): Promise<void> {
-  try {
-    console.log('Fetching posts...');
-
-    // Make a GET request to the JSONPlaceholder API
-    const response: AxiosResponse<Post[]> = await axios.get(
-      'https://jsonplaceholder.typicode.com/posts'
-    );
-
-    // Extract the data from the response
-    const posts: Post[] = response.data;
-
-    // Log the fetched posts
-    console.log('Fetched Posts:');
-    posts.forEach((post: Post) => {
-      console.log(`Post ID: ${post.id}, Title: ${post.title}`);
-    });
-  } catch (error) {
-    // Handle errors gracefully
-    if (axios.isAxiosError(error)) {
-      console.error('Axios error:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
+function burrowsWheelerTransform(input: string): string {
+    // Step 1: Add the end-of-string marker
+    const endMarker = '$';
+    if (input.includes(endMarker)) {
+        throw new Error("Input string must not contain the end marker '$'");
     }
-  }
+    const strWithMarker = input + endMarker;
+
+    // Step 2: Generate all rotations
+    const rotations: string[] = [];
+    for (let i = 0; i < strWithMarker.length; i++) {
+        const rotation = strWithMarker.slice(i) + strWithMarker.slice(0, i);
+        rotations.push(rotation);
+    }
+
+    // Step 3: Sort rotations lexicographically
+    rotations.sort();
+
+    // Step 4: Extract the last column
+    let lastColumn = '';
+    for (const rotation of rotations) {
+        lastColumn += rotation[rotation.length - 1];
+    }
+
+    // Step 5: Return the transformed string
+    return lastColumn;
 }
 
-// Call the function to fetch and display posts
-fetchPosts();
+// Example usage
+const input = "banana";
+const transformed = burrowsWheelerTransform(input);
+console.log(`BWT of "${input}" is "${transformed}"`);
