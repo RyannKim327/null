@@ -1,121 +1,163 @@
-function calculateTriangleAreaBaseHeight(base: number, height: number): number {
-    if (base <= 0 || height <= 0) {
-        throw new Error("Base and height must be positive numbers.");
-    }
-    return 0.5 * base * height;
-}
+banana$
+anana$
+nana$
+ana$
+na$
+a$
+$
+class Node {
+    id: number; // Unique identifier for debugging
+    edges: Map<string, Edge>; // Edges from this node
+    suffixLink: Node | null; // Suffix link for Ukkonen's algorithm
 
-// Example usage:
-const base = 10;
-const height = 5;
-const area = calculateTriangleAreaBaseHeight(base, height);
-console.log(`The area of the triangle is ${area}`); // Output: The area of the triangle is 25
-function calculateTriangleAreaHeron(a: number, b: number, c: number): number {
-    if (a <= 0 || b <= 0 || c <= 0) {
-        throw new Error("All sides must be positive numbers.");
-    }
-
-    // Check if the sides can form a triangle
-    if (a + b <= c || a + c <= b || b + c <= a) {
-        throw new Error("The given sides do not form a valid triangle.");
-    }
-
-    const s = (a + b + c) / 2;
-    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
-    return area;
-}
-
-// Example usage:
-const sideA = 5;
-const sideB = 6;
-const sideC = 7;
-const areaHeron = calculateTriangleAreaHeron(sideA, sideB, sideC);
-console.log(`The area of the triangle is ${areaHeron.toFixed(2)}`); // Output: The area of the triangle is 14.70
-function calculateTriangleAreaTwoSidesAngle(a: number, b: number, angleDegrees: number): number {
-    if (a <= 0 || b <= 0) {
-        throw new Error("Sides must be positive numbers.");
-    }
-
-    if (angleDegrees <= 0 || angleDegrees >= 180) {
-        throw new Error("Angle must be between 0 and 180 degrees.");
-    }
-
-    const angleRadians = (angleDegrees * Math.PI) / 180;
-    const area = 0.5 * a * b * Math.sin(angleRadians);
-    return area;
-}
-
-// Example usage:
-const sideA = 5;
-const sideB = 6;
-const angle = 60; // Angle in degrees
-const areaAngle = calculateTriangleAreaTwoSidesAngle(sideA, sideB, angle);
-console.log(`The area of the triangle is ${areaAngle.toFixed(2)}`); // Output: The area of the triangle is 12.99
-// Function using base and height
-function calculateTriangleAreaBaseHeight(base: number, height: number): number {
-    if (base <= 0 || height <= 0) {
-        throw new Error("Base and height must be positive numbers.");
-    }
-    return 0.5 * base * height;
-}
-
-// Function using Heron's formula
-function calculateTriangleAreaHeron(a: number, b: number, c: number): number {
-    if (a <= 0 || b <= 0 || c <= 0) {
-        throw new Error("All sides must be positive numbers.");
-    }
-
-    // Triangle inequality check
-    if (a + b <= c || a + c <= b || b + c <= a) {
-        throw new Error("The given sides do not form a valid triangle.");
-    }
-
-    const s = (a + b + c) / 2;
-    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
-    return area;
-}
-
-// Function using two sides and included angle
-function calculateTriangleAreaTwoSidesAngle(a: number, b: number, angleDegrees: number): number {
-    if (a <= 0 || b <= 0) {
-        throw new Error("Sides must be positive numbers.");
-    }
-
-    if (angleDegrees <= 0 || angleDegrees >= 180) {
-        throw new Error("Angle must be between 0 and 180 degrees.");
-    }
-
-    const angleRadians = (angleDegrees * Math.PI) / 180;
-    const area = 0.5 * a * b * Math.sin(angleRadians);
-    return area;
-}
-
-// Demonstration of all methods
-function main() {
-    try {
-        // Method 1: Base and Height
-        const base = 10;
-        const height = 5;
-        const areaBH = calculateTriangleAreaBaseHeight(base, height);
-        console.log(`Area using base and height: ${areaBH}`);
-
-        // Method 2: Heron's Formula
-        const sideA = 5;
-        const sideB = 6;
-        const sideC = 7;
-        const areaHeron = calculateTriangleAreaHeron(sideA, sideB, sideC);
-        console.log(`Area using Heron's formula: ${areaHeron.toFixed(2)}`);
-
-        // Method 3: Two Sides and Included Angle
-        const angle = 60; // degrees
-        const areaAngle = calculateTriangleAreaTwoSidesAngle(sideA, sideB, angle);
-        console.log(`Area using two sides and angle: ${areaAngle.toFixed(2)}`);
-    } catch (error) {
-        console.error(error.message);
+    constructor(id: number) {
+        this.id = id;
+        this.edges = new Map();
+        this.suffixLink = null;
     }
 }
+class Edge {
+    start: number; // Start index of the substring in the original string
+    end: number;   // End index of the substring
+    targetNode: Node; // Target node this edge points to
 
-main();
-Area using base and height: 25
-Area using Heron's formula: 14.70
-Area using two sides and angle: 12.99
+    constructor(start: number, end: number, targetNode: Node) {
+        this.start = start;
+        this.end = end;
+        this.targetNode = targetNode;
+    }
+
+    length(): number {
+        return this.end - this.start + 1;
+    }
+}
+class SuffixTree {
+    root: Node;
+    text: string; // The input string with a unique terminator
+    activeNode: Node;
+    activeEdge: number | null; // Index of the character in the active edge
+    activeLength: number; // Length of the active point
+    remaining: number; // Number of suffixes to insert
+    lastNewNode: Node | null; // Used for setting suffix links
+    nodeIdCounter: number; // Counter for assigning unique IDs to nodes
+
+    constructor(text: string) {
+        this.text = text + "$"; // Append a unique terminator
+        this.root = new Node(0);
+        this.activeNode = this.root;
+        this.activeEdge = null;
+        this.activeLength = 0;
+        this.remaining = 0;
+        this.lastNewNode = null;
+        this.nodeIdCounter = 1;
+
+        this.buildSuffixTree();
+    }
+
+    private buildSuffixTree() {
+        for (let i = 0; i < this.text.length; i++) {
+            this.extendSuffixTree(i);
+        }
+    }
+
+    private extendSuffixTree(pos: number) {
+        this.lastNewNode = null;
+        this.remaining++;
+        while (this.remaining > 0) {
+            if (this.activeLength === 0) {
+                this.activeEdge = pos;
+            }
+
+            const activeEdgeChar = this.activeEdge !== null ? this.text[this.activeEdge] : null;
+
+            if (!this.activeNode.edges.has(activeEdgeChar!)) {
+                const newNode = new Node(this.nodeIdCounter++);
+                this.activeNode.edges.set(activeEdgeChar!, new Edge(pos, this.text.length - 1, newNode));
+
+                if (this.lastNewNode !== null) {
+                    this.lastNewNode.suffixLink = this.activeNode;
+                    this.lastNewNode = null;
+                }
+            } else {
+                const edge = this.activeNode.edges.get(activeEdgeChar!)!;
+                if (this.walkDown(edge)) {
+                    continue;
+                }
+
+                if (this.text[edge.start + this.activeLength] === this.text[pos]) {
+                    if (this.lastNewNode !== null && this.activeNode !== this.root) {
+                        this.lastNewNode.suffixLink = this.activeNode;
+                        this.lastNewNode = null;
+                    }
+                    this.activeLength++;
+                    break;
+                }
+
+                const splitEnd = edge.start + this.activeLength - 1;
+                const splitNode = new Node(this.nodeIdCounter++);
+                this.activeNode.edges.set(activeEdgeChar!, new Edge(edge.start, splitEnd, splitNode));
+
+                const newNode = new Node(this.nodeIdCounter++);
+                splitNode.edges.set(this.text[pos], new Edge(pos, this.text.length - 1, newNode));
+
+                edge.start += this.activeLength;
+                splitNode.edges.set(this.text[edge.start], edge);
+
+                if (this.lastNewNode !== null) {
+                    this.lastNewNode.suffixLink = splitNode;
+                }
+                this.lastNewNode = splitNode;
+            }
+
+            this.remaining--;
+            if (this.activeNode === this.root && this.activeLength > 0) {
+                this.activeLength--;
+                this.activeEdge = pos - this.remaining + 1;
+            } else if (this.activeNode !== this.root) {
+                this.activeNode = this.activeNode.suffixLink!;
+            }
+        }
+    }
+
+    private walkDown(edge: Edge): boolean {
+        if (this.activeLength >= edge.length()) {
+            this.activeEdge! += edge.length();
+            this.activeLength -= edge.length();
+            this.activeNode = edge.targetNode;
+            return true;
+        }
+        return false;
+    }
+
+    // Utility function to search for a substring
+    contains(substring: string): boolean {
+        let currentNode = this.root;
+        let currentEdge: Edge | undefined;
+
+        for (let i = 0; i < substring.length; i++) {
+            const char = substring[i];
+            currentEdge = currentNode.edges.get(char);
+
+            if (!currentEdge) {
+                return false;
+            }
+
+            const edgeSubstring = this.text.slice(currentEdge.start, currentEdge.end + 1);
+            const compareLength = Math.min(edgeSubstring.length, substring.length - i);
+
+            if (substring.slice(i, i + compareLength) !== edgeSubstring.slice(0, compareLength)) {
+                return false;
+            }
+
+            i += compareLength - 1;
+            currentNode = currentEdge.targetNode;
+        }
+
+        return true;
+    }
+}
+const text = "banana";
+const suffixTree = new SuffixTree(text);
+
+console.log(suffixTree.contains("ana")); // true
+console.log(suffixTree.contains("xyz")); // false
