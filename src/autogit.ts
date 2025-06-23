@@ -1,52 +1,110 @@
-function boyerMooreSearch(text: string, pattern: string): number {
-    const n = text.length;
-    const m = pattern.length;
+class PriorityQueue<T> {
+  private heap: { priority: number; value: T }[] = [];
 
-    // Edge case: if the pattern is empty or longer than the text
-    if (m === 0 || m > n) return -1;
+  // Insert a new element with a given priority
+  enqueue(value: T, priority: number): void {
+    this.heap.push({ priority, value });
+    this.heapifyUp(this.heap.length - 1);
+  }
 
-    // Step 1: Build the bad character shift table
-    const badCharShift: { [key: string]: number } = {};
-    for (let i = 0; i < m; i++) {
-        badCharShift[pattern[i]] = i; // Record the last occurrence of each character
+  // Remove and return the element with the highest priority (smallest priority value)
+  dequeue(): T | undefined {
+    if (this.isEmpty()) {
+      return undefined;
     }
 
-    // Step 2: Perform the search
-    let s = 0; // Shift of the pattern with respect to the text
-    while (s <= n - m) {
-        let j = m - 1; // Start comparing from the end of the pattern
+    // Swap the first and last elements
+    this.swap(0, this.heap.length - 1);
+    const item = this.heap.pop(); // Remove the last element (original root)
 
-        // Compare the pattern with the text
-        while (j >= 0 && pattern[j] === text[s + j]) {
-            j--; // Move leftward
-        }
-
-        if (j < 0) {
-            // Pattern found at index `s`
-            return s;
-        } else {
-            // Use the bad character rule to calculate the shift
-            const charInText = text[s + j];
-            const shift = badCharShift[charInText] !== undefined ? j - badCharShift[charInText] : j + 1;
-            s += shift;
-        }
+    // Restore the heap property
+    if (!this.isEmpty()) {
+      this.heapifyDown(0);
     }
 
-    // Pattern not found
-    return -1;
-}
+    return item?.value;
+  }
 
-// Example usage
-const text = "HERE IS A SIMPLE EXAMPLE";
-const pattern = "EXAMPLE";
-const result = boyerMooreSearch(text, pattern);
+  // Peek at the element with the highest priority without removing it
+  peek(): T | undefined {
+    return this.heap[0]?.value;
+  }
 
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
+  // Check if the priority queue is empty
+  isEmpty(): boolean {
+    return this.heap.length === 0;
+  }
+
+  // Get the size of the priority queue
+  size(): number {
+    return this.heap.length;
+  }
+
+  // Helper function to restore the heap property by moving an element up
+  private heapifyUp(index: number): void {
+    while (index > 0) {
+      const parentIndex = this.getParentIndex(index);
+      if (this.heap[parentIndex].priority <= this.heap[index].priority) {
+        break; // Heap property is satisfied
+      }
+      this.swap(parentIndex, index);
+      index = parentIndex;
+    }
+  }
+
+  // Helper function to restore the heap property by moving an element down
+  private heapifyDown(index: number): void {
+    let smallest = index;
+    const leftChildIndex = this.getLeftChildIndex(index);
+    const rightChildIndex = this.getRightChildIndex(index);
+
+    if (
+      leftChildIndex < this.heap.length &&
+      this.heap[leftChildIndex].priority < this.heap[smallest].priority
+    ) {
+      smallest = leftChildIndex;
+    }
+
+    if (
+      rightChildIndex < this.heap.length &&
+      this.heap[rightChildIndex].priority < this.heap[smallest].priority
+    ) {
+      smallest = rightChildIndex;
+    }
+
+    if (smallest !== index) {
+      this.swap(index, smallest);
+      this.heapifyDown(smallest);
+    }
+  }
+
+  // Helper function to get the parent index
+  private getParentIndex(index: number): number {
+    return Math.floor((index - 1) / 2);
+  }
+
+  // Helper function to get the left child index
+  private getLeftChildIndex(index: number): number {
+    return 2 * index + 1;
+  }
+
+  // Helper function to get the right child index
+  private getRightChildIndex(index: number): number {
+    return 2 * index + 2;
+  }
+
+  // Helper function to swap two elements in the heap
+  private swap(i: number, j: number): void {
+    [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+  }
 }
-const text = "HERE IS A SIMPLE EXAMPLE";
-const pattern = "EXAMPLE";
-Pattern found at index: 17
-Pattern not found
+const pq = new PriorityQueue<string>();
+
+pq.enqueue("Task 1", 3);
+pq.enqueue("Task 2", 1);
+pq.enqueue("Task 3", 2);
+
+console.log(pq.dequeue()); // Output: "Task 2" (highest priority)
+console.log(pq.dequeue()); // Output: "Task 3"
+console.log(pq.dequeue()); // Output: "Task 1"
+console.log(pq.dequeue()); // Output: undefined (queue is empty)
