@@ -1,60 +1,30 @@
-// Define the type for the adjacency list
-type Graph = Map<number, number[]>;
-
-/**
- * Breadth-First Search Algorithm
- * @param graph - The graph represented as an adjacency list
- * @param startNode - The node to start the BFS from
- */
-function breadthFirstSearch(graph: Graph, startNode: number): void {
-    // Initialize a queue with the starting node
-    const queue: number[] = [startNode];
-    // Track visited nodes to avoid cycles
-    const visited: Set<number> = new Set<number>();
-    visited.add(startNode);
-
-    console.log("BFS Traversal:");
-
-    while (queue.length > 0) {
-        // Dequeue the front node
-        const currentNode = queue.shift()!;
-        console.log(currentNode); // Process the current node (e.g., print it)
-
-        // Get the neighbors of the current node
-        const neighbors = graph.get(currentNode) || [];
-
-        // Enqueue unvisited neighbors
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                visited.add(neighbor);
-                queue.push(neighbor);
-            }
+function isSorted(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
         }
+    }
+    return true;
+}
+
+function shuffleArray(arr: number[]): void {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
     }
 }
 
-// Example Usage
-const graph: Graph = new Map([
-    [0, [1, 2]],
-    [1, [2]],
-    [2, [0, 3]],
-    [3, [3]] // Self-loop
-]);
-
-console.log("Graph:");
-console.log(graph);
-
-// Perform BFS starting from node 2
-breadthFirstSearch(graph, 2);
-Graph:
-Map(4) {
-  0 => [ 1, 2 ],
-  1 => [ 2 ],
-  2 => [ 0, 3 ],
-  3 => [ 3 ]
+function bogoSort(arr: number[]): number[] {
+    while (!isSorted(arr)) {
+        shuffleArray(arr);
+    }
+    return arr;
 }
-BFS Traversal:
-2
-0
-3
-1
+
+// Example usage:
+const array = [3, 2, 5, 1, 4];
+console.log("Original Array:", array);
+const sortedArray = bogoSort(array);
+console.log("Sorted Array:", sortedArray);
+Original Array: [3, 2, 5, 1, 4]
+Sorted Array: [1, 2, 3, 4, 5]
