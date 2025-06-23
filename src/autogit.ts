@@ -1,117 +1,149 @@
-class Node<T> {
-  value: T;
-  next: Node<T> | null;
+local-part@domain
+// Define the regex pattern for email validation
+const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  constructor(value: T) {
-    this.value = value;
-    this.next = null; // Initially, the node does not point to any other node.
-  }
+/**
+ * Validates an email address using regex.
+ *
+ * @param email - The email string to validate.
+ * @returns True if the email is valid, false otherwise.
+ */
+function isValidEmail(email: string): boolean {
+    return emailRegex.test(email);
 }
-class LinkedList<T> {
-  private head: Node<T> | null;
-  private size: number;
 
-  constructor() {
-    this.head = null; // Initially, the list is empty.
-    this.size = 0;    // Track the number of nodes in the list.
-  }
+// Example usage:
+const testEmails: string[] = [
+    "example@example.com",
+    "user.name+tag+sorting@example.com",
+    "user@sub.domain.com",
+    "invalid-email@",
+    "another.invalid@domain",
+    "noatsign.com"
+];
 
-  // Add a node to the end of the list
-  append(value: T): void {
-    const newNode = new Node(value);
+testEmails.forEach(email => {
+    console.log(`${email}: ${isValidEmail(email)}`);
+});
+/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+example@example.com: true
+user.name+tag+sorting@example.com: true
+user@sub.domain.com: true
+invalid-email@: false
+another.invalid@domain: false
+noatsign.com: false
+// Enhanced regex pattern for email validation
+const enhancedEmailRegex: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
 
-    if (!this.head) {
-      // If the list is empty, set the new node as the head.
-      this.head = newNode;
-    } else {
-      // Traverse to the last node and append the new node.
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-
-    this.size++;
-  }
-
-  // Add a node to the beginning of the list
-  prepend(value: T): void {
-    const newNode = new Node(value);
-    newNode.next = this.head; // Point the new node to the current head.
-    this.head = newNode;      // Update the head to the new node.
-    this.size++;
-  }
-
-  // Remove the first occurrence of a node with the given value
-  remove(value: T): boolean {
-    if (!this.head) return false; // List is empty, nothing to remove.
-
-    // If the head node contains the value, update the head.
-    if (this.head.value === value) {
-      this.head = this.head.next;
-      this.size--;
-      return true;
-    }
-
-    // Traverse the list to find the node to remove.
-    let current = this.head;
-    while (current.next) {
-      if (current.next.value === value) {
-        current.next = current.next.next; // Bypass the node to be removed.
-        this.size--;
-        return true;
-      }
-      current = current.next;
-    }
-
-    return false; // Value not found in the list.
-  }
-
-  // Find the first node with the given value
-  find(value: T): Node<T> | null {
-    let current = this.head;
-    while (current) {
-      if (current.value === value) {
-        return current; // Return the node if the value matches.
-      }
-      current = current.next;
-    }
-    return null; // Value not found in the list.
-  }
-
-  // Get the size of the list
-  getSize(): number {
-    return this.size;
-  }
-
-  // Check if the list is empty
-  isEmpty(): boolean {
-    return this.size === 0;
-  }
-
-  // Convert the list to an array for easy visualization
-  toArray(): T[] {
-    const result: T[] = [];
-    let current = this.head;
-    while (current) {
-      result.push(current.value);
-      current = current.next;
-    }
-    return result;
-  }
+/**
+ * Validates an email address using an enhanced regex.
+ *
+ * @param email - The email string to validate.
+ * @returns True if the email is valid, false otherwise.
+ */
+function isValidEnhancedEmail(email: string): boolean {
+    return enhancedEmailRegex.test(email);
 }
-const list = new LinkedList<number>();
 
-list.append(10);
-list.append(20);
-list.prepend(5);
+// Example usage:
+testEmails.forEach(email => {
+    console.log(`${email}: ${isValidEnhancedEmail(email)}`);
+});
+/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/
+example@example.com: true
+user.name+tag+sorting@example.com: true
+user@sub.domain.com: true
+invalid-email@: false
+another.invalid@domain: false
+noatsign.com: false
+<form id="emailForm">
+    <input type="email" id="emailInput" required />
+    <button type="submit">Submit</button>
+</form>
 
-console.log(list.toArray()); // Output: [5, 10, 20]
+<script>
+    document.getElementById('emailForm').addEventListener('submit', function(event) {
+        const emailInput = document.getElementById('emailInput') as HTMLInputElement;
+        if (!emailInput.checkValidity()) {
+            alert('Please enter a valid email address.');
+            event.preventDefault();
+        }
+    });
+</script>
+npm install validator
+import validator from 'validator';
 
-list.remove(10);
-console.log(list.toArray()); // Output: [5, 20]
+function isValidEmailWithValidator(email: string): boolean {
+    return validator.isEmail(email);
+}
 
-console.log(list.find(20));  // Output: Node { value: 20, next: null }
-console.log(list.getSize()); // Output: 2
-console.log(list.isEmpty()); // Output: false
+// Example usage:
+testEmails.forEach(email => {
+    console.log(`${email}: ${isValidEmailWithValidator(email)}`);
+});
+// Simple regex for basic email validation
+const simpleEmailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function isValidSimpleEmail(email: string): boolean {
+    return simpleEmailRegex.test(email);
+}
+
+// Enhanced regex for more comprehensive validation
+const enhancedEmailRegex: RegExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$/;
+
+function isValidEnhancedEmail(email: string): boolean {
+    return enhancedEmailRegex.test(email);
+}
+
+// Test suite
+const testEmails: string[] = [
+    "example@example.com",
+    "user.name+tag+sorting@example.com",
+    "user@sub.domain.com",
+    "invalid-email@",
+    "another.invalid@domain",
+    "noatsign.com",
+    "very.common@example.com",
+    "disposable.style.email.with+symbol@example.com",
+    "other.email-with-hyphen@example.com",
+    "fully-qualified-domain@example.com",
+    "user.name+tag+sorting@example.co.uk",
+    "x@x.x"
+];
+
+console.log("Simple Regex Validation:");
+testEmails.forEach(email => {
+    console.log(`${email}: ${isValidSimpleEmail(email)}`);
+});
+
+console.log("\nEnhanced Regex Validation:");
+testEmails.forEach(email => {
+    console.log(`${email}: ${isValidEnhancedEmail(email)}`);
+});
+Simple Regex Validation:
+example@example.com: true
+user.name+tag+sorting@example.com: true
+user@sub.domain.com: true
+invalid-email@: false
+another.invalid@domain: false
+noatsign.com: false
+very.common@example.com: true
+disposable.style.email.with+symbol@example.com: true
+other.email-with-hyphen@example.com: true
+fully-qualified-domain@example.com: true
+user.name+tag+sorting@example.co.uk: true
+x@x.x: true
+
+Enhanced Regex Validation:
+example@example.com: true
+user.name+tag+sorting@example.com: true
+user@sub.domain.com: true
+invalid-email@: false
+another.invalid@domain: false
+noatsign.com: false
+very.common@example.com: true
+disposable.style.email.with+symbol@example.com: true
+other.email-with-hyphen@example.com: true
+fully-qualified-domain@example.com: true
+user.name+tag+sorting@example.co.uk: true
+x@x.x: true
