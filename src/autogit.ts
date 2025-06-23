@@ -1,41 +1,64 @@
-function isPalindrome(s: string): boolean {
-    let left = 0;
-    let right = s.length - 1;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Helper function to normalize a string
+    const normalize = (str: string): string => {
+        return str
+            .replace(/[^a-zA-Z]/g, '') // Remove non-alphabetic characters
+            .toLowerCase()             // Convert to lowercase
+            .split('')                 // Split into characters
+            .sort()                    // Sort characters alphabetically
+            .join('');                 // Join back into a string
+    };
 
-    while (left < right) {
-        // Skip non-alphanumeric characters from the left
-        while (left < right && !isAlphanumeric(s[left])) {
-            left++;
+    // Normalize both strings and compare
+    return normalize(str1) === normalize(str2);
+}
+
+// Example Usage
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("triangle", "integral")); // true
+console.log(areAnagrams("apple", "pale")); // false
+function areAnagrams(str1: string, str2: string): boolean {
+    // Helper function to create a character frequency map
+    const buildCharMap = (str: string): Record<string, number> => {
+        const charMap: Record<string, number> = {};
+        for (const char of str.replace(/[^a-zA-Z]/g, '').toLowerCase()) {
+            charMap[char] = (charMap[char] || 0) + 1;
         }
+        return charMap;
+    };
 
-        // Skip non-alphanumeric characters from the right
-        while (left < right && !isAlphanumeric(s[right])) {
-            right--;
-        }
+    const charMap1 = buildCharMap(str1);
+    const charMap2 = buildCharMap(str2);
 
-        // Compare characters (case-insensitive)
-        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false; // Not a palindrome
-        }
+    // Compare the keys and values of both maps
+    const keys1 = Object.keys(charMap1);
+    const keys2 = Object.keys(charMap2);
 
-        // Move pointers closer to the center
-        left++;
-        right--;
+    if (keys1.length !== keys2.length) {
+        return false;
     }
 
-    return true; // The string is a palindrome
+    for (const key of keys1) {
+        if (charMap1[key] !== charMap2[key]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
-// Helper function to check if a character is alphanumeric
-function isAlphanumeric(char: string): boolean {
-    const code = char.charCodeAt(0);
-    return (
-        (code >= 48 && code <= 57) || // Digits 0-9
-        (code >= 65 && code <= 90) || // Uppercase A-Z
-        (code >= 97 && code <= 122)   // Lowercase a-z
-    );
+// Example Usage
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("triangle", "integral")); // true
+console.log(areAnagrams("apple", "pale")); // false
+function areAnagrams(str1: string, str2: string): boolean {
+    const normalize = (str: string): string => {
+        return str
+            .replace(/[^a-zA-Z]/g, '')
+            .toLowerCase()
+            .split('')
+            .sort()
+            .join('');
+    };
+    return normalize(str1) === normalize(str2);
 }
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // Output: true
-console.log(isPalindrome("race a car"));                     // Output: false
-console.log(isPalindrome(" "));                              // Output: true
-console.log(isPalindrome("No 'x' in Nixon"));                // Output: true
