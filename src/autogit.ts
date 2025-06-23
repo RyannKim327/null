@@ -1,83 +1,32 @@
-// Define a Node type
-type Node = string;
-
-// Define a Graph as an adjacency list
-type Graph = Map<Node, Node[]>;
-
-/**
- * Breadth-Limited Search Function
- * @param graph - The graph represented as an adjacency list
- * @param start - The starting node
- * @param goal - The target node to find
- * @param depthLimit - The maximum depth to explore
- * @returns The path from start to goal if found within the depth limit, otherwise null
- */
-function breadthLimitedSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node,
-  depthLimit: number
-): Node[] | null {
-  // Queue stores tuples of [currentNode, currentPath, currentDepth]
-  const queue: [Node, Node[], number][] = [[start, [start], 0]];
-
-  // Visited set to avoid revisiting nodes at the same depth
-  const visited = new Set<Node>();
-
-  while (queue.length > 0) {
-    const [currentNode, currentPath, currentDepth] = queue.shift()!;
-
-    // If the current node is the goal, return the path
-    if (currentNode === goal) {
-      return currentPath;
+function isSorted(arr: number[]): boolean {
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] > arr[i + 1]) {
+            return false;
+        }
     }
-
-    // If the current depth exceeds the depth limit, skip further exploration
-    if (currentDepth >= depthLimit) {
-      continue;
-    }
-
-    // Mark the current node as visited at this depth
-    visited.add(currentNode);
-
-    // Add neighbors to the queue if they haven't been visited
-    for (const neighbor of graph.get(currentNode) || []) {
-      if (!visited.has(neighbor)) {
-        queue.push([neighbor, [...currentPath, neighbor], currentDepth + 1]);
-      }
-    }
-  }
-
-  // If the goal is not found within the depth limit, return null
-  return null;
+    return true;
 }
 
-// Example Usage
-const graph: Graph = new Map([
-  ["A", ["B", "C"]],
-  ["B", ["D", "E"]],
-  ["C", ["F"]],
-  ["D", []],
-  ["E", ["G"]],
-  ["F", []],
-  ["G", []],
-]);
-
-const startNode: Node = "A";
-const goalNode: Node = "G";
-const depthLimit: number = 3;
-
-const result = breadthLimitedSearch(graph, startNode, goalNode, depthLimit);
-
-if (result) {
-  console.log(`Path found: ${result.join(" -> ")}`);
-} else {
-  console.log("No path found within the depth limit.");
+function shuffleArray(arr: number[]): number[] {
+    const shuffled = [...arr];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
 }
-        A
-       / \
-      B   C
-     / \   \
-    D   E   F
-        \
-         G
+
+function bogosort(arr: number[]): number[] {
+    let sortedArray = [...arr];
+    while (!isSorted(sortedArray)) {
+        sortedArray = shuffleArray(sortedArray);
+    }
+    return sortedArray;
+}
+
+// Example usage:
+const unsortedArray = [3, 1, 4, 2, 5];
+console.log("Unsorted Array:", unsortedArray);
+
+const sortedArray = bogosort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
