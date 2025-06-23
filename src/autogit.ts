@@ -1,7 +1,45 @@
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
+function factorial(n: number): number {
+    // Base case: factorial of 0 is 1
+    if (n === 0) {
+        return 1;
     }
+    
+    // Recursive case: n * factorial(n - 1)
+    return n * factorial(n - 1);
+}
+
+// Example usage:
+const num = 5;
+console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
+function factorial(n: number): number {
+    // Check if the input is a non-negative integer
+    if (!Number.isInteger(n) || n < 0) {
+        throw new Error("Input must be a non-negative integer.");
+    }
+
+    // Base case
+    if (n === 0) {
+        return 1;
+    }
+
+    // Recursive case
+    return n * factorial(n - 1);
+}
+
+// Example usages:
+try {
+    console.log(factorial(5));    // Output: 120
+    console.log(factorial(0));    // Output: 1
+    console.log(factorial(-3));   // Throws Error
+    console.log(factorial(3.5));  // Throws Error
+} catch (error) {
+    console.error(error.message);
+}
+function factorialIterative(n: number): number {
+    if (!Number.isInteger(n) || n < 0) {
+        throw new Error("Input must be a non-negative integer.");
+    }
+
     let result = 1;
     for (let i = 2; i <= n; i++) {
         result *= i;
@@ -11,37 +49,3 @@ function factorialIterative(n: number): number {
 
 // Example usage:
 console.log(factorialIterative(5)); // Output: 120
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    return n * factorialRecursive(n - 1);
-}
-
-// Example usage:
-console.log(factorialRecursive(5)); // Output: 120
-function factorialTailRecursive(n: number, accumulator: number = 1): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (n === 0 || n === 1) {
-        return accumulator;
-    }
-    return factorialTailRecursive(n - 1, n * accumulator);
-}
-
-// Example usage:
-console.log(factorialTailRecursive(5)); // Output: 120
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
