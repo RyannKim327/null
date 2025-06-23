@@ -1,75 +1,55 @@
-// Definition of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+let numbers: number[] = [1, 2, 3, 4, 5, 3];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+// Remove all instances of the number 3
+numbers = numbers.filter(num => num !== 3);
+
+console.log(numbers); // Output: [1, 2, 4, 5]
+let fruits: string[] = ['apple', 'banana', 'cherry', 'banana', 'date'];
+
+function removeFirstInstance<T>(array: T[], value: T): void {
+    const index = array.indexOf(value);
+    if (index > -1) {
+        array.splice(index, 1);
     }
 }
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) return true; // Empty or single-node list is a palindrome
+removeFirstInstance(fruits, 'banana');
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-    let prev: ListNode | null = null;
-
-    // Step 1: Find the middle of the linked list using slow and fast pointers
-    while (fast && fast.next) {
-        prev = slow;
-        slow = slow!.next;
-        fast = fast.next.next;
-    }
-
-    // If the list has an odd number of nodes, move slow one step forward
-    if (fast) {
-        slow = slow!.next;
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let secondHalfStart: ListNode | null = reverseList(slow);
-
-    // Step 3: Compare the first half with the reversed second half
-    let firstHalfStart: ListNode | null = head;
-    let isPalindrome: boolean = true;
-    while (secondHalfStart) {
-        if (firstHalfStart!.value !== secondHalfStart.value) {
-            isPalindrome = false;
-            break;
-        }
-        firstHalfStart = firstHalfStart!.next;
-        secondHalfStart = secondHalfStart.next;
-    }
-
-    // Step 4: Optionally, restore the second half of the linked list
-    if (prev) {
-        prev.next = reverseList(secondHalfStart);
-    }
-
-    return isPalindrome;
+console.log(fruits); // Output: ['apple', 'cherry', 'banana', 'date']
+interface User {
+    id: number;
+    name: string;
 }
 
-// Helper function to reverse a linked list
-function reverseList(head: ListNode | null): ListNode | null {
-    let prev: ListNode | null = null;
-    let current: ListNode | null = head;
+let users: User[] = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+    { id: 3, name: 'Charlie' }
+];
 
-    while (current) {
-        const nextNode: ListNode | null = current.next;
-        current.next = prev;
-        prev = current;
-        current = nextNode;
-    }
+const userIdToRemove = 2;
 
-    return prev;
+const index = users.findIndex(user => user.id === userIdToRemove);
+if (index > -1) {
+    users.splice(index, 1);
 }
-// Create a linked list: 1 -> 2 -> 3 -> 2 -> 1
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(2);
-head.next.next.next.next = new ListNode(1);
 
-console.log(isPalindrome(head)); // Output: true
+console.log(users);
+// Output: [{ id: 1, name: 'Alice' }, { id: 3, name: 'Charlie' }]
+let letters: string[] = ['a', 'b', 'c', 'b', 'd'];
+
+for (let i = letters.length - 1; i >= 0; i--) {
+    if (letters[i] === 'b') {
+        letters.splice(i, 1);
+    }
+}
+
+console.log(letters); // Output: ['a', 'c', 'd']
+npm install lodash
+import _ from 'lodash';
+
+let items: number[] = [10, 20, 30, 40, 30, 50];
+
+_.remove(items, item => item === 30);
+
+console.log(items); // Output: [10, 20, 40, 50]
