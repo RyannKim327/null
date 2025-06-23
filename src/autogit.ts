@@ -1,90 +1,52 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+function longestIncreasingSubsequence(arr: number[]): number {
+    if (arr.length === 0) return 0;
 
-    constructor() {
-        this.children = new Map<string, TrieNode>(); // Stores child nodes
-        this.isEndOfWord = false; // Marks if the node is the end of a word
+    const n = arr.length;
+    const dp: number[] = new Array(n).fill(1); // Initialize dp array
+
+    for (let i = 1; i < n; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[j] < arr[i]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
+
+    return Math.max(...dp); // Return the maximum value in dp array
 }
-class Trie {
-    private root: TrieNode;
 
-    constructor() {
-        this.root = new TrieNode(); // Initialize the root node
-    }
+// Example usage
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(arr)); // Output: 4
+function longestIncreasingSubsequence(arr: number[]): number {
+    if (arr.length === 0) return 0;
 
-    /**
-     * Inserts a word into the trie.
-     * @param word - The word to insert.
-     */
-    insert(word: string): void {
-        let currentNode = this.root;
+    const tails: number[] = [];
 
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                // Create a new node if the character doesn't exist
-                currentNode.children.set(char, new TrieNode());
+    for (const num of arr) {
+        let left = 0, right = tails.length;
+
+        // Binary search to find the insertion point
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (tails[mid] < num) {
+                left = mid + 1;
+            } else {
+                right = mid;
             }
-            // Move to the next node
-            currentNode = currentNode.children.get(char)!;
         }
 
-        // Mark the end of the word
-        currentNode.isEndOfWord = true;
-    }
-
-    /**
-     * Searches for a word in the trie.
-     * @param word - The word to search for.
-     * @returns True if the word exists, false otherwise.
-     */
-    search(word: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return false; // Word not found
-            }
-            currentNode = currentNode.children.get(char)!;
+        // Replace or append
+        if (left === tails.length) {
+            tails.push(num);
+        } else {
+            tails[left] = num;
         }
-
-        // Check if the last node marks the end of a word
-        return currentNode.isEndOfWord;
     }
 
-    /**
-     * Checks if there is any word in the trie that starts with the given prefix.
-     * @param prefix - The prefix to check.
-     * @returns True if the prefix exists, false otherwise.
-     */
-    startsWith(prefix: string): boolean {
-        let currentNode = this.root;
-
-        for (const char of prefix) {
-            if (!currentNode.children.has(char)) {
-                return false; // Prefix not found
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-
-        return true; // Prefix exists
-    }
+    return tails.length; // Length of LIS
 }
-// Create a new Trie instance
-const trie = new Trie();
 
-// Insert words into the trie
-trie.insert("apple");
-trie.insert("app");
-trie.insert("banana");
-
-// Search for words
-console.log(trie.search("apple")); // Output: true
-console.log(trie.search("app"));   // Output: true
-console.log(trie.search("appl"));  // Output: false
-
-// Check for prefixes
-console.log(trie.startsWith("app")); // Output: true
-console.log(trie.startsWith("ban")); // Output: true
-console.log(trie.startsWith("bat")); // Output: false
+// Example usage
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(arr)); // Output: 4
