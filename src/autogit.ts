@@ -1,31 +1,40 @@
-function removeVowels(input: string): string {
-    // Define a regular expression to match all vowels (case-insensitive)
-    const vowelsRegex = /[aeiou]/gi;
+function isPalindrome(input: string): boolean {
+    // Step 1: Normalize the string
+    const normalized = input
+        .toLowerCase() // Convert to lowercase
+        .replace(/[^a-z0-9]/g, ''); // Remove non-alphanumeric characters
 
-    // Replace all vowels with an empty string
-    return input.replace(vowelsRegex, '');
+    // Step 2: Compare the string with its reverse
+    const reversed = normalized.split('').reverse().join('');
+    return normalized === reversed;
 }
 
 // Example usage:
-const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
+console.log(isPalindrome("racecar")); // true
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("hello")); // false
+function isPalindromeOptimized(input: string): boolean {
+    // Normalize the string
+    const normalized = input
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, '');
 
-console.log(stringWithoutVowels); // Output: "Hll, Wrld!"
-function removeVowels(input: string): string {
-    const vowels = 'aeiouAEIOU';
-    let result = '';
+    // Two-pointer approach
+    let left = 0;
+    let right = normalized.length - 1;
 
-    for (const char of input) {
-        if (!vowels.includes(char)) {
-            result += char;
+    while (left < right) {
+        if (normalized[left] !== normalized[right]) {
+            return false; // Characters don't match
         }
+        left++;
+        right--;
     }
 
-    return result;
+    return true; // All characters matched
 }
 
 // Example usage:
-console.log(removeVowels("Hello, World!")); // Output: "Hll, Wrld!"
-function removeVowels(input: string): string {
-    return input.replace(/[aeiou]/gi, '');
-}
+console.log(isPalindromeOptimized("racecar")); // true
+console.log(isPalindromeOptimized("A man, a plan, a canal: Panama")); // true
+console.log(isPalindromeOptimized("hello")); // false
