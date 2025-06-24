@@ -1,47 +1,39 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Helper function to normalize and sort a string
-    const normalize = (str: string): string => {
-        return str
-            .toLowerCase() // Convert to lowercase
-            .replace(/[^a-z0-9]/g, '') // Remove non-alphanumeric characters (optional)
-            .split('') // Split into characters
-            .sort() // Sort characters alphabetically
-            .join(''); // Join back into a string
-    };
+function binarySearchRecursive(
+  arr: number[], 
+  target: number, 
+  left: number = 0, 
+  right: number = arr.length - 1
+): number {
+  // Base case: If the search range is invalid, the target is not in the array
+  if (left > right) {
+    return -1; // Target not found
+  }
 
-    // Normalize and compare both strings
-    return normalize(str1) === normalize(str2);
+  // Calculate the middle index
+  const mid = Math.floor((left + right) / 2);
+
+  // Check if the middle element is the target
+  if (arr[mid] === target) {
+    return mid; // Target found, return its index
+  }
+
+  // If the target is smaller than the middle element, search the left half
+  if (target < arr[mid]) {
+    return binarySearchRecursive(arr, target, left, mid - 1);
+  }
+
+  // If the target is larger than the middle element, search the right half
+  return binarySearchRecursive(arr, target, mid + 1, right);
 }
 
 // Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("triangle", "integral")); // true
-console.log(areAnagrams("apple", "pale")); // false
-function areAnagrams(str1: string, str2: string): boolean {
-    const buildCharMap = (str: string): { [key: string]: number } => {
-        const charMap: { [key: string]: number } = {};
-        for (const char of str.toLowerCase().replace(/[^a-z0-9]/g, '')) {
-            charMap[char] = (charMap[char] || 0) + 1;
-        }
-        return charMap;
-    };
+const sortedArray = [1, 3, 5, 7, 9, 11, 13];
+const targetValue = 7;
 
-    const charMap1 = buildCharMap(str1);
-    const charMap2 = buildCharMap(str2);
+const result = binarySearchRecursive(sortedArray, targetValue);
 
-    const keys1 = Object.keys(charMap1);
-    const keys2 = Object.keys(charMap2);
-
-    if (keys1.length !== keys2.length) return false;
-
-    for (const key of keys1) {
-        if (charMap1[key] !== charMap2[key]) return false;
-    }
-
-    return true;
+if (result !== -1) {
+  console.log(`Element found at index ${result}`);
+} else {
+  console.log("Element not found in the array");
 }
-
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("triangle", "integral")); // true
-console.log(areAnagrams("apple", "pale")); // false
