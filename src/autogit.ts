@@ -1,55 +1,127 @@
-// Define the structure of a binary tree node
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+function calculateTriangleAreaBaseHeight(base: number, height: number): number {
+    if (base <= 0 || height <= 0) {
+        throw new Error("Base and height must be positive numbers.");
     }
+    return 0.5 * base * height;
 }
 
-// Function to calculate the sum of all nodes recursively
-function sumOfNodesRecursive(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Base case: empty tree contributes 0 to the sum
+// Example usage:
+const base = 10; // units
+const height = 5; // units
+const area = calculateTriangleAreaBaseHeight(base, height);
+console.log(`The area of the triangle is ${area} square units.`);
+The area of the triangle is 25 square units.
+function calculateTriangleAreaHeron(a: number, b: number, c: number): number {
+    if (a <= 0 || b <= 0 || c <= 0) {
+        throw new Error("All sides must be positive numbers.");
     }
-    // Add the current node's value to the sum of its left and right subtrees
-    return root.value + sumOfNodesRecursive(root.left) + sumOfNodesRecursive(root.right);
+
+    // Check if the sides can form a triangle
+    if (a + b <= c || a + c <= b || b + c <= a) {
+        throw new Error("The given sides do not form a valid triangle.");
+    }
+
+    const s = (a + b + c) / 2;
+    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    return area;
 }
-// Create a sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-console.log(sumOfNodesRecursive(root)); // Output: 15 (1 + 2 + 3 + 4 + 5)
-// Function to calculate the sum of all nodes iteratively
-function sumOfNodesIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0; // Empty tree contributes 0 to the sum
+// Example usage:
+const sideA = 5; // units
+const sideB = 6; // units
+const sideC = 7; // units
+const heronArea = calculateTriangleAreaHeron(sideA, sideB, sideC);
+console.log(`The area of the triangle using Heron's formula is ${heronArea.toFixed(2)} square units.`);
+The area of the triangle using Heron's formula is 14.70 square units.
+function calculateTriangleAreaSAS(a: number, b: number, angleC_degrees: number): number {
+    if (a <= 0 || b <= 0) {
+        throw new Error("Side lengths must be positive numbers.");
+    }
+    if (angleC_degrees <= 0 || angleC_degrees >= 180) {
+        throw new Error("Angle must be between 0 and 180 degrees.");
     }
 
-    let sum = 0;
-    const stack: TreeNode[] = [root]; // Initialize stack with the root node
+    // Convert angle from degrees to radians
+    const angleC_radians = (angleC_degrees * Math.PI) / 180;
 
-    while (stack.length > 0) {
-        const currentNode = stack.pop()!; // Get the next node to process
-        sum += currentNode.value;
-
-        // Push the left and right children onto the stack (if they exist)
-        if (currentNode.left !== null) {
-            stack.push(currentNode.left);
-        }
-        if (currentNode.right !== null) {
-            stack.push(currentNode.right);
-        }
-    }
-
-    return sum;
+    const area = 0.5 * a * b * Math.sin(angleC_radians);
+    return area;
 }
-// Using the same binary tree as before
-console.log(sumOfNodesIterative(root)); // Output: 15 (1 + 2 + 3 + 4 + 5)
+
+// Example usage:
+const sideA_SAS = 5; // units
+const sideB_SAS = 7; // units
+const angleC = 45; // degrees
+const sasArea = calculateTriangleAreaSAS(sideA_SAS, sideB_SAS, angleC);
+console.log(`The area of the triangle using SAS method is ${sasArea.toFixed(2)} square units.`);
+The area of the triangle using SAS method is 12.38 square units.
+function calculateTriangleAreaBaseHeight(base: number, height: number): number {
+    if (base <= 0 || height <= 0) {
+        throw new Error("Base and height must be positive numbers.");
+    }
+    return 0.5 * base * height;
+}
+
+function calculateTriangleAreaHeron(a: number, b: number, c: number): number {
+    if (a <= 0 || b <= 0 || c <= 0) {
+        throw new Error("All sides must be positive numbers.");
+    }
+
+    if (a + b <= c || a + c <= b || b + c <= a) {
+        throw new Error("The given sides do not form a valid triangle.");
+    }
+
+    const s = (a + b + c) / 2;
+    const area = Math.sqrt(s * (s - a) * (s - b) * (s - c));
+    return area;
+}
+
+function calculateTriangleAreaSAS(a: number, b: number, angleC_degrees: number): number {
+    if (a <= 0 || b <= 0) {
+        throw new Error("Side lengths must be positive numbers.");
+    }
+    if (angleC_degrees <= 0 || angleC_degrees >= 180) {
+        throw new Error("Angle must be between 0 and 180 degrees.");
+    }
+
+    const angleC_radians = (angleC_degrees * Math.PI) / 180;
+    const area = 0.5 * a * b * Math.sin(angleC_radians);
+    return area;
+}
+
+// Example usages:
+
+// Using Base and Height
+try {
+    const base = 10;
+    const height = 5;
+    const areaBH = calculateTriangleAreaBaseHeight(base, height);
+    console.log(`Area (Base-Height): ${areaBH} square units`);
+} catch (error) {
+    console.error(error.message);
+}
+
+// Using Heron's Formula
+try {
+    const sideA = 5;
+    const sideB = 6;
+    const sideC = 7;
+    const areaHeron = calculateTriangleAreaHeron(sideA, sideB, sideC);
+    console.log(`Area (Heron's Formula): ${areaHeron.toFixed(2)} square units`);
+} catch (error) {
+    console.error(error.message);
+}
+
+// Using SAS Method
+try {
+    const sideA_SAS = 5;
+    const sideB_SAS = 7;
+    const angleC = 45;
+    const areaSAS = calculateTriangleAreaSAS(sideA_SAS, sideB_SAS, angleC);
+    console.log(`Area (SAS Method): ${areaSAS.toFixed(2)} square units`);
+} catch (error) {
+    console.error(error.message);
+}
+Area (Base-Height): 25 square units
+Area (Heron's Formula): 14.70 square units
+Area (SAS Method): 12.38 square units
