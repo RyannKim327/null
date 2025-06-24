@@ -1,80 +1,83 @@
-class SuffixTreeNode {
-    children: Map<string, SuffixTreeNode>;
-    start: number | null; // Optional: Start index of the substring
-    end: number | null;   // Optional: End index of the substring
+let numbers: number[] = [1, 2, 3, 4, 3, 5];
 
-    constructor() {
-        this.children = new Map();
-        this.start = null;
-        this.end = null;
-    }
+// Remove all occurrences of 3
+let updatedNumbers = numbers.filter(num => num !== 3);
 
-    // Helper method to add a child node
-    addChild(char: string, node: SuffixTreeNode): void {
-        this.children.set(char, node);
-    }
+console.log(updatedNumbers); // Output: [1, 2, 4, 5]
+let numbers: number[] = [1, 2, 3, 4, 3, 5];
 
-    // Helper method to check if a child exists
-    hasChild(char: string): boolean {
-        return this.children.has(char);
-    }
+// Find the index of the first occurrence of 3
+let index = numbers.indexOf(3);
 
-    // Helper method to get a child node
-    getChild(char: string): SuffixTreeNode | undefined {
-        return this.children.get(char);
+if (index !== -1) {
+    // Remove the element at the found index
+    numbers.splice(index, 1);
+}
+
+console.log(numbers); // Output: [1, 2, 4, 3, 5]
+type Item = { id: number; name: string };
+
+let items: Item[] = [
+    { id: 1, name: 'Apple' },
+    { id: 2, name: 'Banana' },
+    { id: 3, name: 'Cherry' }
+];
+
+// Remove the item with id === 2
+let index = items.findIndex(item => item.id === 2);
+
+if (index !== -1) {
+    items.splice(index, 1);
+}
+
+console.log(items);
+// Output: [{ id: 1, name: 'Apple' }, { id: 3, name: 'Cherry' }]
+let numbers: number[] = [1, 2, 3, 4, 3, 5];
+
+// Remove all occurrences of 3
+for (let i = numbers.length - 1; i >= 0; i--) {
+    if (numbers[i] === 3) {
+        numbers.splice(i, 1);
     }
 }
-class SuffixTree {
-    root: SuffixTreeNode;
 
-    constructor() {
-        this.root = new SuffixTreeNode();
-    }
+console.log(numbers); // Output: [1, 2, 4, 5]
+let numbers: number[] = [1, 2, 3, 4, 3, 5];
 
-    // Method to build the suffix tree from a given string
-    build(text: string): void {
-        const n = text.length;
+numbers = numbers.filter(num => num !== 3);
 
-        // Insert all suffixes into the tree
-        for (let i = 0; i < n; i++) {
-            this.insertSuffix(text, i);
-        }
-    }
+console.log(numbers); // Output: [1, 2, 4, 5]
+type Product = {
+    id: number;
+    name: string;
+};
 
-    // Helper method to insert a suffix into the tree
-    private insertSuffix(text: string, start: number): void {
-        let currentNode = this.root;
-        const n = text.length;
+let products: Product[] = [
+    { id: 101, name: 'Laptop' },
+    { id: 102, name: 'Smartphone' },
+    { id: 103, name: 'Tablet' },
+    { id: 102, name: 'Smartphone' } // Duplicate
+];
 
-        for (let i = start; i < n; i++) {
-            const char = text[i];
-
-            // If the current node has no child for this character, create a new node
-            if (!currentNode.hasChild(char)) {
-                const newNode = new SuffixTreeNode();
-                newNode.start = i;
-                newNode.end = n - 1; // The suffix ends at the last character
-                currentNode.addChild(char, newNode);
-            }
-
-            // Move to the next node
-            currentNode = currentNode.getChild(char)!;
-        }
-    }
-
-    // Optional: Method to visualize the tree (for debugging)
-    printTree(node: SuffixTreeNode = this.root, prefix = ""): void {
-        for (const [char, child] of node.children) {
-            console.log(`${prefix}${char}`);
-            this.printTree(child, prefix + "  ");
-        }
+// Function to remove the first occurrence by ID
+function removeFirstById(arr: Product[], idToRemove: number): void {
+    let index = arr.findIndex(product => product.id === idToRemove);
+    if (index !== -1) {
+        arr.splice(index, 1);
     }
 }
-const suffixTree = new SuffixTree();
-const text = "banana";
 
-// Build the suffix tree
-suffixTree.build(text);
+// Function to remove all occurrences by ID
+function removeAllById(arr: Product[], idToRemove: number): Product[] {
+    return arr.filter(product => product.id !== idToRemove);
+}
 
-// Print the tree structure (for debugging purposes)
-suffixTree.printTree();
+// Remove the first Smartphone (id: 102)
+removeFirstById(products, 102);
+console.log('After removing first occurrence:', products);
+// Output: [{ id: 101, name: 'Laptop' }, { id: 103, name: 'Tablet' }, { id: 102, name: 'Smartphone' }]
+
+// Remove all Smartphones (id: 102)
+products = removeAllById(products, 102);
+console.log('After removing all occurrences:', products);
+// Output: [{ id: 101, name: 'Laptop' }, { id: 103, name: 'Tablet' }]
