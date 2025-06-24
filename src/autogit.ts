@@ -1,56 +1,74 @@
-function findCommonElements<T>(array1: T[], array2: T[]): T[] {
-    return array1.filter(item => array2.includes(item));
+// Define the structure of a node
+interface Node {
+  id: string; // Unique identifier for the node
+  children: Node[]; // List of child nodes
 }
 
-// Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [4, 5, 6, 7, 8];
-const common = findCommonElements(arr1, arr2);
-console.log(common); // Output: [4, 5]
-function findCommonElementsWithSet<T>(array1: T[], array2: T[]): T[] {
-    const set2 = new Set(array2);
-    return array1.filter(item => set2.has(item));
-}
+/**
+ * Depth-Limited Search (Iterative)
+ * @param startNode - The starting node for the search
+ * @param goalId - The ID of the goal node
+ * @param depthLimit - The maximum depth to explore
+ * @returns The goal node if found, otherwise null
+ */
+function depthLimitedSearch(
+  startNode: Node,
+  goalId: string,
+  depthLimit: number
+): Node | null {
+  // Define a stack to store nodes and their current depth
+  const stack: { node: Node; depth: number }[] = [{ node: startNode, depth: 0 }];
 
-// Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [4, 5, 6, 7, 8];
-const common = findCommonElementsWithSet(arr1, arr2);
-console.log(common); // Output: [4, 5]
-function findCommonElementsUsingIntersection<T>(array1: T[], array2: T[]): T[] {
-    const set1 = new Set(array1);
-    const set2 = new Set(array2);
-    return [...set1].filter(item => set2.has(item));
-}
+  while (stack.length > 0) {
+    // Pop the top element from the stack
+    const { node, depth } = stack.pop()!;
 
-// Example usage:
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [4, 5, 6, 7, 8];
-const common = findCommonElementsUsingIntersection(arr1, arr2);
-console.log(common); // Output: [4, 5]
-function findCommonElementsWithDuplicates<T>(array1: T[], array2: T[]): T[] {
-    const map = new Map<T, number>();
-    const result: T[] = [];
-
-    // Count occurrences in array2
-    for (const item of array2) {
-        map.set(item, (map.get(item) || 0) + 1);
+    // Check if the current node is the goal
+    if (node.id === goalId) {
+      return node;
     }
 
-    // Find common elements with respect to counts
-    for (const item of array1) {
-        const count = map.get(item);
-        if (count && count > 0) {
-            result.push(item);
-            map.set(item, count - 1);
-        }
+    // If the depth limit has not been reached, explore the children
+    if (depth < depthLimit) {
+      // Push all children onto the stack with incremented depth
+      for (const child of node.children) {
+        stack.push({ node: child, depth: depth + 1 });
+      }
     }
+  }
 
-    return result;
+  // If the stack is empty and no goal was found, return null
+  return null;
 }
 
-// Example usage:
-const arr1 = [1, 2, 2, 3, 4];
-const arr2 = [2, 2, 4, 5];
-const common = findCommonElementsWithDuplicates(arr1, arr2);
-console.log(common); // Output: [2, 2, 4]
+// Example usage
+const tree: Node = {
+  id: "A",
+  children: [
+    {
+      id: "B",
+      children: [
+        { id: "D", children: [] },
+        { id: "E", children: [] },
+      ],
+    },
+    {
+      id: "C",
+      children: [
+        { id: "F", children: [] },
+        { id: "G", children: [] },
+      ],
+    },
+  ],
+};
+
+const goalId = "G";
+const depthLimit = 2;
+
+const result = depthLimitedSearch(tree, goalId, depthLimit);
+
+if (result) {
+  console.log(`Goal node found: ${result.id}`);
+} else {
+  console.log("Goal node not found within the depth limit.");
+}
