@@ -1,56 +1,54 @@
-type Edge = {
-  source: number;
-  destination: number;
-  weight: number;
-};
+function findLongestIncreasingSubsequence(arr: number[]): number {
+    if (arr.length === 0) return 0;
 
-function bellmanFord(edges: Edge[], V: number, source: number): { distances: number[]; hasNegativeCycle: boolean } {
-  // Step 1: Initialize distances
-  const distances: number[] = Array(V).fill(Infinity);
-  distances[source] = 0;
+    // Step 1: Initialize the dp array
+    const dp: number[] = new Array(arr.length).fill(1);
 
-  // Step 2: Relax edges repeatedly (V-1 times)
-  for (let i = 0; i < V - 1; i++) {
-    for (const edge of edges) {
-      const { source: u, destination: v, weight: w } = edge;
-      if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
-        distances[v] = distances[u] + w;
-      }
+    // Step 2: Fill the dp array
+    for (let i = 1; i < arr.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (arr[j] < arr[i]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
+            }
+        }
     }
-  }
 
-  // Step 3: Check for negative weight cycles
-  let hasNegativeCycle = false;
-  for (const edge of edges) {
-    const { source: u, destination: v, weight: w } = edge;
-    if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
-      hasNegativeCycle = true;
-      break;
-    }
-  }
-
-  return { distances, hasNegativeCycle };
+    // Step 3: Find the maximum value in dp array
+    return Math.max(...dp);
 }
 
 // Example usage
-const edges: Edge[] = [
-  { source: 0, destination: 1, weight: -1 },
-  { source: 0, destination: 2, weight: 4 },
-  { source: 1, destination: 2, weight: 3 },
-  { source: 1, destination: 3, weight: 2 },
-  { source: 1, destination: 4, weight: 2 },
-  { source: 3, destination: 2, weight: 5 },
-  { source: 3, destination: 1, weight: 1 },
-  { source: 4, destination: 3, weight: -3 },
-];
+const array = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log("Length of Longest Increasing Subsequence:", findLongestIncreasingSubsequence(array));
+function findLongestIncreasingSubsequenceOptimized(arr: number[]): number {
+    if (arr.length === 0) return 0;
 
-const V = 5; // Number of vertices
-const source = 0; // Source vertex
+    const tails: number[] = [];
 
-const { distances, hasNegativeCycle } = bellmanFord(edges, V, source);
+    for (const num of arr) {
+        let left = 0, right = tails.length;
 
-if (hasNegativeCycle) {
-  console.log("Graph contains a negative weight cycle.");
-} else {
-  console.log("Shortest distances from source vertex:", distances);
+        // Binary search to find the insertion point
+        while (left < right) {
+            const mid = Math.floor((left + right) / 2);
+            if (tails[mid] < num) {
+                left = mid + 1;
+            } else {
+                right = mid;
+            }
+        }
+
+        // Update tails array
+        if (left === tails.length) {
+            tails.push(num); // Extend the LIS
+        } else {
+            tails[left] = num; // Replace to maintain smallest tail
+        }
+    }
+
+    return tails.length;
 }
+
+// Example usage
+const array = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log("Length of Longest Increasing Subsequence (Optimized):", findLongestIncreasingSubsequenceOptimized(array));
