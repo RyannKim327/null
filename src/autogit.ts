@@ -1,100 +1,98 @@
-function reverseWords(input: string): string {
-    // Split the string by spaces into an array of words
-    const wordsArray = input.split(' ');
-    
-    // Reverse the array of words
-    const reversedArray = wordsArray.reverse();
-    
-    // Join the reversed array back into a string
-    const reversedString = reversedArray.join(' ');
-    
-    return reversedString;
-}
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-// Usage
-const sentence = "Hello world from TypeScript";
-const reversedSentence = reverseWords(sentence);
-console.log(reversedSentence); // Output: "TypeScript from world Hello"
-function reverseWordsImproved(input: string): string {
-    // Use regex to split by one or more whitespace characters
-    const wordsArray = input.trim().split(/\s+/);
-    
-    // Reverse the array of words
-    const reversedArray = wordsArray.reverse();
-    
-    // Join the reversed array back into a string with a single space
-    const reversedString = reversedArray.join(' ');
-    
-    return reversedString;
-}
+    // Create a 2D DP array initialized with 0
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-// Usage
-const sentenceWithSpaces = "   Hello   world from   TypeScript   ";
-const reversedSentenceWithSpaces = reverseWordsImproved(sentenceWithSpaces);
-console.log(reversedSentenceWithSpaces); // Output: "TypeScript from world Hello"
-function reverseWordsModern(input: string): string {
-    return input.trim().split(/\s+/).reverse().join(' ');
-}
-
-// Usage
-const sentenceModern = "Hello world from TypeScript";
-const reversedSentenceModern = reverseWordsModern(sentenceModern);
-console.log(reversedSentenceModern); // Output: "TypeScript from world Hello"
-function reverseWordsManual(input: string): string {
-    const wordsArray = input.trim().split(/\s+/);
-    const reversedArray: string[] = [];
-    
-    for (let i = wordsArray.length - 1; i >= 0; i--) {
-        reversedArray.push(wordsArray[i]);
-    }
-    
-    return reversedArray.join(' ');
-}
-
-// Usage
-const sentenceManual = "Hello world from TypeScript";
-const reversedSentenceManual = reverseWordsManual(sentenceManual);
-console.log(reversedSentenceManual); // Output: "TypeScript from world Hello"
-function reverseWordsComprehensive(input: string): string {
-    if (!input || typeof input !== 'string') {
-        throw new TypeError("Input must be a non-empty string.");
+    // Build the dp table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
     }
 
-    const trimmed = input.trim();
-
-    if (trimmed.length === 0) {
-        return ''; // or throw an error based on requirements
+    // Backtrack to find the LCS string
+    let lcs = "";
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Prepend the matching character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
+        } else {
+            j--; // Move left
+        }
     }
 
-    const wordsArray = trimmed.split(/\s+/);
-    const reversedArray = wordsArray.reverse();
-    return reversedArray.join(' ');
+    return lcs;
 }
 
-// Usage Examples
-try {
-    console.log(reverseWordsComprehensive("Hello world from TypeScript")); // "TypeScript from world Hello"
-    console.log(reverseWordsComprehensive("   Leading and trailing spaces   ")); // "spaces trailing and Leading"
-    console.log(reverseWordsComprehensive("")); // ""
-    console.log(reverseWordsComprehensive(123 as any)); // Throws TypeError
-} catch (error) {
-    console.error(error.message);
-}
-function reverseWords(input: string): string {
-    if (!input || typeof input !== 'string') {
-        throw new TypeError("Input must be a non-empty string.");
+// Example usage:
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+
+const result = longestCommonSubsequence(str1, str2);
+console.log("Longest Common Subsequence:", result); // Output: GTAB
+function longestCommonSubsequenceOptimized(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
+
+    // Ensure str1 is the longer string to use minimal space
+    if (m < n) {
+        [str1, str2] = [str2, str1];
+        [m, n] = [n, m];
     }
 
-    const trimmed = input.trim();
+    // Use two rows for DP
+    let previous = Array(n + 1).fill(0);
+    let current = Array(n + 1).fill(0);
 
-    if (trimmed.length === 0) {
-        return '';
+    // To store indices for backtracking
+    const directions: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+    // Fill the DP table
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                current[j] = previous[j - 1] + 1;
+                directions[i][j] = 1; // Diagonal move
+            } else {
+                if (previous[j] >= current[j - 1]) {
+                    current[j] = previous[j];
+                    directions[i][j] = 2; // Up move
+                } else {
+                    current[j] = current[j - 1];
+                    directions[i][j] = 3; // Left move
+                }
+            }
+        }
+        // Swap current and previous for next iteration
+        [previous, current] = [current, previous];
     }
 
-    return trimmed.split(/\s+/).reverse().join(' ');
+    // Backtrack to find the LCS string
+    let lcs = "";
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (directions[i][j] === 1) {
+            lcs = str1[i - 1] + lcs;
+            i--;
+            j--;
+        } else if (directions[i][j] === 2) {
+            i--;
+        } else {
+            j--;
+        }
+    }
+
+    return lcs;
 }
 
-// Example Usage
-const original = "  TypeScript makes JavaScript better  ";
-const reversed = reverseWords(original);
-console.log(reversed); // Output: "better JavaScript makes TypeScript"
+// Example usage remains the same
