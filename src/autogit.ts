@@ -1,27 +1,163 @@
-function isPrime(num: number): boolean {
-    // A prime number must be greater than 1
-    if (num <= 1) return false;
+class Node<T> {
+    value: T;
+    left: Node<T> | null;
+    right: Node<T> | null;
 
-    // Check divisors from 2 up to the square root of the number
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // Found a divisor, so it's not prime
+    constructor(value: T) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinaryTree<T> {
+    root: Node<T> | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    // Insert a value into the binary tree
+    insert(value: T): void {
+        const newNode = new Node(value);
+
+        if (this.root === null) {
+            // If the tree is empty, set the new node as the root
+            this.root = newNode;
+        } else {
+            // Otherwise, find the correct position for the new node
+            this.insertNode(this.root, newNode);
         }
     }
 
-    return true; // No divisors found, so it's prime
+    private insertNode(node: Node<T>, newNode: Node<T>): void {
+        if (newNode.value < node.value) {
+            // Insert into the left subtree
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            // Insert into the right subtree
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    // In-order traversal (left, root, right)
+    inOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            this.inOrderTraversal(node.left, result);
+            result.push(node.value);
+            this.inOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Pre-order traversal (root, left, right)
+    preOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            result.push(node.value);
+            this.preOrderTraversal(node.left, result);
+            this.preOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Post-order traversal (left, right, root)
+    postOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            this.postOrderTraversal(node.left, result);
+            this.postOrderTraversal(node.right, result);
+            result.push(node.value);
+        }
+        return result;
+    }
+}
+const tree = new BinaryTree<number>();
+
+// Insert values into the tree
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+
+// Perform traversals
+console.log("In-order traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
+console.log("Pre-order traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
+console.log("Post-order traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
+class Node<T> {
+    value: T;
+    left: Node<T> | null;
+    right: Node<T> | null;
+
+    constructor(value: T) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
 
-// Example usage:
-console.log(isPrime(2));  // Output: true
-console.log(isPrime(4));  // Output: false
-console.log(isPrime(17)); // Output: true
-console.log(isPrime(1));  // Output: false
-console.log(isPrime(2));    // true (smallest prime)
-console.log(isPrime(3));    // true
-console.log(isPrime(4));    // false (divisible by 2)
-console.log(isPrime(17));   // true
-console.log(isPrime(18));   // false (divisible by 2 and 3)
-console.log(isPrime(19));   // true
-console.log(isPrime(1));    // false (not prime)
-console.log(isPrime(-7));   // false (negative numbers are not prime)
+class BinaryTree<T> {
+    root: Node<T> | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    insert(value: T): void {
+        const newNode = new Node(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
+
+    private insertNode(node: Node<T>, newNode: Node<T>): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    inOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            this.inOrderTraversal(node.left, result);
+            result.push(node.value);
+            this.inOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    preOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            result.push(node.value);
+            this.preOrderTraversal(node.left, result);
+            this.preOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    postOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            this.postOrderTraversal(node.left, result);
+            this.postOrderTraversal(node.right, result);
+            result.push(node.value);
+        }
+        return result;
+    }
+}
