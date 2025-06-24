@@ -1,171 +1,56 @@
-class ListNode {
-    val: number;
-    next: ListNode | null;
+type Node = string | number; // Define the type for nodes
+type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
 
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
-}
+/**
+ * Perform a breadth-limited search on the graph.
+ * @param graph - The graph represented as an adjacency list.
+ * @param startNode - The starting node for the search.
+ * @param depthLimit - The maximum depth to explore.
+ * @returns An array of visited nodes in the order they were visited.
+ */
+function breadthLimitedSearch(graph: Graph, startNode: Node, depthLimit: number): Node[] {
+    const visited: Node[] = []; // List of visited nodes
+    const queue: [Node, number][] = [[startNode, 0]]; // Queue of nodes to visit, with their current depth
+    const seen = new Set<Node>(); // Set to track visited nodes
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head) return null;
+    while (queue.length > 0) {
+        const [currentNode, currentDepth] = queue.shift()!; // Dequeue the front node
 
-    let length = 0;
-    let current = head;
+        // Skip if the node has already been visited
+        if (seen.has(currentNode)) continue;
 
-    // First pass: calculate the length of the linked list
-    while (current !== null) {
-        length++;
-        current = current.next;
-    }
+        // Mark the node as visited
+        visited.push(currentNode);
+        seen.add(currentNode);
 
-    // Check if n is valid
-    if (n > length || n <= 0) {
-        throw new Error("Invalid value of n");
-    }
+        // Stop exploring if the current depth exceeds the depth limit
+        if (currentDepth >= depthLimit) continue;
 
-    // Second pass: find the (length - n)th node
-    current = head;
-    for (let i = 0; i < length - n; i++) {
-        current = current!.next;
-    }
-
-    return current;
-}
-// Creating a linked list: 1 -> 2 -> 3 -> 4 -> 5
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const result = findNthFromEnd(head, n);
-console.log(result?.val); // Output: 4
-function findNthFromEndTwoPointers(head: ListNode | null, n: number): ListNode | null {
-    if (!head) return null;
-
-    let fast: ListNode | null = head;
-    let slow: ListNode | null = head;
-
-    // Move fast pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (fast === null) {
-            throw new Error("n is larger than the length of the list");
+        // Enqueue all unvisited neighbors with incremented depth
+        for (const neighbor of graph.get(currentNode) || []) {
+            if (!seen.has(neighbor)) {
+                queue.push([neighbor, currentDepth + 1]);
+            }
         }
-        fast = fast.next;
     }
 
-    // If fast reached the end, the head is the nth from end
-    if (fast === null) {
-        return head;
-    }
-
-    // Move both pointers until fast reaches the end
-    while (fast !== null) {
-        fast = fast.next;
-        slow = slow!.next;
-    }
-
-    return slow;
-}
-// Using the same linked list: 1 -> 2 -> 3 -> 4 -> 5
-const n = 2;
-const result = findNthFromEndTwoPointers(head, n);
-console.log(result?.val); // Output: 4
-class ListNode {
-    val: number;
-    next: ListNode | null;
-
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
+    return visited;
 }
 
-// Method 1: Two-Pass Approach
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    if (!head) return null;
+// Example Usage
+const graph: Graph = new Map([
+    ['A', ['B', 'C']],
+    ['B', ['D', 'E']],
+    ['C', ['F']],
+    ['D', []],
+    ['E', ['G']],
+    ['F', []],
+    ['G', []],
+]);
 
-    let length = 0;
-    let current = head;
+const startNode: Node = 'A';
+const depthLimit: number = 2;
 
-    // Calculate length
-    while (current !== null) {
-        length++;
-        current = current.next;
-    }
-
-    if (n > length || n <= 0) {
-        throw new Error("Invalid value of n");
-    }
-
-    current = head;
-    for (let i = 0; i < length - n; i++) {
-        current = current!.next;
-    }
-
-    return current;
-}
-
-// Method 2: Two-Pointer Technique
-function findNthFromEndTwoPointers(head: ListNode | null, n: number): ListNode | null {
-    if (!head) return null;
-
-    let fast: ListNode | null = head;
-    let slow: ListNode | null = head;
-
-    for (let i = 0; i < n; i++) {
-        if (fast === null) {
-            throw new Error("n is larger than the length of the list");
-        }
-        fast = fast.next;
-    }
-
-    if (fast === null) {
-        return head;
-    }
-
-    while (fast !== null) {
-        fast = fast.next;
-        slow = slow!.next;
-    }
-
-    return slow;
-}
-
-// Usage Example
-function main() {
-    // Creating linked list: 1 -> 2 -> 3 -> 4 -> 5
-    const head = new ListNode(1);
-    head.next = new ListNode(2);
-    head.next.next = new ListNode(3);
-    head.next.next.next = new ListNode(4);
-    head.next.next.next.next = new ListNode(5);
-
-    const n = 2;
-
-    console.log("Using Two-Pass Approach:");
-    try {
-        const result1 = findNthFromEnd(head, n);
-        console.log(`The ${n}nd node from the end is:`, result1?.val);
-    } catch (error) {
-        console.error(error.message);
-    }
-
-    console.log("\nUsing Two-Pointer Technique:");
-    try {
-        const result2 = findNthFromEndTwoPointers(head, n);
-        console.log(`The ${n}nd node from the end is:`, result2?.val);
-    } catch (error) {
-        console.error(error.message);
-    }
-}
-
-main();
-Using Two-Pass Approach:
-The 2nd node from the end is: 4
-
-Using Two-Pointer Technique:
-The 2nd node from the end is: 4
+const result = breadthLimitedSearch(graph, startNode, depthLimit);
+console.log("Visited Nodes:", result);
+Visited Nodes: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
