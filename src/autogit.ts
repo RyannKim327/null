@@ -1,163 +1,75 @@
-class Node<T> {
-    value: T;
-    left: Node<T> | null;
-    right: Node<T> | null;
+type Graph = Map<number, number[]>;
+function bfs(graph: Graph, startNode: number): void {
+    // A set to track visited nodes to avoid revisiting them
+    const visited = new Set<number>();
+    // A queue to manage the BFS traversal
+    const queue: number[] = [];
 
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-class BinaryTree<T> {
-    root: Node<T> | null;
+    // Mark the start node as visited and enqueue it
+    visited.add(startNode);
+    queue.push(startNode);
 
-    constructor() {
-        this.root = null;
-    }
+    while (queue.length > 0) {
+        // Dequeue the front node
+        const currentNode = queue.shift()!;
+        console.log(`Visited node: ${currentNode}`);
 
-    // Insert a value into the binary tree
-    insert(value: T): void {
-        const newNode = new Node(value);
+        // Get all neighbors of the current node
+        const neighbors = graph.get(currentNode) || [];
 
-        if (this.root === null) {
-            // If the tree is empty, set the new node as the root
-            this.root = newNode;
-        } else {
-            // Otherwise, find the correct position for the new node
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    private insertNode(node: Node<T>, newNode: Node<T>): void {
-        if (newNode.value < node.value) {
-            // Insert into the left subtree
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            // Insert into the right subtree
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+        // Visit each neighbor if it hasn't been visited yet
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
             }
         }
     }
-
-    // In-order traversal (left, root, right)
-    inOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            this.inOrderTraversal(node.left, result);
-            result.push(node.value);
-            this.inOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // Pre-order traversal (root, left, right)
-    preOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            result.push(node.value);
-            this.preOrderTraversal(node.left, result);
-            this.preOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // Post-order traversal (left, right, root)
-    postOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            this.postOrderTraversal(node.left, result);
-            this.postOrderTraversal(node.right, result);
-            result.push(node.value);
-        }
-        return result;
-    }
 }
-const tree = new BinaryTree<number>();
+// Create a graph as an adjacency list
+const graph: Graph = new Map([
+    [1, [2, 3]],
+    [2, [4, 5]],
+    [3, [6]],
+    [4, []],
+    [5, []],
+    [6, []],
+]);
 
-// Insert values into the tree
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(3);
-tree.insert(7);
+// Run BFS starting from node 1
+console.log("BFS Traversal:");
+bfs(graph, 1);
+BFS Traversal:
+Visited node: 1
+Visited node: 2
+Visited node: 3
+Visited node: 4
+Visited node: 5
+Visited node: 6
+function bfsWithResult(graph: Graph, startNode: number): number[] {
+    const visited = new Set<number>();
+    const queue: number[] = [];
+    const result: number[] = [];
 
-// Perform traversals
-console.log("In-order traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
-console.log("Pre-order traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
-console.log("Post-order traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
-class Node<T> {
-    value: T;
-    left: Node<T> | null;
-    right: Node<T> | null;
+    visited.add(startNode);
+    queue.push(startNode);
 
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
+    while (queue.length > 0) {
+        const currentNode = queue.shift()!;
+        result.push(currentNode);
 
-class BinaryTree<T> {
-    root: Node<T> | null;
-
-    constructor() {
-        this.root = null;
-    }
-
-    insert(value: T): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
-    }
-
-    private insertNode(node: Node<T>, newNode: Node<T>): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
+        const neighbors = graph.get(currentNode) || [];
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                visited.add(neighbor);
+                queue.push(neighbor);
             }
         }
     }
 
-    inOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            this.inOrderTraversal(node.left, result);
-            result.push(node.value);
-            this.inOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    preOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            result.push(node.value);
-            this.preOrderTraversal(node.left, result);
-            this.preOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    postOrderTraversal(node: Node<T> | null = this.root, result: T[] = []): T[] {
-        if (node !== null) {
-            this.postOrderTraversal(node.left, result);
-            this.postOrderTraversal(node.right, result);
-            result.push(node.value);
-        }
-        return result;
-    }
+    return result;
 }
+
+// Example usage
+const visitedNodes = bfsWithResult(graph, 1);
+console.log("Visited Nodes:", visitedNodes);
