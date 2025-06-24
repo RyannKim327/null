@@ -1,39 +1,79 @@
-interface TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-}
-function maxDepth(root: TreeNode | null): number {
-    // Base case: if the node is null, the depth is 0
-    if (root === null) {
-        return 0;
+function majorityElement(nums: number[]): number {
+    let count = 0;
+    let candidate: number | null = null;
+
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
     }
 
-    // Recursively calculate the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // The depth of the current node is 1 + the maximum of the two subtree depths
-    return 1 + Math.max(leftDepth, rightDepth);
-}
-// Helper function to create a binary tree node
-function createNode(val: number, left: TreeNode | null = null, right: TreeNode | null = null): TreeNode {
-    return { val, left, right };
+    // Optionally verify if the candidate is indeed the majority element
+    const totalCount = nums.filter(n => n === candidate).length;
+    if (totalCount > Math.floor(nums.length / 2)) {
+        return candidate!;
+    } else {
+        throw new Error("No majority element found");
+    }
 }
 
-// Create a sample binary tree:
-//         1
-//        / \
-//       2   3
-//      / \
-//     4   5
-const tree: TreeNode = createNode(1,
-    createNode(2,
-        createNode(4),
-        createNode(5)
-    ),
-    createNode(3)
-);
+// Example usage:
+const arr = [3, 2, 3];
+console.log(majorityElement(arr)); // Output: 3
+function majorityElement(nums: number[]): number {
+    const counts: { [key: number]: number } = {};
 
-// Calculate the maximum depth
-console.log(maxDepth(tree)); // Output: 3
+    for (const num of nums) {
+        counts[num] = (counts[num] || 0) + 1;
+        if (counts[num] > Math.floor(nums.length / 2)) {
+            return num;
+        }
+    }
+
+    throw new Error("No majority element found");
+}
+
+// Example usage:
+const arr = [2, 2, 1, 1, 1, 2, 2];
+console.log(majorityElement(arr)); // Output: 2
+function majorityElement(nums: number[]): number {
+    nums.sort((a, b) => a - b);
+    return nums[Math.floor(nums.length / 2)];
+}
+
+// Example usage:
+const arr = [6, 5, 5];
+console.log(majorityElement(arr)); // Output: 5
+function majorityElement(nums: number[]): number {
+    let count = 0;
+    let candidate: number | null = null;
+
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        count += (num === candidate) ? 1 : -1;
+    }
+
+    // Verify if the candidate is indeed the majority element
+    const totalCount = nums.filter(n => n === candidate).length;
+    if (totalCount > Math.floor(nums.length / 2)) {
+        return candidate!;
+    } else {
+        throw new Error("No majority element found");
+    }
+}
+
+// Example usage:
+const arr1 = [3, 2, 3];
+console.log(majorityElement(arr1)); // Output: 3
+
+const arr2 = [2, 2, 1, 1, 1, 2, 2];
+console.log(majorityElement(arr2)); // Output: 2
+
+const arr3 = [1];
+console.log(majorityElement(arr3)); // Output: 1
+3
+2
+1
