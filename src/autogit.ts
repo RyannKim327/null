@@ -1,56 +1,83 @@
-// Define the structure of a linked list node
-class ListNode {
-    value: number;
-    next: ListNode | null;
+/**
+ * Function to build the shift table for Boyer-Moore-Horspool algorithm.
+ * @param pattern - The pattern string to search for.
+ * @returns A Map where keys are characters and values are their respective shift distances.
+ */
+function buildShiftTable(pattern: string): Map<string, number> {
+    const shiftTable = new Map<string, number>();
+    const patternLength = pattern.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Initialize the shift table with default value equal to the pattern length
+    for (let i = 0; i < patternLength - 1; i++) {
+        shiftTable.set(pattern[i], patternLength - 1 - i);
     }
+
+    return shiftTable;
 }
 
-// Function to check if a linked list contains a cycle
-function hasCycle(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        // If the list is empty or has only one node, there can't be a cycle
-        return false;
+/**
+ * Implements the Boyer-Moore-Horspool string search algorithm.
+ * @param text - The text in which to search for the pattern.
+ * @param pattern - The pattern to search for within the text.
+ * @returns An array of starting indices where the pattern is found in the text.
+ */
+function boyerMooreHorspoolSearch(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
+    const result: number[] = [];
+
+    if (m === 0) {
+        throw new Error("Pattern must not be empty.");
     }
 
-    let slow: ListNode | null = head; // Moves one step at a time
-    let fast: ListNode | null = head; // Moves two steps at a time
+    if (m > n) {
+        return result; // Pattern longer than text; no occurrences possible
+    }
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow!.next; // Move slow pointer by one step
-        fast = fast.next.next; // Move fast pointer by two steps
+    const shiftTable = buildShiftTable(pattern);
 
-        if (slow === fast) {
-            // If slow and fast meet, there is a cycle
-            return true;
+    let i = 0;
+
+    while (i <= n - m) {
+        let j = m - 1;
+
+        // Compare the pattern with the text from the end
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // Match found
+            result.push(i);
+            // Shift the pattern by the length of the pattern
+            i += m;
+        } else {
+            // Mismatch occurred
+            const badChar = text[i + m - 1];
+            const shift = shiftTable.get(badChar) || m;
+            i += shift;
         }
     }
 
-    // If we exit the loop, there is no cycle
-    return false;
+    return result;
 }
-// Create a linked list with a cycle
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
 
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
+// Example Usage
+const main = () => {
+    const text = "HERE IS A SIMPLE EXAMPLE OF BOYER MOORE HORSPROOL ALGORITHM.";
+    const pattern = "EXAMPLE";
 
-console.log(hasCycle(node1)); // Output: true
+    try {
+        const positions = boyerMooreHorspoolSearch(text, pattern);
+        if (positions.length > 0) {
+            console.log(`Pattern "${pattern}" found at positions:`, positions);
+        } else {
+            console.log(`Pattern "${pattern}" not found.`);
+        }
+    } catch (error) {
+        console.error(error.message);
+    }
+};
 
-// Create a linked list without a cycle
-const nodeA = new ListNode(1);
-const nodeB = new ListNode(2);
-const nodeC = new ListNode(3);
-
-nodeA.next = nodeB;
-nodeB.next = nodeC;
-
-console.log(hasCycle(nodeA)); // Output: false
+main();
+Pattern "EXAMPLE" found at positions: [17]
