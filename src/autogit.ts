@@ -1,88 +1,36 @@
-// Node class to represent each element in the linked list
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+class ListNode {
+    val: number;
+    next: ListNode | null;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    constructor(val: number = 0, next: ListNode | null = null) {
+        this.val = val;
+        this.next = next;
     }
 }
 
-// Queue class implemented using a linked list
-class Queue<T> {
-    private head: Node<T> | null;
-    private tail: Node<T> | null;
-    private count: number;
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null;
 
-    constructor() {
-        this.head = null;
-        this.tail = null;
-        this.count = 0;
+    let p1: ListNode | null = headA;
+    let p2: ListNode | null = headB;
+
+    // Traverse both lists
+    while (p1 !== p2) {
+        // Move p1 to the next node or reset to headB if at the end
+        p1 = p1 === null ? headB : p1.next;
+
+        // Move p2 to the next node or reset to headA if at the end
+        p2 = p2 === null ? headA : p2.next;
     }
 
-    // Enqueue: Add an element to the rear of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-
-        if (this.isEmpty()) {
-            // If the queue is empty, set both head and tail to the new node
-            this.head = newNode;
-            this.tail = newNode;
-        } else {
-            // Otherwise, add the new node to the end and update the tail
-            this.tail!.next = newNode;
-            this.tail = newNode;
-        }
-
-        this.count++;
-    }
-
-    // Dequeue: Remove an element from the front of the queue
-    dequeue(): T | undefined {
-        if (this.isEmpty()) {
-            throw new Error("Queue is empty. Cannot dequeue.");
-        }
-
-        const dequeuedValue = this.head!.value;
-        this.head = this.head!.next;
-
-        // If the head becomes null, the queue is empty, so reset the tail
-        if (this.head === null) {
-            this.tail = null;
-        }
-
-        this.count--;
-        return dequeuedValue;
-    }
-
-    // Peek: Return the value of the front element without removing it
-    peek(): T | undefined {
-        if (this.isEmpty()) {
-            throw new Error("Queue is empty. Nothing to peek.");
-        }
-
-        return this.head!.value;
-    }
-
-    // isEmpty: Check if the queue is empty
-    isEmpty(): boolean {
-        return this.head === null;
-    }
-
-    // Size: Return the number of elements in the queue
-    size(): number {
-        return this.count;
-    }
+    // Either p1 and p2 meet at the intersection node or both are null
+    return p1;
 }
+// Create intersecting lists
+const common = new ListNode(8, new ListNode(10));
+const headA = new ListNode(3, new ListNode(7, common));
+const headB = new ListNode(99, new ListNode(1, common));
 
-// Example usage
-const queue = new Queue<number>();
-queue.enqueue(10);
-queue.enqueue(20);
-queue.enqueue(30);
-
-console.log(queue.peek()); // Output: 10
-console.log(queue.dequeue()); // Output: 10
-console.log(queue.size()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
+// Find intersection
+const intersectionNode = getIntersectionNode(headA, headB);
+console.log(intersectionNode?.val); // Output: 8
