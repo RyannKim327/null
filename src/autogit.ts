@@ -1,31 +1,12 @@
-function removeVowels(input: string): string {
-    // Use a regular expression to match all vowels (case-insensitive)
-    return input.replace(/[aeiou]/gi, '');
+const lowerCaseString = originalString.toLowerCase();
+const originalString: string = "HELLO WORLD!";
+const lowerCaseString: string = originalString.toLowerCase();
+
+console.log(lowerCaseString); // Output: "hello world!"
+function toLowerCaseSafely(input: string | null | undefined): string {
+    return (input || "").toLowerCase();
 }
 
-// Example usage:
-const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
-
-console.log(stringWithoutVowels); // Output: "Hll, Wrld!"
-function removeVowels(input: string): string {
-    const vowels = 'aeiouAEIOU';
-    let result = '';
-
-    for (const char of input) {
-        if (!vowels.includes(char)) {
-            result += char;
-        }
-    }
-
-    return result;
-}
-
-// Example usage:
-const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
-
-console.log(stringWithoutVowels); // Output: "Hll, Wrld!"
-function removeVowels(input: string): string {
-    return input.replace(/[aeiou]/gi, '');
-}
+console.log(toLowerCaseSafely("TypeScript")); // Output: "typescript"
+console.log(toLowerCaseSafely(null));        // Output: ""
+console.log(toLowerCaseSafely(undefined));   // Output: ""
