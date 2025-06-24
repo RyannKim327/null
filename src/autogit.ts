@@ -1,56 +1,72 @@
-type Node = string | number; // Define the type for nodes
-type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
+// Definition for singly-linked list node
+class ListNode {
+    val: number;
+    next: ListNode | null;
 
-/**
- * Perform a breadth-limited search on the graph.
- * @param graph - The graph represented as an adjacency list.
- * @param startNode - The starting node for the search.
- * @param depthLimit - The maximum depth to explore.
- * @returns An array of visited nodes in the order they were visited.
- */
-function breadthLimitedSearch(graph: Graph, startNode: Node, depthLimit: number): Node[] {
-    const visited: Node[] = []; // List of visited nodes
-    const queue: [Node, number][] = [[startNode, 0]]; // Queue of nodes to visit, with their current depth
-    const seen = new Set<Node>(); // Set to track visited nodes
-
-    while (queue.length > 0) {
-        const [currentNode, currentDepth] = queue.shift()!; // Dequeue the front node
-
-        // Skip if the node has already been visited
-        if (seen.has(currentNode)) continue;
-
-        // Mark the node as visited
-        visited.push(currentNode);
-        seen.add(currentNode);
-
-        // Stop exploring if the current depth exceeds the depth limit
-        if (currentDepth >= depthLimit) continue;
-
-        // Enqueue all unvisited neighbors with incremented depth
-        for (const neighbor of graph.get(currentNode) || []) {
-            if (!seen.has(neighbor)) {
-                queue.push([neighbor, currentDepth + 1]);
-            }
-        }
+    constructor(val: number = 0, next: ListNode | null = null) {
+        this.val = val;
+        this.next = next;
     }
-
-    return visited;
 }
 
-// Example Usage
-const graph: Graph = new Map([
-    ['A', ['B', 'C']],
-    ['B', ['D', 'E']],
-    ['C', ['F']],
-    ['D', []],
-    ['E', ['G']],
-    ['F', []],
-    ['G', []],
-]);
+function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
+    if (!headA || !headB) return null; // If either list is empty, no intersection
 
-const startNode: Node = 'A';
-const depthLimit: number = 2;
+    let pA: ListNode | null = headA;
+    let pB: ListNode | null = headB;
 
-const result = breadthLimitedSearch(graph, startNode, depthLimit);
-console.log("Visited Nodes:", result);
-Visited Nodes: [ 'A', 'B', 'C', 'D', 'E', 'F' ]
+    // Traverse both lists
+    while (pA !== pB) {
+        // Move to the next node or switch to the head of the other list
+        pA = pA === null ? headB : pA.next;
+        pB = pB === null ? headA : pB.next;
+    }
+
+    // Either both are null (no intersection) or both point to the intersection node
+    return pA;
+}
+// Helper function to create a linked list from an array
+function createLinkedList(values: number[]): ListNode | null {
+    if (values.length === 0) return null;
+
+    const head = new ListNode(values[0]);
+    let current = head;
+
+    for (let i = 1; i < values.length; i++) {
+        current.next = new ListNode(values[i]);
+        current = current.next;
+    }
+
+    return head;
+}
+
+// Helper function to print a linked list
+function printLinkedList(head: ListNode | null): void {
+    const result: number[] = [];
+    let current = head;
+
+    while (current !== null) {
+        result.push(current.val);
+        current = current.next;
+    }
+
+    console.log(result);
+}
+
+// Example usage
+const common = new ListNode(8, new ListNode(10));
+const listA = new ListNode(3, new ListNode(7, common));
+const listB = new ListNode(99, new ListNode(1, common));
+
+console.log("List A:");
+printLinkedList(listA); // [3, 7, 8, 10]
+
+console.log("List B:");
+printLinkedList(listB); // [99, 1, 8, 10]
+
+const intersectionNode = getIntersectionNode(listA, listB);
+if (intersectionNode) {
+    console.log(`Intersection at node with value: ${intersectionNode.val}`); // Output: 8
+} else {
+    console.log("No intersection found.");
+}
