@@ -1,55 +1,27 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces, convert to lowercase
-    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
+import cron from 'node-cron';
 
-    const normalizedStr1 = normalize(str1);
-    const normalizedStr2 = normalize(str2);
+// Function to be executed by the cron job
+const performTask = () => {
+    const currentTime = new Date().toISOString();
+    console.log(`Task executed at: ${currentTime}`);
+};
 
-    // Sort the characters and compare
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+// Schedule a cron job to run every 5 minutes
+const scheduleCronJob = () => {
+    console.log('Scheduling cron job...');
+    
+    // Cron syntax: "Minute Hour DayOfMonth Month DayOfWeek"
+    // This example runs the task every 5 minutes
+    cron.schedule('*/5 * * * *', () => {
+        console.log('Running scheduled task...');
+        performTask();
+    });
 
-    return sortedStr1 === sortedStr2;
-}
+    console.log('Cron job has been scheduled.');
+};
 
-// Example usage:
-console.log(areAnagrams("Listen", "Silent")); // true
-console.log(areAnagrams("Hello", "Olelh"));   // true
-console.log(areAnagrams("Test", "Best"));     // false
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces, convert to lowercase
-    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
+// Start the cron job
+scheduleCronJob();
 
-    const normalizedStr1 = normalize(str1);
-    const normalizedStr2 = normalize(str2);
-
-    // If lengths differ, they cannot be anagrams
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
-    }
-
-    // Build a frequency map for the first string
-    const charFrequency = new Map<string, number>();
-    for (const char of normalizedStr1) {
-        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
-    }
-
-    // Compare with the second string
-    for (const char of normalizedStr2) {
-        if (!charFrequency.has(char)) {
-            return false; // Character not found in the first string
-        }
-        const count = charFrequency.get(char)!;
-        if (count === 0) {
-            return false; // More occurrences of the character than in the first string
-        }
-        charFrequency.set(char, count - 1);
-    }
-
-    return true;
-}
-
-// Example usage:
-console.log(areAnagrams("Listen", "Silent")); // true
-console.log(areAnagrams("Hello", "Olelh"));   // true
-console.log(areAnagrams("Test", "Best"));     // false
+// Keep the script running
+console.log('Press Ctrl+C to stop the script.');
