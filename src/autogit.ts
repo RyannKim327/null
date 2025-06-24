@@ -1,32 +1,84 @@
-function reverseWords(input: string): string {
-    // Step 1: Split the string into an array of words
-    const words = input.split(' ');
+const numbers: number[] = [10, 5, 8, 20, 3];
 
-    // Step 2: Reverse the array of words
-    const reversedWords = words.reverse();
+// Use the spread operator to pass array elements as individual arguments to Math.max()
+const maxValue: number = Math.max(...numbers);
 
-    // Step 3: Join the reversed array back into a string
-    const reversedString = reversedWords.join(' ');
+console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
+const numbers: number[] = [10, 5, 8, 20, 3];
 
-    return reversedString;
+// Use reduce to iterate through the array and find the maximum value
+const maxValue: number = numbers.reduce((max, current) => {
+    return current > max ? current : max;
+}, numbers[0]); // Initialize 'max' with the first element of the array
+
+console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
+const numbers: number[] = [10, 5, 8, 20, 3];
+
+if (numbers.length === 0) {
+    throw new Error("Cannot find the maximum value of an empty array.");
 }
 
-// Example usage
-const input = "Hello world this is TypeScript";
-const result = reverseWords(input);
-console.log(result); // Output: "TypeScript is this world Hello"
-function reverseWords(input: string): string {
-    if (!input.trim()) {
-        return ''; // Return empty string for empty or whitespace-only input
+let maxValue: number = numbers[0];
+
+for (let i = 1; i < numbers.length; i++) {
+    if (numbers[i] > maxValue) {
+        maxValue = numbers[i];
+    }
+}
+
+console.log(`The maximum value is: ${maxValue}`); // Output: The maximum value is: 20
+function findMax(arr: number[]): number | undefined {
+    if (arr.length === 0) {
+        console.warn("The array is empty. No maximum value exists.");
+        return undefined;
     }
 
-    const words = input.trim().split(/\s+/); // Split by one or more spaces
-    return words.reverse().join(' ');
+    return arr.reduce((max, current) => (current > max ? current : max), arr[0]);
 }
 
-// Test cases
-console.log(reverseWords("Hello world this is TypeScript")); // "TypeScript is this world Hello"
-console.log(reverseWords("   Leading and trailing spaces   ")); // "spaces trailing and Leading"
-console.log(reverseWords("   ")); // ""
-console.log(reverseWords("SingleWord")); // "SingleWord"
-console.log(reverseWords("")); // ""
+const numbers: number[] = [];
+const maxValue = findMax(numbers);
+
+if (maxValue !== undefined) {
+    console.log(`The maximum value is: ${maxValue}`);
+} else {
+    console.log("Could not determine the maximum value.");
+}
+function findMaxUsingMathMax(arr: number[]): number | undefined {
+    if (arr.length === 0) return undefined;
+    return Math.max(...arr);
+}
+
+function findMaxUsingReduce(arr: number[]): number | undefined {
+    if (arr.length === 0) return undefined;
+    return arr.reduce((max, current) => (current > max ? current : max), arr[0]);
+}
+
+function findMaxUsingLoop(arr: number[]): number | undefined {
+    if (arr.length === 0) return undefined;
+
+    let max = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] > max) {
+            max = arr[i];
+        }
+    }
+    return max;
+}
+
+const numbers: number[] = [10, 5, 8, 20, 3];
+
+console.log("Using Math.max:", findMaxUsingMathMax(numbers)); // 20
+console.log("Using reduce:", findMaxUsingReduce(numbers));     // 20
+console.log("Using loop:", findMaxUsingLoop(numbers));         // 20
+
+const emptyArray: number[] = [];
+console.log("Empty array with Math.max:", findMaxUsingMathMax(emptyArray)); // undefined
+console.log("Empty array with reduce:", findMaxUsingReduce(emptyArray));     // undefined
+console.log("Empty array with loop:", findMaxUsingLoop(emptyArray));         // undefined
+Using Math.max: 20
+Using reduce: 20
+Using loop: 20
+Empty array with Math.max: undefined
+Empty array with reduce: undefined
+Empty array with loop: undefined
