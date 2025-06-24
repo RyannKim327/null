@@ -1,34 +1,69 @@
-function countingSort(arr: number[]): number[] {
-    if (arr.length === 0) return arr; // Handle empty array case
+class Node<T> {
+    data: T;
+    next: Node<T> | null;
 
-    // Step 1: Find the minimum and maximum values in the array
-    const min = Math.min(...arr);
-    const max = Math.max(...arr);
-
-    // Step 2: Create a counting array initialized to 0
-    const count: number[] = new Array(max - min + 1).fill(0);
-
-    // Step 3: Populate the counting array with frequencies
-    for (const num of arr) {
-        count[num - min]++;
+    constructor(data: T) {
+        this.data = data;
+        this.next = null; // By default, the next node is null
     }
-
-    // Step 4: Reconstruct the sorted array
-    let index = 0;
-    for (let i = 0; i < count.length; i++) {
-        while (count[i] > 0) {
-            arr[index++] = i + min; // Place the value back into the original array
-            count[i]--;
-        }
-    }
-
-    return arr;
 }
+class LinkedList<T> {
+    head: Node<T> | null;
 
-// Example Usage
-const inputArray = [4, 2, 2, 8, 3, 3, 1];
-console.log("Original Array:", inputArray);
-const sortedArray = countingSort(inputArray);
-console.log("Sorted Array:", sortedArray);
-Original Array: [4, 2, 2, 8, 3, 3, 1]
-Sorted Array: [1, 2, 2, 3, 3, 4, 8]
+    constructor() {
+        this.head = null; // Initially, the list is empty
+    }
+
+    // Method to add a new node to the end of the list
+    append(data: T): void {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+}
+class LinkedList<T> {
+    head: Node<T> | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    append(data: T): void {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to get the length of the linked list
+    getLength(): number {
+        let length = 0;
+        let current = this.head;
+
+        while (current) {
+            length++;
+            current = current.next;
+        }
+
+        return length;
+    }
+}
+const list = new LinkedList<number>();
+list.append(10);
+list.append(20);
+list.append(30);
+
+console.log("Length of the linked list:", list.getLength()); // Output: 3
