@@ -1,303 +1,100 @@
-function findKthSmallestBySorting(arr: number[], k: number): number | null {
-    if (k < 1 || k > arr.length) {
-        return null; // Invalid k value
-    }
+type Graph = Map<number, number[]>;
 
-    const sortedArr = [...arr].sort((a, b) => a - b);
-    return sortedArr[k - 1];
-}
+function biDirectionalSearch(graph: Graph, start: number, goal: number): number[] | null {
+    // Helper function to perform BFS and return the path
+    function bfsStep(
+        queue: number[],
+        visited: Map<number, number>,
+        otherVisited: Map<number, number>
+    ): number[] | null {
+        const current = queue.shift()!;
+        for (const neighbor of graph.get(current) || []) {
+            if (visited.has(neighbor)) continue; // Already visited
+            visited.set(neighbor, current); // Mark parent for path reconstruction
+            queue.push(neighbor);
 
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-const kthSmallest = findKthSmallestBySorting(array, k);
-console.log(`The ${k}rd smallest element is:`, kthSmallest); // Output: 7
-class MinHeap {
-    private heap: number[];
-
-    constructor() {
-        this.heap = [];
-    }
-
-    insert(value: number): void {
-        this.heap.push(value);
-        this.bubbleUp();
-    }
-
-    extractMin(): number | null {
-        if (this.size() === 0) return null;
-        const min = this.heap[0];
-        const end = this.heap.pop();
-        if (this.size() > 0 && end !== undefined) {
-            this.heap[0] = end;
-            this.sinkDown();
-        }
-        return min;
-    }
-
-    size(): number {
-        return this.heap.length;
-    }
-
-    private bubbleUp(): void {
-        let index = this.heap.length - 1;
-        const element = this.heap[index];
-        while (index > 0) {
-            let parentIndex = Math.floor((index - 1) / 2);
-            let parent = this.heap[parentIndex];
-            if (element >= parent) break;
-            this.heap[index] = parent;
-            index = parentIndex;
-        }
-        this.heap[index] = element;
-    }
-
-    private sinkDown(): void {
-        let index = 0;
-        const length = this.heap.length;
-        const element = this.heap[0];
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild, rightChild;
-            let swap = null;
-
-            if (leftChildIndex < length) {
-                leftChild = this.heap[leftChildIndex];
-                if (leftChild < element) {
-                    swap = leftChildIndex;
-                }
-            }
-
-            if (rightChildIndex < length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swap === null && rightChild < element) ||
-                    (swap !== null && rightChild < leftChild)
-                ) {
-                    swap = rightChildIndex;
-                }
-            }
-
-            if (swap === null) break;
-            this.heap[index] = this.heap[swap];
-            index = swap;
-        }
-        this.heap[index] = element;
-    }
-}
-
-function findKthSmallestByHeap(arr: number[], k: number): number | null {
-    if (k < 1 || k > arr.length) {
-        return null; // Invalid k value
-    }
-
-    const minHeap = new MinHeap();
-    arr.forEach(num => minHeap.insert(num));
-
-    let kthSmallest: number | null = null;
-    for (let i = 0; i < k; i++) {
-        kthSmallest = minHeap.extractMin();
-    }
-
-    return kthSmallest;
-}
-
-// Example usage:
-const array2 = [7, 10, 4, 3, 20, 15];
-const k2 = 3;
-const kthSmallest2 = findKthSmallestByHeap(array2, k2);
-console.log(`The ${k2}rd smallest element is:`, kthSmallest2); // Output: 7
-function findKthSmallestByQuickselect(arr: number[], k: number): number | null {
-    if (k < 1 || k > arr.length) {
-        return null; // Invalid k value
-    }
-
-    const n = arr.length;
-    const targetIndex = k - 1;
-
-    function quickselect(left: number, right: number): number {
-        if (left === right) {
-            return arr[left];
-        }
-
-        let pivotIndex = partition(left, right);
-
-        if (pivotIndex === targetIndex) {
-            return arr[pivotIndex];
-        } else if (pivotIndex > targetIndex) {
-            return quickselect(left, pivotIndex - 1);
-        } else {
-            return quickselect(pivotIndex + 1, right);
-        }
-    }
-
-    function partition(left: number, right: number): number {
-        const pivot = arr[right];
-        let i = left;
-
-        for (let j = left; j < right; j++) {
-            if (arr[j] <= pivot) {
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-                i++;
+            if (otherVisited.has(neighbor)) {
+                // Intersection found
+                return [neighbor, visited.get(neighbor)!, otherVisited.get(neighbor)!];
             }
         }
-
-        [arr[i], arr[right]] = [arr[right], arr[i]];
-        return i;
+        return null;
     }
 
-    return quickselect(0, n - 1);
-}
+    // Initialize data structures for BFS
+    const queueStart: number[] = [start];
+    const queueGoal: number[] = [goal];
 
-// Example usage:
-const array3 = [7, 10, 4, 3, 20, 15];
-const k3 = 3;
-const kthSmallest3 = findKthSmallestByQuickselect(array3, k3);
-console.log(`The ${k3}rd smallest element is:`, kthSmallest3); // Output: 7
-// Sorting Method
-function findKthSmallestBySorting(arr: number[], k: number): number | null {
-    if (k < 1 || k > arr.length) return null;
-    const sortedArr = [...arr].sort((a, b) => a - b);
-    return sortedArr[k - 1];
-}
+    const visitedStart = new Map<number, number>();
+    const visitedGoal = new Map<number, number>();
 
-// Heap Method
-class MinHeap {
-    private heap: number[] = [];
+    visitedStart.set(start, -1); // -1 indicates no parent
+    visitedGoal.set(goal, -1);
 
-    insert(value: number): void {
-        this.heap.push(value);
-        this.bubbleUp();
-    }
-
-    extractMin(): number | null {
-        if (this.size() === 0) return null;
-        const min = this.heap[0];
-        const end = this.heap.pop();
-        if (this.size() > 0 && end !== undefined) {
-            this.heap[0] = end;
-            this.sinkDown();
+    while (queueStart.length > 0 && queueGoal.length > 0) {
+        // Perform one step of BFS from the start
+        const resultFromStart = bfsStep(queueStart, visitedStart, visitedGoal);
+        if (resultFromStart) {
+            const [intersection, parentStart, parentGoal] = resultFromStart;
+            return reconstructPath(intersection, parentStart, parentGoal, visitedStart, visitedGoal);
         }
-        return min;
-    }
 
-    size(): number {
-        return this.heap.length;
-    }
-
-    private bubbleUp(): void {
-        let index = this.heap.length - 1;
-        const element = this.heap[index];
-        while (index > 0) {
-            let parentIndex = Math.floor((index - 1) / 2);
-            let parent = this.heap[parentIndex];
-            if (element >= parent) break;
-            this.heap[index] = parent;
-            index = parentIndex;
-        }
-        this.heap[index] = element;
-    }
-
-    private sinkDown(): void {
-        let index = 0;
-        const length = this.heap.length;
-        const element = this.heap[0];
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild, rightChild;
-            let swap = null;
-
-            if (leftChildIndex < length) {
-                leftChild = this.heap[leftChildIndex];
-                if (leftChild < element) {
-                    swap = leftChildIndex;
-                }
-            }
-
-            if (rightChildIndex < length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swap === null && rightChild < element) ||
-                    (swap !== null && rightChild < leftChild)
-                ) {
-                    swap = rightChildIndex;
-                }
-            }
-
-            if (swap === null) break;
-            this.heap[index] = this.heap[swap];
-            index = swap;
-        }
-        this.heap[index] = element;
-    }
-}
-
-function findKthSmallestByHeap(arr: number[], k: number): number | null {
-    if (k < 1 || k > arr.length) return null;
-    const minHeap = new MinHeap();
-    arr.forEach(num => minHeap.insert(num));
-    let kthSmallest: number | null = null;
-    for (let i = 0; i < k; i++) {
-        kthSmallest = minHeap.extractMin();
-    }
-    return kthSmallest;
-}
-
-// Quickselect Method
-function findKthSmallestByQuickselect(arr: number[], k: number): number | null {
-    if (k < 1 || k > arr.length) return null;
-    const n = arr.length;
-    const targetIndex = k - 1;
-
-    function quickselect(left: number, right: number): number {
-        if (left === right) return arr[left];
-
-        let pivotIndex = partition(left, right);
-
-        if (pivotIndex === targetIndex) {
-            return arr[pivotIndex];
-        } else if (pivotIndex > targetIndex) {
-            return quickselect(left, pivotIndex - 1);
-        } else {
-            return quickselect(pivotIndex + 1, right);
+        // Perform one step of BFS from the goal
+        const resultFromGoal = bfsStep(queueGoal, visitedGoal, visitedStart);
+        if (resultFromGoal) {
+            const [intersection, parentStart, parentGoal] = resultFromGoal;
+            return reconstructPath(intersection, parentStart, parentGoal, visitedStart, visitedGoal);
         }
     }
 
-    function partition(left: number, right: number): number {
-        const pivot = arr[right];
-        let i = left;
-
-        for (let j = left; j < right; j++) {
-            if (arr[j] <= pivot) {
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-                i++;
-            }
-        }
-
-        [arr[i], arr[right]] = [arr[right], arr[i]];
-        return i;
-    }
-
-    return quickselect(0, n - 1);
+    return null; // No path found
 }
 
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
+// Helper function to reconstruct the path
+function reconstructPath(
+    intersection: number,
+    parentStart: number,
+    parentGoal: number,
+    visitedStart: Map<number, number>,
+    visitedGoal: Map<number, number>
+): number[] {
+    const pathStart: number[] = [];
+    let current = intersection;
+    while (current !== -1) {
+        pathStart.push(current);
+        current = visitedStart.get(current)!;
+    }
+    pathStart.reverse();
 
-console.log('Original Array:', array);
+    const pathGoal: number[] = [];
+    current = visitedGoal.get(intersection)!;
+    while (current !== -1) {
+        pathGoal.push(current);
+        current = visitedGoal.get(current)!;
+    }
 
-const resultSort = findKthSmallestBySorting([...array], k);
-console.log(`The ${k}rd smallest element by sorting is:`, resultSort);
+    return [...pathStart, ...pathGoal];
+}
 
-const resultHeap = findKthSmallestByHeap([...array], k);
-console.log(`The ${k}rd smallest element by heap is:`, resultHeap);
+// Example usage
+const graph: Graph = new Map([
+    [0, [1, 2]],
+    [1, [0, 3]],
+    [2, [0, 4]],
+    [3, [1, 5]],
+    [4, [2, 6]],
+    [5, [3, 7]],
+    [6, [4, 7]],
+    [7, [5, 6]]
+]);
 
-const resultQuickselect = findKthSmallestByQuickselect([...array], k);
-console.log(`The ${k}rd smallest element by quickselect is:`, resultQuickselect);
-Original Array: [7, 10, 4, 3, 20, 15]
-The 3rd smallest element by sorting is: 7
-The 3rd smallest element by heap is: 7
-The 3rd smallest element by quickselect is: 7
+const start = 0;
+const goal = 7;
+
+const path = biDirectionalSearch(graph, start, goal);
+if (path) {
+    console.log(`Path from ${start} to ${goal}:`, path);
+} else {
+    console.log(`No path found from ${start} to ${goal}`);
+}
+Path from 0 to 7: [0, 1, 3, 5, 7]
