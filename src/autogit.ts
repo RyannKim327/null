@@ -1,72 +1,61 @@
-// Definition for singly-linked list node
-class ListNode {
-    val: number;
-    next: ListNode | null;
-
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
-}
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null; // If either list is empty, no intersection
-
-    let pA: ListNode | null = headA;
-    let pB: ListNode | null = headB;
-
-    // Traverse both lists
-    while (pA !== pB) {
-        // Move to the next node or switch to the head of the other list
-        pA = pA === null ? headB : pA.next;
-        pB = pB === null ? headA : pB.next;
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
 
-    // Either both are null (no intersection) or both point to the intersection node
-    return pA;
-}
-// Helper function to create a linked list from an array
-function createLinkedList(values: number[]): ListNode | null {
-    if (values.length === 0) return null;
+    // Sort the array in ascending order
+    const sortedArray = [...arr].sort((a, b) => a - b);
 
-    const head = new ListNode(values[0]);
-    let current = head;
-
-    for (let i = 1; i < values.length; i++) {
-        current.next = new ListNode(values[i]);
-        current = current.next;
-    }
-
-    return head;
-}
-
-// Helper function to print a linked list
-function printLinkedList(head: ListNode | null): void {
-    const result: number[] = [];
-    let current = head;
-
-    while (current !== null) {
-        result.push(current.val);
-        current = current.next;
-    }
-
-    console.log(result);
+    // Return the kth smallest element
+    return sortedArray[k - 1];
 }
 
 // Example usage
-const common = new ListNode(8, new ListNode(10));
-const listA = new ListNode(3, new ListNode(7, common));
-const listB = new ListNode(99, new ListNode(1, common));
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(findKthSmallest(array, k)); // Output: 7
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
 
-console.log("List A:");
-printLinkedList(listA); // [3, 7, 8, 10]
+    const quickselect = (left: number, right: number, kIndex: number): number => {
+        if (left === right) {
+            return arr[left];
+        }
 
-console.log("List B:");
-printLinkedList(listB); // [99, 1, 8, 10]
+        // Partition the array around a random pivot
+        const pivotIndex = partition(left, right);
 
-const intersectionNode = getIntersectionNode(listA, listB);
-if (intersectionNode) {
-    console.log(`Intersection at node with value: ${intersectionNode.val}`); // Output: 8
-} else {
-    console.log("No intersection found.");
+        if (pivotIndex === kIndex) {
+            return arr[pivotIndex];
+        } else if (pivotIndex > kIndex) {
+            return quickselect(left, pivotIndex - 1, kIndex);
+        } else {
+            return quickselect(pivotIndex + 1, right, kIndex);
+        }
+    };
+
+    const partition = (left: number, right: number): number => {
+        const pivot = arr[right]; // Choose the last element as pivot
+        let i = left;
+
+        for (let j = left; j < right; j++) {
+            if (arr[j] < pivot) {
+                [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+                i++;
+            }
+        }
+
+        // Place the pivot in its correct position
+        [arr[i], arr[right]] = [arr[right], arr[i]];
+        return i;
+    };
+
+    return quickselect(0, arr.length - 1, k - 1);
 }
+
+// Example usage
+const array = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(findKthSmallest(array, k)); // Output: 7
