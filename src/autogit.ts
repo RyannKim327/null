@@ -1,128 +1,88 @@
-const graph: { [key: string]: string[] } = {
-  A: ["B", "C"],
-  B: ["A", "D", "E"],
-  C: ["A", "F"],
-  D: ["B"],
-  E: ["B", "F"],
-  F: ["C", "E"],
-};
-    A
-   / \
-  B   C
- / \   \
-D   E - F
-function iterativeDFS(graph: { [key: string]: string[] }, startNode: string): string[] {
-  const visited: Set<string> = new Set(); // To track visited nodes
-  const stack: string[] = [startNode];    // Stack to manage traversal
-  const result: string[] = [];            // To store the traversal order
+class Node<T> {
+    state: T; // The state represented by this node
+    score: number; // The cumulative score (e.g., log probability)
+    parent?: Node<T>; // Reference to the parent node (for backtracking)
 
-  while (stack.length > 0) {
-    const currentNode = stack.pop()!; // Pop the top node from the stack
+    constructor(state: T, score: number, parent?: Node<T>) {
+        this.state = state;
+        this.score = score;
+        this.parent = parent;
+    }
+}
+function beamSearch<T>(
+    startState: T,
+    expand: (state: T) => { state: T; score: number }[],
+    beamWidth: number,
+    maxSteps: number
+): Node<T>[] {
+    // Initialize the beam with the starting state
+    let beam: Node<T>[] = [new Node(startState, 0)];
 
-    if (!visited.has(currentNode)) {
-      visited.add(currentNode);       // Mark the node as visited
-      result.push(currentNode);       // Add it to the result
+    for (let step = 0; step < maxSteps; step++) {
+        let candidates: Node<T>[] = [];
 
-      // Push unvisited neighbors onto the stack in reverse order
-      // This ensures we visit neighbors in the order they appear in the adjacency list.
-      for (const neighbor of graph[currentNode].reverse()) {
-        if (!visited.has(neighbor)) {
-          stack.push(neighbor);
+        // Expand each node in the current beam
+        for (const node of beam) {
+            const successors = expand(node.state);
+
+            // Create new nodes for each successor
+            for (const { state, score } of successors) {
+                const newNode = new Node(state, node.score + score, node);
+                candidates.push(newNode);
+            }
         }
-      }
+
+        // Sort candidates by score and keep the top `beamWidth`
+        candidates.sort((a, b) => b.score - a.score); // Descending order
+        beam = candidates.slice(0, beamWidth);
+
+        // Optional: Check for early termination (e.g., end-of-sequence)
+        if (beam.every(node => isTerminalState(node.state))) {
+            break;
+        }
     }
-  }
 
-  return result;
+    return beam;
 }
 
-// Example usage:
-console.log(iterativeDFS(graph, "A")); // Output: ["A", "C", "F", "E", "B", "D"]
-function recursiveDFS(
-  graph: { [key: string]: string[] },
-  currentNode: string,
-  visited: Set<string>,
-  result: string[]
-): void {
-  // Mark the current node as visited and add it to the result
-  visited.add(currentNode);
-  result.push(currentNode);
-
-  // Recursively visit all unvisited neighbors
-  for (const neighbor of graph[currentNode]) {
-    if (!visited.has(neighbor)) {
-      recursiveDFS(graph, neighbor, visited, result);
-    }
-  }
+// Example terminal state check (customize as needed)
+function isTerminalState<T>(state: T): boolean {
+    // Replace with your own logic to determine if a state is terminal
+    return false;
 }
-
-function dfs(graph: { [key: string]: string[] }, startNode: string): string[] {
-  const visited: Set<string> = new Set();
-  const result: string[] = [];
-  recursiveDFS(graph, startNode, visited, result);
-  return result;
-}
-
-// Example usage:
-console.log(dfs(graph, "A")); // Output: ["A", "B", "D", "E", "F", "C"]
-// Graph representation
-const graph: { [key: string]: string[] } = {
-  A: ["B", "C"],
-  B: ["A", "D", "E"],
-  C: ["A", "F"],
-  D: ["B"],
-  E: ["B", "F"],
-  F: ["C", "E"],
+// Example: Word generation with beam search
+const vocabulary = ["hello", "world", "end"];
+const transitionProbabilities: { [key: string]: { word: string; prob: number }[] } = {
+    "": [{ word: "hello", prob: 0.7 }, { word: "world", prob: 0.3 }],
+    "hello": [{ word: "world", prob: 0.8 }, { word: "end", prob: 0.2 }],
+    "world": [{ word: "end", prob: 1.0 }],
 };
 
-// Iterative DFS
-function iterativeDFS(graph: { [key: string]: string[] }, startNode: string): string[] {
-  const visited: Set<string> = new Set();
-  const stack: string[] = [startNode];
-  const result: string[] = [];
+function expand(state: string): { state: string; score: number }[] {
+    return transitionProbabilities[state].map(({ word, prob }) => ({
+        state: word,
+        score: Math.log(prob), // Use log probabilities for numerical stability
+    }));
+}
 
-  while (stack.length > 0) {
-    const currentNode = stack.pop()!;
-    if (!visited.has(currentNode)) {
-      visited.add(currentNode);
-      result.push(currentNode);
-      for (const neighbor of graph[currentNode].reverse()) {
-        if (!visited.has(neighbor)) {
-          stack.push(neighbor);
-        }
-      }
+function isTerminalState(state: string): boolean {
+    return state === "end";
+}
+
+// Run beam search
+const result = beamSearch("", expand, 2, 5);
+
+// Print the best sequence(s)
+result.forEach(node => {
+    const sequence: string[] = [];
+    let currentNode: Node<string> | undefined = node;
+
+    while (currentNode) {
+        sequence.unshift(currentNode.state);
+        currentNode = currentNode.parent;
     }
-  }
 
-  return result;
-}
-
-// Recursive DFS
-function recursiveDFS(
-  graph: { [key: string]: string[] },
-  currentNode: string,
-  visited: Set<string>,
-  result: string[]
-): void {
-  visited.add(currentNode);
-  result.push(currentNode);
-
-  for (const neighbor of graph[currentNode]) {
-    if (!visited.has(neighbor)) {
-      recursiveDFS(graph, neighbor, visited, result);
-    }
-  }
-}
-
-function dfs(graph: { [key: string]: string[] }, startNode: string): string[] {
-  const visited: Set<string> = new Set();
-  const result: string[] = [];
-  recursiveDFS(graph, startNode, visited, result);
-  return result;
-}
-
-// Example usage
-console.log("Iterative DFS:", iterativeDFS(graph, "A"));
-console.log("Recursive DFS:", dfs(graph, "A"));
-Iterative DFS: ["A", "C", "F", "E", "B", "D"]
-Recursive DFS: ["A", "B", "D", "E", "F", "C"]
+    console.log(`Sequence: ${sequence.join(" -> ")}, Score: ${node.score}`);
+});
+Sequence: hello -> world -> end, Score: -1.6094379124341003
+Sequence: world -> end, Score: -1.2039728043259361
