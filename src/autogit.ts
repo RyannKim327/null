@@ -1,65 +1,55 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces, convert to lowercase
+    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
 
-    /**
-     * Builds the bad character table.
-     * The table maps each character in the pattern to its last occurrence index.
-     */
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        for (let i = 0; i < pattern.length; i++) {
-            table.set(pattern[i], i); // Store the last occurrence of each character
-        }
-        return table;
-    }
+    // Sort the characters and compare
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
 
-    /**
-     * Searches for the pattern in the given text.
-     * Returns the starting index of the first occurrence of the pattern, or -1 if not found.
-     */
-    public search(text: string): number {
-        const n = text.length;
-        const m = this.pattern.length;
-
-        let s = 0; // Shift of the pattern with respect to the text
-        while (s <= n - m) {
-            let j = m - 1;
-
-            // Compare the pattern with the text from right to left
-            while (j >= 0 && this.pattern[j] === text[s + j]) {
-                j--;
-            }
-
-            if (j < 0) {
-                // Pattern found at index `s`
-                return s;
-            } else {
-                // Shift the pattern using the bad character rule
-                const badCharShift = this.badCharTable.get(text[s + j]) ?? -1;
-                s += Math.max(1, j - badCharShift);
-            }
-        }
-
-        // Pattern not found
-        return -1;
-    }
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
-const pattern = "example";
-const text = "This is an example text containing the word example.";
-const bm = new BoyerMoore(pattern);
-const result = bm.search(text);
+console.log(areAnagrams("Listen", "Silent")); // true
+console.log(areAnagrams("Hello", "Olelh"));   // true
+console.log(areAnagrams("Test", "Best"));     // false
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces, convert to lowercase
+    const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
 
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found.");
+    const normalizedStr1 = normalize(str1);
+    const normalizedStr2 = normalize(str2);
+
+    // If lengths differ, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
+    }
+
+    // Build a frequency map for the first string
+    const charFrequency = new Map<string, number>();
+    for (const char of normalizedStr1) {
+        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
+    }
+
+    // Compare with the second string
+    for (const char of normalizedStr2) {
+        if (!charFrequency.has(char)) {
+            return false; // Character not found in the first string
+        }
+        const count = charFrequency.get(char)!;
+        if (count === 0) {
+            return false; // More occurrences of the character than in the first string
+        }
+        charFrequency.set(char, count - 1);
+    }
+
+    return true;
 }
-Pattern found at index: 11
+
+// Example usage:
+console.log(areAnagrams("Listen", "Silent")); // true
+console.log(areAnagrams("Hello", "Olelh"));   // true
+console.log(areAnagrams("Test", "Best"));     // false
