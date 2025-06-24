@@ -1,152 +1,136 @@
-class SkipListNode<T> {
-    value: T;
-    next: Array<SkipListNode<T> | null>;
+const strs = ["flower", "flow", "flight"];
+// Longest Common Prefix: "fl"
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
+    if (strs.length === 1) return strs[0];
 
-    constructor(value: T, level: number) {
-        this.value = value;
-        this.next = new Array(level).fill(null); // Initialize pointers for each level
+    let prefix = "";
+
+    // Find the minimum length among all strings to avoid out-of-bound errors
+    const minLength = Math.min(...strs.map(str => str.length));
+
+    for (let i = 0; i < minLength; i++) {
+        // Take the character from the first string as reference
+        const char = strs[0][i];
+
+        // Check if this character is present at the same position in all strings
+        let allMatch = true;
+        for (let j = 1; j < strs.length; j++) {
+            if (strs[j][i] !== char) {
+                allMatch = false;
+                break;
+            }
+        }
+
+        if (allMatch) {
+            prefix += char;
+        } else {
+            break;
+        }
     }
+
+    return prefix;
 }
-class SkipList<T> {
-    private head: SkipListNode<T>; // Head node of the skip list
-    private maxLevel: number;      // Maximum allowed levels
-    private currentLevel: number;  // Current highest level in use
-    private probability: number;   // Probability for determining node height
+function longestCommonPrefixHorizontal(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-    constructor(maxLevel: number = 16, probability: number = 0.5) {
-        this.maxLevel = maxLevel;
-        this.currentLevel = 0;
-        this.probability = probability;
-        this.head = new SkipListNode<T>(null as unknown as T, maxLevel); // Dummy head node
-    }
+    let prefix = strs[0];
 
-    // Generate a random level for a new node
-    private randomLevel(): number {
-        let level = 1;
-        while (Math.random() < this.probability && level < this.maxLevel) {
-            level++;
-        }
-        return level;
-    }
-
-    // Search for a value in the skip list
-    search(target: T): boolean {
-        let current = this.head;
-
-        // Traverse from the top level to the bottom
-        for (let i = this.currentLevel - 1; i >= 0; i--) {
-            while (current.next[i] !== null && current.next[i]!.value < target) {
-                current = current.next[i]!;
-            }
-        }
-
-        // Move to the bottom level to check if the value exists
-        current = current.next[0]!;
-        return current !== null && current.value === target;
-    }
-
-    // Insert a value into the skip list
-    insert(value: T): void {
-        const update: Array<SkipListNode<T> | null> = new Array(this.maxLevel).fill(null);
-        let current = this.head;
-
-        // Find the position to insert the new node
-        for (let i = this.currentLevel - 1; i >= 0; i--) {
-            while (current.next[i] !== null && current.next[i]!.value < value) {
-                current = current.next[i]!;
-            }
-            update[i] = current;
-        }
-
-        // Move to the bottom level
-        current = current.next[0]!;
-
-        // If the value already exists, do nothing
-        if (current !== null && current.value === value) {
-            return;
-        }
-
-        // Determine the level for the new node
-        const level = this.randomLevel();
-
-        // If the new level is greater than the current level, update the head
-        if (level > this.currentLevel) {
-            for (let i = this.currentLevel; i < level; i++) {
-                update[i] = this.head;
-            }
-            this.currentLevel = level;
-        }
-
-        // Create the new node
-        const newNode = new SkipListNode<T>(value, level);
-
-        // Update the pointers
-        for (let i = 0; i < level; i++) {
-            newNode.next[i] = update[i]!.next[i];
-            update[i]!.next[i] = newNode;
+    for (let i = 1; i < strs.length; i++) {
+        while (strs[i].indexOf(prefix) !== 0) {
+            prefix = prefix.substring(0, prefix.length - 1);
+            if (prefix === "") return "";
         }
     }
 
-    // Delete a value from the skip list
-    delete(value: T): void {
-        const update: Array<SkipListNode<T> | null> = new Array(this.maxLevel).fill(null);
-        let current = this.head;
-
-        // Find the node to delete
-        for (let i = this.currentLevel - 1; i >= 0; i--) {
-            while (current.next[i] !== null && current.next[i]!.value < value) {
-                current = current.next[i]!;
-            }
-            update[i] = current;
-        }
-
-        // Move to the bottom level
-        current = current.next[0]!;
-
-        // If the value exists, delete it
-        if (current !== null && current.value === value) {
-            for (let i = 0; i < this.currentLevel; i++) {
-                if (update[i]!.next[i] !== current) {
-                    break;
-                }
-                update[i]!.next[i] = current.next[i];
-            }
-
-            // Adjust the current level if necessary
-            while (this.currentLevel > 1 && this.head.next[this.currentLevel - 1] === null) {
-                this.currentLevel--;
-            }
-        }
-    }
-
-    // Print the skip list for debugging
-    print(): void {
-        for (let i = this.currentLevel - 1; i >= 0; i--) {
-            let current = this.head.next[i];
-            let output = `Level ${i + 1}: `;
-            while (current !== null) {
-                output += `${current.value} -> `;
-                current = current.next[i];
-            }
-            console.log(output + "NULL");
-        }
-    }
+    return prefix;
 }
-const skipList = new SkipList<number>();
+function longestCommonPrefixBinarySearch(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-skipList.insert(3);
-skipList.insert(6);
-skipList.insert(7);
-skipList.insert(9);
-skipList.insert(12);
-skipList.insert(19);
+    let minLen = Number.MAX_SAFE_INTEGER;
+    for (const str of strs) {
+        minLen = Math.min(minLen, str.length);
+    }
 
-console.log("Skip List after insertions:");
-skipList.print();
+    let low = 0;
+    let high = minLen;
 
-console.log("Search for 7:", skipList.search(7)); // true
-console.log("Search for 10:", skipList.search(10)); // false
+    while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        if (isCommonPrefix(strs, mid)) {
+            low = mid + 1;
+        } else {
+            high = mid - 1;
+        }
+    }
 
-skipList.delete(7);
-console.log("Skip List after deleting 7:");
-skipList.print();
+    return strs[0].substring(0, Math.floor((low + high) / 2));
+}
+
+function isCommonPrefix(strs: string[], len: number): boolean {
+    const str1 = strs[0].substring(0, len);
+    for (let i = 1; i < strs.length; i++) {
+        if (!strs[i].startsWith(str1)) {
+            return false;
+        }
+    }
+    return true;
+}
+const strings1 = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings1)); // Output: "fl"
+
+const strings2 = ["dog", "racecar", "car"];
+console.log(longestCommonPrefix(strings2)); // Output: ""
+
+const strings3 = ["interspecies", "interstellar", "interstate"];
+console.log(longestCommonPrefix(strings3)); // Output: "inters"
+
+const strings4 = [];
+console.log(longestCommonPrefix(strings4)); // Output: ""
+
+const strings5 = ["onlyone"];
+console.log(longestCommonPrefix(strings5)); // Output: "onlyone"
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
+    if (strs.length === 1) return strs[0];
+
+    let prefix = "";
+    const minLength = Math.min(...strs.map(str => str.length));
+
+    for (let i = 0; i < minLength; i++) {
+        const char = strs[0][i];
+        let allMatch = true;
+        for (let j = 1; j < strs.length; j++) {
+            if (strs[j][i] !== char) {
+                allMatch = false;
+                break;
+            }
+        }
+        if (allMatch) {
+            prefix += char;
+        } else {
+            break;
+        }
+    }
+
+    return prefix;
+}
+
+// Example usage:
+const examples = [
+    ["flower", "flow", "flight"],
+    ["dog", "racecar", "car"],
+    ["interspecies", "interstellar", "interstate"],
+    [],
+    ["onlyone"]
+];
+
+examples.forEach((example, index) => {
+    console.log(`Example ${index + 1}:`, longestCommonPrefix(example));
+});
+Example 1: fl
+Example 2: 
+Example 3: inters
+Example 4: 
+Example 5: onlyone
