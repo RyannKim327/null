@@ -1,83 +1,38 @@
-/**
- * Function to build the shift table for Boyer-Moore-Horspool algorithm.
- * @param pattern - The pattern string to search for.
- * @returns A Map where keys are characters and values are their respective shift distances.
- */
-function buildShiftTable(pattern: string): Map<string, number> {
-    const shiftTable = new Map<string, number>();
-    const patternLength = pattern.length;
+function radixSort(arr: number[]): number[] {
+    if (arr.length === 0) return arr;
 
-    // Initialize the shift table with default value equal to the pattern length
-    for (let i = 0; i < patternLength - 1; i++) {
-        shiftTable.set(pattern[i], patternLength - 1 - i);
+    // Helper function to get the digit at a specific place
+    const getDigit = (num: number, place: number): number => {
+        return Math.floor(Math.abs(num) / Math.pow(10, place)) % 10;
+    };
+
+    // Helper function to find the maximum number of digits in the array
+    const getMaxDigits = (arr: number[]): number => {
+        const max = Math.max(...arr);
+        return max.toString().length;
+    };
+
+    const maxDigits = getMaxDigits(arr);
+
+    // Perform counting sort for each digit
+    for (let place = 0; place < maxDigits; place++) {
+        // Create 10 buckets (0–9)
+        const buckets: number[][] = Array.from({ length: 10 }, () => []);
+
+        // Distribute numbers into buckets based on the current digit
+        for (const num of arr) {
+            const digit = getDigit(num, place);
+            buckets[digit].push(num);
+        }
+
+        // Flatten the buckets back into the array
+        arr = ([] as number[]).concat(...buckets);
     }
 
-    return shiftTable;
+    return arr;
 }
 
-/**
- * Implements the Boyer-Moore-Horspool string search algorithm.
- * @param text - The text in which to search for the pattern.
- * @param pattern - The pattern to search for within the text.
- * @returns An array of starting indices where the pattern is found in the text.
- */
-function boyerMooreHorspoolSearch(text: string, pattern: string): number[] {
-    const n = text.length;
-    const m = pattern.length;
-    const result: number[] = [];
-
-    if (m === 0) {
-        throw new Error("Pattern must not be empty.");
-    }
-
-    if (m > n) {
-        return result; // Pattern longer than text; no occurrences possible
-    }
-
-    const shiftTable = buildShiftTable(pattern);
-
-    let i = 0;
-
-    while (i <= n - m) {
-        let j = m - 1;
-
-        // Compare the pattern with the text from the end
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        if (j < 0) {
-            // Match found
-            result.push(i);
-            // Shift the pattern by the length of the pattern
-            i += m;
-        } else {
-            // Mismatch occurred
-            const badChar = text[i + m - 1];
-            const shift = shiftTable.get(badChar) || m;
-            i += shift;
-        }
-    }
-
-    return result;
-}
-
-// Example Usage
-const main = () => {
-    const text = "HERE IS A SIMPLE EXAMPLE OF BOYER MOORE HORSPROOL ALGORITHM.";
-    const pattern = "EXAMPLE";
-
-    try {
-        const positions = boyerMooreHorspoolSearch(text, pattern);
-        if (positions.length > 0) {
-            console.log(`Pattern "${pattern}" found at positions:`, positions);
-        } else {
-            console.log(`Pattern "${pattern}" not found.`);
-        }
-    } catch (error) {
-        console.error(error.message);
-    }
-};
-
-main();
-Pattern "EXAMPLE" found at positions: [17]
+// Example usage
+const unsortedArray = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
