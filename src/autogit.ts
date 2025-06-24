@@ -1,87 +1,38 @@
+local-part@domain
+^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+// Define the regex pattern for email validation
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 /**
- * Calculates the factorial of a non-negative integer using recursion.
+ * Validates whether a given string is a correctly formatted email address.
  * 
- * @param n - A non-negative integer whose factorial is to be computed.
- * @returns The factorial of the given number.
- * @throws Will throw an error if the input is negative.
+ * @param email - The email string to validate.
+ * @returns True if the email is valid; otherwise, false.
  */
-function factorial(n: number): number {
-    // Input validation: Ensure that the input is a non-negative integer
-    if (!Number.isInteger(n) || n < 0) {
-        throw new Error("Input must be a non-negative integer.");
-    }
-
-    // Base case: factorial(0) = 1 and factorial(1) = 1
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-
-    // Recursive case
-    return n * factorial(n - 1);
+function isValidEmail(email: string): boolean {
+  // Trim the email to remove leading/trailing whitespace
+  const trimmedEmail = email.trim();
+  
+  // Test the email against the regex pattern
+  return emailRegex.test(trimmedEmail);
 }
 
 // Example usage:
-try {
-    const num = 5;
-    const result = factorial(num);
-    console.log(`The factorial of ${num} is ${result}.`);
-    // Output: The factorial of 5 is 120.
-} catch (error) {
-    console.error(error.message);
-}
-/**
- * Calculates the factorial of a non-negative integer using recursion with BigInt.
- * 
- * @param n - A non-negative integer whose factorial is to be computed.
- * @returns The factorial of the given number as a BigInt.
- * @throws Will throw an error if the input is negative.
- */
-function factorialBigInt(n: number): bigint {
-    if (!Number.isInteger(n) || n < 0) {
-        throw new Error("Input must be a non-negative integer.");
-    }
+const testEmails = [
+  "test@example.com",
+  "user.name+tag+sorting@example.co.uk",
+  "invalid-email@.com",
+  "missingat.com",
+  "user@sub.domain.org"
+];
 
-    if (n === 0 || n === 1) {
-        return 1n; // Use 'n' suffix to denote BigInt literals
-    }
-
-    return BigInt(n) * factorialBigInt(n - 1);
-}
-
-// Example usage:
-try {
-    const num = 20;
-    const result = factorialBigInt(num);
-    console.log(`The factorial of ${num} is ${result.toString()}.`);
-    // Output: The factorial of 20 is 2432902008176640000.
-} catch (error) {
-    console.error(error.message);
-}
-/**
- * Calculates the factorial of a non-negative integer iteratively.
- * 
- * @param n - A non-negative integer whose factorial is to be computed.
- * @returns The factorial of the given number.
- * @throws Will throw an error if the input is negative.
- */
-function factorialIterative(n: number): number {
-    if (!Number.isInteger(n) || n < 0) {
-        throw new Error("Input must be a non-negative integer.");
-    }
-
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
-
-// Example usage:
-try {
-    const num = 5;
-    const result = factorialIterative(num);
-    console.log(`The factorial of ${num} is ${result}.`);
-    // Output: The factorial of 5 is 120.
-} catch (error) {
-    console.error(error.message);
-}
+testEmails.forEach(email => {
+  console.log(`"${email}" is valid? ${isValidEmail(email)}`);
+});
+"test@example.com" is valid? true
+"user.name+tag+sorting@example.co.uk" is valid? true
+"invalid-email@.com" is valid? false
+"missingat.com" is valid? false
+"user@sub.domain.org" is valid? true
+const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
+<input type="email" required />
