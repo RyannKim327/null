@@ -1,50 +1,55 @@
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function mergeSortIterative(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
-}
+    // Helper function to merge two sorted subarrays
+    function merge(left: number, mid: number, right: number): void {
+        const temp: number[] = [];
+        let i = left; // Pointer for the left subarray
+        let j = mid;  // Pointer for the right subarray
 
-function diameterOfBinaryTree(root: TreeNode | null): number {
-    // Variable to store the maximum diameter
-    let maxDiameter = 0;
-
-    // Helper function to calculate height and update maxDiameter
-    function calculateHeight(node: TreeNode | null): number {
-        if (node === null) {
-            return 0; // Base case: height of an empty tree is 0
+        // Merge the two subarrays into temp
+        while (i < mid && j < right) {
+            if (arr[i] <= arr[j]) {
+                temp.push(arr[i]);
+                i++;
+            } else {
+                temp.push(arr[j]);
+                j++;
+            }
         }
 
-        // Recursively calculate the height of left and right subtrees
-        const leftHeight = calculateHeight(node.left);
-        const rightHeight = calculateHeight(node.right);
+        // Append any remaining elements from the left subarray
+        while (i < mid) {
+            temp.push(arr[i]);
+            i++;
+        }
 
-        // Update the maximum diameter if the current node's diameter is larger
-        maxDiameter = Math.max(maxDiameter, leftHeight + rightHeight);
+        // Append any remaining elements from the right subarray
+        while (j < right) {
+            temp.push(arr[j]);
+            j++;
+        }
 
-        // Return the height of the current node
-        return 1 + Math.max(leftHeight, rightHeight);
+        // Copy the merged elements back into the original array
+        for (let k = left; k < right; k++) {
+            arr[k] = temp[k - left];
+        }
     }
 
-    // Start the recursive calculation from the root
-    calculateHeight(root);
+    // Iteratively merge subarrays of increasing sizes
+    for (let size = 1; size < n; size *= 2) {
+        for (let left = 0; left < n; left += 2 * size) {
+            const mid = Math.min(left + size, n); // End of the first subarray
+            const right = Math.min(left + 2 * size, n); // End of the second subarray
+            merge(left, mid, right);
+        }
+    }
 
-    // Return the maximum diameter found
-    return maxDiameter;
+    return arr;
 }
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-// Calculate the diameter of the binary tree
-const diameter = diameterOfBinaryTree(root);
-console.log("Diameter of the binary tree:", diameter); // Output: 3
+// Example usage
+const unsortedArray = [38, 27, 43, 3, 9, 82, 10];
+console.log("Unsorted:", unsortedArray);
+const sortedArray = mergeSortIterative(unsortedArray);
+console.log("Sorted:", sortedArray);
