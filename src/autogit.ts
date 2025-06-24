@@ -1,14 +1,25 @@
-const lowerCaseString = originalString.toLowerCase();
-const originalString: string = "HELLO WORLD!";
-const lowerCaseString: string = originalString.toLowerCase();
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-console.log(lowerCaseString); // Output: "hello world!"
-const originalString: string = "İSTANBUL"; // Turkish uppercase letter 'İ'
-const lowerCaseString: string = originalString.toLocaleLowerCase('tr-TR');
+const containsSubstring: boolean = str.includes(substring);
 
-console.log(lowerCaseString); // Output: "istanbul" (correctly handles Turkish locale)
-function areStringsEqualIgnoreCase(str1: string, str2: string): boolean {
-    return str1.toLowerCase() === str2.toLowerCase();
-}
+console.log(containsSubstring); // Output: true
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-console.log(areStringsEqualIgnoreCase("TypeScript", "typescript")); // Output: true
+const containsSubstring: boolean = str.indexOf(substring) !== -1;
+
+console.log(containsSubstring); // Output: true
+const str: string = "Hello, world!";
+const pattern: RegExp = /world/i; // 'i' flag makes it case-insensitive
+
+const containsSubstring: boolean = pattern.test(str);
+
+console.log(containsSubstring); // Output: true
+const str: string = "Hello, world!";
+const pattern: string = "world";
+
+const containsSubstring: boolean = str.search(pattern) !== -1;
+
+console.log(containsSubstring); // Output: true
+const result = str.includes(substring);
