@@ -1,36 +1,39 @@
-class ListNode {
+interface TreeNode {
     val: number;
-    next: ListNode | null;
-
-    constructor(val: number = 0, next: ListNode | null = null) {
-        this.val = val;
-        this.next = next;
-    }
+    left: TreeNode | null;
+    right: TreeNode | null;
 }
-
-function getIntersectionNode(headA: ListNode | null, headB: ListNode | null): ListNode | null {
-    if (!headA || !headB) return null;
-
-    let p1: ListNode | null = headA;
-    let p2: ListNode | null = headB;
-
-    // Traverse both lists
-    while (p1 !== p2) {
-        // Move p1 to the next node or reset to headB if at the end
-        p1 = p1 === null ? headB : p1.next;
-
-        // Move p2 to the next node or reset to headA if at the end
-        p2 = p2 === null ? headA : p2.next;
+function maxDepth(root: TreeNode | null): number {
+    // Base case: if the node is null, the depth is 0
+    if (root === null) {
+        return 0;
     }
 
-    // Either p1 and p2 meet at the intersection node or both are null
-    return p1;
-}
-// Create intersecting lists
-const common = new ListNode(8, new ListNode(10));
-const headA = new ListNode(3, new ListNode(7, common));
-const headB = new ListNode(99, new ListNode(1, common));
+    // Recursively calculate the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
 
-// Find intersection
-const intersectionNode = getIntersectionNode(headA, headB);
-console.log(intersectionNode?.val); // Output: 8
+    // The depth of the current node is 1 + the maximum of the two subtree depths
+    return 1 + Math.max(leftDepth, rightDepth);
+}
+// Helper function to create a binary tree node
+function createNode(val: number, left: TreeNode | null = null, right: TreeNode | null = null): TreeNode {
+    return { val, left, right };
+}
+
+// Create a sample binary tree:
+//         1
+//        / \
+//       2   3
+//      / \
+//     4   5
+const tree: TreeNode = createNode(1,
+    createNode(2,
+        createNode(4),
+        createNode(5)
+    ),
+    createNode(3)
+);
+
+// Calculate the maximum depth
+console.log(maxDepth(tree)); // Output: 3
