@@ -1,32 +1,32 @@
-function findFirstNonRepeatingCharacter(input: string): string | null {
-    // Step 1: Create a map to store character frequencies
-    const charFrequency = new Map<string, number>();
+function reverseWords(input: string): string {
+    // Step 1: Split the string into an array of words
+    const words = input.split(' ');
 
-    // Step 2: Populate the map with character counts
-    for (const char of input) {
-        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
-    }
+    // Step 2: Reverse the array of words
+    const reversedWords = words.reverse();
 
-    // Step 3: Find the first character with a frequency of 1
-    for (const char of input) {
-        if (charFrequency.get(char) === 1) {
-            return char;
-        }
-    }
+    // Step 3: Join the reversed array back into a string
+    const reversedString = reversedWords.join(' ');
 
-    // Step 4: If no non-repeating character is found, return null
-    return null;
+    return reversedString;
 }
 
-// Example Usage
-console.log(findFirstNonRepeatingCharacter("swiss")); // Output: "w"
-console.log(findFirstNonRepeatingCharacter("aabbcc")); // Output: null
-console.log(findFirstNonRepeatingCharacter("")); // Output: null
-function findFirstNonRepeatingCharacter(input: string): string | null {
-    for (const char of input) {
-        if (input.indexOf(char) === input.lastIndexOf(char)) {
-            return char;
-        }
+// Example usage
+const input = "Hello world this is TypeScript";
+const result = reverseWords(input);
+console.log(result); // Output: "TypeScript is this world Hello"
+function reverseWords(input: string): string {
+    if (!input.trim()) {
+        return ''; // Return empty string for empty or whitespace-only input
     }
-    return null;
+
+    const words = input.trim().split(/\s+/); // Split by one or more spaces
+    return words.reverse().join(' ');
 }
+
+// Test cases
+console.log(reverseWords("Hello world this is TypeScript")); // "TypeScript is this world Hello"
+console.log(reverseWords("   Leading and trailing spaces   ")); // "spaces trailing and Leading"
+console.log(reverseWords("   ")); // ""
+console.log(reverseWords("SingleWord")); // "SingleWord"
+console.log(reverseWords("")); // ""
