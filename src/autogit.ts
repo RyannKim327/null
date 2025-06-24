@@ -1,56 +1,62 @@
-function computeLPS(pattern: string): number[] {
-    const lps: number[] = Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1;
+function findKthSmallestBySorting(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
+    // Sort the array in ascending order
+    const sortedArr = arr.slice().sort((a, b) => a - b);
+
+    // Return the kth smallest element (1-based index)
+    return sortedArr[k - 1];
+}
+
+// Example usage:
+const arr = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(findKthSmallestBySorting(arr, k)); // Output: 7
+function findKthSmallestByQuickselect(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
+    }
+
+    const quickselect = (arr: number[], left: number, right: number, k: number): number => {
+        if (left === right) {
+            return arr[left];
+        }
+
+        // Partition the array around a pivot
+        const pivotIndex = partition(arr, left, right);
+
+        if (k === pivotIndex) {
+            return arr[k];
+        } else if (k < pivotIndex) {
+            return quickselect(arr, left, pivotIndex - 1, k);
         } else {
-            if (length !== 0) {
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
+            return quickselect(arr, pivotIndex + 1, right, k);
+        }
+    };
+
+    const partition = (arr: number[], left: number, right: number): number => {
+        const pivot = arr[right]; // Choose the rightmost element as pivot
+        let i = left;
+
+        for (let j = left; j < right; j++) {
+            if (arr[j] <= pivot) {
+                [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
                 i++;
             }
         }
-    }
 
-    return lps;
+        // Place the pivot in its correct position
+        [arr[i], arr[right]] = [arr[right], arr[i]];
+        return i;
+    };
+
+    // Convert k to 0-based index
+    return quickselect(arr.slice(), 0, arr.length - 1, k - 1);
 }
 
-function kmpSearch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const lps = computeLPS(pattern);
-
-    let i = 0; // Index for text
-    let j = 0; // Index for pattern
-
-    while (i < text.length) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found at index (i - j)
-            j = lps[j - 1];     // Continue searching for next match
-        } else if (i < text.length && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result;
-}
-
-// Example Usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = kmpSearch(text, pattern);
-console.log("Match indices:", matches); // Output: [10]
+// Example usage:
+const arr = [7, 10, 4, 3, 20, 15];
+const k = 3;
+console.log(findKthSmallestByQuickselect(arr, k)); // Output: 7
