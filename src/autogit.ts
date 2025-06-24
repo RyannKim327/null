@@ -1,98 +1,48 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const n = text.length; // Length of the text
+    const m = pattern.length; // Length of the pattern
 
-    // Create a 2D DP array initialized with 0
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+    if (m === 0) return []; // Edge case: empty pattern
+    if (m > n) return []; // Edge case: pattern longer than text
 
-    // Build the dp table
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1;
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
-            }
-        }
+    // Step 1: Build the bad character shift table
+    const shiftTable: { [key: string]: number } = {};
+    for (let i = 0; i < m - 1; i++) {
+        shiftTable[pattern[i]] = m - 1 - i;
     }
 
-    // Backtrack to find the LCS string
-    let lcs = "";
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // Prepend the matching character
-            i--;
+    // Default shift for characters not in the pattern
+    const defaultShift = m;
+
+    // Step 2: Initialize variables for searching
+    const matches: number[] = [];
+    let i = 0; // Index in the text
+
+    // Step 3: Perform the search
+    while (i <= n - m) {
+        let j = m - 1; // Start comparing from the end of the pattern
+
+        // Compare characters from the pattern and text
+        while (j >= 0 && pattern[j] === text[i + j]) {
             j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move up
+        }
+
+        if (j < 0) {
+            // Match found
+            matches.push(i);
+            i += defaultShift; // Shift by the length of the pattern
         } else {
-            j--; // Move left
+            // Mismatch: determine the shift using the bad character table
+            const charInText = text[i + m - 1];
+            const shift = shiftTable[charInText] ?? defaultShift;
+            i += shift;
         }
     }
 
-    return lcs;
+    return matches; // Return all starting indices of matches
 }
+const text = "ABAAABCDABCDABCDABCD";
+const pattern = "ABCD";
 
-// Example usage:
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-
-const result = longestCommonSubsequence(str1, str2);
-console.log("Longest Common Subsequence:", result); // Output: GTAB
-function longestCommonSubsequenceOptimized(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
-
-    // Ensure str1 is the longer string to use minimal space
-    if (m < n) {
-        [str1, str2] = [str2, str1];
-        [m, n] = [n, m];
-    }
-
-    // Use two rows for DP
-    let previous = Array(n + 1).fill(0);
-    let current = Array(n + 1).fill(0);
-
-    // To store indices for backtracking
-    const directions: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Fill the DP table
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                current[j] = previous[j - 1] + 1;
-                directions[i][j] = 1; // Diagonal move
-            } else {
-                if (previous[j] >= current[j - 1]) {
-                    current[j] = previous[j];
-                    directions[i][j] = 2; // Up move
-                } else {
-                    current[j] = current[j - 1];
-                    directions[i][j] = 3; // Left move
-                }
-            }
-        }
-        // Swap current and previous for next iteration
-        [previous, current] = [current, previous];
-    }
-
-    // Backtrack to find the LCS string
-    let lcs = "";
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (directions[i][j] === 1) {
-            lcs = str1[i - 1] + lcs;
-            i--;
-            j--;
-        } else if (directions[i][j] === 2) {
-            i--;
-        } else {
-            j--;
-        }
-    }
-
-    return lcs;
-}
-
-// Example usage remains the same
+const result = boyerMooreHorspool(text, pattern);
+console.log(result); // Output: [4, 8, 12]
