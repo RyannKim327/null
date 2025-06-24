@@ -1,62 +1,56 @@
-function findKthSmallestBySorting(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+type Edge = {
+  source: number;
+  destination: number;
+  weight: number;
+};
+
+function bellmanFord(edges: Edge[], V: number, source: number): { distances: number[]; hasNegativeCycle: boolean } {
+  // Step 1: Initialize distances
+  const distances: number[] = Array(V).fill(Infinity);
+  distances[source] = 0;
+
+  // Step 2: Relax edges repeatedly (V-1 times)
+  for (let i = 0; i < V - 1; i++) {
+    for (const edge of edges) {
+      const { source: u, destination: v, weight: w } = edge;
+      if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
+        distances[v] = distances[u] + w;
+      }
     }
+  }
 
-    // Sort the array in ascending order
-    const sortedArr = arr.slice().sort((a, b) => a - b);
+  // Step 3: Check for negative weight cycles
+  let hasNegativeCycle = false;
+  for (const edge of edges) {
+    const { source: u, destination: v, weight: w } = edge;
+    if (distances[u] !== Infinity && distances[u] + w < distances[v]) {
+      hasNegativeCycle = true;
+      break;
+    }
+  }
 
-    // Return the kth smallest element (1-based index)
-    return sortedArr[k - 1];
+  return { distances, hasNegativeCycle };
 }
 
-// Example usage:
-const arr = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(findKthSmallestBySorting(arr, k)); // Output: 7
-function findKthSmallestByQuickselect(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
+// Example usage
+const edges: Edge[] = [
+  { source: 0, destination: 1, weight: -1 },
+  { source: 0, destination: 2, weight: 4 },
+  { source: 1, destination: 2, weight: 3 },
+  { source: 1, destination: 3, weight: 2 },
+  { source: 1, destination: 4, weight: 2 },
+  { source: 3, destination: 2, weight: 5 },
+  { source: 3, destination: 1, weight: 1 },
+  { source: 4, destination: 3, weight: -3 },
+];
 
-    const quickselect = (arr: number[], left: number, right: number, k: number): number => {
-        if (left === right) {
-            return arr[left];
-        }
+const V = 5; // Number of vertices
+const source = 0; // Source vertex
 
-        // Partition the array around a pivot
-        const pivotIndex = partition(arr, left, right);
+const { distances, hasNegativeCycle } = bellmanFord(edges, V, source);
 
-        if (k === pivotIndex) {
-            return arr[k];
-        } else if (k < pivotIndex) {
-            return quickselect(arr, left, pivotIndex - 1, k);
-        } else {
-            return quickselect(arr, pivotIndex + 1, right, k);
-        }
-    };
-
-    const partition = (arr: number[], left: number, right: number): number => {
-        const pivot = arr[right]; // Choose the rightmost element as pivot
-        let i = left;
-
-        for (let j = left; j < right; j++) {
-            if (arr[j] <= pivot) {
-                [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
-                i++;
-            }
-        }
-
-        // Place the pivot in its correct position
-        [arr[i], arr[right]] = [arr[right], arr[i]];
-        return i;
-    };
-
-    // Convert k to 0-based index
-    return quickselect(arr.slice(), 0, arr.length - 1, k - 1);
+if (hasNegativeCycle) {
+  console.log("Graph contains a negative weight cycle.");
+} else {
+  console.log("Shortest distances from source vertex:", distances);
 }
-
-// Example usage:
-const arr = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(findKthSmallestByQuickselect(arr, k)); // Output: 7
