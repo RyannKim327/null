@@ -1,71 +1,28 @@
-type Node = string; // Assuming nodes are represented as strings
-type Graph = Map<Node, Node[]>; // Adjacency list representation
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
 
-/**
- * Breadth-Limited Search Algorithm
- * @param graph - The graph represented as an adjacency list
- * @param start - The starting node
- * @param goal - The target node to find
- * @param limit - The maximum depth to explore
- * @returns The path to the goal node if found, or null if not found within the depth limit
- */
-function breadthLimitedSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node,
-  limit: number
-): Node[] | null {
-  const queue: { node: Node; depth: number }[] = [{ node: start, depth: 0 }];
-  const visited = new Set<Node>();
+    // Start with a large gap and reduce it gradually
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        // Perform insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            const temp = arr[i];
+            let j: number;
 
-  while (queue.length > 0) {
-    const { node, depth } = queue.shift()!;
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
+            }
 
-    // Skip if the node has already been visited
-    if (visited.has(node)) continue;
-    visited.add(node);
-
-    // If the goal is found, return the path (for simplicity, just return the goal here)
-    if (node === goal) {
-      return [node]; // Path reconstruction can be added if needed
+            // Place temp (the original arr[i]) in its correct location
+            arr[j] = temp;
+        }
     }
 
-    // Stop exploring if the depth limit is reached
-    if (depth >= limit) continue;
-
-    // Add neighbors to the queue with incremented depth
-    const neighbors = graph.get(node) || [];
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        queue.push({ node: neighbor, depth: depth + 1 });
-      }
-    }
-  }
-
-  // Goal not found within the depth limit
-  return null;
+    return arr;
 }
 
-// Example Usage
-const graph: Graph = new Map([
-  ["A", ["B", "C"]],
-  ["B", ["D", "E"]],
-  ["C", ["F"]],
-  ["D", []],
-  ["E", ["G"]],
-  ["F", []],
-  ["G", []],
-]);
-
-const startNode = "A";
-const goalNode = "G";
-const depthLimit = 3;
-
-const result = breadthLimitedSearch(graph, startNode, goalNode, depthLimit);
-if (result) {
-  console.log(`Goal "${goalNode}" found within depth limit:`, result);
-} else {
-  console.log(`Goal "${goalNode}" not found within depth limit.`);
-}
-Goal "G" found within depth limit: [ 'G' ]
-Goal "G" not found within depth limit.
+// Example usage:
+const array = [12, 34, 54, 2, 3];
+console.log("Original Array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted Array:", sortedArray);
