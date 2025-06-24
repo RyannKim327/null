@@ -1,31 +1,56 @@
-// Function to calculate the factorial of a number
-function calculateFactorial(num: number): number {
-    if (num < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
+function computeLPS(pattern: string): number[] {
+    const lps: number[] = Array(pattern.length).fill(0);
+    let length = 0; // Length of the previous longest prefix suffix
+    let i = 1;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1];
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-    let result = 1;
-    for (let i = 2; i <= num; i++) {
-        result *= i;
+
+    return lps;
+}
+
+function kmpSearch(text: string, pattern: string): number[] {
+    const result: number[] = [];
+    const lps = computeLPS(pattern);
+
+    let i = 0; // Index for text
+    let j = 0; // Index for pattern
+
+    while (i < text.length) {
+        if (text[i] === pattern[j]) {
+            i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            result.push(i - j); // Match found at index (i - j)
+            j = lps[j - 1];     // Continue searching for next match
+        } else if (i < text.length && text[i] !== pattern[j]) {
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
+        }
     }
+
     return result;
 }
 
-// Simulating user input (you can replace this with actual input mechanisms)
-const userInput: string | null = prompt("Enter a number to calculate its factorial:");
-
-if (userInput !== null) {
-    const inputNumber: number = parseInt(userInput, 10);
-
-    if (isNaN(inputNumber)) {
-        console.log("Invalid input! Please enter a valid number.");
-    } else {
-        try {
-            const factorialResult = calculateFactorial(inputNumber);
-            console.log(`The factorial of ${inputNumber} is: ${factorialResult}`);
-        } catch (error) {
-            console.error(error.message);
-        }
-    }
-} else {
-    console.log("No input provided.");
-}
+// Example Usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = kmpSearch(text, pattern);
+console.log("Match indices:", matches); // Output: [10]
