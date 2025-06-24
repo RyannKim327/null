@@ -1,44 +1,84 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
-
-// Define an interface for the expected response data structure
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
+function reverseString(str: string): string {
+    return str.split('').reverse().join('');
 }
 
-// Function to fetch a post by its ID
-async function fetchPostById(postId: number): Promise<Post | null> {
-  try {
-    // Make the GET request using Axios
-    const response: AxiosResponse<Post> = await axios.get(
-      `https://jsonplaceholder.typicode.com/posts/${postId}`
-    );
-
-    // Return the fetched post data
-    return response.data;
-  } catch (error) {
-    // Handle errors
-    if (error instanceof AxiosError) {
-      console.error(`Axios Error: ${error.message}`);
-    } else {
-      console.error('An unexpected error occurred:', error);
+// Usage
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSpuT ,olleH"
+function reverseString(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
     }
-
-    // Return null in case of an error
-    return null;
-  }
+    return reversed;
 }
 
-// Example usage of the fetchPostById function
-(async () => {
-  const postId = 1; // You can change this ID to test with other posts
-  const post = await fetchPostById(postId);
+// Usage
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSpuT ,olleH"
+function reverseString(str: string): string {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseString(str.substr(1)) + str[0];
+    }
+}
 
-  if (post) {
-    console.log('Fetched Post:', post);
-  } else {
-    console.log('Failed to fetch the post.');
-  }
-})();
+// Usage
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSpuT ,olleH"
+function reverseString(str: string): string {
+    return [...str].reduce((acc, char) => char + acc, '');
+}
+
+// Usage
+const original = "Hello, TypeScript!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!tpircSpuT ,olleH"
+function reverseString(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Usage
+const original = "Hello, 🌍!";
+const reversed = reverseString(original);
+console.log(reversed); // Output: "!🌍 ,olleH"
+function reverseWithBuiltInMethods(str: string): string {
+    return str.split('').reverse().join('');
+}
+
+function reverseWithLoop(str: string): string {
+    let reversed = '';
+    for (let i = str.length - 1; i >= 0; i--) {
+        reversed += str[i];
+    }
+    return reversed;
+}
+
+function reverseWithRecursion(str: string): string {
+    if (str === "") {
+        return "";
+    } else {
+        return reverseWithRecursion(str.substr(1)) + str[0];
+    }
+}
+
+function reverseWithReduce(str: string): string {
+    return [...str].reduce((acc, char) => char + acc, '');
+}
+
+function reverseWithArrayFrom(str: string): string {
+    return Array.from(str).reverse().join('');
+}
+
+// Usage
+const original = "Hello, 🌍!";
+
+console.log(reverseWithBuiltInMethods(original)); // Output: "!🌍 ,olleH"
+console.log(reverseWithLoop(original));          // Output: "!🌍 ,olleH"
+console.log(reverseWithRecursion(original));     // Output: "!🌍 ,olleH"
+console.log(reverseWithReduce(original));        // Output: "!🌍 ,olleH"
+console.log(reverseWithArrayFrom(original));     // Output: "!🌍 ,olleH"
