@@ -1,62 +1,56 @@
-// Definition of a binary tree node
-class TreeNode {
-    val: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(val: number) {
-        this.val = val;
-        this.left = null;
-        this.right = null;
-    }
+function findCommonElements<T>(array1: T[], array2: T[]): T[] {
+    return array1.filter(item => array2.includes(item));
 }
 
-function maxDepth(root: TreeNode | null): number {
-    // Base case: if the tree is empty, its depth is 0
-    if (root === null) {
-        return 0;
-    }
-
-    // Recursively calculate the depth of the left and right subtrees
-    const leftDepth = maxDepth(root.left);
-    const rightDepth = maxDepth(root.right);
-
-    // The maximum depth is 1 (for the current node) plus the greater of the two subtree depths
-    return 1 + Math.max(leftDepth, rightDepth);
+// Example usage:
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [4, 5, 6, 7, 8];
+const common = findCommonElements(arr1, arr2);
+console.log(common); // Output: [4, 5]
+function findCommonElementsWithSet<T>(array1: T[], array2: T[]): T[] {
+    const set2 = new Set(array2);
+    return array1.filter(item => set2.has(item));
 }
-function maxDepthIterative(root: TreeNode | null): number {
-    if (root === null) {
-        return 0;
+
+// Example usage:
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [4, 5, 6, 7, 8];
+const common = findCommonElementsWithSet(arr1, arr2);
+console.log(common); // Output: [4, 5]
+function findCommonElementsUsingIntersection<T>(array1: T[], array2: T[]): T[] {
+    const set1 = new Set(array1);
+    const set2 = new Set(array2);
+    return [...set1].filter(item => set2.has(item));
+}
+
+// Example usage:
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [4, 5, 6, 7, 8];
+const common = findCommonElementsUsingIntersection(arr1, arr2);
+console.log(common); // Output: [4, 5]
+function findCommonElementsWithDuplicates<T>(array1: T[], array2: T[]): T[] {
+    const map = new Map<T, number>();
+    const result: T[] = [];
+
+    // Count occurrences in array2
+    for (const item of array2) {
+        map.set(item, (map.get(item) || 0) + 1);
     }
 
-    let depth = 0;
-    const queue: TreeNode[] = [root];
-
-    while (queue.length > 0) {
-        const levelSize = queue.length; // Number of nodes at the current level
-        for (let i = 0; i < levelSize; i++) {
-            const currentNode = queue.shift()!; // Dequeue the front node
-            if (currentNode.left !== null) {
-                queue.push(currentNode.left); // Enqueue left child
-            }
-            if (currentNode.right !== null) {
-                queue.push(currentNode.right); // Enqueue right child
-            }
+    // Find common elements with respect to counts
+    for (const item of array1) {
+        const count = map.get(item);
+        if (count && count > 0) {
+            result.push(item);
+            map.set(item, count - 1);
         }
-        depth++; // Increment depth after processing a level
     }
 
-    return depth;
+    return result;
 }
-// Create a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
 
-// Find the maximum depth using the recursive approach
-console.log("Recursive Max Depth:", maxDepth(root)); // Output: 3
-
-// Find the maximum depth using the iterative approach
-console.log("Iterative Max Depth:", maxDepthIterative(root)); // Output: 3
+// Example usage:
+const arr1 = [1, 2, 2, 3, 4];
+const arr2 = [2, 2, 4, 5];
+const common = findCommonElementsWithDuplicates(arr1, arr2);
+console.log(common); // Output: [2, 2, 4]
