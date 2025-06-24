@@ -1,79 +1,32 @@
-function majorityElement(nums: number[]): number {
-    let count = 0;
-    let candidate: number | null = null;
+function findFirstNonRepeatingCharacter(input: string): string | null {
+    // Step 1: Create a map to store character frequencies
+    const charFrequency = new Map<string, number>();
 
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += (num === candidate) ? 1 : -1;
+    // Step 2: Populate the map with character counts
+    for (const char of input) {
+        charFrequency.set(char, (charFrequency.get(char) || 0) + 1);
     }
 
-    // Optionally verify if the candidate is indeed the majority element
-    const totalCount = nums.filter(n => n === candidate).length;
-    if (totalCount > Math.floor(nums.length / 2)) {
-        return candidate!;
-    } else {
-        throw new Error("No majority element found");
-    }
-}
-
-// Example usage:
-const arr = [3, 2, 3];
-console.log(majorityElement(arr)); // Output: 3
-function majorityElement(nums: number[]): number {
-    const counts: { [key: number]: number } = {};
-
-    for (const num of nums) {
-        counts[num] = (counts[num] || 0) + 1;
-        if (counts[num] > Math.floor(nums.length / 2)) {
-            return num;
+    // Step 3: Find the first character with a frequency of 1
+    for (const char of input) {
+        if (charFrequency.get(char) === 1) {
+            return char;
         }
     }
 
-    throw new Error("No majority element found");
+    // Step 4: If no non-repeating character is found, return null
+    return null;
 }
 
-// Example usage:
-const arr = [2, 2, 1, 1, 1, 2, 2];
-console.log(majorityElement(arr)); // Output: 2
-function majorityElement(nums: number[]): number {
-    nums.sort((a, b) => a - b);
-    return nums[Math.floor(nums.length / 2)];
-}
-
-// Example usage:
-const arr = [6, 5, 5];
-console.log(majorityElement(arr)); // Output: 5
-function majorityElement(nums: number[]): number {
-    let count = 0;
-    let candidate: number | null = null;
-
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
+// Example Usage
+console.log(findFirstNonRepeatingCharacter("swiss")); // Output: "w"
+console.log(findFirstNonRepeatingCharacter("aabbcc")); // Output: null
+console.log(findFirstNonRepeatingCharacter("")); // Output: null
+function findFirstNonRepeatingCharacter(input: string): string | null {
+    for (const char of input) {
+        if (input.indexOf(char) === input.lastIndexOf(char)) {
+            return char;
         }
-        count += (num === candidate) ? 1 : -1;
     }
-
-    // Verify if the candidate is indeed the majority element
-    const totalCount = nums.filter(n => n === candidate).length;
-    if (totalCount > Math.floor(nums.length / 2)) {
-        return candidate!;
-    } else {
-        throw new Error("No majority element found");
-    }
+    return null;
 }
-
-// Example usage:
-const arr1 = [3, 2, 3];
-console.log(majorityElement(arr1)); // Output: 3
-
-const arr2 = [2, 2, 1, 1, 1, 2, 2];
-console.log(majorityElement(arr2)); // Output: 2
-
-const arr3 = [1];
-console.log(majorityElement(arr3)); // Output: 1
-3
-2
-1
