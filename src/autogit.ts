@@ -1,88 +1,135 @@
-class Node<T> {
-    state: T; // The state represented by this node
-    score: number; // The cumulative score (e.g., log probability)
-    parent?: Node<T>; // Reference to the parent node (for backtracking)
+class HashTable {
+    private size: number; // Size of the hash table
+    private buckets: Array<Array<[string, any]>>; // Array of buckets
 
-    constructor(state: T, score: number, parent?: Node<T>) {
-        this.state = state;
-        this.score = score;
-        this.parent = parent;
+    constructor(size: number = 53) {
+        this.size = size;
+        this.buckets = new Array(size).fill(null).map(() => []); // Initialize each bucket as an empty array
     }
-}
-function beamSearch<T>(
-    startState: T,
-    expand: (state: T) => { state: T; score: number }[],
-    beamWidth: number,
-    maxSteps: number
-): Node<T>[] {
-    // Initialize the beam with the starting state
-    let beam: Node<T>[] = [new Node(startState, 0)];
 
-    for (let step = 0; step < maxSteps; step++) {
-        let candidates: Node<T>[] = [];
+    /**
+     * Hash function to convert a key into an index.
+     * @param key - The key to hash.
+     * @returns The index in the hash table.
+     */
+    private hash(key: string): number {
+        let hashValue = 0;
+        const primeNumber = 31; // A prime number helps reduce collisions
+        for (let i = 0; i < Math.min(key.length, 100); i++) {
+            const char = key.charCodeAt(i);
+            hashValue = (hashValue * primeNumber + char) % this.size;
+        }
+        return hashValue;
+    }
 
-        // Expand each node in the current beam
-        for (const node of beam) {
-            const successors = expand(node.state);
+    /**
+     * Insert or update a key-value pair in the hash table.
+     * @param key - The key to insert.
+     * @param value - The value associated with the key.
+     */
+    public set(key: string, value: any): void {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
 
-            // Create new nodes for each successor
-            for (const { state, score } of successors) {
-                const newNode = new Node(state, node.score + score, node);
-                candidates.push(newNode);
+        // Check if the key already exists in the bucket
+        for (const [existingKey, existingValue] of bucket) {
+            if (existingKey === key) {
+                existingValue = value; // Update the value if the key exists
+                return;
             }
         }
 
-        // Sort candidates by score and keep the top `beamWidth`
-        candidates.sort((a, b) => b.score - a.score); // Descending order
-        beam = candidates.slice(0, beamWidth);
+        // If the key doesn't exist, add it to the bucket
+        bucket.push([key, value]);
+    }
 
-        // Optional: Check for early termination (e.g., end-of-sequence)
-        if (beam.every(node => isTerminalState(node.state))) {
-            break;
+    /**
+     * Retrieve the value associated with a key.
+     * @param key - The key to search for.
+     * @returns The value associated with the key, or undefined if not found.
+     */
+    public get(key: string): any | undefined {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
+
+        // Search for the key in the bucket
+        for (const [existingKey, existingValue] of bucket) {
+            if (existingKey === key) {
+                return existingValue; // Return the value if the key is found
+            }
         }
+
+        return undefined; // Key not found
     }
 
-    return beam;
-}
+    /**
+     * Remove a key-value pair from the hash table.
+     * @param key - The key to remove.
+     * @returns True if the key was removed, false otherwise.
+     */
+    public remove(key: string): boolean {
+        const index = this.hash(key);
+        const bucket = this.buckets[index];
 
-// Example terminal state check (customize as needed)
-function isTerminalState<T>(state: T): boolean {
-    // Replace with your own logic to determine if a state is terminal
-    return false;
-}
-// Example: Word generation with beam search
-const vocabulary = ["hello", "world", "end"];
-const transitionProbabilities: { [key: string]: { word: string; prob: number }[] } = {
-    "": [{ word: "hello", prob: 0.7 }, { word: "world", prob: 0.3 }],
-    "hello": [{ word: "world", prob: 0.8 }, { word: "end", prob: 0.2 }],
-    "world": [{ word: "end", prob: 1.0 }],
-};
+        // Find the key in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            const [existingKey] = bucket[i];
+            if (existingKey === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
 
-function expand(state: string): { state: string; score: number }[] {
-    return transitionProbabilities[state].map(({ word, prob }) => ({
-        state: word,
-        score: Math.log(prob), // Use log probabilities for numerical stability
-    }));
-}
-
-function isTerminalState(state: string): boolean {
-    return state === "end";
-}
-
-// Run beam search
-const result = beamSearch("", expand, 2, 5);
-
-// Print the best sequence(s)
-result.forEach(node => {
-    const sequence: string[] = [];
-    let currentNode: Node<string> | undefined = node;
-
-    while (currentNode) {
-        sequence.unshift(currentNode.state);
-        currentNode = currentNode.parent;
+        return false; // Key not found
     }
 
-    console.log(`Sequence: ${sequence.join(" -> ")}, Score: ${node.score}`);
-});
-Sequence: hello -> world -> end, Score: -1.6094379124341003
-Sequence: world -> end, Score: -1.2039728043259361
+    /**
+     * Get all keys stored in the hash table.
+     * @returns An array of all keys.
+     */
+    public keys(): string[] {
+        const allKeys: string[] = [];
+        for (const bucket of this.buckets) {
+            for (const [key] of bucket) {
+                allKeys.push(key);
+            }
+        }
+        return allKeys;
+    }
+
+    /**
+     * Get all values stored in the hash table.
+     * @returns An array of all values.
+     */
+    public values(): any[] {
+        const allValues: any[] = [];
+        for (const bucket of this.buckets) {
+            for (const [, value] of bucket) {
+                allValues.push(value);
+            }
+        }
+        return allValues;
+    }
+}
+const hashTable = new HashTable();
+
+// Insert key-value pairs
+hashTable.set("name", "Alice");
+hashTable.set("age", 25);
+hashTable.set("city", "New York");
+
+// Retrieve values
+console.log(hashTable.get("name")); // Output: Alice
+console.log(hashTable.get("age"));  // Output: 25
+
+// Update a value
+hashTable.set("age", 26);
+console.log(hashTable.get("age"));  // Output: 26
+
+// Remove a key
+hashTable.remove("city");
+console.log(hashTable.get("city")); // Output: undefined
+
+// Get all keys and values
+console.log(hashTable.keys());   // Output: ["name", "age"]
+console.log(hashTable.values()); // Output: ["Alice", 26]
