@@ -1,52 +1,47 @@
-function findMajorityElement(arr: number[]): number | null {
-    const frequencyMap: { [key: number]: number } = {};
-    const threshold = Math.floor(arr.length / 2);
+function boyerMooreSearch(text: string, pattern: string): number {
+    const n = text.length;
+    const m = pattern.length;
 
-    // Populate the frequency map
-    for (const num of arr) {
-        frequencyMap[num] = (frequencyMap[num] || 0) + 1;
+    if (m === 0) return 0; // Edge case: empty pattern matches at index 0
+    if (m > n) return -1; // Pattern longer than text cannot match
+
+    // Step 1: Build the Bad Character Table
+    const badCharTable: { [key: string]: number } = {};
+    for (let i = 0; i < m - 1; i++) {
+        badCharTable[pattern[i]] = m - 1 - i;
     }
 
-    // Find the majority element
-    for (const [num, count] of Object.entries(frequencyMap)) {
-        if (count > threshold) {
-            return parseInt(num); // Convert key back to number
+    // Step 2: Perform the search
+    let s = 0; // Shift of the pattern with respect to the text
+    while (s <= n - m) {
+        let j = m - 1;
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[s + j]) {
+            j--;
+        }
+
+        if (j < 0) {
+            // Match found
+            return s;
+        } else {
+            // Mismatch occurred at pattern[j]
+            const badCharShift = badCharTable[text[s + j]] ?? m; // Default shift is the length of the pattern
+            s += Math.max(1, badCharShift - (m - 1 - j));
         }
     }
 
-    return null; // No majority element found
+    // No match found
+    return -1;
 }
 
 // Example usage:
-const array = [3, 2, 3];
-console.log(findMajorityElement(array)); // Output: 3
-function findMajorityElement(arr: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
+const result = boyerMooreSearch(text, pattern);
 
-    // Step 1: Find the potential candidate
-    for (const num of arr) {
-        if (count === 0) {
-            candidate = num;
-        }
-        count += num === candidate ? 1 : -1;
-    }
-
-    // Step 2: Verify the candidate
-    count = 0;
-    for (const num of arr) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    if (count > Math.floor(arr.length / 2)) {
-        return candidate!;
-    }
-
-    return null; // No majority element found
+if (result !== -1) {
+    console.log(`Pattern found at index ${result}`);
+} else {
+    console.log("Pattern not found");
 }
-
-// Example usage:
-const array = [2, 2, 1, 1, 1, 2, 2];
-console.log(findMajorityElement(array)); // Output: 2
