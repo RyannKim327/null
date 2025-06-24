@@ -1,54 +1,24 @@
-function findLongestIncreasingSubsequence(arr: number[]): number {
-    if (arr.length === 0) return 0;
+function removeVowels(input: string): string {
+    // Define a regex pattern to match vowels (case-insensitive)
+    const vowelsRegex = /[aeiou]/gi;
 
-    // Step 1: Initialize the dp array
-    const dp: number[] = new Array(arr.length).fill(1);
-
-    // Step 2: Fill the dp array
-    for (let i = 1; i < arr.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (arr[j] < arr[i]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-    }
-
-    // Step 3: Find the maximum value in dp array
-    return Math.max(...dp);
+    // Replace all vowels in the input string with an empty string
+    return input.replace(vowelsRegex, '');
 }
 
-// Example usage
-const array = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log("Length of Longest Increasing Subsequence:", findLongestIncreasingSubsequence(array));
-function findLongestIncreasingSubsequenceOptimized(arr: number[]): number {
-    if (arr.length === 0) return 0;
+// Example usage:
+const originalString = "Hello, World!";
+const result = removeVowels(originalString);
+console.log(result); // Output: "Hll, Wrld!"
+function removeVowels(input: string): string {
+    // Define a set of vowels for quick lookup
+    const vowels = new Set(['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']);
 
-    const tails: number[] = [];
-
-    for (const num of arr) {
-        let left = 0, right = tails.length;
-
-        // Binary search to find the insertion point
-        while (left < right) {
-            const mid = Math.floor((left + right) / 2);
-            if (tails[mid] < num) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-
-        // Update tails array
-        if (left === tails.length) {
-            tails.push(num); // Extend the LIS
-        } else {
-            tails[left] = num; // Replace to maintain smallest tail
-        }
-    }
-
-    return tails.length;
+    // Filter out vowels and join the remaining characters
+    return input.split('').filter(char => !vowels.has(char)).join('');
 }
 
-// Example usage
-const array = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log("Length of Longest Increasing Subsequence (Optimized):", findLongestIncreasingSubsequenceOptimized(array));
+// Example usage:
+const originalString = "Hello, World!";
+const result = removeVowels(originalString);
+console.log(result); // Output: "Hll, Wrld!"
