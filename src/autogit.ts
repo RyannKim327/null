@@ -1,37 +1,76 @@
-function quickSort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+str.includes(searchString, position?)
+const mainStr: string = "Hello, world!";
+const subStr: string = "world";
 
-    // Choose a random pivot element
-    const pivotIndex = Math.floor(Math.random() * arr.length);
-    const pivot = arr[pivotIndex];
+const hasSubStr: boolean = mainStr.includes(subStr);
 
-    // Partition the array into three parts
-    const less: number[] = [];
-    const equal: number[] = [];
-    const greater: number[] = [];
+console.log(hasSubStr); // Output: true
+const mainStr: string = "Hello, World!";
+const subStr: string = "world";
 
-    for (const num of arr) {
-        if (num < pivot) {
-            less.push(num);
-        } else if (num === pivot) {
-            equal.push(num);
-        } else {
-            greater.push(num);
-        }
-    }
+const hasSubStr: boolean = mainStr.toLowerCase().includes(subStr.toLowerCase());
 
-    // Recursively sort the 'less' and 'greater' partitions
-    return [...quickSort(less), ...equal, ...quickSort(greater)];
+console.log(hasSubStr); // Output: true
+str.indexOf(searchValue, fromIndex?)
+const mainStr: string = "Hello, world!";
+const subStr: string = "world";
+
+const index: number = mainStr.indexOf(subStr);
+
+const hasSubStr: boolean = index !== -1;
+
+console.log(hasSubStr); // Output: true
+const mainStr: string = "Hello, World!";
+const subStr: string = "world";
+
+const index: number = mainStr.toLowerCase().indexOf(subStr.toLowerCase());
+
+const hasSubStr: boolean = index !== -1;
+
+console.log(hasSubStr); // Output: true
+const mainStr: string = "Hello, world!";
+const pattern: RegExp = /world/;
+
+const hasSubStr: boolean = pattern.test(mainStr);
+
+console.log(hasSubStr); // Output: true
+const mainStr: string = "Hello, world!";
+const subStr: string = "world";
+
+// Escape special characters in subStr if necessary
+const escapedSubStr: string = subStr.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const pattern: RegExp = new RegExp(escapedSubStr);
+
+const hasSubStr: boolean = pattern.test(mainStr);
+
+console.log(hasSubStr); // Output: true
+const mainStr: string = "Hello, World!";
+const subStr: string = "world";
+
+const pattern: RegExp = new RegExp(subStr, 'i');
+
+const hasSubStr: boolean = pattern.test(mainStr);
+
+console.log(hasSubStr); // Output: true
+function checkSubstring(mainStr: string, subStr: string): void {
+    // Using includes()
+    const hasIncludes: boolean = mainStr.includes(subStr);
+    console.log(`Using includes(): ${hasIncludes}`);
+
+    // Using indexOf()
+    const hasIndexOf: boolean = mainStr.indexOf(subStr) !== -1;
+    console.log(`Using indexOf(): ${hasIndexOf}`);
+
+    // Using RegExp
+    const pattern: RegExp = new RegExp(subStr, 'i'); // Case-insensitive
+    const hasRegExp: boolean = pattern.test(mainStr);
+    console.log(`Using RegExp: ${hasRegExp}`);
 }
 
-// Example usage:
-const unsortedArray = [34, 7, 23, 32, 5, 62, 32, 2];
-const sortedArray = quickSort(unsortedArray);
+const mainStr: string = "TypeScript is awesome!";
+const subStr: string = "script";
 
-console.log("Unsorted Array:", unsortedArray);
-console.log("Sorted Array:", sortedArray);
-Unsorted Array: [34, 7, 23, 32, 5, 62, 32, 2]
-Sorted Array: [2, 5, 7, 23, 32, 32, 34, 62]
+checkSubstring(mainStr, subStr);
+Using includes(): false
+Using indexOf(): false
+Using RegExp: true
