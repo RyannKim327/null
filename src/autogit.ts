@@ -1,111 +1,47 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-class BinarySearchTree {
-    root: TreeNode | null;
+    // Create a 2D array filled with 0
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    constructor() {
-        this.root = null;
-    }
-
-    // Insert a value into the BST
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-
-        if (this.root === null) {
-            this.root = newNode;
-            return;
-        }
-
-        let current = this.root;
-        while (true) {
-            if (value < current.value) {
-                if (current.left === null) {
-                    current.left = newNode;
-                    break;
-                }
-                current = current.left;
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
             } else {
-                if (current.right === null) {
-                    current.right = newNode;
-                    break;
-                }
-                current = current.right;
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
             }
         }
     }
 
-    // Search for a value in the BST
-    search(value: number): boolean {
-        let current = this.root;
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
 
-        while (current !== null) {
-            if (value === current.value) {
-                return true;
-            } else if (value < current.value) {
-                current = current.left;
-            } else {
-                current = current.right;
-            }
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // Prepend the matching character
+            i--;
+            j--;
+        } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+            i--;
+        } else {
+            j--;
         }
-
-        return false;
     }
 
-    // In-order traversal (left, root, right)
-    inOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
-        if (node !== null) {
-            this.inOrderTraversal(node.left, result);
-            result.push(node.value);
-            this.inOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // Pre-order traversal (root, left, right)
-    preOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
-        if (node !== null) {
-            result.push(node.value);
-            this.preOrderTraversal(node.left, result);
-            this.preOrderTraversal(node.right, result);
-        }
-        return result;
-    }
-
-    // Post-order traversal (left, right, root)
-    postOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
-        if (node !== null) {
-            this.postOrderTraversal(node.left, result);
-            this.postOrderTraversal(node.right, result);
-            result.push(node.value);
-        }
-        return result;
-    }
+    return lcs;
 }
-const bst = new BinarySearchTree();
 
-// Insert values into the BST
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
+// Example usage:
+const string1 = "ABCBDAB";
+const string2 = "BDCAB";
 
-// Search for values
-console.log(bst.search(7));  // Output: true
-console.log(bst.search(20)); // Output: false
-
-// Perform traversals
-console.log("In-order traversal:", bst.inOrderTraversal(bst.root));   // Output: [3, 5, 7, 10, 12, 15, 18]
-console.log("Pre-order traversal:", bst.preOrderTraversal(bst.root)); // Output: [10, 5, 3, 7, 15, 12, 18]
-console.log("Post-order traversal:", bst.postOrderTraversal(bst.root)); // Output: [3, 7, 5, 12, 18, 15, 10]
+const lcs = longestCommonSubsequence(string1, string2);
+console.log("Longest Common Subsequence:", lcs); // Output: "BCAB"
+console.log(longestCommonSubsequence("AGGTAB", "GXTXAYB")); // Output: "GTAB"
+console.log(longestCommonSubsequence("XMJYAUZ", "MZJAWXU")); // Output: "MJAU"
+console.log(longestCommonSubsequence("", "ANYTHING"));      // Output: ""
+console.log(longestCommonSubsequence("SAME", "SAME"));     // Output: "SAME"
