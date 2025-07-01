@@ -1,33 +1,49 @@
-import cron from 'node-cron';
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
 
-// Function to be executed by the cron job
-const performTask = () => {
-  const currentTime = new Date().toISOString();
-  console.log(`Cron job executed at: ${currentTime}`);
-};
+    // Step 1: Build a max-heap from the input array
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
 
-// Schedule a cron job to run every minute
-const scheduleCronJob = () => {
-  // Cron syntax: "* * * * *" means "every minute"
-  cron.schedule('* * * * *', () => {
-    console.log('Running scheduled task...');
-    performTask();
-  });
+    // Step 2: Extract elements one by one from the heap
+    for (let i = n - 1; i > 0; i--) {
+        // Swap the root (maximum element) with the last element
+        [arr[0], arr[i]] = [arr[i], arr[0]];
 
-  console.log('Cron job has been scheduled successfully.');
-};
+        // Call heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
 
-// Start the cron job scheduling
-scheduleCronJob();
+    return arr;
+}
 
-// Optional: Handle graceful shutdown
-process.on('SIGINT', () => {
-  console.log('\nCron job stopped.');
-  process.exit();
-});
-Cron job has been scheduled successfully.
-Running scheduled task...
-Cron job executed at: 2023-03-15T12:00:00.000Z
-Running scheduled task...
-Cron job executed at: 2023-03-15T12:01:00.000Z
-...
+// Helper function to maintain the max-heap property
+function heapify(arr: number[], n: number, i: number): void {
+    let largest = i; // Initialize largest as the root
+    const left = 2 * i + 1; // Left child index
+    const right = 2 * i + 2; // Right child index
+
+    // If the left child exists and is greater than the root
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    // If the right child exists and is greater than the current largest
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    // If the largest element is not the root, swap and continue heapifying
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
+        heapify(arr, n, largest);
+    }
+}
+const array = [12, 11, 13, 5, 6, 7];
+console.log("Original Array:", array);
+
+const sortedArray = heapSort(array);
+console.log("Sorted Array:", sortedArray);
+Original Array: [12, 11, 13, 5, 6, 7]
+Sorted Array: [5, 6, 7, 11, 12, 13]
