@@ -1,85 +1,64 @@
-// Candidate class to represent a solution
-class Candidate<T> {
-    public state: T; // Current state (e.g., a word sequence)
-    public score: number; // Score of the candidate
+// Define a graph using an adjacency list
+type Graph = Map<number, number[]>;
 
-    constructor(state: T, score: number) {
-        this.state = state;
-        this.score = score;
-    }
-}
+/**
+ * Breadth-First Search (BFS) function
+ * @param graph - The graph represented as an adjacency list
+ * @param startNode - The node to start the BFS from
+ */
+function bfs(graph: Graph, startNode: number): void {
+    // Queue to manage the nodes to visit
+    const queue: number[] = [];
+    
+    // Set to track visited nodes
+    const visited: Set<number> = new Set();
 
-// Beam search function
-function beamSearch<T>(
-    initialState: T,
-    beamWidth: number,
-    maxDepth: number,
-    successorFn: (state: T) => Array<{ state: T; score: number }>,
-    isGoalFn: (state: T) => boolean
-): T | null {
-    // Initialize the beam with the initial state
-    let beam: Candidate<T>[] = [new Candidate(initialState, 0)];
+    // Initialize the BFS by adding the start node to the queue and marking it as visited
+    queue.push(startNode);
+    visited.add(startNode);
 
-    for (let depth = 0; depth < maxDepth; depth++) {
-        const allSuccessors: Candidate<T>[] = [];
+    console.log("BFS Traversal:");
 
-        // Generate successors for each candidate in the beam
-        for (const candidate of beam) {
-            const successors = successorFn(candidate.state);
-            for (const { state, score } of successors) {
-                allSuccessors.push(new Candidate(state, candidate.score + score));
-            }
-        }
+    // Process the queue until it's empty
+    while (queue.length > 0) {
+        // Dequeue the front node
+        const currentNode = queue.shift()!;
+        console.log(currentNode); // Process the current node (e.g., print it)
 
-        // Sort successors by score in descending order
-        allSuccessors.sort((a, b) => b.score - a.score);
+        // Get all neighbors of the current node
+        const neighbors = graph.get(currentNode) || [];
 
-        // Retain only the top `beamWidth` candidates
-        beam = allSuccessors.slice(0, beamWidth);
-
-        // Check if any candidate satisfies the goal condition
-        for (const candidate of beam) {
-            if (isGoalFn(candidate.state)) {
-                return candidate.state; // Return the goal state
+        // Enqueue unvisited neighbors
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                queue.push(neighbor);
+                visited.add(neighbor);
             }
         }
     }
-
-    // If no goal is found, return null
-    return null;
 }
 
-// Example Usage: Text Generation
-type WordSequence = string[];
+// Example usage
+const graph: Graph = new Map([
+    [0, [1, 2]],
+    [1, [2]],
+    [2, [0, 3]],
+    [3, [3]] // Node 3 has a self-loop
+]);
 
-// Successor function: Generate possible next words
-function generateSuccessors(sequence: WordSequence): Array<{ state: WordSequence; score: number }> {
-    const vocabulary = ["cat", "dog", "house", "tree"];
-    const successors: Array<{ state: WordSequence; score: number }> = [];
-    for (const word of vocabulary) {
-        const newState = [...sequence, word];
-        const score = Math.random(); // Random score for demonstration
-        successors.push({ state: newState, score });
-    }
-    return successors;
+console.log("Graph:");
+console.log(graph);
+
+bfs(graph, 2); // Start BFS from node 2
+Graph:
+Map(4) {
+  0 => [ 1, 2 ],
+  1 => [ 2 ],
+  2 => [ 0, 3 ],
+  3 => [ 3 ]
 }
-
-// Goal function: Check if the sequence ends with "house"
-function isGoal(sequence: WordSequence): boolean {
-    return sequence[sequence.length - 1] === "house";
-}
-
-// Run beam search
-const initialState: WordSequence = [];
-const beamWidth = 3;
-const maxDepth = 5;
-
-const result = beamSearch(
-    initialState,
-    beamWidth,
-    maxDepth,
-    generateSuccessors,
-    isGoal
-);
-
-console.log("Result:", result);
+BFS Traversal:
+2
+0
+3
+1
