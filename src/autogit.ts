@@ -1,49 +1,50 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const n = text.length;
+    const m = pattern.length;
 
-    // Step 1: Build a max-heap from the input array
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
+    // Edge case: if the pattern is empty or longer than the text
+    if (m === 0 || m > n) {
+        return [];
     }
 
-    // Step 2: Extract elements one by one from the heap
-    for (let i = n - 1; i > 0; i--) {
-        // Swap the root (maximum element) with the last element
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-
-        // Call heapify on the reduced heap
-        heapify(arr, i, 0);
+    // Step 1: Build the shift table
+    const shiftTable: { [key: string]: number } = {};
+    for (let i = 0; i < m - 1; i++) {
+        shiftTable[pattern[i]] = m - 1 - i;
     }
 
-    return arr;
+    // Default shift for characters not in the pattern
+    const defaultShift = m;
+
+    // Step 2: Search for the pattern in the text
+    const matches: number[] = [];
+    let i = 0;
+
+    while (i <= n - m) {
+        let j = m - 1;
+
+        // Compare the pattern with the text from the end
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the entire pattern matches, record the position
+        if (j < 0) {
+            matches.push(i);
+            i += defaultShift; // Shift by the length of the pattern
+        } else {
+            // Use the shift table to determine how far to move
+            const char = text[i + m - 1];
+            i += shiftTable[char] ?? defaultShift;
+        }
+    }
+
+    return matches;
 }
 
-// Helper function to maintain the max-heap property
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as the root
-    const left = 2 * i + 1; // Left child index
-    const right = 2 * i + 2; // Right child index
+// Example usage
+const text = "abracadabra";
+const pattern = "abra";
+const result = boyerMooreHorspool(text, pattern);
 
-    // If the left child exists and is greater than the root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    // If the right child exists and is greater than the current largest
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If the largest element is not the root, swap and continue heapifying
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-        heapify(arr, n, largest);
-    }
-}
-const array = [12, 11, 13, 5, 6, 7];
-console.log("Original Array:", array);
-
-const sortedArray = heapSort(array);
-console.log("Sorted Array:", sortedArray);
-Original Array: [12, 11, 13, 5, 6, 7]
-Sorted Array: [5, 6, 7, 11, 12, 13]
+console.log("Pattern found at indices:", result); // Output: Pattern found at indices: [0, 7]
