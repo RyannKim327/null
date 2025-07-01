@@ -1,27 +1,18 @@
-function firstNonRepeatingCharacter(input: string): string | null {
-    // Create a map to store the frequency of each character
-    const charCount = new Map<string, number>();
-
-    // First pass: Count the frequency of each character
-    for (const char of input) {
-        charCount.set(char, (charCount.get(char) || 0) + 1);
-    }
-
-    // Second pass: Find the first character with a count of 1
-    for (const char of input) {
-        if (charCount.get(char) === 1) {
-            return char; // Return the first non-repeating character
+function isSortedAscending(array: number[]): boolean {
+    for (let i = 0; i < array.length - 1; i++) {
+        if (array[i] > array[i + 1]) {
+            return false; // The array is not sorted in ascending order
         }
     }
-
-    // If no non-repeating character is found, return null
-    return null;
+    return true; // The array is sorted in ascending order
 }
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [5, 4, 3, 2, 1];
+const array3 = [1, 3, 2, 4, 5];
 
-// Example usage:
-const result = firstNonRepeatingCharacter("swiss");
-console.log(result); // Output: "w"
-console.log(firstNonRepeatingCharacter("swiss")); // Output: "w"
-console.log(firstNonRepeatingCharacter("aabbcc")); // Output: null
-console.log(firstNonRepeatingCharacter("abcdef")); // Output: "a"
-console.log(firstNonRepeatingCharacter("")); // Output: null
+console.log(isSortedAscending(array1)); // Output: true
+console.log(isSortedAscending(array2)); // Output: false
+console.log(isSortedAscending(array3)); // Output: false
+function isSortedAscending(array: number[]): boolean {
+    return array.every((value, index) => index === array.length - 1 || value <= array[index + 1]);
+}
