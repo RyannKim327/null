@@ -1,36 +1,43 @@
-function maxSumSubarray(arr: number[]): { maxSum: number; start: number; end: number } {
-    if (arr.length === 0) {
-        throw new Error("Array cannot be empty");
+// Definition of a linked list node
+class ListNode {
+    value: number;
+    next: ListNode | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    let maxSum = arr[0]; // Holds the maximum sum found so far
-    let currentSum = arr[0]; // Holds the maximum sum ending at the current index
-    let start = 0; // Start index of the maximum sum subarray
-    let tempStart = 0; // Temporary start index for the current subarray
-    let end = 0; // End index of the maximum sum subarray
-
-    for (let i = 1; i < arr.length; i++) {
-        // Decide whether to extend the current subarray or start a new one
-        if (currentSum + arr[i] > arr[i]) {
-            currentSum += arr[i];
-        } else {
-            currentSum = arr[i];
-            tempStart = i; // Update the temporary start index
-        }
-
-        // Update the maximum sum and indices if the current sum is greater
-        if (currentSum > maxSum) {
-            maxSum = currentSum;
-            start = tempStart;
-            end = i;
-        }
-    }
-
-    return { maxSum, start, end };
 }
 
-// Example usage:
-const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
-const result = maxSumSubarray(arr);
-console.log(`Maximum Sum: ${result.maxSum}`);
-console.log(`Subarray: ${arr.slice(result.start, result.end + 1)}`);
+// Function to check if a linked list has a cycle
+function hasCycle(head: ListNode | null): boolean {
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow!.next; // Move slow pointer by 1 step
+        fast = fast.next.next; // Move fast pointer by 2 steps
+
+        if (slow === fast) {
+            // Cycle detected
+            return true;
+        }
+    }
+
+    // No cycle detected
+    return false;
+}
+function hasCycleUsingSet(head: ListNode | null): boolean {
+    const seen = new Set<ListNode>();
+    let current = head;
+
+    while (current !== null) {
+        if (seen.has(current)) {
+            return true; // Cycle detected
+        }
+        seen.add(current);
+        current = current.next;
+    }
+
+    return false; // No cycle detected
+}
