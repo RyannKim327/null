@@ -1,57 +1,95 @@
-import axios, { AxiosError } from 'axios';
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
 
-// Define an interface for the structure of the data we expect to receive
-interface Post {
-  userId: number;
-  id: number;
-  title: string;
-  body: string;
+    constructor(value: T) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
+class BinaryTree<T> {
+    root: TreeNode<T> | null;
 
-// Function to fetch a single post by ID from the JSONPlaceholder API
-async function fetchPostById(postId: number): Promise<Post | null> {
-  try {
-    const response = await axios.get<Post>(`https://jsonplaceholder.typicode.com/posts/${postId}`);
-    
-    // Return the fetched post data
-    return response.data;
-  } catch (error) {
-    // Handle errors using AxiosError type for better error handling
-    if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-      console.error('Axios Error:', axiosError.message);
-      if (axiosError.response) {
-        console.error('Response Data:', axiosError.response.data);
-        console.error('Status Code:', axiosError.response.status);
-      }
-    } else {
-      console.error('Unknown Error:', error);
+    constructor() {
+        this.root = null;
     }
 
-    // Return null in case of an error
-    return null;
-  }
-}
+    // Insert a new value into the binary tree
+    insert(value: T): void {
+        const newNode = new TreeNode(value);
 
-// Example usage of the fetchPostById function
-(async () => {
-  const postId = 1; // Fetching the post with ID 1
-  const post = await fetchPostById(postId);
+        if (!this.root) {
+            // If the tree is empty, set the new node as the root
+            this.root = newNode;
+            return;
+        }
 
-  if (post) {
-    console.log('Fetched Post:', post);
-  } else {
-    console.log('Failed to fetch the post.');
-  }
-})();
-Fetched Post: {
-  userId: 1,
-  id: 1,
-  title: 'sunt aut facere repellat provident occaecati excepturi optio reprehenderit',
-  body: 'quia et suscipit...'
+        // Otherwise, find the correct position for the new node
+        let current = this.root;
+        while (true) {
+            if (value < current.value) {
+                // Go left if the value is less than the current node's value
+                if (!current.left) {
+                    current.left = newNode;
+                    break;
+                }
+                current = current.left;
+            } else {
+                // Go right if the value is greater than or equal to the current node's value
+                if (!current.right) {
+                    current.right = newNode;
+                    break;
+                }
+                current = current.right;
+            }
+        }
+    }
+
+    // In-order traversal (left, root, right)
+    inOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (!node) return result;
+
+        this.inOrderTraversal(node.left, result);
+        result.push(node.value);
+        this.inOrderTraversal(node.right, result);
+
+        return result;
+    }
+
+    // Pre-order traversal (root, left, right)
+    preOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (!node) return result;
+
+        result.push(node.value);
+        this.preOrderTraversal(node.left, result);
+        this.preOrderTraversal(node.right, result);
+
+        return result;
+    }
+
+    // Post-order traversal (left, right, root)
+    postOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (!node) return result;
+
+        this.postOrderTraversal(node.left, result);
+        this.postOrderTraversal(node.right, result);
+        result.push(node.value);
+
+        return result;
+    }
 }
-Axios Error: Request failed with status code 404
-Response Data: { error: "Post not found" }
-Status Code: 404
-Failed to fetch the post.
-npm install axios
+const tree = new BinaryTree<number>();
+
+// Insert values into the tree
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+
+// Perform traversals
+console.log("In-order Traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
+console.log("Pre-order Traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
+console.log("Post-order Traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
