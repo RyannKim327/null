@@ -1,40 +1,66 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings by removing spaces, converting to lowercase, and sorting
-    const normalize = (str: string): string =>
-        str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
+function fibonacciSearch(arr: number[], target: number): number {
+    const n = arr.length;
 
-    return normalize(str1) === normalize(str2);
-}
+    // Initialize Fibonacci numbers
+    let fibMMinus2 = 0; // (m-2)'th Fibonacci number
+    let fibMMinus1 = 1; // (m-1)'th Fibonacci number
+    let fib = fibMMinus1 + fibMMinus2; // m'th Fibonacci number
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-function areAnagrams(str1: string, str2: string): boolean {
-    // Helper function to create a frequency map
-    const buildFrequencyMap = (str: string): Record<string, number> => {
-        const frequency: Record<string, number> = {};
-        for (const char of str.replace(/\s+/g, '').toLowerCase()) {
-            frequency[char] = (frequency[char] || 0) + 1;
-        }
-        return frequency;
-    };
-
-    const freq1 = buildFrequencyMap(str1);
-    const freq2 = buildFrequencyMap(str2);
-
-    // Compare the two frequency maps
-    const keys1 = Object.keys(freq1);
-    const keys2 = Object.keys(freq2);
-
-    if (keys1.length !== keys2.length) return false;
-
-    for (const key of keys1) {
-        if (freq1[key] !== freq2[key]) return false;
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fib < n) {
+        fibMMinus2 = fibMMinus1;
+        fibMMinus1 = fib;
+        fib = fibMMinus1 + fibMMinus2;
     }
 
-    return true;
+    // Marks the eliminated range from the front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fib > 1) {
+        // Check if fibMMinus2 is a valid index
+        let i = Math.min(offset + fibMMinus2, n - 1);
+
+        // If target is greater than the value at index i, cut the subarray from offset to i
+        if (arr[i] < target) {
+            fib = fibMMinus1;
+            fibMMinus1 = fibMMinus2;
+            fibMMinus2 = fib - fibMMinus1;
+            offset = i;
+        }
+        // If target is less than the value at index i, cut the subarray after i+1
+        else if (arr[i] > target) {
+            fib = fibMMinus2;
+            fibMMinus1 -= fibMMinus2;
+            fibMMinus2 = fib - fibMMinus1;
+        }
+        // Element found
+        else {
+            return i;
+        }
+    }
+
+    // Compare the last element with the target
+    if (fibMMinus1 === 1 && arr[offset + 1] === target) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
+// Example usage
+const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const target = 85;
+
+const result = fibonacciSearch(sortedArray, target);
+if (result !== -1) {
+    console.log(`Element found at index: ${result}`);
+} else {
+    console.log("Element not found");
+}
+const sortedArray = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const target = 85;
+
+// Output:
+Element found at index: 8
