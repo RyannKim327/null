@@ -1,119 +1,42 @@
-class TreeNode {
-  value: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
+function isPrime(num: number): boolean {
+    // Step 1: Handle edge cases
+    if (num <= 1) return false; // Numbers <= 1 are not prime
+    if (num === 2) return true; // 2 is the only even prime number
+    if (num % 2 === 0) return false; // Exclude other even numbers
 
-  constructor(value: number) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
-}
-function sumOfNodesRecursive(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-
-  // Add the current node's value to the sum of its left and right subtrees
-  return root.value + sumOfNodesRecursive(root.left) + sumOfNodesRecursive(root.right);
-}
-// Creating a sample binary tree:
-//        1
-//       / \
-//      2   3
-//     / \   \
-//    4   5   6
-
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.right = new TreeNode(6);
-
-const totalSum = sumOfNodesRecursive(root);
-console.log(`The sum of all nodes is: ${totalSum}`); // Output: The sum of all nodes is: 21
-function sumOfNodesIterative(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-
-  let sum = 0;
-  const stack: TreeNode[] = [root];
-
-  while (stack.length > 0) {
-    const currentNode = stack.pop()!;
-    sum += currentNode.value;
-
-    if (currentNode.right !== null) {
-      stack.push(currentNode.right);
+    // Step 2: Check divisors from 3 to √num
+    const sqrt = Math.sqrt(num);
+    for (let i = 3; i <= sqrt; i += 2) {
+        if (num % i === 0) {
+            return false; // Found a divisor, so not prime
+        }
     }
-    if (currentNode.left !== null) {
-      stack.push(currentNode.left);
-    }
-  }
 
-  return sum;
-}
-const totalSumIterative = sumOfNodesIterative(root);
-console.log(`The sum of all nodes (iterative) is: ${totalSumIterative}`); // Output: The sum of all nodes (iterative) is: 21
-class TreeNode {
-  value: number;
-  left: TreeNode | null;
-  right: TreeNode | null;
-
-  constructor(value: number) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+    return true; // No divisors found, so it's prime
 }
 
-// Recursive Sum Function
-function sumOfNodesRecursive(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-  return root.value + sumOfNodesRecursive(root.left) + sumOfNodesRecursive(root.right);
-}
-
-// Iterative Sum Function
-function sumOfNodesIterative(root: TreeNode | null): number {
-  if (root === null) {
-    return 0;
-  }
-
-  let sum = 0;
-  const stack: TreeNode[] = [root];
-
-  while (stack.length > 0) {
-    const currentNode = stack.pop()!;
-    sum += currentNode.value;
-
-    if (currentNode.right !== null) {
-      stack.push(currentNode.right);
-    }
-    if (currentNode.left !== null) {
-      stack.push(currentNode.left);
-    }
-  }
-
-  return sum;
-}
-
-// Building the sample binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-root.right.right = new TreeNode(6);
-
-// Calculating sums
-const totalSumRecursive = sumOfNodesRecursive(root);
-const totalSumIterative = sumOfNodesIterative(root);
-
-console.log(`The sum of all nodes (recursive) is: ${totalSumRecursive}`);
-console.log(`The sum of all nodes (iterative) is: ${totalSumIterative}`);
-The sum of all nodes (recursive) is: 21
-The sum of all nodes (iterative) is: 21
+// Example usage:
+console.log(isPrime(2));  // true
+console.log(isPrime(4));  // false
+console.log(isPrime(17)); // true
+console.log(isPrime(18)); // false
+console.log(isPrime(29)); // true
+const testNumbers = [1, 2, 3, 4, 5, 16, 17, 18, 19, 20, 23, 24, 29, 97, 100];
+testNumbers.forEach(num => {
+    console.log(`Is ${num} prime?`, isPrime(num));
+});
+Is 1 prime? false
+Is 2 prime? true
+Is 3 prime? true
+Is 4 prime? false
+Is 5 prime? true
+Is 16 prime? false
+Is 17 prime? true
+Is 18 prime? false
+Is 19 prime? true
+Is 20 prime? false
+Is 23 prime? true
+Is 24 prime? false
+Is 29 prime? true
+Is 97 prime? true
+Is 100 prime? false
