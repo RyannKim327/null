@@ -1,84 +1,70 @@
-type Node = string | number; // Define the type for nodes (can be string or number)
-type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
+// Definition of a binary tree node
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-/**
- * Depth-Limited Search Algorithm
- * @param graph - The graph represented as an adjacency list
- * @param start - The starting node
- * @param goal - The goal node to find
- * @param limit - The maximum depth to explore
- * @returns A boolean indicating whether the goal was found, and the path if found
- */
-function depthLimitedSearch(
-  graph: Graph,
-  start: Node,
-  goal: Node,
-  limit: number
-): { found: boolean; path: Node[] } {
-  // Helper function for recursive DLS
-  function dlsRecursive(
-    current: Node,
-    depth: number,
-    visited: Set<Node>,
-    path: Node[]
-  ): { found: boolean; path: Node[] } {
-    // Add the current node to the visited set and path
-    visited.add(current);
-    path.push(current);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
 
-    // Base case: If the current node is the goal, return success
-    if (current === goal) {
-      return { found: true, path };
+function countLeafNodes(root: TreeNode | null): number {
+    // Base case: If the node is null, return 0
+    if (root === null) {
+        return 0;
     }
 
-    // Base case: If the depth limit is reached, stop exploring further
-    if (depth === 0) {
-      path.pop(); // Remove the current node from the path
-      return { found: false, path };
+    // Check if the current node is a leaf node
+    if (root.left === null && root.right === null) {
+        return 1;
     }
 
-    // Recursive case: Explore all neighbors
-    const neighbors = graph.get(current) || [];
-    for (const neighbor of neighbors) {
-      if (!visited.has(neighbor)) {
-        const result = dlsRecursive(neighbor, depth - 1, visited, path);
-        if (result.found) {
-          return result; // Goal found, propagate the result
+    // Recursively count leaf nodes in the left and right subtrees
+    const leftLeaves = countLeafNodes(root.left);
+    const rightLeaves = countLeafNodes(root.right);
+
+    return leftLeaves + rightLeaves;
+}
+
+// Example usage
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
+
+console.log("Number of leaf nodes:", countLeafNodes(root)); // Output: 3
+function countLeafNodesIterative(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
+
+    let leafCount = 0;
+    const stack: TreeNode[] = [root];
+
+    while (stack.length > 0) {
+        const currentNode = stack.pop()!; // Pop the top node from the stack
+
+        // Check if the current node is a leaf node
+        if (currentNode.left === null && currentNode.right === null) {
+            leafCount++;
         }
-      }
+
+        // Push the children onto the stack (right first, then left)
+        if (currentNode.right !== null) {
+            stack.push(currentNode.right);
+        }
+        if (currentNode.left !== null) {
+            stack.push(currentNode.left);
+        }
     }
 
-    // Backtrack: Remove the current node from the path
-    path.pop();
-    return { found: false, path };
-  }
-
-  // Initialize the search
-  const visited = new Set<Node>();
-  const path: Node[] = [];
-  return dlsRecursive(start, limit, visited, path);
+    return leafCount;
 }
 
-// Example Usage
-const graph: Graph = new Map([
-  ['A', ['B', 'C']],
-  ['B', ['D', 'E']],
-  ['C', ['F']],
-  ['D', []],
-  ['E', ['G']],
-  ['F', []],
-  ['G', []],
-]);
-
-const startNode: Node = 'A';
-const goalNode: Node = 'G';
-const depthLimit = 3;
-
-const result = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
-if (result.found) {
-  console.log(`Goal found! Path: ${result.path.join(' -> ')}`);
-} else {
-  console.log('Goal not found within the depth limit.');
-}
-Goal found! Path: A -> B -> E -> G
-Goal not found within the depth limit.
+// Example usage
+console.log("Number of leaf nodes (iterative):", countLeafNodesIterative(root)); // Output: 3
