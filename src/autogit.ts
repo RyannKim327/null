@@ -1,64 +1,111 @@
-// Define a graph using an adjacency list
-type Graph = Map<number, number[]>;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-/**
- * Breadth-First Search (BFS) function
- * @param graph - The graph represented as an adjacency list
- * @param startNode - The node to start the BFS from
- */
-function bfs(graph: Graph, startNode: number): void {
-    // Queue to manage the nodes to visit
-    const queue: number[] = [];
-    
-    // Set to track visited nodes
-    const visited: Set<number> = new Set();
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinarySearchTree {
+    root: TreeNode | null;
 
-    // Initialize the BFS by adding the start node to the queue and marking it as visited
-    queue.push(startNode);
-    visited.add(startNode);
+    constructor() {
+        this.root = null;
+    }
 
-    console.log("BFS Traversal:");
+    // Insert a value into the BST
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
 
-    // Process the queue until it's empty
-    while (queue.length > 0) {
-        // Dequeue the front node
-        const currentNode = queue.shift()!;
-        console.log(currentNode); // Process the current node (e.g., print it)
+        if (this.root === null) {
+            this.root = newNode;
+            return;
+        }
 
-        // Get all neighbors of the current node
-        const neighbors = graph.get(currentNode) || [];
-
-        // Enqueue unvisited neighbors
-        for (const neighbor of neighbors) {
-            if (!visited.has(neighbor)) {
-                queue.push(neighbor);
-                visited.add(neighbor);
+        let current = this.root;
+        while (true) {
+            if (value < current.value) {
+                if (current.left === null) {
+                    current.left = newNode;
+                    break;
+                }
+                current = current.left;
+            } else {
+                if (current.right === null) {
+                    current.right = newNode;
+                    break;
+                }
+                current = current.right;
             }
         }
     }
+
+    // Search for a value in the BST
+    search(value: number): boolean {
+        let current = this.root;
+
+        while (current !== null) {
+            if (value === current.value) {
+                return true;
+            } else if (value < current.value) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        return false;
+    }
+
+    // In-order traversal (left, root, right)
+    inOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
+        if (node !== null) {
+            this.inOrderTraversal(node.left, result);
+            result.push(node.value);
+            this.inOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Pre-order traversal (root, left, right)
+    preOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
+        if (node !== null) {
+            result.push(node.value);
+            this.preOrderTraversal(node.left, result);
+            this.preOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Post-order traversal (left, right, root)
+    postOrderTraversal(node: TreeNode | null, result: number[] = []): number[] {
+        if (node !== null) {
+            this.postOrderTraversal(node.left, result);
+            this.postOrderTraversal(node.right, result);
+            result.push(node.value);
+        }
+        return result;
+    }
 }
+const bst = new BinarySearchTree();
 
-// Example usage
-const graph: Graph = new Map([
-    [0, [1, 2]],
-    [1, [2]],
-    [2, [0, 3]],
-    [3, [3]] // Node 3 has a self-loop
-]);
+// Insert values into the BST
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(18);
 
-console.log("Graph:");
-console.log(graph);
+// Search for values
+console.log(bst.search(7));  // Output: true
+console.log(bst.search(20)); // Output: false
 
-bfs(graph, 2); // Start BFS from node 2
-Graph:
-Map(4) {
-  0 => [ 1, 2 ],
-  1 => [ 2 ],
-  2 => [ 0, 3 ],
-  3 => [ 3 ]
-}
-BFS Traversal:
-2
-0
-3
-1
+// Perform traversals
+console.log("In-order traversal:", bst.inOrderTraversal(bst.root));   // Output: [3, 5, 7, 10, 12, 15, 18]
+console.log("Pre-order traversal:", bst.preOrderTraversal(bst.root)); // Output: [10, 5, 3, 7, 15, 12, 18]
+console.log("Post-order traversal:", bst.postOrderTraversal(bst.root)); // Output: [3, 7, 5, 12, 18, 15, 10]
