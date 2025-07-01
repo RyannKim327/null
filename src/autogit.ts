@@ -1,50 +1,41 @@
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const n = text.length;
-    const m = pattern.length;
-
-    // Edge case: if the pattern is empty or longer than the text
-    if (m === 0 || m > n) {
-        return [];
+// Function to calculate the mean of an array of numbers
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        // Handle empty array case
+        throw new Error("Cannot calculate the mean of an empty array.");
+        // Alternatively, you could return NaN or 0 based on your requirements
+        // return NaN;
+        // return 0;
     }
 
-    // Step 1: Build the shift table
-    const shiftTable: { [key: string]: number } = {};
-    for (let i = 0; i < m - 1; i++) {
-        shiftTable[pattern[i]] = m - 1 - i;
-    }
-
-    // Default shift for characters not in the pattern
-    const defaultShift = m;
-
-    // Step 2: Search for the pattern in the text
-    const matches: number[] = [];
-    let i = 0;
-
-    while (i <= n - m) {
-        let j = m - 1;
-
-        // Compare the pattern with the text from the end
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        // If the entire pattern matches, record the position
-        if (j < 0) {
-            matches.push(i);
-            i += defaultShift; // Shift by the length of the pattern
-        } else {
-            // Use the shift table to determine how far to move
-            const char = text[i + m - 1];
-            i += shiftTable[char] ?? defaultShift;
-        }
-    }
-
-    return matches;
+    const sum = numbers.reduce((accumulator, current) => accumulator + current, 0);
+    const mean = sum / numbers.length;
+    return mean;
 }
 
 // Example usage
-const text = "abracadabra";
-const pattern = "abra";
-const result = boyerMooreHorspool(text, pattern);
+const numberList1: number[] = [10, 20, 30, 40, 50];
+const numberList2: number[] = [5, 15, 25];
+const emptyList: number[] = [];
 
-console.log("Pattern found at indices:", result); // Output: Pattern found at indices: [0, 7]
+try {
+    console.log(`Mean of numberList1: ${calculateMean(numberList1)}`); // Output: 30
+    console.log(`Mean of numberList2: ${calculateMean(numberList2)}`); // Output: 15
+    console.log(`Mean of emptyList: ${calculateMean(emptyList)}`);
+} catch (error) {
+    console.error(error.message); // Output: Cannot calculate the mean of an empty array.
+}
+function calculateMeanWithLoop(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("Cannot calculate the mean of an empty array.");
+    }
+
+    let sum = 0;
+    for (let num of numbers) {
+        sum += num;
+    }
+    return sum / numbers.length;
+}
+
+// Example usage
+console.log(`Mean using loop: ${calculateMeanWithLoop([8, 16, 24])}`); // Output: 16
