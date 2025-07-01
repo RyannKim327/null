@@ -1,65 +1,58 @@
-function computeLPSArray(pattern: string): number[] {
-    const lps: number[] = new Array(pattern.length).fill(0);
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                // Fall back to the previous longest prefix suffix
-                length = lps[length - 1];
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the current node is null, return 0
+    if (root === null) {
+        return 0;
+    }
+
+    // Recursively calculate the sum of the left subtree, right subtree, and the current node's value
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+}
+// Helper function to create a binary tree for testing
+function createBinaryTree(): TreeNode {
+    const root = new TreeNode(1);
+    root.left = new TreeNode(2);
+    root.right = new TreeNode(3);
+    root.left.left = new TreeNode(4);
+    root.left.right = new TreeNode(5);
+    root.right.left = new TreeNode(6);
+    root.right.right = new TreeNode(7);
+
+    return root;
+}
+
+// Create the binary tree and calculate the sum of all nodes
+const root = createBinaryTree();
+console.log("Sum of all nodes:", sumOfNodes(root)); // Output: 28
+function sumOfNodesIterative(root: TreeNode | null): number {
+    if (root === null) {
+        return 0;
+    }
+
+    let sum = 0;
+    const stack: TreeNode[] = [root];
+
+    while (stack.length > 0) {
+        const currentNode = stack.pop()!;
+        sum += currentNode.value;
+
+        if (currentNode.right !== null) {
+            stack.push(currentNode.right);
+        }
+        if (currentNode.left !== null) {
+            stack.push(currentNode.left);
         }
     }
 
-    return lps;
+    return sum;
 }
-
-function KMPSearch(text: string, pattern: string): number[] {
-    const result: number[] = [];
-    const n = text.length;
-    const m = pattern.length;
-
-    if (m === 0) return result; // Edge case: empty pattern
-
-    const lps = computeLPSArray(pattern);
-
-    let i = 0; // Index for text
-    let j = 0; // Index for pattern
-
-    while (i < n) {
-        if (text[i] === pattern[j]) {
-            i++;
-            j++;
-        }
-
-        if (j === m) {
-            // Match found at index i - j
-            result.push(i - j);
-            j = lps[j - 1]; // Continue searching for next occurrence
-        } else if (i < n && text[i] !== pattern[j]) {
-            if (j !== 0) {
-                j = lps[j - 1];
-            } else {
-                i++;
-            }
-        }
-    }
-
-    return result;
-}
-
-// Example Usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = KMPSearch(text, pattern);
-
-console.log("Pattern found at indices:", matches);
-Pattern found at indices: [10]
