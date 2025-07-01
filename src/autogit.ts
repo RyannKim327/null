@@ -1,80 +1,119 @@
-local-part@domain
-^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
-function validateEmail(email: string): boolean {
-    const regex = new RegExp(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/);
-    return regex.test(email);
+class TreeNode {
+  value: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(value: number) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
+function sumOfNodesRecursive(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
 
-// Usage
-const email1 = "example.user@domain.com";
-const email2 = "invalid-email@domain";
-
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
-function validateEmail(email: string): boolean {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email);
+  // Add the current node's value to the sum of its left and right subtrees
+  return root.value + sumOfNodesRecursive(root.left) + sumOfNodesRecursive(root.right);
 }
+// Creating a sample binary tree:
+//        1
+//       / \
+//      2   3
+//     / \   \
+//    4   5   6
 
-// Usage remains the same
-function validateEmail(email: string | null | undefined): boolean {
-    if (!email) {
-        return false; // Early return for null or undefined
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
+
+const totalSum = sumOfNodesRecursive(root);
+console.log(`The sum of all nodes is: ${totalSum}`); // Output: The sum of all nodes is: 21
+function sumOfNodesIterative(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
+
+  let sum = 0;
+  const stack: TreeNode[] = [root];
+
+  while (stack.length > 0) {
+    const currentNode = stack.pop()!;
+    sum += currentNode.value;
+
+    if (currentNode.right !== null) {
+      stack.push(currentNode.right);
     }
-    
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return regex.test(email.trim());
+    if (currentNode.left !== null) {
+      stack.push(currentNode.left);
+    }
+  }
+
+  return sum;
+}
+const totalSumIterative = sumOfNodesIterative(root);
+console.log(`The sum of all nodes (iterative) is: ${totalSumIterative}`); // Output: The sum of all nodes (iterative) is: 21
+class TreeNode {
+  value: number;
+  left: TreeNode | null;
+  right: TreeNode | null;
+
+  constructor(value: number) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
 }
 
-// Usage
-const email1 = " example.user@domain.com ";
-const email2 = "";
-
-console.log(validateEmail(email1)); // true
-console.log(validateEmail(email2)); // false
-function validateEmail(email: string | null | undefined): boolean {
-    if (!email) {
-        console.error("Email is required.");
-        return false;
-    }
-
-    const trimmedEmail = email.trim();
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    if (!regex.test(trimmedEmail)) {
-        console.error("Invalid email format.");
-        return false;
-    }
-
-    console.log("Email is valid.");
-    return true;
+// Recursive Sum Function
+function sumOfNodesRecursive(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
+  return root.value + sumOfNodesRecursive(root.left) + sumOfNodesRecursive(root.right);
 }
 
-// Test cases
-const emails = [
-    "user@example.com",
-    "user.name+tag@sub.domain.com",
-    "user@domain",
-    "user@domain.c",
-    "",
-    null,
-    " invalid @email.com"
-];
+// Iterative Sum Function
+function sumOfNodesIterative(root: TreeNode | null): number {
+  if (root === null) {
+    return 0;
+  }
 
-emails.forEach((email, index) => {
-    console.log(`Test case ${index + 1}:`, validateEmail(email));
-});
-Email is valid.
-true
-Email is valid.
-true
-Invalid email format.
-false
-Invalid email format.
-false
-Email is required.
-false
-Email is required.
-false
-Invalid email format.
-false
+  let sum = 0;
+  const stack: TreeNode[] = [root];
+
+  while (stack.length > 0) {
+    const currentNode = stack.pop()!;
+    sum += currentNode.value;
+
+    if (currentNode.right !== null) {
+      stack.push(currentNode.right);
+    }
+    if (currentNode.left !== null) {
+      stack.push(currentNode.left);
+    }
+  }
+
+  return sum;
+}
+
+// Building the sample binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+root.right.right = new TreeNode(6);
+
+// Calculating sums
+const totalSumRecursive = sumOfNodesRecursive(root);
+const totalSumIterative = sumOfNodesIterative(root);
+
+console.log(`The sum of all nodes (recursive) is: ${totalSumRecursive}`);
+console.log(`The sum of all nodes (iterative) is: ${totalSumIterative}`);
+The sum of all nodes (recursive) is: 21
+The sum of all nodes (iterative) is: 21
