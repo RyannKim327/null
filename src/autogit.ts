@@ -1,42 +1,90 @@
-function isPrime(num: number): boolean {
-    // Step 1: Handle edge cases
-    if (num <= 1) return false; // Numbers <= 1 are not prime
-    if (num === 2) return true; // 2 is the only even prime number
-    if (num % 2 === 0) return false; // Exclude other even numbers
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
 
-    // Step 2: Check divisors from 3 to √num
-    const sqrt = Math.sqrt(num);
-    for (let i = 3; i <= sqrt; i += 2) {
-        if (num % i === 0) {
-            return false; // Found a divisor, so not prime
+    constructor(value: T) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinaryTree<T> {
+    root: TreeNode<T> | null;
+
+    constructor() {
+        this.root = null; // The tree starts empty
+    }
+
+    // Insert a value into the binary tree
+    insert(value: T): void {
+        const newNode = new TreeNode(value);
+
+        if (this.root === null) {
+            // If the tree is empty, set the new node as the root
+            this.root = newNode;
+        } else {
+            // Otherwise, find the correct position to insert the node
+            this.insertNode(this.root, newNode);
         }
     }
 
-    return true; // No divisors found, so it's prime
-}
+    private insertNode(node: TreeNode<T>, newNode: TreeNode<T>): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
 
-// Example usage:
-console.log(isPrime(2));  // true
-console.log(isPrime(4));  // false
-console.log(isPrime(17)); // true
-console.log(isPrime(18)); // false
-console.log(isPrime(29)); // true
-const testNumbers = [1, 2, 3, 4, 5, 16, 17, 18, 19, 20, 23, 24, 29, 97, 100];
-testNumbers.forEach(num => {
-    console.log(`Is ${num} prime?`, isPrime(num));
-});
-Is 1 prime? false
-Is 2 prime? true
-Is 3 prime? true
-Is 4 prime? false
-Is 5 prime? true
-Is 16 prime? false
-Is 17 prime? true
-Is 18 prime? false
-Is 19 prime? true
-Is 20 prime? false
-Is 23 prime? true
-Is 24 prime? false
-Is 29 prime? true
-Is 97 prime? true
-Is 100 prime? false
+    // In-order traversal (left, root, right)
+    inOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            this.inOrderTraversal(node.left, result);
+            result.push(node.value);
+            this.inOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Pre-order traversal (root, left, right)
+    preOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            result.push(node.value);
+            this.preOrderTraversal(node.left, result);
+            this.preOrderTraversal(node.right, result);
+        }
+        return result;
+    }
+
+    // Post-order traversal (left, right, root)
+    postOrderTraversal(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
+        if (node !== null) {
+            this.postOrderTraversal(node.left, result);
+            this.postOrderTraversal(node.right, result);
+            result.push(node.value);
+        }
+        return result;
+    }
+}
+const tree = new BinaryTree<number>();
+
+// Insert values into the binary tree
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+
+// Perform traversals
+console.log("In-order traversal:", tree.inOrderTraversal()); // [3, 5, 7, 10, 15]
+console.log("Pre-order traversal:", tree.preOrderTraversal()); // [10, 5, 3, 7, 15]
+console.log("Post-order traversal:", tree.postOrderTraversal()); // [3, 7, 5, 15, 10]
