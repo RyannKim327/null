@@ -1,29 +1,50 @@
-function quickSort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
+function reverseWords(input: string): string {
+    // Step 1: Split the string into an array of words
+    const wordsArray = input.split(' ');
 
-    // Step 1: Choose a pivot (we'll use the last element for simplicity)
-    const pivot = arr[arr.length - 1];
+    // Step 2: Reverse the array of words
+    const reversedArray = wordsArray.reverse();
 
-    // Step 2: Partition the array into two subarrays
-    const left: number[] = [];  // Elements less than or equal to the pivot
-    const right: number[] = []; // Elements greater than the pivot
+    // Step 3: Join the reversed array back into a string
+    const reversedString = reversedArray.join(' ');
 
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] <= pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    // Step 3: Recursively sort the subarrays and combine them with the pivot
-    return [...quickSort(left), pivot, ...quickSort(right)];
+    return reversedString;
 }
 
 // Example usage:
-const unsortedArray = [34, 7, 23, 32, 5, 62];
-const sortedArray = quickSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+const originalString = "Hello world this is TypeScript";
+const reversed = reverseWords(originalString);
+console.log(reversed); // Output: "TypeScript is this world Hello"
+function reverseWordsEnhanced(input: string): string {
+    // Trim the input to remove leading and trailing whitespace
+    // Split by one or more whitespace characters using regex
+    const wordsArray = input.trim().split(/\s+/);
+
+    // Filter out any empty strings resulting from multiple spaces
+    const filteredArray = wordsArray.filter(word => word.length > 0);
+
+    // Reverse the array of words
+    const reversedArray = filteredArray.reverse();
+
+    // Join the reversed array back into a string with single spaces
+    const reversedString = reversedArray.join(' ');
+
+    return reversedString;
+}
+
+// Example usage handling edge cases:
+const complexString = "  Hello   world! This is  TypeScript.  ";
+const reversedComplex = reverseWordsEnhanced(complexString);
+console.log(reversedComplex); 
+// Output: "TypeScript. is This world! Hello"
+const reverseWords = (input: string): string =>
+    input
+        .trim()
+        .split(/\s+/)
+        .filter(word => word.length > 0)
+        .reverse()
+        .join(' ');
+
+// Usage remains the same
+const originalString = "Hello world this is TypeScript";
+console.log(reverseWords(originalString)); // Output: "TypeScript is this world Hello"
