@@ -1,33 +1,40 @@
-const str = "Hello, world!";
-const substring = "world";
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings by removing spaces, converting to lowercase, and sorting
+    const normalize = (str: string): string =>
+        str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
 
-const containsSubstring = str.includes(substring);
+    return normalize(str1) === normalize(str2);
+}
 
-console.log(containsSubstring); // Output: true
-const str = "Hello, world!";
-const substring = "world";
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+function areAnagrams(str1: string, str2: string): boolean {
+    // Helper function to create a frequency map
+    const buildFrequencyMap = (str: string): Record<string, number> => {
+        const frequency: Record<string, number> = {};
+        for (const char of str.replace(/\s+/g, '').toLowerCase()) {
+            frequency[char] = (frequency[char] || 0) + 1;
+        }
+        return frequency;
+    };
 
-const containsSubstring = str.indexOf(substring) !== -1;
+    const freq1 = buildFrequencyMap(str1);
+    const freq2 = buildFrequencyMap(str2);
 
-console.log(containsSubstring); // Output: true
-const str = "Hello, world!";
-const substring = "world";
+    // Compare the two frequency maps
+    const keys1 = Object.keys(freq1);
+    const keys2 = Object.keys(freq2);
 
-const regex = new RegExp(substring);
-const containsSubstring = regex.test(str);
+    if (keys1.length !== keys2.length) return false;
 
-console.log(containsSubstring); // Output: true
-const str = "Hello, world!";
-const containsSubstring = /world/.test(str);
+    for (const key of keys1) {
+        if (freq1[key] !== freq2[key]) return false;
+    }
 
-console.log(containsSubstring); // Output: true
-const str = "Hello, World!";
-const substring = "world";
+    return true;
+}
 
-const containsSubstring = str.toLowerCase().includes(substring.toLowerCase());
-
-console.log(containsSubstring); // Output: true
-const str = "Hello, World!";
-const containsSubstring = /world/i.test(str);
-
-console.log(containsSubstring); // Output: true
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
