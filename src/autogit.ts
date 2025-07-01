@@ -1,32 +1,84 @@
-function largestPrimeFactor(n: number): number {
-    if (n < 2) {
-        throw new Error("Input must be greater than or equal to 2.");
+type Node = string | number; // Define the type for nodes (can be string or number)
+type Graph = Map<Node, Node[]>; // Adjacency list representation of the graph
+
+/**
+ * Depth-Limited Search Algorithm
+ * @param graph - The graph represented as an adjacency list
+ * @param start - The starting node
+ * @param goal - The goal node to find
+ * @param limit - The maximum depth to explore
+ * @returns A boolean indicating whether the goal was found, and the path if found
+ */
+function depthLimitedSearch(
+  graph: Graph,
+  start: Node,
+  goal: Node,
+  limit: number
+): { found: boolean; path: Node[] } {
+  // Helper function for recursive DLS
+  function dlsRecursive(
+    current: Node,
+    depth: number,
+    visited: Set<Node>,
+    path: Node[]
+  ): { found: boolean; path: Node[] } {
+    // Add the current node to the visited set and path
+    visited.add(current);
+    path.push(current);
+
+    // Base case: If the current node is the goal, return success
+    if (current === goal) {
+      return { found: true, path };
     }
 
-    let largestFactor = 0;
-
-    // Step 1: Divide out all factors of 2
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    // Base case: If the depth limit is reached, stop exploring further
+    if (depth === 0) {
+      path.pop(); // Remove the current node from the path
+      return { found: false, path };
     }
 
-    // Step 2: Check odd factors from 3 onwards
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    // Recursive case: Explore all neighbors
+    const neighbors = graph.get(current) || [];
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        const result = dlsRecursive(neighbor, depth - 1, visited, path);
+        if (result.found) {
+          return result; // Goal found, propagate the result
         }
+      }
     }
 
-    // Step 3: If n is still greater than 2, it must be a prime number
-    if (n > 2) {
-        largestFactor = n;
-    }
+    // Backtrack: Remove the current node from the path
+    path.pop();
+    return { found: false, path };
+  }
 
-    return largestFactor;
+  // Initialize the search
+  const visited = new Set<Node>();
+  const path: Node[] = [];
+  return dlsRecursive(start, limit, visited, path);
 }
 
-// Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is:`, largestPrimeFactor(number));
+// Example Usage
+const graph: Graph = new Map([
+  ['A', ['B', 'C']],
+  ['B', ['D', 'E']],
+  ['C', ['F']],
+  ['D', []],
+  ['E', ['G']],
+  ['F', []],
+  ['G', []],
+]);
+
+const startNode: Node = 'A';
+const goalNode: Node = 'G';
+const depthLimit = 3;
+
+const result = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
+if (result.found) {
+  console.log(`Goal found! Path: ${result.path.join(' -> ')}`);
+} else {
+  console.log('Goal not found within the depth limit.');
+}
+Goal found! Path: A -> B -> E -> G
+Goal not found within the depth limit.
