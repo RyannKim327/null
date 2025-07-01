@@ -1,50 +1,36 @@
-function reverseWords(input: string): string {
-    // Step 1: Split the string into an array of words
-    const wordsArray = input.split(' ');
+function maxSumSubarray(arr: number[]): { maxSum: number; start: number; end: number } {
+    if (arr.length === 0) {
+        throw new Error("Array cannot be empty");
+    }
 
-    // Step 2: Reverse the array of words
-    const reversedArray = wordsArray.reverse();
+    let maxSum = arr[0]; // Holds the maximum sum found so far
+    let currentSum = arr[0]; // Holds the maximum sum ending at the current index
+    let start = 0; // Start index of the maximum sum subarray
+    let tempStart = 0; // Temporary start index for the current subarray
+    let end = 0; // End index of the maximum sum subarray
 
-    // Step 3: Join the reversed array back into a string
-    const reversedString = reversedArray.join(' ');
+    for (let i = 1; i < arr.length; i++) {
+        // Decide whether to extend the current subarray or start a new one
+        if (currentSum + arr[i] > arr[i]) {
+            currentSum += arr[i];
+        } else {
+            currentSum = arr[i];
+            tempStart = i; // Update the temporary start index
+        }
 
-    return reversedString;
+        // Update the maximum sum and indices if the current sum is greater
+        if (currentSum > maxSum) {
+            maxSum = currentSum;
+            start = tempStart;
+            end = i;
+        }
+    }
+
+    return { maxSum, start, end };
 }
 
 // Example usage:
-const originalString = "Hello world this is TypeScript";
-const reversed = reverseWords(originalString);
-console.log(reversed); // Output: "TypeScript is this world Hello"
-function reverseWordsEnhanced(input: string): string {
-    // Trim the input to remove leading and trailing whitespace
-    // Split by one or more whitespace characters using regex
-    const wordsArray = input.trim().split(/\s+/);
-
-    // Filter out any empty strings resulting from multiple spaces
-    const filteredArray = wordsArray.filter(word => word.length > 0);
-
-    // Reverse the array of words
-    const reversedArray = filteredArray.reverse();
-
-    // Join the reversed array back into a string with single spaces
-    const reversedString = reversedArray.join(' ');
-
-    return reversedString;
-}
-
-// Example usage handling edge cases:
-const complexString = "  Hello   world! This is  TypeScript.  ";
-const reversedComplex = reverseWordsEnhanced(complexString);
-console.log(reversedComplex); 
-// Output: "TypeScript. is This world! Hello"
-const reverseWords = (input: string): string =>
-    input
-        .trim()
-        .split(/\s+/)
-        .filter(word => word.length > 0)
-        .reverse()
-        .join(' ');
-
-// Usage remains the same
-const originalString = "Hello world this is TypeScript";
-console.log(reverseWords(originalString)); // Output: "TypeScript is this world Hello"
+const arr = [-2, 1, -3, 4, -1, 2, 1, -5, 4];
+const result = maxSumSubarray(arr);
+console.log(`Maximum Sum: ${result.maxSum}`);
+console.log(`Subarray: ${arr.slice(result.start, result.end + 1)}`);
