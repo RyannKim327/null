@@ -1,46 +1,41 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    // Move first pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (first === null) {
-            return null; // n is greater than the length of the list
-        }
-        first = first.next;
-    }
-
-    // Move both pointers until first reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second.next;
-    }
-
-    // second now points to the nth node from the end
-    return second;
+function areAnagrams(str1: string, str2: string): boolean {
+  const format = (str: string) =>
+    str
+      .toLowerCase()
+      .replace(/[\W_]+/g, '')  // remove non-alphanumeric characters
+      .split('')
+      .sort()
+      .join('');
+    
+  return format(str1) === format(str2);
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
+function areAnagrams(str1: string, str2: string): boolean {
+  const format = (str: string) =>
+    str.toLowerCase().replace(/[\W_]+/g, '');
 
-const n = 2;
-const result = findNthFromEnd(head, n);
-if (result) {
-    console.log(`The ${n}th node from the end is: ${result.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
+  const s1 = format(str1);
+  const s2 = format(str2);
+
+  if (s1.length !== s2.length) return false;
+
+  const charCount: Record<string, number> = {};
+
+  for (const char of s1) {
+    charCount[char] = (charCount[char] || 0) + 1;
+  }
+
+  for (const char of s2) {
+    if (!charCount[char]) return false;
+    charCount[char]--;
+  }
+
+  return true;
 }
+
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "bellow"));  // false
