@@ -1,25 +1,23 @@
-npm install -g typescript
-// Import the 'readline' module to handle input from the command line
-import * as readline from 'readline';
+function isPalindrome(s: string): boolean {
+    // Normalize the string: Remove non-alphanumeric characters and convert to lowercase
+    // This step is necessary only if you want to ignore spaces and punctuation
+    s = s.replace(/[^0-9a-zA-Z]/g, '').toLowerCase();
+    
+    let left = 0;
+    let right = s.length - 1;
 
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
+    while (left < right) {
+        if (s[left] !== s[right]) {
+            return false; // Not a palindrome if characters don't match
+        }
 
-// Function to ask for the user's name
-function askForName(): void {
-    rl.question('What is your name? ', (name: string) => {
-        greetUser(name);
-    });
+        left++;  // Move the left pointer to the right
+        right--; // Move the right pointer to the left
+    }
+
+    return true; // All characters matched, it's a palindrome
 }
 
-// Function to greet the user
-function greetUser(name: string): void {
-    console.log(`Hello, ${name}! Welcome to TypeScript.`);
-    rl.close(); // Close the readline interface
-}
-
-// Start the program by asking for the user's name
-askForName();
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
