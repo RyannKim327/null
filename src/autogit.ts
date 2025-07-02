@@ -1,10 +1,50 @@
-const array: number[] = [1, 2, 3, 4, 5];
-console.log("Original Array:", array);
+class Node {
+    value: string;
+    children: Node[];
 
-// Reverse the array
-array.reverse();
-console.log("Reversed Array:", array);
-const originalArray: number[] = [1, 2, 3, 4, 5];
-const reversedArray: number[] = originalArray.slice().reverse(); // Creates a new array
-console.log("Original Array:", originalArray);
-console.log("Reversed Array:", reversedArray);
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
+    }
+
+    addChild(child: Node) {
+        this.children.push(child);
+    }
+}
+
+function depthLimitedSearch(node: Node, depth: number, target: string): boolean {
+    // Check if the current node is the target
+    if (node.value === target) {
+        return true;
+    }
+
+    // If the depth limit is reached, return false
+    if (depth === 0) {
+        return false;
+    }
+
+    // Recursively search in the children nodes
+    for (const child of node.children) {
+        if (depthLimitedSearch(child, depth - 1, target)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+// Example usage
+const root = new Node("A");
+const child1 = new Node("B");
+const child2 = new Node("C");
+const child3 = new Node("D");
+
+root.addChild(child1);
+root.addChild(child2);
+child1.addChild(child3);
+
+const target = "D";
+const depthLimit = 2;
+
+const found = depthLimitedSearch(root, depthLimit, target);
+console.log(`Target ${target} found: ${found}`);
