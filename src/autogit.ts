@@ -1,62 +1,57 @@
-type Edge = {
-  u: number; // start vertex
-  v: number; // end vertex
-  weight: number; // weight of the edge
-};
+type State = any; // Define your state type here
+type Score = number; // Define the type for the score
 
-class Graph {
-  private edges: Edge[];
-  private numVertices: number;
+// Function to generate next states from the current state
+function generateNextStates(state: State): State[] {
+    // Implement your logic to generate next states
+    return []; // Return an array of next states
+}
 
-  constructor(numVertices: number) {
-    this.numVertices = numVertices;
-    this.edges = [];
-  }
+// Function to evaluate the score of a state
+function evaluateState(state: State): Score {
+    // Implement your logic to evaluate the state
+    return 0; // Return a score for the state
+}
 
-  addEdge(u: number, v: number, weight: number) {
-    this.edges.push({ u, v, weight });
-  }
+// Beam Search Implementation
+function beamSearch(initialState: State, beamWidth: number, maxIterations: number): State | null {
+    let currentStates: State[] = [initialState];
 
-  bellmanFord(source: number) {
-    const distances = new Array(this.numVertices).fill(Infinity);
-    distances[source] = 0;
+    for (let iteration = 0; iteration < maxIterations; iteration++) {
+        const nextStates: State[] = [];
 
-    // Relax edges up to (numVertices - 1) times
-    for (let i = 0; i < this.numVertices - 1; i++) {
-      for (const edge of this.edges) {
-        const { u, v, weight } = edge;
-        if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-          distances[v] = distances[u] + weight;
+        // Generate next states for each current state
+        for (const state of currentStates) {
+            const generatedStates = generateNextStates(state);
+            nextStates.push(...generatedStates);
         }
-      }
+
+        // Evaluate the next states and sort them by score
+        const scoredStates = nextStates.map(state => ({
+            state,
+            score: evaluateState(state)
+        }));
+
+        // Sort by score and keep the top `beamWidth` states
+        scoredStates.sort((a, b) => b.score - a.score);
+        currentStates = scoredStates.slice(0, beamWidth).map(item => item.state);
     }
 
-    // Check for negative weight cycles
-    for (const edge of this.edges) {
-      const { u, v, weight } = edge;
-      if (distances[u] !== Infinity && distances[u] + weight < distances[v]) {
-        throw new Error("Graph contains a negative weight cycle");
-      }
+    // Return the best state found after all iterations
+    if (currentStates.length > 0) {
+        const bestState = currentStates.reduce((best, state) => {
+            return evaluateState(state) > evaluateState(best) ? state : best;
+        });
+        return bestState;
     }
 
-    return distances;
-  }
+    return null; // No state found
 }
 
 // Example usage
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
+const initialState: State = {}; // Define your initial state
+const beamWidth = 3; // Define the beam width
+const maxIterations = 10; // Define the maximum number of iterations
 
-try {
-  const distances = graph.bellmanFord(0);
-  console.log('Vertex Distance from Source:', distances);
-} catch (error) {
-  console.error(error.message);
-}
+const bestState = beamSearch(initialState, beamWidth, maxIterations);
+console.log('Best State Found:', bestState);
