@@ -1,55 +1,50 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+function buildShiftTable(pattern: string): { [char: string]: number } {
+    const shiftTable: { [char: string]: number } = {};
+    const patternLength = pattern.length;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-
-        if (j === pattern.length) {
-            result.push(i - j); // Match found, add the starting index
-            j = lps[j - 1]; // Use LPS to skip unnecessary comparisons
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip
-            } else {
-                i++;
-            }
-        }
+    // For all characters except the last one in the pattern
+    for (let i = 0; i < patternLength - 1; i++) {
+        shiftTable[pattern[i]] = patternLength - 1 - i;
     }
 
-    return result;
+    return shiftTable;
 }
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
+function boyerMooreHorspoolSearch(text: string, pattern: string): number[] {
+    const shiftTable = buildShiftTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const resultIndices: number[] = [];
 
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
+    let index = 0;
+
+    while (index <= textLength - patternLength) {
+        let matchIndex = patternLength - 1;
+
+        // Compare pattern from the end
+        while (matchIndex >= 0 && pattern[matchIndex] === text[index + matchIndex]) {
+            matchIndex--;
+        }
+
+        if (matchIndex < 0) {
+            // Match found
+            resultIndices.push(index);
+            // Shift pattern to align after current match
+            index += patternLength;
         } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
+            const mismatchedChar = text[index + patternLength - 1];
+            // Use shift table; if character not in table, shift by pattern length
+            const shift = shiftTable[mismatchedChar] || patternLength;
+            index += shift;
         }
     }
 
-    return lps;
+    return resultIndices;
 }
 
 // Example usage:
 const text = "ABABDABACDABABCABAB";
 const pattern = "ABABCABAB";
-const matches = KMPSearch(pattern, text);
+
+const matches = boyerMooreHorspoolSearch(text, pattern);
 console.log("Pattern found at indices:", matches);
