@@ -1,23 +1,55 @@
-function isPalindrome(s: string): boolean {
-    // Normalize the string: Remove non-alphanumeric characters and convert to lowercase
-    // This step is necessary only if you want to ignore spaces and punctuation
-    s = s.replace(/[^0-9a-zA-Z]/g, '').toLowerCase();
-    
-    let left = 0;
-    let right = s.length - 1;
+function KMPSearch(pattern: string, text: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    while (left < right) {
-        if (s[left] !== s[right]) {
-            return false; // Not a palindrome if characters don't match
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        left++;  // Move the left pointer to the right
-        right--; // Move the right pointer to the left
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index
+            j = lps[j - 1]; // Use LPS to skip unnecessary comparisons
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip
+            } else {
+                i++;
+            }
+        }
     }
 
-    return true; // All characters matched, it's a palindrome
+    return result;
+}
+
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use the previous LPS value
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+
+    return lps;
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = KMPSearch(pattern, text);
+console.log("Pattern found at indices:", matches);
