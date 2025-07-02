@@ -1,53 +1,34 @@
-class Graph {
-    private adjacencyList: Map<string, string[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
+function binarySearch(arr: number[], target: number, start: number, end: number): number {
+    // Base case: If the interval is invalid, return -1
+    if (start > end) {
+        return -1; 
     }
 
-    addVertex(vertex: string) {
-        if (!this.adjacencyList.has(vertex)) {
-            this.adjacencyList.set(vertex, []);
-        }
-    }
+    // Calculate the mid index
+    const mid = Math.floor((start + end) / 2);
 
-    addEdge(vertex1: string, vertex2: string) {
-        this.addVertex(vertex1);
-        this.addVertex(vertex2);
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
+    // Check if the mid element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
+    } 
     
-    bfs(start: string) {
-        const visited = new Set<string>();
-        const queue = [];
-        const result = [];
-
-        queue.push(start);
-        visited.add(start);
-
-        while (queue.length > 0) {
-            const vertex = queue.shift()!;
-            result.push(vertex);
-
-            const neighbors = this.adjacencyList.get(vertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
-        }
-
-        return result;
-    }
+    // If target is less than mid's element, search in the left half
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, start, mid - 1);
+    } 
+    
+    // If target is greater than mid's element, search in the right half
+    return binarySearch(arr, target, mid + 1, end);
 }
-const graph = new Graph();
-graph.addEdge("A", "B");
-graph.addEdge("A", "C");
-graph.addEdge("B", "D");
-graph.addEdge("C", "D");
-graph.addEdge("D", "E");
 
-const bfsResult = graph.bfs("A");
-console.log(bfsResult); // Output: [ 'A', 'B', 'C', 'D', 'E' ]
+// Helper function to call the recursive binary search
+function recursiveBinarySearch(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
+}
+
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const targetValue = 7;
+const resultIndex = recursiveBinarySearch(sortedArray, targetValue);
+
+console.log(resultIndex);  // Output: 6 (the index of the target value)
