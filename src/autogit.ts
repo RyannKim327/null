@@ -1,48 +1,24 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function insertionSort(arr: number[]): number[] {
+    // Traverse through 1 to arr.length
+    for (let i = 1; i < arr.length; i++) {
+        // The current element to be positioned
+        const currentValue = arr[i];
+        let j = i - 1;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+        // Move elements of arr[0..i-1], that are greater than currentValue,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > currentValue) {
+            arr[j + 1] = arr[j]; // Shift element to the right
+            j--;
+        }
+        
+        // Place currentValue at the right position
+        arr[j + 1] = currentValue;
     }
+    return arr; // Returning the sorted array
 }
 
-class LinkedList<T> {
-    head: Node<T> | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
-}
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-
-console.log("Length of the linked list:", list.length()); // Output: Length of the linked list: 3
+// Example usage
+const unsortedArray = [5, 3, 8, 4, 2];
+const sortedArray = insertionSort(unsortedArray);
+console.log(sortedArray); // Output: [2, 3, 4, 5, 8]
