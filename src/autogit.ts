@@ -1,19 +1,26 @@
-function countOccurrences(text: string, word: string): number {
-    // Normalize the text and word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+const numbers: number[] = [10, 20, 5, 40, 15];
+const maxValue = Math.max(...numbers);
+console.log(maxValue); // Output: 40
+const numbers: number[] = [10, 20, 5, 40, 15];
+const maxValue = numbers.reduce((max, current) => (current > max ? current : max), numbers[0]);
+console.log(maxValue); // Output: 40
+const numbers: number[] = [10, 20, 5, 40, 15];
+let maxValue = numbers[0];
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/);
-
-    // Filter the array to count occurrences of the specified word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
-
-    return count;
+for (let i = 1; i < numbers.length; i++) {
+  if (numbers[i] > maxValue) {
+    maxValue = numbers[i];
+  }
 }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const word = "hello";
-const occurrences = countOccurrences(text, word);
-console.log(`The word "${word}" occurs ${occurrences} times.`);
+console.log(maxValue); // Output: 40
+const numbers: number[] = [10, 20, 5, 40, 15];
+let maxValue = numbers[0];
+
+numbers.forEach((number) => {
+  if (number > maxValue) {
+    maxValue = number;
+  }
+});
+
+console.log(maxValue); // Output: 40
