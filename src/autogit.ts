@@ -1,54 +1,29 @@
-class Edge {
-    constructor(public from: number, public to: number, public weight: number) {}
+function binarySearch<T>(array: T[], target: T): number {
+    let left = 0;
+    let right = array.length - 1;
+
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+        
+        if (array[mid] === target) {
+            return mid; // Target found, return the index
+        } else if (array[mid] < target) {
+            left = mid + 1; // Search the right half
+        } else {
+            right = mid - 1; // Search the left half
+        }
+    }
+
+    return -1; // Target not found
 }
 
-class Graph {
-    private edges: Edge[] = [];
-    private vertexCount: number;
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 5;
 
-    constructor(vertexCount: number) {
-        this.vertexCount = vertexCount;
-    }
-
-    addEdge(from: number, to: number, weight: number) {
-        this.edges.push(new Edge(from, to, weight));
-    }
-
-    bellmanFord(source: number): number[] | string {
-        // Step 1: Initialize distances from source to all vertices as infinite
-        const distances: number[] = new Array(this.vertexCount).fill(Infinity);
-        distances[source] = 0;
-
-        // Step 2: Relax all edges |V| - 1 times
-        for (let i = 0; i < this.vertexCount - 1; i++) {
-            for (const edge of this.edges) {
-                if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
-                    distances[edge.to] = distances[edge.from] + edge.weight;
-                }
-            }
-        }
-
-        // Step 3: Check for negative-weight cycles
-        for (const edge of this.edges) {
-            if (distances[edge.from] !== Infinity && distances[edge.from] + edge.weight < distances[edge.to]) {
-                return "Graph contains a negative-weight cycle";
-            }
-        }
-
-        return distances;
-    }
+const resultIndex = binarySearch(sortedArray, target);
+if (resultIndex !== -1) {
+    console.log(`Target found at index: ${resultIndex}`);
+} else {
+    console.log('Target not found');
 }
-
-// Example usage:
-const graph = new Graph(5);
-graph.addEdge(0, 1, -1);
-graph.addEdge(0, 2, 4);
-graph.addEdge(1, 2, 3);
-graph.addEdge(1, 3, 2);
-graph.addEdge(1, 4, 2);
-graph.addEdge(3, 2, 5);
-graph.addEdge(3, 1, 1);
-graph.addEdge(4, 3, -3);
-
-const distances = graph.bellmanFord(0);
-console.log(distances);
