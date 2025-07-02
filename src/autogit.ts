@@ -1,57 +1,31 @@
-type State = any; // Define your state type here
-type Score = number; // Define the type for the score
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
 
-// Function to generate next states from the current state
-function generateNextStates(state: State): State[] {
-    // Implement your logic to generate next states
-    return []; // Return an array of next states
-}
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
 
-// Function to evaluate the score of a state
-function evaluateState(state: State): Score {
-    // Implement your logic to evaluate the state
-    return 0; // Return a score for the state
-}
+    // Sort the rotations
+    rotations.sort();
 
-// Beam Search Implementation
-function beamSearch(initialState: State, beamWidth: number, maxIterations: number): State | null {
-    let currentStates: State[] = [initialState];
+    // Build the transformed string and find the original index
+    let transformed = '';
+    let originalIndex = 0;
 
-    for (let iteration = 0; iteration < maxIterations; iteration++) {
-        const nextStates: State[] = [];
-
-        // Generate next states for each current state
-        for (const state of currentStates) {
-            const generatedStates = generateNextStates(state);
-            nextStates.push(...generatedStates);
+    for (let i = 0; i < n; i++) {
+        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
+        if (rotations[i] === input) {
+            originalIndex = i; // Store the index of the original string
         }
-
-        // Evaluate the next states and sort them by score
-        const scoredStates = nextStates.map(state => ({
-            state,
-            score: evaluateState(state)
-        }));
-
-        // Sort by score and keep the top `beamWidth` states
-        scoredStates.sort((a, b) => b.score - a.score);
-        currentStates = scoredStates.slice(0, beamWidth).map(item => item.state);
     }
 
-    // Return the best state found after all iterations
-    if (currentStates.length > 0) {
-        const bestState = currentStates.reduce((best, state) => {
-            return evaluateState(state) > evaluateState(best) ? state : best;
-        });
-        return bestState;
-    }
-
-    return null; // No state found
+    return { transformed, index: originalIndex };
 }
 
 // Example usage
-const initialState: State = {}; // Define your initial state
-const beamWidth = 3; // Define the beam width
-const maxIterations = 10; // Define the maximum number of iterations
-
-const bestState = beamSearch(initialState, beamWidth, maxIterations);
-console.log('Best State Found:', bestState);
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log(`Transformed: ${transformed}, Original Index: ${index}`);
+Transformed: annb$aa, Original Index: 5
