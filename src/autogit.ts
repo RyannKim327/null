@@ -1,92 +1,66 @@
-// Define a class for the nodes of the tree
-class TreeNode<T> {
-  value: T;
-  left: TreeNode<T> | null;
-  right: TreeNode<T> | null;
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-  constructor(value: T) {
-    this.value = value;
-    this.left = null;
-    this.right = null;
-  }
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
 }
+class Queue<T> {
+    private head: Node<T> | null = null; // The front of the queue
+    private tail: Node<T> | null = null; // The end of the queue
+    private length: number = 0; // To keep track of the number of elements in the queue
 
-// Define a binary tree class
-class BinaryTree<T> {
-  root: TreeNode<T> | null;
-
-  constructor() {
-    this.root = null;
-  }
-
-  // Insert a value in the binary tree (for simplicity, assuming a binary search tree)
-  insert(value: T): void {
-    const newNode = new TreeNode(value);
-
-    if (this.root === null) {
-      this.root = newNode;
-    } else {
-      this.insertNode(this.root, newNode);
+    // Method to add an element to the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the current tail to the new node
+        }
+        this.tail = newNode; // Move the tail to the new node
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, head should also point to the new node
+        }
+        this.length++;
     }
-  }
 
-  private insertNode(node: TreeNode<T>, newNode: TreeNode<T>): void {
-    // Assuming T can be compared with < and >
-    if (newNode.value < node.value) {
-      if (node.left === null) {
-        node.left = newNode;
-      } else {
-        this.insertNode(node.left, newNode);
-      }
-    } else {
-      if (node.right === null) {
-        node.right = newNode;
-      } else {
-        this.insertNode(node.right, newNode);
-      }
+    // Method to remove and return the front element of the queue
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Return null if the queue is empty
+        }
+        const dequeuedValue = this.head.value; // Store the value to return
+        this.head = this.head.next; // Move the head to the next node
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, set tail to null
+        }
+        this.length--;
+        return dequeuedValue; // Return the value of the removed element
     }
-  }
 
-  // Traversal methods:
-
-  // In-order traversal (left, root, right)
-  inorder(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-    if (node !== null) {
-      this.inorder(node.left, result);
-      result.push(node.value);
-      this.inorder(node.right, result);
+    // Method to get the front element without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null;
     }
-    return result;
-  }
 
-  // Pre-order traversal (root, left, right)
-  preorder(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-    if (node !== null) {
-      result.push(node.value);
-      this.preorder(node.left, result);
-      this.preorder(node.right, result);
+    // Method to check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
     }
-    return result;
-  }
 
-  // Post-order traversal (left, right, root)
-  postorder(node: TreeNode<T> | null = this.root, result: T[] = []): T[] {
-    if (node !== null) {
-      this.postorder(node.left, result);
-      this.postorder(node.right, result);
-      result.push(node.value);
+    // Method to get the size of the queue
+    size(): number {
+        return this.length;
     }
-    return result;
-  }
 }
+const queue = new Queue<number>();
 
-// Example usage:
-const tree = new BinaryTree<number>();
-tree.insert(10);
-tree.insert(5);
-tree.insert(15);
-tree.insert(7);
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
 
-console.log("In-order traversal:", tree.inorder());   // [5, 7, 10, 15]
-console.log("Pre-order traversal:", tree.preorder()); // [10, 5, 7, 15]
-console.log("Post-order traversal:", tree.postorder());// [7, 5, 15, 10]
+console.log(queue.dequeue()); // 1
+console.log(queue.peek());     // 2
+console.log(queue.isEmpty());  // false
+console.log(queue.size());     // 2
