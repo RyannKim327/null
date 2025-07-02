@@ -1,55 +1,38 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const lps = computeLPSArray(pattern);
-    const result: number[] = [];
-    let i = 0; // index for text
-    let j = 0; // index for pattern
+function isPalindrome(s: string): boolean {
+    let left: number = 0;
+    let right: number = s.length - 1;
 
-    while (i < text.length) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
+    while (left < right) {
+        // Move the left pointer to the next valid character
+        while (left < right && !isValidChar(s[left])) {
+            left++;
+        }
+        // Move the right pointer to the previous valid character
+        while (left < right && !isValidChar(s[right])) {
+            right--;
         }
 
-        if (j === pattern.length) {
-            result.push(i - j); // Found a match
-            j = lps[j - 1]; // Use LPS to skip unnecessary comparisons
-        } else if (i < text.length && pattern[j] !== text[i]) {
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip
-            } else {
-                i++;
-            }
+        // Compare characters at both pointers
+        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+            return false;
         }
+
+        // Move both pointers inward
+        left++;
+        right--;
     }
 
-    return result;
+    return true;
 }
 
-function computeLPSArray(pattern: string): number[] {
-    const lps = new Array(pattern.length).fill(0);
-    let length = 0; // length of the previous longest prefix suffix
-    let i = 1;
-
-    while (i < pattern.length) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previous LPS value
-            } else {
-                lps[i] = 0;
-                i++;
-            }
-        }
-    }
-
-    return lps;
+// Helper function to determine if the character is alphanumeric
+function isValidChar(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return (code >= 48 && code <= 57) || // 0-9
+           (code >= 65 && code <= 90) || // A-Z
+           (code >= 97 && code <= 122);   // a-z
 }
 
 // Example usage
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = KMPSearch(pattern, text);
-console.log("Pattern found at indices:", result);
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
