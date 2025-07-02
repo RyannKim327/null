@@ -1,50 +1,42 @@
-function buildShiftTable(pattern: string): { [char: string]: number } {
-    const shiftTable: { [char: string]: number } = {};
-    const patternLength = pattern.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // For all characters except the last one in the pattern
-    for (let i = 0; i < patternLength - 1; i++) {
-        shiftTable[pattern[i]] = patternLength - 1 - i;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+function reverseLinkedList(head: ListNode | null): ListNode | null {
+    let prev: ListNode | null = null;
+    let current: ListNode | null = head;
+
+    while (current !== null) {
+        const nextTemp: ListNode | null = current.next; // Store next node
+        current.next = prev; // Reverse the link
+        prev = current; // Move prev to current
+        current = nextTemp; // Move to the next node
     }
 
-    return shiftTable;
+    return prev; // New head of the reversed list
 }
+// Create a linked list: 1 -> 2 -> 3 -> null
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
 
-function boyerMooreHorspoolSearch(text: string, pattern: string): number[] {
-    const shiftTable = buildShiftTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const resultIndices: number[] = [];
+// Reverse the linked list
+const reversedHead = reverseLinkedList(head);
 
-    let index = 0;
-
-    while (index <= textLength - patternLength) {
-        let matchIndex = patternLength - 1;
-
-        // Compare pattern from the end
-        while (matchIndex >= 0 && pattern[matchIndex] === text[index + matchIndex]) {
-            matchIndex--;
-        }
-
-        if (matchIndex < 0) {
-            // Match found
-            resultIndices.push(index);
-            // Shift pattern to align after current match
-            index += patternLength;
-        } else {
-            const mismatchedChar = text[index + patternLength - 1];
-            // Use shift table; if character not in table, shift by pattern length
-            const shift = shiftTable[mismatchedChar] || patternLength;
-            index += shift;
-        }
+// Function to print the linked list
+function printList(head: ListNode | null): void {
+    let current: ListNode | null = head;
+    while (current !== null) {
+        process.stdout.write(current.value.toString() + " -> ");
+        current = current.next;
     }
-
-    return resultIndices;
+    console.log("null");
 }
 
-// Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-
-const matches = boyerMooreHorspoolSearch(text, pattern);
-console.log("Pattern found at indices:", matches);
+// Print the reversed linked list
+printList(reversedHead); // Output: 3 -> 2 -> 1 -> null
