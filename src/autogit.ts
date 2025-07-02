@@ -1,37 +1,29 @@
-mkdir typescript-api-example
-cd typescript-api-example
-npm init -y
-npm install typescript @types/node axios
-npx tsc --init
-import axios from "axios";
+function binarySearch(arr: number[], target: number): number {
+  let left = 0;
+  let right = arr.length - 1;
 
-async function fetchPosts() {
-    try {
-        // Make a GET request to the JSONPlaceholder posts endpoint
-        const response = await axios.get("https://jsonplaceholder.typicode.com/posts");
-        
-        // Log the response data
-        console.log("Posts:", response.data);
+  while (left <= right) {
+    const mid = Math.floor((left + right) / 2);
 
-        // Optionally, you can do something with the posts
-        response.data.forEach((post: { id: number; title: string }) => {
-            console.log(`Post ID: ${post.id}, Title: ${post.title}`);
-        });
-    } catch (error) {
-        // Handle error
-        if (axios.isAxiosError(error)) {
-            console.error("Error fetching posts:", error.message);
-        } else {
-            console.error("Unexpected error:", error);
-        }
+    if (arr[mid] === target) {
+      return mid; // Target found
+    } else if (arr[mid] < target) {
+      left = mid + 1; // Search right half
+    } else {
+      right = mid - 1; // Search left half
     }
+  }
+
+  return -1; // Target not found
 }
 
-// Call the fetchPosts function
-fetchPosts();
-npx tsc
-node dist/index.js
-Posts: [Array of post objects...]
-Post ID: 1, Title: Lorem ipsum dolor sit amet
-Post ID: 2, Title: Qui est esse?
-...
+// Example usage:
+const sortedArray = [1, 3, 5, 7, 9, 11, 13];
+const targetValue = 7;
+
+const index = binarySearch(sortedArray, targetValue);
+if (index !== -1) {
+  console.log(`Found ${targetValue} at index ${index}.`);
+} else {
+  console.log(`${targetValue} not found in the array.`);
+}
