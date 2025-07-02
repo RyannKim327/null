@@ -1,38 +1,60 @@
-function isPalindrome(s: string): boolean {
-    let left: number = 0;
-    let right: number = s.length - 1;
+type Graph = { [key: string]: string[] };
 
-    while (left < right) {
-        // Move the left pointer to the next valid character
-        while (left < right && !isValidChar(s[left])) {
-            left++;
-        }
-        // Move the right pointer to the previous valid character
-        while (left < right && !isValidChar(s[right])) {
-            right--;
-        }
+function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    // Mark the current node as visited
+    visited.add(start);
+    console.log(start); // Process the current node (e.g., print it)
 
-        // Compare characters at both pointers
-        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
-            return false;
+    // Recur for all the vertices adjacent to this vertex
+    for (const neighbor of graph[start]) {
+        if (!visited.has(neighbor)) {
+            dfsRecursive(graph, neighbor, visited);
         }
-
-        // Move both pointers inward
-        left++;
-        right--;
     }
-
-    return true;
 }
 
-// Helper function to determine if the character is alphanumeric
-function isValidChar(char: string): boolean {
-    const code = char.charCodeAt(0);
-    return (code >= 48 && code <= 57) || // 0-9
-           (code >= 65 && code <= 90) || // A-Z
-           (code >= 97 && code <= 122);   // a-z
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
+
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function dfsIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (!visited.has(node)) {
+            visited.add(node);
+            console.log(node); // Process the current node (e.g., print it)
+
+            // Add all unvisited neighbors to the stack
+            for (const neighbor of graph[node]) {
+                if (!visited.has(neighbor)) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
 }
 
-// Example usage
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['A', 'D', 'E'],
+    C: ['A', 'F'],
+    D: ['B'],
+    E: ['B', 'F'],
+    F: ['C', 'E'],
+};
+
+dfsIterative(graph, 'A');
