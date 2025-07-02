@@ -1,32 +1,35 @@
-function quicksort(arr: number[]): number[] {
-    if (arr.length <= 1) {
-        return arr;
-    }
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    // Choosing the pivot (here, the middle element)
-    const pivotIndex = Math.floor(arr.length / 2);
-    const pivot = arr[pivotIndex];
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
 
-    // Arrays to hold less, equal, and greater elements
-    const less: number[] = [];
-    const equal: number[] = [];
-    const greater: number[] = [];
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found at index pos
+        }
 
-    for (const num of arr) {
-        if (num < pivot) {
-            less.push(num);
-        } else if (num > pivot) {
-            greater.push(num);
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
         } else {
-            equal.push(num);
+            // If target is smaller, ignore the right half
+            high = pos - 1;
         }
     }
 
-    // Recursively sort less and greater arrays and concatenate results
-    return [...quicksort(less), ...equal, ...quicksort(greater)];
+    return -1; // Target not found
 }
 
-// Example usage:
-const unsorted = [33, 10, 55, 71, 29, 3];
-const sorted = quicksort(unsorted);
-console.log(sorted);  // Output: [3, 10, 29, 33, 55, 71]
+// Example usage
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const resultIndex = interpolationSearch(sortedArray, targetValue);
+
+if (resultIndex !== -1) {
+    console.log(`Element found at index: ${resultIndex}`);
+} else {
+    console.log('Element not found in the array.');
+}
