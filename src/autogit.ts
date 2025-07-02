@@ -1,53 +1,47 @@
-class Node {
-    public value: string;
-    public children: Node[];
+// Define the type for the graph
+type Graph = {
+    [key: string]: string[]; // Each node points to an array of its neighbors
+};
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
+// BFS function
+function bfs(graph: Graph, startNode: string): string[] {
+    const visited: Set<string> = new Set(); // To keep track of visited nodes
+    const queue: string[] = []; // Queue for BFS
+    const result: string[] = []; // To store the order of traversal
 
-    // Method to add children to the node
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
+    // Start with the initial node
+    queue.push(startNode);
+    visited.add(startNode);
 
-function depthLimitedSearch(node: Node, target: string, depthLimit: number): boolean {
-    // Check for depth limit
-    if (depthLimit < 0) {
-        return false; // Exceeded depth limit
-    }
+    while (queue.length > 0) {
+        const currentNode = queue.shift(); // Dequeue a node
+        if (currentNode) {
+            result.push(currentNode); // Process the current node
 
-    // Check if the current node's value is the target
-    if (node.value === target) {
-        return true; // Found the target
-    }
-
-    // If not found, search in children
-    for (let child of node.children) {
-        if (depthLimitedSearch(child, target, depthLimit - 1)) {
-            return true; // Target found in child
+            // Get all neighbors of the current node
+            const neighbors = graph[currentNode] || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor); // Mark neighbor as visited
+                    queue.push(neighbor); // Enqueue the neighbor
+                }
+            }
         }
     }
 
-    return false; // Target not found in this path
+    return result; // Return the order of traversal
 }
 
-// Example usage:
-const root = new Node('A');
-const child1 = new Node('B');
-const child2 = new Node('C');
-const grandchild1 = new Node('D');
-const grandchild2 = new Node('E');
+// Example usage
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
 
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(grandchild1);
-child1.addChild(grandchild2);
-
-const targetValue = 'E';
-const depthLimit = 2;
-
-const found = depthLimitedSearch(root, targetValue, depthLimit);
-console.log(`Target "${targetValue}" found: ${found}`);
+const startNode = 'A';
+const bfsResult = bfs(graph, startNode);
+console.log(bfsResult); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
