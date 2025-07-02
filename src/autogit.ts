@@ -1,31 +1,41 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const rotations: string[] = [];
+function longestCommonSubsequence(str1: string, str2: string): string {
+    const m = str1.length;
+    const n = str2.length;
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
-    }
+    // Create a 2D array to store lengths of longest common subsequence
+    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
 
-    // Sort the rotations
-    rotations.sort();
-
-    // Build the transformed string and find the original index
-    let transformed = '';
-    let originalIndex = 0;
-
-    for (let i = 0; i < n; i++) {
-        transformed += rotations[i][n - 1]; // Take the last character of each sorted rotation
-        if (rotations[i] === input) {
-            originalIndex = i; // Store the index of the original string
+    // Fill the dp array
+    for (let i = 1; i <= m; i++) {
+        for (let j = 1; j <= n; j++) {
+            if (str1[i - 1] === str2[j - 1]) {
+                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
+            } else {
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take the max from left or top
+            }
         }
     }
 
-    return { transformed, index: originalIndex };
+    // Backtrack to find the LCS
+    let lcs = '';
+    let i = m, j = n;
+    while (i > 0 && j > 0) {
+        if (str1[i - 1] === str2[j - 1]) {
+            lcs = str1[i - 1] + lcs; // If characters match, add to LCS
+            i--;
+            j--;
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            i--; // Move up
+        } else {
+            j--; // Move left
+        }
+    }
+
+    return lcs; // Return the longest common subsequence
 }
 
 // Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log(`Transformed: ${transformed}, Original Index: ${index}`);
-Transformed: annb$aa, Original Index: 5
+const str1 = "AGGTAB";
+const str2 = "GXTXAYB";
+const lcs = longestCommonSubsequence(str1, str2);
+console.log(`Longest Common Subsequence: ${lcs}`); // Output: "GTAB"
