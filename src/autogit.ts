@@ -1,124 +1,65 @@
-class Node {
-    value: number;
-    left: Node | null;
-    right: Node | null;
+class ListNode {
+  value: number;
+  next: ListNode | null = null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+  constructor(value: number) {
+    this.value = value;
+  }
 }
-class BinarySearchTree {
-    private root: Node | null = null;
 
-    insert(value: number): void {
-        const newNode = new Node(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
-        }
+class LinkedList {
+  head: ListNode | null = null;
+
+  // Method to append node to the linked list
+  append(value: number) {
+    const newNode = new ListNode(value);
+    if (!this.head) {
+      this.head = newNode;
+      return;
+    }
+    let current = this.head;
+    while (current.next) {
+      current = current.next;
+    }
+    current.next = newNode;
+  }
+
+  // Method to find the nth node from the end
+  findNthFromEnd(n: number): ListNode | null {
+    let fast = this.head;
+    let slow = this.head;
+
+    // Move fast n steps ahead
+    for (let i = 0; i < n; i++) {
+      if (fast === null) {
+        return null; // n is larger than the length of the list
+      }
+      fast = fast.next;
     }
 
-    private insertNode(node: Node, newNode: Node): void {
-        if (newNode.value < node.value) {
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
+    // Move both pointers until fast reaches the end
+    while (fast) {
+      fast = fast.next;
+      slow = slow.next;
     }
 
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: Node | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // value is equal to node.value
-        }
-    }
-
-    delete(value: number): void {
-        this.root = this.deleteNode(this.root, value);
-    }
-
-    private deleteNode(node: Node | null, value: number): Node | null {
-        if (node === null) {
-            return null;
-        }
-        
-        if (value < node.value) {
-            node.left = this.deleteNode(node.left, value);
-        } else if (value > node.value) {
-            node.right = this.deleteNode(node.right, value);
-        } else {
-            // Node to be deleted found
-            if (node.left === null && node.right === null) {
-                // Case 1: No children
-                return null;
-            } else if (node.left === null) {
-                // Case 2: One child (right)
-                return node.right;
-            } else if (node.right === null) {
-                // Case 2: One child (left)
-                return node.left;
-            }
-            // Case 3: Two children
-            const successor = this.findMin(node.right);
-            node.value = successor.value;
-            node.right = this.deleteNode(node.right, successor.value);
-        }
-        return node;
-    }
-
-    private findMin(node: Node): Node {
-        while (node.left !== null) {
-            node = node.left;
-        }
-        return node;
-    }
-
-    inOrderTraversal(callback: (value: number) => void): void {
-        this.inOrder(this.root, callback);
-    }
-
-    private inOrder(node: Node | null, callback: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrder(node.left, callback);
-            callback(node.value);
-            this.inOrder(node.right, callback);
-        }
-    }
+    return slow; // slow is now at the nth node from the end
+  }
 }
-const bst = new BinarySearchTree();
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
 
-console.log("In-order traversal:");
-bst.inOrderTraversal(value => console.log(value)); // Outputs: 3, 5, 7, 10, 15
+// Example usage
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
-console.log("Search for 7:", bst.search(7)); // Outputs: true
-console.log("Search for 20:", bst.search(20)); // Outputs: false
+const n = 2; // For example, to get the 2nd node from the end
+const resultNode = list.findNthFromEnd(n);
 
-bst.delete(5);
-console.log("In-order traversal after deleting 5:");
-bst.inOrderTraversal(value => console.log(value)); // Outputs: 3, 7, 10, 15
+if (resultNode) {
+  console.log(`The ${n}th node from the end is: ${resultNode.value}`);
+} else {
+  console.log(`The list is shorter than ${n} nodes.`);
+}
