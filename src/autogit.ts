@@ -1,25 +1,19 @@
-function bubbleSort(arr: number[]): number[] {
-  const n = arr.length;
-  let swapped: boolean;
+function countOccurrences(text: string, word: string): number {
+    // Normalize the text and word to lower case to make the search case-insensitive
+    const normalizedText = text.toLowerCase();
+    const normalizedWord = word.toLowerCase();
 
-  for (let i = 0; i < n - 1; i++) {
-    swapped = false;
-    // Last i elements are already sorted
-    for (let j = 0; j < n - i - 1; j++) {
-      if (arr[j] > arr[j + 1]) {
-        // Swap arr[j] and arr[j + 1]
-        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-        swapped = true;
-      }
-    }
-    // If no two elements were swapped by inner loop, then break
-    if (!swapped) {
-      break;
-    }
-  }
-  return arr;
+    // Split the text into an array of words
+    const wordsArray = normalizedText.split(/\s+/);
+
+    // Filter the array to count occurrences of the specified word
+    const count = wordsArray.filter(w => w === normalizedWord).length;
+
+    return count;
 }
 
-// Example usage:
-const numbers = [64, 34, 25, 12, 22, 11, 90];
-console.log('Sorted array:', bubbleSort(numbers));
+// Example usage
+const text = "Hello world! This is a test. Hello again, world!";
+const word = "hello";
+const occurrences = countOccurrences(text, word);
+console.log(`The word "${word}" occurs ${occurrences} times.`);
