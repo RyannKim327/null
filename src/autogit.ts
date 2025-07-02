@@ -1,16 +1,13 @@
-function isPalindrome(str: string): boolean {
-    // Normalize the string: remove non-alphanumeric characters and convert to lowercase
-    const normalizedStr = str.replace(/[^a-z0-9]/gi, '').toLowerCase();
-    
-    // Get the reversed string
-    const reversedStr = normalizedStr.split('').reverse().join('');
-    
-    // Check if the normalized string is equal to its reverse
-    return normalizedStr === reversedStr;
+function calculateMean(numbers: number[]): number {
+  if (numbers.length === 0) {
+    throw new Error("Cannot calculate mean of an empty list");
+  }
+  
+  const sum = numbers.reduce((acc, num) => acc + num, 0);
+  const mean = sum / numbers.length;
+  return mean;
 }
 
 // Example usage:
-console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
-console.log(isPalindrome("race a car")); // false
-console.log(isPalindrome("")); // true
-console.log(isPalindrome("No 'x' in Nixon")); // true
+const myNumbers = [10, 20, 30, 40, 50];
+console.log(calculateMean(myNumbers)); // Output: 30
