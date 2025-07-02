@@ -1,99 +1,138 @@
-class PriorityQueue {
-    private items: { node: string; priority: number }[] = [];
+class Node {
+    value: number;
+    next: Node | null;
 
-    enqueue(node: string, priority: number) {
-        this.items.push({ node, priority });
-        this.items.sort((a, b) => a.priority - b.priority); // sort by priority
-    }
-
-    dequeue() {
-        return this.items.shift(); // remove and return the item with the highest priority (lowest number)
-    }
-
-    isEmpty() {
-        return this.items.length === 0;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
 
-class Graph {
-    private adjacencyList: Map<string, {node: string, weight: number}[]>;
+class LinkedList {
+    head: Node | null;
 
     constructor() {
-        this.adjacencyList = new Map();
+        this.head = null;
     }
 
-    addVertex(vertex: string) {
-        this.adjacencyList.set(vertex, []);
-    }
-
-    addEdge(start: string, end: string, weight: number) {
-        this.adjacencyList.get(start)?.push({ node: end, weight });
-        this.adjacencyList.get(end)?.push({ node: start, weight }); // If graph is undirected
-    }
-
-    dijkstra(start: string) {
-        const distances: Map<string, number> = new Map();
-        const previous: Map<string, string | null> = new Map();
-        const pq = new PriorityQueue();
-
-        // Initialize all distances to Infinity and start node to 0
-        this.adjacencyList.forEach((_, vertex) => {
-            distances.set(vertex, Infinity);
-            previous.set(vertex, null);
-        });
-        distances.set(start, 0);
-        pq.enqueue(start, 0);
-
-        while (!pq.isEmpty()) {
-            const { node: currentNode } = pq.dequeue()!;
-            const currentDistance = distances.get(currentNode)!;
-
-            // Explore neighbors of current node
-            for (const neighbor of this.adjacencyList.get(currentNode) || []) {
-                const totalDistance = currentDistance + neighbor.weight;
-
-                if (totalDistance < distances.get(neighbor.node)!) {
-                    distances.set(neighbor.node, totalDistance);
-                    previous.set(neighbor.node, currentNode);
-                    pq.enqueue(neighbor.node, totalDistance);
-                }
-            }
+    // Method to append a new node with a given value
+    append(value: number) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
-
-        return { distances, previous };
-    }
-
-    getShortestPath(start: string, end: string) {
-        const { previous } = this.dijkstra(start);
-        const path: string[] = [];
-        let currentNode: string | null = end;
-
-        while (currentNode) {
-            path.unshift(currentNode);
-            currentNode = previous.get(currentNode);
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
         }
-
-        return path.length > 0 && path[0] === start ? path : []; // Return the path or empty if it doesn't start with the start node
+        current.next = newNode;
     }
+
+    // Method to print the linked list
+    printList() {
+        let current = this.head;
+        while (current) {
+            process.stdout.write(current.value + (current.next ? " -> " : ""));
+            current = current.next;
+        }
+        console.log();
+    }
+}
+function reverseLinkedList(head: Node | null): Node | null {
+    let prev: Node | null = null;
+    let current = head;
+    let next: Node | null = null;
+
+    while (current) {
+        next = current.next; // Store the next node
+        current.next = prev; // Reverse the link
+        prev = current;      // Move prev to current node
+        current = next;      // Move to the next node
+    }
+    return prev; // New head of the reversed list
+}
+// Example usage
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
+
+console.log("Original Linked List:");
+list.printList();
+
+list.head = reverseLinkedList(list.head);
+
+console.log("Reversed Linked List:");
+list.printList();
+class Node {
+    value: number;
+    next: Node | null;
+
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class LinkedList {
+    head: Node | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    append(value: number) {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    printList() {
+        let current = this.head;
+        while (current) {
+            process.stdout.write(current.value + (current.next ? " -> " : ""));
+            current = current.next;
+        }
+        console.log();
+    }
+}
+
+function reverseLinkedList(head: Node | null): Node | null {
+    let prev: Node | null = null;
+    let current = head;
+    let next: Node | null = null;
+
+    while (current) {
+        next = current.next;
+        current.next = prev;
+        prev = current;
+        current = next;
+    }
+    return prev;
 }
 
 // Example usage
-const graph = new Graph();
+const list = new LinkedList();
+list.append(1);
+list.append(2);
+list.append(3);
+list.append(4);
+list.append(5);
 
-// Adding vertices
-graph.addVertex('A');
-graph.addVertex('B');
-graph.addVertex('C');
-graph.addVertex('D');
+console.log("Original Linked List:");
+list.printList();
 
-// Adding edges (with weights)
-graph.addEdge('A', 'B', 1);
-graph.addEdge('A', 'C', 4);
-graph.addEdge('B', 'C', 2);
-graph.addEdge('B', 'D', 5);
-graph.addEdge('C', 'D', 1);
+list.head = reverseLinkedList(list.head);
 
-// Find shortest paths from A
-const shortestPaths = graph.dijkstra('A');
-console.log(shortestPaths.distances); // Output distances from A to all nodes
-console.log(graph.getShortestPath('A', 'D')); // Output shortest path from A to D
+console.log("Reversed Linked List:");
+list.printList();
