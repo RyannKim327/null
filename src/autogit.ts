@@ -1,34 +1,35 @@
-function binarySearch(arr: number[], target: number, start: number, end: number): number {
-    // Base case: If the interval is invalid, return -1
-    if (start > end) {
-        return -1; 
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
+
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Estimate the position of the target
+        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+
+        // Check if the target is found
+        if (arr[pos] === target) {
+            return pos; // Target found at index pos
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            high = pos - 1;
+        }
     }
 
-    // Calculate the mid index
-    const mid = Math.floor((start + end) / 2);
-
-    // Check if the mid element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
-    } 
-    
-    // If target is less than mid's element, search in the left half
-    if (target < arr[mid]) {
-        return binarySearch(arr, target, start, mid - 1);
-    } 
-    
-    // If target is greater than mid's element, search in the right half
-    return binarySearch(arr, target, mid + 1, end);
-}
-
-// Helper function to call the recursive binary search
-function recursiveBinarySearch(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+    return -1; // Target not found
 }
 
 // Example usage:
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const targetValue = 7;
-const resultIndex = recursiveBinarySearch(sortedArray, targetValue);
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const resultIndex = interpolationSearch(sortedArray, targetValue);
 
-console.log(resultIndex);  // Output: 6 (the index of the target value)
+if (resultIndex !== -1) {
+    console.log(`Element found at index: ${resultIndex}`);
+} else {
+    console.log('Element not found in the array.');
+}
