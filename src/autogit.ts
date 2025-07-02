@@ -1,21 +1,12 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const table: { [key: string]: number } = {};
+function createBadCharTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
     const patternLength = pattern.length;
 
-    // Initialize the table with the length of the pattern
     for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - 1 - i;
+        badCharTable[pattern[i]] = patternLength - 1 - i;
     }
 
-    // Fill in the default value for characters not in the pattern
-    for (let i = 0; i < 256; i++) {
-        const char = String.fromCharCode(i);
-        if (!(char in table)) {
-            table[char] = patternLength;
-        }
-    }
-
-    return table;
+    return badCharTable;
 }
 
 function boyerMooreHorspool(text: string, pattern: string): number {
@@ -26,13 +17,13 @@ function boyerMooreHorspool(text: string, pattern: string): number {
         return -1; // Pattern not found
     }
 
-    const badCharTable = createBadCharacterTable(pattern);
-    let i = 0;
+    const badCharTable = createBadCharTable(pattern);
+    let i = 0; // Index for text
 
     while (i <= textLength - patternLength) {
-        let j = patternLength - 1;
+        let j = patternLength - 1; // Index for pattern
 
-        // Compare the pattern with the text from right to left
+        // Compare pattern with text from right to left
         while (j >= 0 && pattern[j] === text[i + j]) {
             j--;
         }
@@ -41,9 +32,9 @@ function boyerMooreHorspool(text: string, pattern: string): number {
         if (j < 0) {
             return i; // Return the starting index of the match
         } else {
-            // Shift the pattern based on the bad character table
-            const shift = badCharTable[text[i + j]] || patternLength;
-            i += shift;
+            // Shift the pattern based on the bad character rule
+            const badCharShift = badCharTable[text[i + j]] || patternLength;
+            i += badCharShift;
         }
     }
 
@@ -53,10 +44,10 @@ function boyerMooreHorspool(text: string, pattern: string): number {
 // Example usage
 const text = "ababcababcabc";
 const pattern = "abc";
-const index = boyerMooreHorspool(text, pattern);
+const result = boyerMooreHorspool(text, pattern);
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
 } else {
     console.log("Pattern not found");
 }
