@@ -1,36 +1,31 @@
-function getLargestPrimeFactor(n: number): number {
-    let maxPrimeFactor = -1;
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    // Handle the factor 2 separately to allow the main loop to only check odd numbers
-    while (n % 2 === 0) {
-        maxPrimeFactor = 2;
-        n /= 2;
-    }
+    // Loop through all elements in the array
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false;
 
-    // Check for odd factors from 3 onwards up to sqrt(n)
-    let factor = 3;
-    while (factor * factor <= n) {
-        while (n % 3 === 0) {
-            maxPrimeFactor = 3;
-            n /= 3;
+        // Last i elements are already sorted
+        for (let j = 0; j < n - 1 - i; j++) {
+            // Compare adjacent elements
+            if (arr[j] > arr[j + 1]) {
+                // Swap if they are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true;
+            }
         }
-        factor += 2; // only odd numbers
-        while (n % factor === 0) {
-            maxPrimeFactor = factor;
-            n /= factor;
+
+        // If no two elements were swapped in the inner loop, then the array is sorted
+        if (!swapped) {
+            break;
         }
-        factor += 2;
     }
 
-    // If n is a prime number greater than 2
-    if (n > 2) {
-        maxPrimeFactor = n;
-    }
-
-    return maxPrimeFactor;
+    return arr;
 }
 
-// Example usage:
-const number = 13195;
-console.log(`Largest prime factor of ${number} is ${getLargestPrimeFactor(number)}`);
-// Output: Largest prime factor of 13195 is 29
+// Example usage
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted Array:", sortedArray);
