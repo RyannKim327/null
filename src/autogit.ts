@@ -1,148 +1,94 @@
-class SkipListNode<T> {
-    value: T | null;
-    forwards: Array<SkipListNode<T> | null>;
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-    constructor(level: number, value: T | null = null) {
-        this.value = value;
-        this.forwards = new Array(level + 1).fill(null);
-    }
-}
-
-class SkipList<T> {
-    private static readonly MAX_LEVEL = 16; // Adjust as needed
-    private static readonly P = 0.5; // Probability for level promotion
-
-    private head: SkipListNode<T>;
-    private level: number;
-
-    constructor() {
-        this.head = new SkipListNode<T>(SkipList.MAX_LEVEL);
-        this.level = 0;
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
     }
 
-    // Generate a random level for node promotion
-    private randomLevel(): number {
-        let level = 0;
-        while (Math.random() < SkipList.P && level < SkipList.MAX_LEVEL) {
-            level++;
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
         }
-        return level;
+        return hash % this.size;
     }
 
-    // Insert a value into the skip list
-    insert(value: T): void {
-        const update: Array<SkipListNode<T> | null> = new Array(SkipList.MAX_LEVEL + 1).fill(null);
-        let current = this.head;
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
 
-        // Find the position to insert
-        for (let i = this.level; i >= 0; i--) {
-            while (
-                current.forwards[i] !== null &&
-                current.forwards[i]!.value !== null &&
-                current.forwards[i]!.value! < value
-            ) {
-                current = current.forwards[i]!;
-            }
-            update[i] = current;
-        }
-
-        const nodeLevel = this.randomLevel();
-        if (nodeLevel > this.level) {
-            for (let i = this.level + 1; i <= nodeLevel; i++) {
-                update[i] = this.head;
-            }
-            this.level = nodeLevel;
-        }
-
-        const newNode = new SkipListNode<T>(nodeLevel, value);
-        for (let i = 0; i <= nodeLevel; i++) {
-            newNode.forwards[i] = update[i]!.forwards[i];
-            update[i]!.forwards[i] = newNode;
-        }
-    }
-
-    // Search for a value in the skip list
-    search(value: T): T | null {
-        let current = this.head;
-
-        for (let i = this.level; i >= 0; i--) {
-            while (
-                current.forwards[i] !== null &&
-                current.forwards[i]!.value !== null &&
-                current.forwards[i]!.value! < value
-            ) {
-                current = current.forwards[i]!;
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
             }
         }
 
-        current = current.forwards[0]!;
-
-        if (current !== null && current.value === value) {
-            return current.value;
-        }
-        return null;
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
     }
 
-    // Delete a value from the skip list
-    delete(value: T): boolean {
-        const update: Array<SkipListNode<T> | null> = new Array(SkipList.MAX_LEVEL + 1).fill(null);
-        let current = this.head;
-        let found = false;
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
 
-        for (let i = this.level; i >= 0; i--) {
-            while (
-                current.forwards[i] !== null &&
-                current.forwards[i]!.value !== null &&
-                current.forwards[i]!.value! < value
-            ) {
-                current = current.forwards[i]!;
-            }
-            update[i] = current;
-        }
-
-        const target = current.forwards[0];
-
-        if (target !== null && target.value === value) {
-            found = true;
-            for (let i = 0; i <= this.level; i++) {
-                if (update[i]!.forwards[i] !== target) break;
-                update[i]!.forwards[i] = target.forwards[i];
-            }
-
-            // Adjust the level of the skip list
-            while (this.level > 0 && this.head.forwards[this.level] === null) {
-                this.level--;
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
             }
         }
 
-        return found;
+        return undefined; // Key not found
     }
 
-    // Optional: Print the skip list (for debugging)
-    print(): void {
-        for (let i = this.level; i >= 0; i--) {
-            let current = this.head.forwards[i];
-            const levelNodes: T[] = [];
-            while (current !== null) {
-                if (current.value !== null) {
-                    levelNodes.push(current.value);
+    public remove(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
+
+    public keys(): K[] {
+        const keys: K[] = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    keys.push(entry[0]);
                 }
-                current = current.forwards[i];
             }
-            console.log(`Level ${i}: ${levelNodes.join(' -> ')}`);
         }
+        return keys;
+    }
+
+    public values(): V[] {
+        const values: V[] = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    values.push(entry[1]);
+                }
+            }
+        }
+        return values;
     }
 }
-const skiplist = new SkipList<number>();
-skiplist.insert(10);
-skiplist.insert(20);
-skiplist.insert(15);
 
-console.log('Search 15:', skiplist.search(15)); // Output: 15
-console.log('Search 25:', skiplist.search(25)); // Output: null
-
-skiplist.print(); // Prints the structure at each level
-
-skiplist.delete(15);
-console.log('After deletion of 15:');
-skiplist.print();
+// Example usage
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: undefined
+console.log(hashTable.keys()); // Output: ["banana"]
