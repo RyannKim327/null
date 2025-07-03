@@ -1,49 +1,148 @@
-function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
-    // Ensure nums1 is the smaller array
-    if (nums1.length > nums2.length) {
-        [nums1, nums2] = [nums2, nums1];
+class SkipListNode<T> {
+    value: T | null;
+    forwards: Array<SkipListNode<T> | null>;
+
+    constructor(level: number, value: T | null = null) {
+        this.value = value;
+        this.forwards = new Array(level + 1).fill(null);
+    }
+}
+
+class SkipList<T> {
+    private static readonly MAX_LEVEL = 16; // Adjust as needed
+    private static readonly P = 0.5; // Probability for level promotion
+
+    private head: SkipListNode<T>;
+    private level: number;
+
+    constructor() {
+        this.head = new SkipListNode<T>(SkipList.MAX_LEVEL);
+        this.level = 0;
     }
 
-    const x = nums1.length;
-    const y = nums2.length;
+    // Generate a random level for node promotion
+    private randomLevel(): number {
+        let level = 0;
+        while (Math.random() < SkipList.P && level < SkipList.MAX_LEVEL) {
+            level++;
+        }
+        return level;
+    }
 
-    let low = 0;
-    let high = x;
+    // Insert a value into the skip list
+    insert(value: T): void {
+        const update: Array<SkipListNode<T> | null> = new Array(SkipList.MAX_LEVEL + 1).fill(null);
+        let current = this.head;
 
-    while (low <= high) {
-        const partitionX = Math.floor((low + high) / 2);
-        const partitionY = Math.floor((x + y + 1) / 2) - partitionX;
-
-        const maxX = partitionX === 0 ? Number.NEGATIVE_INFINITY : nums1[partitionX - 1];
-        const minX = partitionX === x ? Number.POSITIVE_INFINITY : nums1[partitionX];
-
-        const maxY = partitionY === 0 ? Number.NEGATIVE_INFINITY : nums2[partitionY - 1];
-        const minY = partitionY === y ? Number.POSITIVE_INFINITY : nums2[partitionY];
-
-        if (maxX <= minY && maxY <= minX) {
-            // We have partitioned the arrays correctly
-            if ((x + y) % 2 === 0) {
-                return (Math.max(maxX, maxY) + Math.min(minX, minY)) / 2;
-            } else {
-                return Math.max(maxX, maxY);
+        // Find the position to insert
+        for (let i = this.level; i >= 0; i--) {
+            while (
+                current.forwards[i] !== null &&
+                current.forwards[i]!.value !== null &&
+                current.forwards[i]!.value! < value
+            ) {
+                current = current.forwards[i]!;
             }
-        } else if (maxX > minY) {
-            // Move towards the left in nums1
-            high = partitionX - 1;
-        } else {
-            // Move towards the right in nums1
-            low = partitionX + 1;
+            update[i] = current;
+        }
+
+        const nodeLevel = this.randomLevel();
+        if (nodeLevel > this.level) {
+            for (let i = this.level + 1; i <= nodeLevel; i++) {
+                update[i] = this.head;
+            }
+            this.level = nodeLevel;
+        }
+
+        const newNode = new SkipListNode<T>(nodeLevel, value);
+        for (let i = 0; i <= nodeLevel; i++) {
+            newNode.forwards[i] = update[i]!.forwards[i];
+            update[i]!.forwards[i] = newNode;
         }
     }
 
-    throw new Error("Input arrays are not sorted.");
+    // Search for a value in the skip list
+    search(value: T): T | null {
+        let current = this.head;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (
+                current.forwards[i] !== null &&
+                current.forwards[i]!.value !== null &&
+                current.forwards[i]!.value! < value
+            ) {
+                current = current.forwards[i]!;
+            }
+        }
+
+        current = current.forwards[0]!;
+
+        if (current !== null && current.value === value) {
+            return current.value;
+        }
+        return null;
+    }
+
+    // Delete a value from the skip list
+    delete(value: T): boolean {
+        const update: Array<SkipListNode<T> | null> = new Array(SkipList.MAX_LEVEL + 1).fill(null);
+        let current = this.head;
+        let found = false;
+
+        for (let i = this.level; i >= 0; i--) {
+            while (
+                current.forwards[i] !== null &&
+                current.forwards[i]!.value !== null &&
+                current.forwards[i]!.value! < value
+            ) {
+                current = current.forwards[i]!;
+            }
+            update[i] = current;
+        }
+
+        const target = current.forwards[0];
+
+        if (target !== null && target.value === value) {
+            found = true;
+            for (let i = 0; i <= this.level; i++) {
+                if (update[i]!.forwards[i] !== target) break;
+                update[i]!.forwards[i] = target.forwards[i];
+            }
+
+            // Adjust the level of the skip list
+            while (this.level > 0 && this.head.forwards[this.level] === null) {
+                this.level--;
+            }
+        }
+
+        return found;
+    }
+
+    // Optional: Print the skip list (for debugging)
+    print(): void {
+        for (let i = this.level; i >= 0; i--) {
+            let current = this.head.forwards[i];
+            const levelNodes: T[] = [];
+            while (current !== null) {
+                if (current.value !== null) {
+                    levelNodes.push(current.value);
+                }
+                current = current.forwards[i];
+            }
+            console.log(`Level ${i}: ${levelNodes.join(' -> ')}`);
+        }
+    }
 }
+const skiplist = new SkipList<number>();
+skiplist.insert(10);
+skiplist.insert(20);
+skiplist.insert(15);
 
-// Example usage:
-const nums1 = [1, 3];
-const nums2 = [2];
-console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
+console.log('Search 15:', skiplist.search(15)); // Output: 15
+console.log('Search 25:', skiplist.search(25)); // Output: null
 
-const nums3 = [1, 2];
-const nums4 = [3, 4];
-console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
+skiplist.print(); // Prints the structure at each level
+
+skiplist.delete(15);
+console.log('After deletion of 15:');
+skiplist.print();
