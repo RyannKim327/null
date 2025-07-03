@@ -1,56 +1,52 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Map<string, number>;
+type Graph = Record<string, string[]>;
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable(pattern);
-    }
+const graph: Graph = {
+  A: ['B', 'C'],
+  B: ['D', 'E'],
+  C: ['F'],
+  D: [],
+  E: ['F'],
+  F: []
+};
+function dfs(graph: Graph, startNode: string): string[] {
+  const visited: Set<string> = new Set();
+  const stack: string[] = [startNode];
+  const result: string[] = [];
 
-    private buildBadCharTable(pattern: string): Map<string, number> {
-        const table = new Map<string, number>();
-        const patternLength = pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            table.set(pattern[i], i);
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    if (!visited.has(node)) {
+      visited.add(node);
+      result.push(node);
+      // Push neighbors onto the stack
+      // Reverse to maintain order if desired
+      const neighbors = graph[node] || [];
+      for (let neighbor of neighbors.reverse()) {
+        if (!visited.has(neighbor)) {
+          stack.push(neighbor);
         }
-
-        return table;
+      }
     }
+  }
 
-    public search(text: string): number {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        let skip: number;
-
-        for (let i = 0; i <= textLength - patternLength; i += skip) {
-            skip = 0;
-
-            for (let j = patternLength - 1; j >= 0; j--) {
-                if (this.pattern[j] !== text[i + j]) {
-                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
-                    skip = Math.max(1, j - badCharIndex);
-                    break;
-                }
-            }
-
-            if (skip === 0) {
-                // Match found at index i
-                return i; // Return the index of the first match
-            }
-        }
-
-        return -1; // No match found
-    }
+  return result;
 }
+const traversalOrder = dfs(graph, 'A');
+console.log(traversalOrder); // Output might be: ['A', 'C', 'F', 'B', 'E', 'D']
+function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): string[] {
+  if (visited.has(node)) {
+    return [];
+  }
 
-// Example usage:
-const bm = new BoyerMoore("abc");
-const text = "abcpqrabcxyz";
-const index = bm.search(text);
+  visited.add(node);
+  const result: string[] = [node];
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found.");
+  const neighbors = graph[node] || [];
+  for (const neighbor of neighbors) {
+    result.push(...dfsRecursive(graph, neighbor, visited));
+  }
+
+  return result;
 }
+const traversalOrderRecursive = dfsRecursive(graph, 'A');
+console.log(traversalOrderRecursive); // Similar output
