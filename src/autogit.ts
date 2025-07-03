@@ -1,43 +1,30 @@
-type Graph = {
-    [key: string]: string[];
-};
-function depthLimitedSearch(graph: Graph, start: string, goal: string, limit: number): boolean {
-    const stack: [string, number][] = [[start, 0]]; // stack holds tuples of (node, depth)
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-    while (stack.length > 0) {
-        const [node, depth] = stack.pop()!;
+    // Outer loop for each pass
+    for (let i = 0; i < n - 1; i++) {
+        swapped = false; // Reset swapped to false for the current pass
 
-        // Check if we've found the goal
-        if (node === goal) {
-            return true;
+        // Inner loop for comparing adjacent elements
+        for (let j = 0; j < n - 1 - i; j++) {
+            if (arr[j] > arr[j + 1]) {
+                // Swap if elements are in the wrong order
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                swapped = true; // Set swapped to true as we made a swap
+            }
         }
 
-        // If the current depth is less than the limit, explore children
-        if (depth < limit) {
-            const neighbors = graph[node] || [];
-            for (const neighbor of neighbors) {
-                stack.push([neighbor, depth + 1]); // Increment depth for children
-            }
+        // If no two elements were swapped, the array is sorted
+        if (!swapped) {
+            break;
         }
     }
 
-    return false; // Goal not found within depth limit.
+    return arr;
 }
 
 // Example usage:
-const graph: Graph = {
-    A: ["B", "C"],
-    B: ["D", "E"],
-    C: ["F"],
-    D: [],
-    E: ["G"],
-    F: [],
-    G: []
-};
-
-const startNode = "A";
-const goalNode = "G";
-const depthLimit = 2;
-
-const found = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
-console.log(`Found goal '${goalNode}': ${found}`);
+const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
+const sortedArray = bubbleSort(unsortedArray);
+console.log("Sorted array:", sortedArray);
