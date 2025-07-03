@@ -1,8 +1,7 @@
-function removeVowels(input: string): string {
-    return input.replace(/[aeiouAEIOU]/g, '');
+function reverseString(str: string): string {
+    return str.split('').reverse().join('');
 }
 
-// Example usage:
 const originalString = "Hello, World!";
-const stringWithoutVowels = removeVowels(originalString);
-console.log(stringWithoutVowels); // Hll, Wrld!
+const reversedString = reverseString(originalString);
+console.log(reversedString); // Output: !dlroW ,olleH
