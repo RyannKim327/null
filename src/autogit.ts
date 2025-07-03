@@ -1,59 +1,63 @@
-class Node {
-    value: number;
-    next: Node | null;
+class KMP {
+    // Method to create LPS array
+    private createLPS(pattern: string): number[] {
+        const lps: number[] = new Array(pattern.length).fill(0);
+        let length = 0; // length of the previous longest prefix suffix
+        let i = 1;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-class LinkedList {
-    head: Node | null;
-
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: number) {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
+        while (i < pattern.length) {
+            if (pattern[i] === pattern[length]) {
+                length++;
+                lps[i] = length;
+                i++;
+            } else {
+                if (length !== 0) {
+                    length = lps[length - 1];
+                } else {
+                    lps[i] = 0;
+                    i++;
+                }
+            }
         }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
+        return lps;
     }
 
-    // Method to find the middle element
-    findMiddle(): Node | null {
-        let slow: Node | null = this.head;
-        let fast: Node | null = this.head;
+    // Method to perform KMP search
+    public kmpSearch(text: string, pattern: string): number {
+        const lps = this.createLPS(pattern);
+        let i = 0; // index for text
+        let j = 0; // index for pattern
 
-        while (fast && fast.next) {
-            slow = slow?.next || null; // Move slow by one
-            fast = fast.next.next; // Move fast by two
+        while (i < text.length) {
+            if (pattern[j] === text[i]) {
+                i++;
+                j++;
+            }
+
+            if (j === pattern.length) {
+                // Found the pattern at index (i - j)
+                return i - j; // return the starting index of the match
+            } else if (i < text.length && pattern[j] !== text[i]) {
+                // Mismatch after j matches
+                if (j !== 0) {
+                    j = lps[j - 1];
+                } else {
+                    i++;
+                }
+            }
         }
-
-        return slow; // slow is now at the middle
+        return -1; // Pattern not found
     }
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
+const kmp = new KMP();
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const index = kmp.kmpSearch(text, pattern);
 
-const middleNode = list.findMiddle();
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`);
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
 } else {
-    console.log("The list is empty.");
+    console.log("Pattern not found");
 }
