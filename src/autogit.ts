@@ -1,44 +1,71 @@
-class Stack<T> {
-  private items: T[] = [];
+class Node {
+    value: number;
+    next: Node | null;
 
-  // Add an element to the top of the stack
-  push(element: T): void {
-    this.items.push(element);
-  }
-
-  // Remove and return the top element of the stack
-  pop(): T | undefined {
-    return this.items.pop();
-  }
-
-  // Look at the top element without removing it
-  peek(): T | undefined {
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty(): boolean {
-    return this.items.length === 0;
-  }
-
-  // Get the number of elements in the stack
-  size(): number {
-    return this.items.length;
-  }
-
-  // Clear the stack
-  clear(): void {
-    this.items = [];
-  }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
 }
-const stack = new Stack<number>();
 
-stack.push(10);
-stack.push(20);
-stack.push(30);
+class LinkedList {
+    head: Node | null;
 
-console.log(stack.peek());   // Output: 30
-console.log(stack.pop());    // Output: 30
-console.log(stack.pop());    // Output: 20
-console.log(stack.isEmpty()); // Output: false
-console.log(stack.size());    // Output: 1
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node to the list
+    add(value: number): void {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+        } else {
+            let current = this.head;
+            while (current.next) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Method to find the middle element
+    findMiddle(): Node | null {
+        if (!this.head) return null; // List is empty
+
+        let slowPointer: Node | null = this.head;
+        let fastPointer: Node | null = this.head;
+
+        while (fastPointer && fastPointer.next) {
+            slowPointer = slowPointer!.next; // Move slow pointer one step
+            fastPointer = fastPointer.next.next; // Move fast pointer two steps
+        }
+
+        return slowPointer; // Slow pointer is at the middle
+    }
+}
+const list = new LinkedList();
+list.add(1);
+list.add(2);
+list.add(3);
+list.add(4);
+list.add(5);
+
+const middleNode = list.findMiddle();
+
+if (middleNode) {
+    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
+}
+
+// Example of a list with an even number of nodes
+const list2 = new LinkedList();
+list2.add(1);
+list2.add(2);
+list2.add(3);
+list2.add(4);
+
+const middleNode2 = list2.findMiddle();
+
+if (middleNode2) {
+    console.log(`The middle element is: ${middleNode2.value}`); // Output: The middle element is: 3
+}
