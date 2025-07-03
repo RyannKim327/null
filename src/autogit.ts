@@ -1,12 +1,15 @@
-npm install node-cron
-import cron from 'node-cron';
+function calculateMean(numbers: number[]): number {
+    if (numbers.length === 0) {
+        throw new Error("The list of numbers is empty.");
+    }
 
-// Schedule a task to run every minute
-cron.schedule('* * * * *', () => {
-  const now = new Date();
-  console.log(`Current time is: ${now.toLocaleString()}`);
-});
+    const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / numbers.length;
 
-console.log('Cron job scheduled to run every minute...');
-tsc cron-example.ts
-node cron-example.js
+    return mean;
+}
+
+// Example usage:
+const numbers = [10, 20, 30, 40, 50];
+const mean = calculateMean(numbers);
+console.log(`The mean is: ${mean}`);
