@@ -1,19 +1,8 @@
-function longestIncreasingSubsequence(nums: number[]): number {
-    if (nums.length === 0) return 0;
-
-    const dp: number[] = new Array(nums.length).fill(1);
-
-    for (let i = 1; i < nums.length; i++) {
-        for (let j = 0; j < i; j++) {
-            if (nums[i] > nums[j]) {
-                dp[i] = Math.max(dp[i], dp[j] + 1);
-            }
-        }
-    }
-
-    return Math.max(...dp);
+const str = "abc";
+const num = parseInt(str, 10);
+if (isNaN(num)) {
+  // handle invalid number
+  console.error("Invalid number");
+} else {
+  console.log(num);
 }
-
-// Example usage:
-const arr = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(longestIncreasingSubsequence(arr)); // Output: 4
