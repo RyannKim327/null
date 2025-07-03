@@ -1,22 +1,62 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: remove spaces and convert to lower case
-    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
-    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+function createBadCharacterTable(pattern: string): { [key: string]: number } {
+    const table: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    // Check if the lengths are the same
-    if (normalizedStr1.length !== normalizedStr2.length) {
-        return false;
+    // Initialize the table with the length of the pattern
+    for (let i = 0; i < patternLength - 1; i++) {
+        table[pattern[i]] = patternLength - 1 - i;
     }
 
-    // Sort the characters in each string
-    const sortedStr1 = normalizedStr1.split('').sort().join('');
-    const sortedStr2 = normalizedStr2.split('').sort().join('');
+    // Fill in the default value for characters not in the pattern
+    for (let i = 0; i < 256; i++) {
+        const char = String.fromCharCode(i);
+        if (!(char in table)) {
+            table[char] = patternLength;
+        }
+    }
 
-    // Compare the sorted strings
-    return sortedStr1 === sortedStr2;
+    return table;
 }
 
-// Example usage:
-console.log(areAnagrams("listen", "silent")); // true
-console.log(areAnagrams("hello", "world"));   // false
-console.log(areAnagrams("Dormitory", "Dirty room")); // true
+function boyerMooreHorspool(text: string, pattern: string): number {
+    const textLength = text.length;
+    const patternLength = pattern.length;
+
+    if (patternLength === 0 || textLength < patternLength) {
+        return -1; // Pattern not found
+    }
+
+    const badCharTable = createBadCharacterTable(pattern);
+    let i = 0; // Index for text
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Index for pattern
+
+        // Compare the pattern with the text from right to left
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            return i; // Return the starting index of the match
+        } else {
+            // Shift the pattern based on the bad character rule
+            const shift = badCharTable[text[i + j]] || patternLength;
+            i += shift;
+        }
+    }
+
+    return -1; // Pattern not found
+}
+
+// Example usage
+const text = "ababcabcabababd";
+const pattern = "ababd";
+const result = boyerMooreHorspool(text, pattern);
+
+if (result !== -1) {
+    console.log(`Pattern found at index: ${result}`);
+} else {
+    console.log("Pattern not found");
+}
