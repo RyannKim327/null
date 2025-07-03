@@ -1,27 +1,36 @@
-function shellSort(arr: number[]): number[] {
-    let n = arr.length;
+function getLargestPrimeFactor(n: number): number {
+    let maxPrimeFactor = -1;
 
-    // Start with a large gap, then reduce the gap
-    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
-        // Do a gapped insertion sort for this gap size
-        for (let i = gap; i < n; i++) {
-            // Save the current element to be compared
-            let temp = arr[i];
-            let j;
-            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
-                arr[j] = arr[j - gap];
-            }
-            // Put temp (the original arr[i]) in its correct location
-            arr[j] = temp;
-        }
+    // Handle the factor 2 separately to allow the main loop to only check odd numbers
+    while (n % 2 === 0) {
+        maxPrimeFactor = 2;
+        n /= 2;
     }
 
-    return arr;
+    // Check for odd factors from 3 onwards up to sqrt(n)
+    let factor = 3;
+    while (factor * factor <= n) {
+        while (n % 3 === 0) {
+            maxPrimeFactor = 3;
+            n /= 3;
+        }
+        factor += 2; // only odd numbers
+        while (n % factor === 0) {
+            maxPrimeFactor = factor;
+            n /= factor;
+        }
+        factor += 2;
+    }
+
+    // If n is a prime number greater than 2
+    if (n > 2) {
+        maxPrimeFactor = n;
+    }
+
+    return maxPrimeFactor;
 }
 
 // Example usage:
-const myArray = [12, 34, 54, 2, 3];
-console.log("Original array:", myArray);
-const sortedArray = shellSort(myArray);
-console.log("Sorted array:", sortedArray);
+const number = 13195;
+console.log(`Largest prime factor of ${number} is ${getLargestPrimeFactor(number)}`);
+// Output: Largest prime factor of 13195 is 29
