@@ -1,31 +1,49 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
+function createLastOccurrenceTable(pattern: string): Map<string, number> {
+    const table = new Map<string, number>();
+    for (let i = 0; i < pattern.length; i++) {
+        table.set(pattern[i], i);
+    }
+    return table;
+}
 
-    // Loop through all elements in the array
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false;
+function boyerMooreSearch(text: string, pattern: string): number {
+    const lastOccurrence = createLastOccurrenceTable(pattern);
+    const n = text.length;
+    const m = pattern.length;
 
-        // Last i elements are already sorted
-        for (let j = 0; j < n - 1 - i; j++) {
-            // Compare adjacent elements
-            if (arr[j] > arr[j + 1]) {
-                // Swap if they are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true;
-            }
+    let i = 0; // index in text
+
+    while (i <= n - m) {
+        let j = m - 1; // index in pattern
+
+        // Move backwards through pattern as long as characters match
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
         }
 
-        // If no two elements were swapped in the inner loop, then the array is sorted
-        if (!swapped) {
-            break;
+        if (j < 0) {
+            // Pattern found at position i
+            return i;
+        } else {
+            // Mismatch: calculate the shift
+            const lastOccIdx = lastOccurrence.get(text[i + j]);
+            const shift = lastOccIdx !== undefined ? Math.max(1, j - lastOccIdx) : j + 1;
+            i += shift;
         }
     }
 
-    return arr;
+    // Pattern not found
+    return -1;
 }
 
-// Example usage
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log("Sorted Array:", sortedArray);
+// Example usage:
+const text = "HERE IS A SIMPLE EXAMPLE";
+const pattern = "EXAMPLE";
+
+const position = boyerMooreSearch(text, pattern);
+
+if (position !== -1) {
+    console.log(`Pattern found at index ${position}`);
+} else {
+    console.log("Pattern not found");
+}
