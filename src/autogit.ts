@@ -1,28 +1,45 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Check for the number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
+}
 
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) return false;
+
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move slow pointer by 1
+        fast = fast.next.next; // Move fast pointer by 2
+
+        if (slow === fast) {
+            return true; // There is a cycle
         }
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    return false; // No cycle
 }
 
-// Example Usage
-const number = 13195; // You can change this number to test with other values
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+// Example usage:
+const node1 = new ListNode(1);
+const node2 = new ListNode(2);
+const node3 = new ListNode(3);
+const node4 = new ListNode(4);
+
+// Creating a cycle for testing
+node1.next = node2;
+node2.next = node3;
+node3.next = node4;
+node4.next = node2; // Creates a cycle
+
+console.log(hasCycle(node1)); // Output: true
+
+// To test without a cycle
+node4.next = null; // Break the cycle
+console.log(hasCycle(node1)); // Output: false
