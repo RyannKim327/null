@@ -1,35 +1,30 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
+// Define an interface for the expected data structure
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
+}
 
-const uniqueArray = Array.from(new Set(array));
+// Function to fetch posts
+async function fetchPosts(): Promise<void> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        
+        // Check if the response is ok (status in the range 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const uniqueArray = [...new Set(array)];
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
 
-const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-
-const uniqueArray = array.reduce<number[]>((acc, value) => {
-    if (!acc.includes(value)) {
-        acc.push(value);
+        // Log the posts to the console
+        console.log(posts);
+    } catch (error) {
+        console.error('Error fetching posts:', error);
     }
-    return acc;
-}, []);
+}
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
-
-const uniqueArray: number[] = [];
-const seen: { [key: number]: boolean } = {};
-
-array.forEach(value => {
-    if (!seen[value]) {
-        seen[value] = true;
-        uniqueArray.push(value);
-    }
-});
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+// Call the function to fetch posts
+fetchPosts();
