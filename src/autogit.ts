@@ -1,53 +1,35 @@
-class Stack<T> {
-    private items: T[] = [];
-    
-    // Adds an item to the top of the stack
-    push(item: T): void {
-        this.items.push(item);
-    }
+const array = [1, 2, 2, 3, 4, 4, 5];
 
-    // Removes and returns the item from the top of the stack
-    pop(): T | undefined {
-        if (this.isEmpty()) {
-            console.warn("Stack is empty");
-            return undefined;
-        }
-        return this.items.pop();
-    }
+const uniqueArray = Array.from(new Set(array));
 
-    // Returns the item at the top of the stack without removing it
-    peek(): T | undefined {
-        if (this.isEmpty()) {
-            console.warn("Stack is empty");
-            return undefined;
-        }
-        return this.items[this.items.length - 1];
-    }
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const uniqueArray = [...new Set(array)];
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
 
-    // Checks if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
+const uniqueArray = array.filter((value, index, self) => self.indexOf(value) === index);
 
-    // Returns the size of the stack
-    size(): number {
-        return this.items.length;
-    }
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
 
-    // Clears the stack
-    clear(): void {
-        this.items = [];
+const uniqueArray = array.reduce<number[]>((acc, value) => {
+    if (!acc.includes(value)) {
+        acc.push(value);
     }
-}
+    return acc;
+}, []);
 
-// Example Usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.pop());  // Outputs: 3
-console.log(stack.peek()); // Outputs: 2
-console.log(stack.isEmpty()); // Outputs: false
-console.log(stack.size()); // Outputs: 2
-stack.clear();
-console.log(stack.isEmpty()); // Outputs: true
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+const array = [1, 2, 2, 3, 4, 4, 5];
+
+const uniqueArray: number[] = [];
+const seen: { [key: number]: boolean } = {};
+
+array.forEach(value => {
+    if (!seen[value]) {
+        seen[value] = true;
+        uniqueArray.push(value);
+    }
+});
+
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
