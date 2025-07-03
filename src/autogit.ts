@@ -1,19 +1,34 @@
-const decimalNumber: number = 42; // Replace with your decimal number
-const binaryString: string = decimalNumber.toString(2);
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if left index exceeds right index, target is not found
+    if (left > right) {
+        return -1; // Target not found
+    }
 
-console.log(binaryString); // Outputs: "101010"
-function decimalToBinary(num: number): string {
-  if (isNaN(num) || !Number.isInteger(num) || num < 0) {
-    throw new Error("Please provide a non-negative integer.");
-  }
-  return num.toString(2);
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
+
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
+    }
+
+    // If target is less than the middle element, search in the left half
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, left, mid - 1);
+    }
+
+    // If target is greater than the middle element, search in the right half
+    return binarySearch(arr, target, mid + 1, right);
 }
 
-const userInput: string = "45"; // Example input as string
-const decimalNum: number = parseInt(userInput, 10);
-try {
-  const binaryRepresentation = decimalToBinary(decimalNum);
-  console.log(`Binary of ${decimalNum} is ${binaryRepresentation}`);
-} catch (error) {
-  console.error(error);
+// Helper function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
 }
+
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const targetValue = 5;
+const result = search(sortedArray, targetValue);
+
+console.log(result); // Output: 4 (index of the target value)
