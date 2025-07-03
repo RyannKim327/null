@@ -1,7 +1,9 @@
-function reverseString(str: string): string {
-    return str.split('').reverse().join('');
-}
+const mainString: string = "Hello, world!";
+const substring: string = "world";
 
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: !dlroW ,olleH
+const containsSubstring: boolean = mainString.includes(substring);
+
+console.log(containsSubstring); // Output: true
+const containsSubstring: boolean = mainString.indexOf(substring) !== -1;
+
+console.log(containsSubstring); // Output: true
