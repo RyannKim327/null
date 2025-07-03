@@ -1,13 +1,57 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
+class Graph {
+    private adjList: Map<number, number[]>;
+
+    constructor() {
+        this.adjList = new Map();
     }
-    // Recursive case
-    return n * factorial(n - 1);
+
+    addEdge(u: number, v: number): void {
+        if (!this.adjList.has(u)) {
+            this.adjList.set(u, []);
+        }
+        this.adjList.get(u)!.push(v);
+    }
+
+    topologicalSort(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
+        const result: number[] = [];
+
+        const dfs = (node: number) => {
+            visited.add(node);
+            const neighbors = this.adjList.get(node) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    dfs(neighbor);
+                }
+            }
+            stack.push(node);
+        };
+
+        // Perform DFS for each node
+        for (const node of this.adjList.keys()) {
+            if (!visited.has(node)) {
+                dfs(node);
+            }
+        }
+
+        // Reverse the stack to get the topological order
+        while (stack.length > 0) {
+            result.push(stack.pop()!);
+        }
+
+        return result;
+    }
 }
 
 // Example usage:
-console.log(factorial(5)); // Output: 120
-console.log(factorial(0)); // Output: 1
-console.log(factorial(1)); // Output: 1
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+const topologicalOrder = graph.topologicalSort();
+console.log(topologicalOrder); // Output may vary based on the graph structure
