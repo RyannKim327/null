@@ -1,31 +1,43 @@
-function isPrime(num: number): boolean {
-    // Check if num is less than 2
-    if (num <= 1) {
-        return false; // 0 and 1 are not prime numbers
-    }
-    // Check divisibility from 2 to the square root of num
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // num is divisible by i, hence not prime
-        }
-    }
-    return true; // num is prime
+// Define the structure of a node in the binary tree
+interface TreeNode {
+  value: any; // or you can specify a specific type
+  left: TreeNode | null;
+  right: TreeNode | null;
 }
 
-// Example usage
-const numberToCheck = 29;
-console.log(`${numberToCheck} is prime: ${isPrime(numberToCheck)}`); // Output: true
-function isPrime(num: number): boolean {
-    if (num <= 1) return false; // 0 and 1 are not prime numbers
-    if (num === 2) return true;  // 2 is the only even prime number
-    if (num % 2 === 0) return false; // other even numbers are not primes
-    
-    for (let i = 3; i <= Math.sqrt(num); i += 2) {
-        if (num % i === 0) return false; // num is divisible by i
-    }
-    return true; // num is prime
+// Recursive function to count leaf nodes
+function countLeaves(node: TreeNode | null): number {
+  if (node === null) {
+    // Empty node, contributes 0
+    return 0;
+  }
+
+  if (node.left === null && node.right === null) {
+    // Leaf node
+    return 1;
+  }
+
+  // Sum of leaf counts in left and right subtrees
+  return countLeaves(node.left) + countLeaves(node.right);
 }
 
-// Example usage
-const numberToCheck = 29;
-console.log(`${numberToCheck} is prime: ${isPrime(numberToCheck)}`); // Output: true
+// Example usage:
+const root: TreeNode = {
+  value: 1,
+  left: {
+    value: 2,
+    left: null,
+    right: {
+      value: 4,
+      left: null,
+      right: null
+    }
+  },
+  right: {
+    value: 3,
+    left: null,
+    right: null
+  }
+};
+
+console.log(countLeaves(root)); // Output: 3
