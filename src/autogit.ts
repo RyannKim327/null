@@ -1,43 +1,58 @@
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left]; // If the list contains only one element
-    }
+function kmpSearch(text: string, pattern: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const positions: number[] = [];
+    
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    const pivotIndex = partition(arr, left, right);
-
-    // The pivot is in its final sorted position
-    if (k === pivotIndex) {
-        return arr[k];
-    } else if (k < pivotIndex) {
-        return quickSelect(arr, left, pivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, pivotIndex + 1, right, k);
-    }
-}
-
-function partition(arr: number[], left: number, right: number): number {
-    const pivot = arr[right]; // Choose the rightmost element as pivot
-    let i = left;
-
-    for (let j = left; j < right; j++) {
-        if (arr[j] < pivot) {
-            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
             i++;
+            j++;
+        }
+
+        if (j === pattern.length) {
+            // Found pattern at index (i - j)
+            positions.push(i - j);
+            j = lps[j - 1]; // Get the next position from the LPS
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            // Mismatch after j matches
+            if (j !== 0) {
+                j = lps[j - 1];
+            } else {
+                i++;
+            }
         }
     }
-    [arr[i], arr[right]] = [arr[right], arr[i]]; // Swap pivot to its final place
-    return i; // Return the index of the pivot
+
+    return positions;
 }
 
-function findKthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // Length of the previous longest prefix suffix
+    let i = 1;
+
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use the previous longest prefix
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
     }
-    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for zero-based index
+
+    return lps;
 }
 
-// Example usage:
-const arr = [3, 2, 1, 5, 6, 4];
-const k = 2;
-const kthSmallest = findKthSmallest(arr, k);
-console.log(`The ${k}th smallest element is ${kthSmallest}`);
+// Example usage
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = kmpSearch(text, pattern);
+console.log(result); // Output: [10]
