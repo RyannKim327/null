@@ -1,61 +1,86 @@
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+class Graph {
+    private adjacencyList: Map<number, number[]>;
+
+    constructor() {
+        this.adjacencyList = new Map();
     }
-    
-    // Sort the array
-    const sortedArray = arr.slice().sort((a, b) => a - b);
-    
-    // Return the k-th smallest element (1-based index)
-    return sortedArray[k - 1];
-}
 
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
-function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
+    addVertex(vertex: number) {
+        this.adjacencyList.set(vertex, []);
+    }
 
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivotValue) {
-            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-            storeIndex++;
+    addEdge(v1: number, v2: number) {
+        this.adjacencyList.get(v1)?.push(v2);
+        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
+    }
+
+    dfsRecursive(start: number, visited: Set<number> = new Set()) {
+        if (!visited.has(start)) {
+            console.log(start); // Process the vertex
+            visited.add(start);
+            const neighbors = this.adjacencyList.get(start) || [];
+            for (const neighbor of neighbors) {
+                this.dfsRecursive(neighbor, visited);
+            }
         }
     }
-    // Move pivot to its final place
-    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
-    return storeIndex;
-}
-
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left];
-    }
-
-    const pivotIndex = Math.floor((right - left) / 2) + left;
-    const newPivotIndex = partition(arr, left, right, pivotIndex);
-
-    if (k === newPivotIndex) {
-        return arr[k];
-    } else if (k < newPivotIndex) {
-        return quickSelect(arr, left, newPivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, newPivotIndex + 1, right, k);
-    }
-}
-
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
-    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for 0-based index
 }
 
 // Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+
+console.log("DFS Recursive:");
+graph.dfsRecursive(1);
+class Graph {
+    private adjacencyList: Map<number, number[]>;
+
+    constructor() {
+        this.adjacencyList = new Map();
+    }
+
+    addVertex(vertex: number) {
+        this.adjacencyList.set(vertex, []);
+    }
+
+    addEdge(v1: number, v2: number) {
+        this.adjacencyList.get(v1)?.push(v2);
+        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
+    }
+
+    dfsIterative(start: number) {
+        const stack: number[] = [start];
+        const visited: Set<number> = new Set();
+
+        while (stack.length > 0) {
+            const vertex = stack.pop()!;
+            if (!visited.has(vertex)) {
+                console.log(vertex); // Process the vertex
+                visited.add(vertex);
+                const neighbors = this.adjacencyList.get(vertex) || [];
+                for (const neighbor of neighbors) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
+}
+
+// Example usage:
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+
+console.log("DFS Iterative:");
+graph.dfsIterative(1);
