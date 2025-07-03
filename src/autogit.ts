@@ -1,86 +1,87 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+class PriorityQueue<T> {
+    private heap: { value: T; priority: number }[] = [];
 
-    constructor() {
-        this.adjacencyList = new Map();
+    public isEmpty(): boolean {
+        return this.heap.length === 0;
     }
 
-    addVertex(vertex: number) {
-        this.adjacencyList.set(vertex, []);
+    public size(): number {
+        return this.heap.length;
     }
 
-    addEdge(v1: number, v2: number) {
-        this.adjacencyList.get(v1)?.push(v2);
-        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
+    public enqueue(value: T, priority: number): void {
+        this.heap.push({ value, priority });
+        this.bubbleUp();
     }
 
-    dfsRecursive(start: number, visited: Set<number> = new Set()) {
-        if (!visited.has(start)) {
-            console.log(start); // Process the vertex
-            visited.add(start);
-            const neighbors = this.adjacencyList.get(start) || [];
-            for (const neighbor of neighbors) {
-                this.dfsRecursive(neighbor, visited);
-            }
+    public dequeue(): T | undefined {
+        if (this.isEmpty()) return undefined;
+
+        const min = this.heap[0].value;
+        const last = this.heap.pop();
+        if (this.heap.length > 0 && last) {
+            this.heap[0] = last;
+            this.bubbleDown();
+        }
+        return min;
+    }
+
+    public peek(): T | undefined {
+        return this.isEmpty() ? undefined : this.heap[0].value;
+    }
+
+    private bubbleUp(): void {
+        let index = this.heap.length - 1;
+        while (index > 0) {
+            const parentIndex = Math.floor((index - 1) / 2);
+            if (this.heap[index].priority >= this.heap[parentIndex].priority) break;
+
+            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
+            index = parentIndex;
         }
     }
-}
 
-// Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
+    private bubbleDown(): void {
+        let index = 0;
+        const length = this.heap.length;
+        const element = this.heap[0];
 
-console.log("DFS Recursive:");
-graph.dfsRecursive(1);
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+        while (true) {
+            let leftChildIndex = 2 * index + 1;
+            let rightChildIndex = 2 * index + 2;
+            let leftChild: { value: T; priority: number } | undefined;
+            let rightChild: { value: T; priority: number } | undefined;
+            let swap = null;
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
-
-    addVertex(vertex: number) {
-        this.adjacencyList.set(vertex, []);
-    }
-
-    addEdge(v1: number, v2: number) {
-        this.adjacencyList.get(v1)?.push(v2);
-        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
-    }
-
-    dfsIterative(start: number) {
-        const stack: number[] = [start];
-        const visited: Set<number> = new Set();
-
-        while (stack.length > 0) {
-            const vertex = stack.pop()!;
-            if (!visited.has(vertex)) {
-                console.log(vertex); // Process the vertex
-                visited.add(vertex);
-                const neighbors = this.adjacencyList.get(vertex) || [];
-                for (const neighbor of neighbors) {
-                    stack.push(neighbor);
+            if (leftChildIndex < length) {
+                leftChild = this.heap[leftChildIndex];
+                if (leftChild.priority < element.priority) {
+                    swap = leftChildIndex;
                 }
             }
+            if (rightChildIndex < length) {
+                rightChild = this.heap[rightChildIndex];
+                if (
+                    (swap === null && rightChild.priority < element.priority) ||
+                    (swap !== null && rightChild.priority < leftChild!.priority)
+                ) {
+                    swap = rightChildIndex;
+                }
+            }
+            if (swap === null) break;
+
+            this.heap[index] = this.heap[swap];
+            this.heap[swap] = element;
+            index = swap;
         }
     }
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
+const pq = new PriorityQueue<string>();
+pq.enqueue("high priority", 1);
+pq.enqueue("medium priority", 5);
+pq.enqueue("low priority", 10);
 
-console.log("DFS Iterative:");
-graph.dfsIterative(1);
+console.log(pq.dequeue()); // Outputs: "high priority"
+console.log(pq.peek());    // Outputs: "medium priority"
