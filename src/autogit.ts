@@ -1,52 +1,56 @@
-function findMajorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+class SuffixTreeNode {
+    children: Map<string, SuffixTreeNode>;
+    isEndOfSuffix: boolean;
 
-    // Phase 1: Find a candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
+    constructor() {
+        this.children = new Map();
+        this.isEndOfSuffix = false;
     }
-
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Check if the candidate is indeed the majority element
-    if (count > nums.length / 2) {
-        return candidate;
-    }
-
-    return null; // No majority element
 }
+class SuffixTree {
+    root: SuffixTreeNode;
 
-// Example usage:
-const nums = [3, 2, 3];
-const majorityElement = findMajorityElement(nums);
-console.log(majorityElement); // Output: 3
-function findMajorityElementUsingMap(nums: number[]): number | null {
-    const countMap: { [key: number]: number } = {};
-
-    for (const num of nums) {
-        countMap[num] = (countMap[num] || 0) + 1;
+    constructor() {
+        this.root = new SuffixTreeNode();
     }
 
-    const majorityCount = nums.length / 2;
-    for (const [key, value] of Object.entries(countMap)) {
-        if (value > majorityCount) {
-            return +key; // Convert key back to number
+    // Method to insert a suffix into the tree
+    insert(suffix: string) {
+        let currentNode = this.root;
+
+        for (let char of suffix) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new SuffixTreeNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        currentNode.isEndOfSuffix = true;
+    }
+
+    // Method to build the suffix tree from a given string
+    build(text: string) {
+        for (let i = 0; i < text.length; i++) {
+            this.insert(text.substring(i));
         }
     }
 
-    return null; // No majority element
+    // Method to search for a pattern in the suffix tree
+    search(pattern: string): boolean {
+        let currentNode = this.root;
+
+        for (let char of pattern) {
+            if (!currentNode.children.has(char)) {
+                return false; // Pattern not found
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return true; // Pattern found
+    }
 }
+const suffixTree = new SuffixTree();
+const text = "banana";
+suffixTree.build(text);
+
+console.log(suffixTree.search("ana")); // true
+console.log(suffixTree.search("nan")); // true
+console.log(suffixTree.search("bat")); // false
