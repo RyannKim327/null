@@ -1,26 +1,46 @@
-function selectionSort(arr: number[]): number[] {
-    const n = arr.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Traverse through all array elements
-    for (let i = 0; i < n - 1; i++) {
-        // Find the minimum element in the unsorted array
-        let minIndex = i;
-        for (let j = i + 1; j < n; j++) {
-            if (arr[j] < arr[minIndex]) {
-                minIndex = j;
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
+    }
+}
 
-        // Swap the found minimum element with the first element of the unsorted part
-        if (minIndex !== i) {
-            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    let first: ListNode | null = head;
+    let second: ListNode | null = head;
+
+    // Move first pointer n steps ahead
+    for (let i = 0; i < n; i++) {
+        if (first === null) {
+            return null; // n is greater than the length of the list
         }
+        first = first.next;
     }
 
-    return arr;
+    // Move both pointers until first reaches the end
+    while (first !== null) {
+        first = first.next;
+        second = second.next;
+    }
+
+    // second now points to the nth node from the end
+    return second;
 }
 
 // Example usage:
-const array = [64, 25, 12, 22, 11];
-const sortedArray = selectionSort(array);
-console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
+
+const n = 2;
+const nthNode = findNthFromEnd(head, n);
+if (nthNode) {
+    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
+}
