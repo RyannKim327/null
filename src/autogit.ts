@@ -1,50 +1,36 @@
-// Define the binary tree node structure
-interface TreeNode {
-    value: any; // Can be any data type
-    left: TreeNode | null;
-    right: TreeNode | null;
-}
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-// Function to count leaf nodes
-function countLeaves(node: TreeNode | null): number {
-    if (node === null) {
-        return 0; // Null node doesn't contribute to leaf count
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
     }
-    // Check if node is a leaf
-    if (node.left === null && node.right === null) {
-        return 1;
+
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
     }
-    // Recursively count leaf nodes in left and right subtrees
-    return countLeaves(node.left) + countLeaves(node.right);
+
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
+    }
 }
 
 // Example usage:
-const root: TreeNode = {
-    value: 1,
-    left: {
-        value: 2,
-        left: {
-            value: 4,
-            left: null,
-            right: null,
-        },
-        right: {
-            value: 5,
-            left: null,
-            right: null,
-        },
-    },
-    right: {
-        value: 3,
-        left: null,
-        right: {
-            value: 6,
-            left: null,
-            right: null,
-        },
-    },
-};
-
-// Count leaf nodes in the sample tree
-const totalLeaves = countLeaves(root);
-console.log(`Number of leaf nodes: ${totalLeaves}`); // Output: Number of leaf nodes: 4
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
