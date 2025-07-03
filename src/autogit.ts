@@ -1,20 +1,35 @@
-function isPrime(num: number): boolean {
-    // Check if the number is less than 2
-    if (num <= 1) {
-        return false;
-    }
-    // Check for factors from 2 to the square root of num
-    for (let i = 2; i <= Math.sqrt(num); i++) {
-        if (num % i === 0) {
-            return false; // num is divisible by i, so it's not prime
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
         }
     }
-    return true; // num is prime
+    return count;
 }
 
 // Example usage:
-console.log(isPrime(2));  // true
-console.log(isPrime(3));  // true
-console.log(isPrime(4));  // false
-console.log(isPrime(17)); // true
-console.log(isPrime(18)); // false
+const myString = "hello world";
+const characterToCount = "o";
+const result = countCharacter(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${result} times.`);
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
+
+// Example usage:
+const myString = "hello world";
+const characterToCount = "o";
+const result = countCharacter(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${result} times.`);
+function countCharacter(str: string, char: string): number {
+    const regex = new RegExp(char, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const myString = "hello world";
+const characterToCount = "o";
+const result = countCharacter(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${result} times.`);
