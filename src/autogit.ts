@@ -1,62 +1,80 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const table: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
 
-    // Initialize the table with the length of the pattern
-    for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - 1 - i;
+    constructor(value: T) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-
-    // Fill in the default value for characters not in the pattern
-    for (let i = 0; i < 256; i++) {
-        const char = String.fromCharCode(i);
-        if (!(char in table)) {
-            table[char] = patternLength;
-        }
-    }
-
-    return table;
 }
+class BinarySearchTree<T> {
+    private root: TreeNode<T> | null = null;
 
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
-
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
+    // Insert a new value into the BST
+    insert(value: T): void {
+        this.root = this._insert(this.root, value);
     }
 
-    const badCharTable = createBadCharacterTable(pattern);
-    let i = 0; // Index for text
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Index for pattern
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
+    private _insert(node: TreeNode<T> | null, value: T): TreeNode<T> {
+        if (node === null) {
+            return new TreeNode(value);
         }
 
-        // If the pattern is found
-        if (j < 0) {
-            return i; // Return the starting index of the match
+        if (value < node.value) {
+            node.left = this._insert(node.left, value);
+        } else if (value > node.value) {
+            node.right = this._insert(node.right, value);
         } else {
-            // Shift the pattern based on the bad character rule
-            const shift = badCharTable[text[i + j]] || patternLength;
-            i += shift;
+            // Duplicate values are not inserted in this implementation
+        }
+        return node;
+    }
+
+    // Search for a value in the BST
+    search(value: T): boolean {
+        return this._search(this.root, value);
+    }
+
+    private _search(node: TreeNode<T> | null, value: T): boolean {
+        if (node === null) {
+            return false;
+        }
+
+        if (value === node.value) {
+            return true;
+        } else if (value < node.value) {
+            return this._search(node.left, value);
+        } else {
+            return this._search(node.right, value);
         }
     }
 
-    return -1; // Pattern not found
-}
+    // Optional: In-order traversal
+    inOrderTraversal(callback: (value: T) => void): void {
+        this._inOrderTraversal(this.root, callback);
+    }
 
-// Example usage
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = boyerMooreHorspool(text, pattern);
-
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
+    private _inOrderTraversal(node: TreeNode<T> | null, callback: (value: T) => void): void {
+        if (node !== null) {
+            this._inOrderTraversal(node.left, callback);
+            callback(node.value);
+            this._inOrderTraversal(node.right, callback);
+        }
+    }
 }
+const bst = new BinarySearchTree<number>();
+bst.insert(5);
+bst.insert(3);
+bst.insert(7);
+bst.insert(2);
+bst.insert(4);
+bst.insert(6);
+bst.insert(8);
+
+console.log(bst.search(4)); // true
+console.log(bst.search(10)); // false
+
+bst.inOrderTraversal((value) => console.log(value));
+// Output: 2 3 4 5 6 7 8
