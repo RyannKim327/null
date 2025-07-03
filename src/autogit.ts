@@ -1,22 +1,29 @@
-function firstNonRepeatingCharacter(s: string): string | null {
-    const charCount: { [key: string]: number } = {};
-
-    // Count the occurrences of each character
-    for (const char of s) {
-        charCount[char] = (charCount[char] || 0) + 1;
-    }
-
-    // Find the first non-repeating character
-    for (const char of s) {
-        if (charCount[char] === 1) {
-            return char; // Return the first non-repeating character
+function isSorted(array: number[]): boolean {
+    for (let i = 1; i < array.length; i++) {
+        if (array[i] < array[i - 1]) {
+            return false;
         }
     }
-
-    return null; // Return null if there is no non-repeating character
+    return true;
 }
 
-// Example usage:
-const inputString = "swiss";
-const result = firstNonRepeatingCharacter(inputString);
-console.log(result); // Output: "w"
+function shuffle(array: number[]): number[] {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+    }
+    return array;
+}
+
+function bogosort(array: number[]): number[] {
+    while (!isSorted(array)) {
+        shuffle(array);
+    }
+    return array;
+}
+
+// Example usage
+const arr = [3, 2, 5, 1, 4];
+console.log("Original array:", arr);
+const sortedArr = bogosort(arr);
+console.log("Sorted array:", sortedArr);
