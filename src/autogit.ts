@@ -1,39 +1,22 @@
-import * as readline from 'readline';
+mkdir cron-example
+cd cron-example
+npm init -y
+npm install typescript @types/node node-cron
+npm install -D ts-node
+import cron from 'node-cron';
 
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    const currentTime = new Date().toLocaleString();
+    console.log(`Task is running at: ${currentTime}`);
 });
 
-// Function to ask a question and return a promise
-function askQuestion(query: string): Promise<string> {
-    return new Promise(resolve => rl.question(query, resolve));
-}
+// Start the task
+task.start();
 
-// Main function to run the program
-async function main() {
-    try {
-        // Ask for the user's name
-        const name = await askQuestion("What is your name? ");
-        
-        // Ask for the user's age
-        const ageInput = await askQuestion("What is your age? ");
-        const age = parseInt(ageInput, 10);
-
-        // Calculate years until 100
-        const yearsUntil100 = 100 - age;
-
-        // Output the result
-        console.log(`Hello, ${name}! You will turn 100 in ${yearsUntil100} years.`);
-
-    } catch (error) {
-        console.error("An error occurred:", error);
-    } finally {
-        // Close the readline interface
-        rl.close();
-    }
-}
-
-// Run the main function
-main();
+// Optional: Stop the task after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
+npx ts-node cronJob.ts
