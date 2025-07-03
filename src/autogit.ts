@@ -1,51 +1,27 @@
-// Define the structure of a node for the search tree or graph
-interface Node {
-    value: string; // or any type you want to use
-    children?: Node[]; // optional, for tree-like structures
-}
+function shellSort(arr: number[]): number[] {
+    let n = arr.length;
 
-// Depth-Limited Search iterative implementation
-function depthLimitedSearch(root: Node, goal: string, limit: number): boolean {
-    // Stack to hold nodes to explore
-    const stack: Array<{ node: Node, depth: number }> = [];
-    // Push the root node with a depth of 0
-    stack.push({ node: root, depth: 0 });
-
-    while (stack.length > 0) {
-        // Pop a node from the stack
-        const { node, depth } = stack.pop()!;
-        
-        // Check if the current node is the goal
-        if (node.value === goal) {
-            return true; // Goal found
-        }
-
-        // If the current depth is less than the limit
-        if (depth < limit) {
-            // If the node has children, push them onto the stack
-            if (node.children) {
-                for (let child of node.children) {
-                    stack.push({ node: child, depth: depth + 1 });
-                }
+    // Start with a large gap, then reduce the gap
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // Save the current element to be compared
+            let temp = arr[i];
+            let j;
+            // Shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap) {
+                arr[j] = arr[j - gap];
             }
+            // Put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
     }
-    
-    // Goal not found within the depth limit
-    return false;
+
+    return arr;
 }
 
-// Example usage
-const rootNode: Node = {
-    value: 'A',
-    children: [
-        { value: 'B', children: [{ value: 'D' }, { value: 'E' }] },
-        { value: 'C', children: [{ value: 'F' }, { value: 'G' }] }
-    ]
-};
-
-const goalValue = 'E';
-const depthLimit = 2;
-
-const found = depthLimitedSearch(rootNode, goalValue, depthLimit);
-console.log(`Goal "${goalValue}" found: ${found}`);
+// Example usage:
+const myArray = [12, 34, 54, 2, 3];
+console.log("Original array:", myArray);
+const sortedArray = shellSort(myArray);
+console.log("Sorted array:", sortedArray);
