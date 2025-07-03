@@ -1,71 +1,13 @@
-class Node {
-    value: number;
-    next: Node | null;
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+const commonElements = array1.filter(element => array2.includes(element));
 
-class LinkedList {
-    head: Node | null;
+console.log(commonElements); // Output: [3, 4, 5]
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-    constructor() {
-        this.head = null;
-    }
+const set2 = new Set(array2);
+const commonElements = array1.filter(element => set2.has(element));
 
-    // Method to add a new node to the list
-    add(value: number): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-        } else {
-            let current = this.head;
-            while (current.next) {
-                current = current.next;
-            }
-            current.next = newNode;
-        }
-    }
-
-    // Method to find the middle element
-    findMiddle(): Node | null {
-        if (!this.head) return null; // List is empty
-
-        let slowPointer: Node | null = this.head;
-        let fastPointer: Node | null = this.head;
-
-        while (fastPointer && fastPointer.next) {
-            slowPointer = slowPointer!.next; // Move slow pointer one step
-            fastPointer = fastPointer.next.next; // Move fast pointer two steps
-        }
-
-        return slowPointer; // Slow pointer is at the middle
-    }
-}
-const list = new LinkedList();
-list.add(1);
-list.add(2);
-list.add(3);
-list.add(4);
-list.add(5);
-
-const middleNode = list.findMiddle();
-
-if (middleNode) {
-    console.log(`The middle element is: ${middleNode.value}`); // Output: The middle element is: 3
-}
-
-// Example of a list with an even number of nodes
-const list2 = new LinkedList();
-list2.add(1);
-list2.add(2);
-list2.add(3);
-list2.add(4);
-
-const middleNode2 = list2.findMiddle();
-
-if (middleNode2) {
-    console.log(`The middle element is: ${middleNode2.value}`); // Output: The middle element is: 3
-}
+console.log(commonElements); // Output: [3, 4, 5]
