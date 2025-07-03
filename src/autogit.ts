@@ -1,61 +1,30 @@
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
-    
-    // Sort the array
-    const sortedArray = arr.slice().sort((a, b) => a - b);
-    
-    // Return the k-th smallest element (1-based index)
-    return sortedArray[k - 1];
+/**
+ * Generates a random number between min (inclusive) and max (exclusive).
+ * @param min - The minimum number (inclusive).
+ * @param max - The maximum number (exclusive).
+ * @returns A random number between min and max.
+ */
+function getRandomNumber(min: number, max: number): number {
+    return Math.random() * (max - min) + min;
 }
 
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
-function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]];
-    let storeIndex = left;
-
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivotValue) {
-            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-            storeIndex++;
-        }
-    }
-    // Move pivot to its final place
-    [arr[storeIndex], arr[right]] = [arr[right], arr[storeIndex]];
-    return storeIndex;
+// Example usage
+const min = 1;
+const max = 10;
+const randomNum = getRandomNumber(min, max);
+console.log(randomNum);
+/**
+ * Generates a random integer between min (inclusive) and max (exclusive).
+ * @param min - The minimum number (inclusive).
+ * @param max - The maximum number (exclusive).
+ * @returns A random integer between min and max.
+ */
+function getRandomInteger(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min)) + min;
 }
 
-function quickSelect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left];
-    }
-
-    const pivotIndex = Math.floor((left + right) / 2);
-    const newPivotIndex = partition(arr, left, right, pivotIndex);
-
-    if (k === newPivotIndex) {
-        return arr[k];
-    } else if (k < newPivotIndex) {
-        return quickSelect(arr, left, newPivotIndex - 1, k);
-    } else {
-        return quickSelect(arr, newPivotIndex + 1, right, k);
-    }
-}
-
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
-    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for 0-based index
-}
-
-// Example usage:
-const array = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(array, k)); // Output: 7
+// Example usage
+const minInt = 1;
+const maxInt = 10;
+const randomInt = getRandomInteger(minInt, maxInt);
+console.log(randomInt);
