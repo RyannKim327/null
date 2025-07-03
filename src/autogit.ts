@@ -1,81 +1,28 @@
-function mergeSort<T>(array: T[]): T[] {
-  // Base case: arrays with fewer than 2 elements are sorted
-  if (array.length <= 1) {
-    return array;
-  }
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-  // Split array into two halves
-  const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
-
-  // Recursively sort both halves and merge them
-  return merge(mergeSort(left), mergeSort(right));
-}
-
-function merge<T>(left: T[], right: T[]): T[] {
-  const result: T[] = [];
-  let i = 0, j = 0;
-
-  // Merge elements from left and right in order
-  while (i < left.length && j < right.length) {
-    if (left[i] <= right[j]) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
     }
-  }
 
-  // Append remaining elements (if any)
-  return result.concat(left.slice(i)).concat(right.slice(j));
+    // n must be odd at this point, so we can skip even numbers
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
+        }
+    }
+
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
 // Example usage:
-const unsorted = [38, 27, 43, 3, 9, 82, 10];
-const sorted = mergeSort(unsorted);
-console.log(sorted); // [3, 9, 10, 27, 38, 43, 82]
-function mergeSort<T>(array: T[], compare: (a: T, b: T) => boolean): T[] {
-  if (array.length <= 1) {
-    return array;
-  }
-
-  const middle = Math.floor(array.length / 2);
-  const left = array.slice(0, middle);
-  const right = array.slice(middle);
-
-  return merge(mergeSort(left, compare), mergeSort(right, compare), compare);
-}
-
-function merge<T>(left: T[], right: T[], compare: (a: T, b: T) => boolean): T[] {
-  const result: T[] = [];
-  let i = 0, j = 0;
-
-  while (i < left.length && j < right.length) {
-    if (compare(left[i], right[j])) {
-      result.push(left[i]);
-      i++;
-    } else {
-      result.push(right[j]);
-      j++;
-    }
-  }
-
-  return result.concat(left.slice(i)).concat(right.slice(j));
-}
-
-// Example for sorting objects by a property
-interface Person {
-  name: string;
-  age: number;
-}
-
-const people: Person[] = [
-  { name: "Alice", age: 25 },
-  { name: "Bob", age: 20 },
-  { name: "Eve", age: 30 }
-];
-
-const sortedPeople = mergeSort(people, (a, b) => a.age <= b.age);
-console.log(sortedPeople);
+const number = 13195;
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
