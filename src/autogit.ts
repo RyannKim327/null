@@ -1,46 +1,49 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
+    // Build max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
+    }
+
+    // One by one extract elements from heap
+    for (let i = n - 1; i > 0; i--) {
+        // Move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]]; // Swap
+
+        // Call heapify on the reduced heap
+        heapify(arr, i, 0);
+    }
+
+    return arr;
+}
+
+// To maintain the heap property
+function heapify(arr: number[], n: number, i: number): void {
+    let largest = i; // Initialize largest as root
+    const left = 2 * i + 1; // left = 2*i + 1
+    const right = 2 * i + 2; // right = 2*i + 2
+
+    // If left child is larger than root
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    // If right child is larger than largest so far
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    // If largest is not root
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]]; // Swap
+
+        // Recursively heapify the affected sub-tree
+        heapify(arr, n, largest);
     }
 }
 
-function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
-    let first: ListNode | null = head;
-    let second: ListNode | null = head;
-
-    // Move first pointer n steps ahead
-    for (let i = 0; i < n; i++) {
-        if (first === null) {
-            return null; // n is greater than the length of the list
-        }
-        first = first.next;
-    }
-
-    // Move both pointers until first reaches the end
-    while (first !== null) {
-        first = first.next;
-        second = second.next;
-    }
-
-    // second now points to the nth node from the end
-    return second;
-}
-
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(3);
-head.next.next.next = new ListNode(4);
-head.next.next.next.next = new ListNode(5);
-
-const n = 2;
-const nthNode = findNthFromEnd(head, n);
-if (nthNode) {
-    console.log(`The ${n}th node from the end is: ${nthNode.value}`);
-} else {
-    console.log(`The list is shorter than ${n} nodes.`);
-}
+// Example usage
+const array = [3, 5, 1, 10, 2, 7, 6, 4, 8, 9];
+const sortedArray = heapSort(array);
+console.log('Sorted Array:', sortedArray);
