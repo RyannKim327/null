@@ -1,96 +1,51 @@
-class TreeNode<T> {
-    value: T;
-    left: TreeNode<T> | null;
-    right: TreeNode<T> | null;
-
-    constructor(value: T) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+// Define the structure of a node for the search tree or graph
+interface Node {
+    value: string; // or any type you want to use
+    children?: Node[]; // optional, for tree-like structures
 }
-class BinarySearchTree<T> {
-    private root: TreeNode<T> | null;
-    private comparator: (a: T, b: T) => number;
 
-    constructor(comparator: (a: T, b: T) => number) {
-        this.root = null;
-        this.comparator = comparator;
-    }
+// Depth-Limited Search iterative implementation
+function depthLimitedSearch(root: Node, goal: string, limit: number): boolean {
+    // Stack to hold nodes to explore
+    const stack: Array<{ node: Node, depth: number }> = [];
+    // Push the root node with a depth of 0
+    stack.push({ node: root, depth: 0 });
 
-    // Insert a value into the BST
-    insert(value: T): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
-            return;
+    while (stack.length > 0) {
+        // Pop a node from the stack
+        const { node, depth } = stack.pop()!;
+        
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return true; // Goal found
         }
-        this._insertNode(this.root, newNode);
-    }
 
-    private _insertNode(current: TreeNode<T>, newNode: TreeNode<T>): void {
-        if (this.comparator(newNode.value, current.value) < 0) {
-            if (current.left === null) {
-                current.left = newNode;
-            } else {
-                this._insertNode(current.left, newNode);
-            }
-        } else {
-            if (current.right === null) {
-                current.right = newNode;
-            } else {
-                this._insertNode(current.right, newNode);
+        // If the current depth is less than the limit
+        if (depth < limit) {
+            // If the node has children, push them onto the stack
+            if (node.children) {
+                for (let child of node.children) {
+                    stack.push({ node: child, depth: depth + 1 });
+                }
             }
         }
     }
-
-    // Search for a value in the BST
-    search(value: T): boolean {
-        return this._searchNode(this.root, value);
-    }
-
-    private _searchNode(current: TreeNode<T> | null, value: T): boolean {
-        if (current === null) {
-            return false;
-        }
-        const comparison = this.comparator(value, current.value);
-        if (comparison === 0) {
-            return true;
-        } else if (comparison < 0) {
-            return this._searchNode(current.left, value);
-        } else {
-            return this._searchNode(current.right, value);
-        }
-    }
-
-    // In-order traversal (optional)
-    inorderTraversal(callback: (node: TreeNode<T>) => void): void {
-        this._inorder(this.root, callback);
-    }
-
-    private _inorder(node: TreeNode<T> | null, callback: (node: TreeNode<T>) => void): void {
-        if (node !== null) {
-            this._inorder(node.left, callback);
-            callback(node);
-            this._inorder(node.right, callback);
-        }
-    }
+    
+    // Goal not found within the depth limit
+    return false;
 }
-// Comparator for numbers
-const numberComparator = (a: number, b: number): number => a - b;
 
-const bst = new BinarySearchTree<number>(numberComparator);
+// Example usage
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        { value: 'B', children: [{ value: 'D' }, { value: 'E' }] },
+        { value: 'C', children: [{ value: 'F' }, { value: 'G' }] }
+    ]
+};
 
-// Insert values
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(7);
+const goalValue = 'E';
+const depthLimit = 2;
 
-// Search for a value
-console.log(bst.search(7));  // true
-console.log(bst.search(3));  // false
-
-// In-order traversal
-bst.inorderTraversal(node => console.log(node.value)); 
-// Output: 5, 7, 10, 15
+const found = depthLimitedSearch(rootNode, goalValue, depthLimit);
+console.log(`Goal "${goalValue}" found: ${found}`);
