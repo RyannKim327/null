@@ -1,94 +1,53 @@
-class HashTable<K, V> {
-    private table: Array<Array<[K, V] | null>>;
-    private size: number;
+function heapSort(arr: number[]): number[] {
+    const n = arr.length;
 
-    constructor(size: number) {
-        this.size = size;
-        this.table = new Array(size).fill(null).map(() => []);
+    // Build a max heap
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(arr, n, i);
     }
 
-    private hash(key: K): number {
-        let hash = 0;
-        const keyString = String(key);
-        for (let i = 0; i < keyString.length; i++) {
-            hash += keyString.charCodeAt(i);
-        }
-        return hash % this.size;
+    // One by one extract elements from the heap
+    for (let i = n - 1; i >= 0; i--) {
+        // Move current root to end
+        [arr[0], arr[i]] = [arr[i], arr[0]];
+
+        // call max heapify on the reduced heap
+        heapify(arr, i, 0);
     }
 
-    public set(key: K, value: V): void {
-        const index = this.hash(key);
-        const bucket = this.table[index];
+    return arr;
+}
 
-        // Check if the key already exists in the bucket
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket[i][1] = value; // Update the value
-                return;
-            }
-        }
+// To heapify a subtree rooted with node i which is an index in arr[]
+// n is the size of the heap
+function heapify(arr: number[], n: number, i: number): void {
+    let largest = i; // Initialize largest as root
+    const left = 2 * i + 1; // left = 2*i + 1
+    const right = 2 * i + 2; // right = 2*i + 2
 
-        // If the key does not exist, add a new key-value pair
-        bucket.push([key, value]);
+    // If left child is larger than root
+    if (left < n && arr[left] > arr[largest]) {
+        largest = left;
     }
 
-    public get(key: K): V | undefined {
-        const index = this.hash(key);
-        const bucket = this.table[index];
-
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                return bucket[i][1]; // Return the value
-            }
-        }
-
-        return undefined; // Key not found
+    // If right child is larger than largest so far
+    if (right < n && arr[right] > arr[largest]) {
+        largest = right;
     }
 
-    public remove(key: K): boolean {
-        const index = this.hash(key);
-        const bucket = this.table[index];
+    // If largest is not root
+    if (largest !== i) {
+        [arr[i], arr[largest]] = [arr[largest], arr[i]];
 
-        for (let i = 0; i < bucket.length; i++) {
-            if (bucket[i] && bucket[i][0] === key) {
-                bucket.splice(i, 1); // Remove the key-value pair
-                return true;
-            }
-        }
-
-        return false; // Key not found
-    }
-
-    public keys(): K[] {
-        const keys: K[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    keys.push(entry[0]);
-                }
-            }
-        }
-        return keys;
-    }
-
-    public values(): V[] {
-        const values: V[] = [];
-        for (const bucket of this.table) {
-            for (const entry of bucket) {
-                if (entry) {
-                    values.push(entry[1]);
-                }
-            }
-        }
-        return values;
+        // Recursively heapify the affected sub-tree
+        heapify(arr, n, largest);
     }
 }
 
-// Example usage
-const hashTable = new HashTable<string, number>(10);
-hashTable.set("apple", 1);
-hashTable.set("banana", 2);
-console.log(hashTable.get("apple")); // Output: 1
-hashTable.remove("apple");
-console.log(hashTable.get("apple")); // Output: undefined
-console.log(hashTable.keys()); // Output: ["banana"]
+// Example usage:
+const array = [12, 11, 13, 5, 6, 7];
+console.log("Original array:", array);
+
+heapSort(array);
+
+console.log("Sorted array:", array);
