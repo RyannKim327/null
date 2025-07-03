@@ -1,26 +1,54 @@
-function countingSort(arr: number[], max: number): number[] {
-    // Step 1: Create a count array to store the count of each unique value
-    const count: number[] = new Array(max + 1).fill(0);
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    // Step 2: Store the count of each number in the input array
-    for (const num of arr) {
-        count[num]++;
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    // Step 3: Build the output array
-    const output: number[] = [];
-    for (let i = 0; i < count.length; i++) {
-        while (count[i] > 0) {
-            output.push(i);
-            count[i]--;
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
+
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
         }
-    }
 
-    return output;
+        return result;
+    }
 }
 
 // Example usage:
-const arr = [4, 2, 2, 8, 3, 3, 1];
-const max = Math.max(...arr);
-const sortedArr = countingSort(arr, max);
-console.log(sortedArr); // Output: [1, 2, 2, 3, 3, 4, 8]
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(3, 4);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4]
