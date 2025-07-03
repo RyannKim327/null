@@ -1,9 +1,26 @@
-const mainString: string = "Hello, world!";
-const substring: string = "world";
+function selectionSort(arr: number[]): number[] {
+    const n = arr.length;
 
-const containsSubstring: boolean = mainString.includes(substring);
+    for (let i = 0; i < n - 1; i++) {
+        // Assume the first element of the unsorted part is the smallest
+        let minIndex = i;
 
-console.log(containsSubstring); // Output: true
-const containsSubstring: boolean = mainString.indexOf(substring) !== -1;
+        // Find the index of the minimum element in the unsorted part
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j; // Update minIndex if a smaller element is found
+            }
+        }
 
-console.log(containsSubstring); // Output: true
+        // Swap the found minimum element with the first element of the unsorted part
+        if (minIndex !== i) {
+            [arr[i], arr[minIndex]] = [arr[minIndex], arr[i]]; // Swap elements
+        }
+    }
+    return arr;
+}
+
+// Example usage:
+const array = [64, 25, 12, 22, 11];
+const sortedArray = selectionSort(array);
+console.log(sortedArray); // Output: [11, 12, 22, 25, 64]
