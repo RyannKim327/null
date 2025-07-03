@@ -1,29 +1,35 @@
-function longestCommonPrefix(strs: string[]): string {
-  if (strs.length === 0) return '';
+function isPalindrome(s: string): boolean {
+    let left = 0;
+    let right = s.length - 1;
 
-  // Start with the first string as the prefix
-  let prefix = strs[0];
-
-  for (let i = 1; i < strs.length; i++) {
-    const currentStr = strs[i];
-
-    // Find the common prefix between prefix and currentStr
-    let j = 0;
-    while (j < prefix.length && j < currentStr.length && prefix[j] === currentStr[j]) {
-      j++;
+    while (left < right) {
+        // Move the left pointer to the right if the character is not alphanumeric
+        while (left < right && !isAlphanumeric(s[left])) {
+            left++;
+        }
+        // Move the right pointer to the left if the character is not alphanumeric
+        while (left < right && !isAlphanumeric(s[right])) {
+            right--;
+        }
+        // Compare characters
+        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+            return false;
+        }
+        left++;
+        right--;
     }
-
-    // Update prefix
-    prefix = prefix.substring(0, j);
-
-    // If at any point prefix becomes empty, no need to continue
-    if (prefix === '') break;
-  }
-
-  return prefix;
+    return true;
 }
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
 
-const moreStrings = ["dog", "racecar", "car"];
-console.log(longestCommonPrefix(moreStrings)); // Output: ""
+function isAlphanumeric(char: string): boolean {
+    const code = char.charCodeAt(0);
+    return (
+        (code >= 48 && code <= 57) || // 0-9
+        (code >= 65 && code <= 90) || // A-Z
+        (code >= 97 && code <= 122)   // a-z
+    );
+}
+
+// Example usage:
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
