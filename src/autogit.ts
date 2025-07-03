@@ -1,138 +1,56 @@
-class BTreeNode {
-    keys: number[];
-    children: BTreeNode[];
-    isLeaf: boolean;
-    t: number; // Minimum degree
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    constructor(t: number, isLeaf: boolean) {
-        this.t = t;
-        this.isLeaf = isLeaf;
-        this.keys = [];
-        this.children = [];
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    // Function to traverse all keys in the node
-    traverse() {
-        let i: number;
-        for (i = 0; i < this.keys.length; i++) {
-            // If this is not a leaf, then before the key, traverse the child
-            if (!this.isLeaf) {
-                this.children[i].traverse();
-            }
-            console.log(this.keys[i]);
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
+
+        for (let i = 0; i < patternLength; i++) {
+            table.set(pattern[i], i);
         }
 
-        // Finally, traverse the last child
-        if (!this.isLeaf) {
-            this.children[i].traverse();
-        }
+        return table;
     }
 
-    // Function to insert a new key in this node
-    insertNonFull(key: number) {
-        let i = this.keys.length - 1;
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
 
-        // If this is a leaf node
-        if (this.isLeaf) {
-            // Find the location to insert the new key
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            this.keys.splice(i + 1, 0, key); // Insert the key
-        } else {
-            // Find the child which is going to have the new key
-            while (i >= 0 && key < this.keys[i]) {
-                i--;
-            }
-            i++;
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
 
-            // Check if the found child is full
-            if (this.children[i].keys.length === 2 * this.t - 1) {
-                // Split the child
-                this.splitChild(i);
-
-                // After split, the middle key of child goes up and
-                // the child is split into two. Check which of the two
-                // is going to have the new key
-                if (key > this.keys[i]) {
-                    i++;
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
                 }
             }
-            this.children[i].insertNonFull(key);
-        }
-    }
 
-    // Function to split the child of this node
-    splitChild(i: number) {
-        const t = this.t;
-        const y = this.children[i];
-        const z = new BTreeNode(t, y.isLeaf);
-
-        // Give z the last t-1 keys of y
-        for (let j = 0; j < t - 1; j++) {
-            z.keys.push(y.keys[j + t]);
-        }
-
-        // If y is not a leaf, then give z the last t children of y
-        if (!y.isLeaf) {
-            for (let j = 0; j < t; j++) {
-                z.children.push(y.children[j + t]);
+            if (skip === 0) {
+                // Match found at index i
+                return i; // Return the index of the first match
             }
         }
 
-        // Reduce the number of keys in y
-        y.keys.length = t - 1;
-
-        // Since this node is going to have a new child,
-        // create space for the new child
-        this.children.splice(i + 1, 0, z);
-
-        // A key of y will move to this node
-        this.keys.splice(i, 0, y.keys.pop()!);
+        return -1; // No match found
     }
 }
 
-class BTree {
-    root: BTreeNode;
-    t: number; // Minimum degree
+// Example usage:
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
 
-    constructor(t: number) {
-        this.root = new BTreeNode(t, true);
-        this.t = t;
-    }
-
-    // Function to traverse the tree
-    traverse() {
-        this.root.traverse();
-    }
-
-    // Function to insert a new key
-    insert(key: number) {
-        const root = this.root;
-
-        // If root is full, then tree grows in height
-        if (root.keys.length === 2 * this.t - 1) {
-            const newRoot = new BTreeNode(this.t, false);
-            newRoot.children.push(root);
-            newRoot.splitChild(0);
-            newRoot.insertNonFull(key);
-            this.root = newRoot;
-        } else {
-            root.insertNonFull(key);
-        }
-    }
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found.");
 }
-
-// Example usage
-const bTree = new BTree(3); // A B-tree with minimum degree 3
-bTree.insert(10);
-bTree.insert(20);
-bTree.insert(5);
-bTree.insert(6);
-bTree.insert(12);
-bTree.insert(30);
-bTree.insert(7);
-bTree.insert(17);
-
-// Traverse the B-tree
-bTree.traverse();
