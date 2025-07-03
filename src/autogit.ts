@@ -1,63 +1,49 @@
-class KMP {
-    // Method to create LPS array
-    private createLPS(pattern: string): number[] {
-        const lps: number[] = new Array(pattern.length).fill(0);
-        let length = 0; // length of the previous longest prefix suffix
-        let i = 1;
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    // Ensure nums1 is the smaller array
+    if (nums1.length > nums2.length) {
+        [nums1, nums2] = [nums2, nums1];
+    }
 
-        while (i < pattern.length) {
-            if (pattern[i] === pattern[length]) {
-                length++;
-                lps[i] = length;
-                i++;
+    const x = nums1.length;
+    const y = nums2.length;
+
+    let low = 0;
+    let high = x;
+
+    while (low <= high) {
+        const partitionX = Math.floor((low + high) / 2);
+        const partitionY = Math.floor((x + y + 1) / 2) - partitionX;
+
+        const maxX = partitionX === 0 ? Number.NEGATIVE_INFINITY : nums1[partitionX - 1];
+        const minX = partitionX === x ? Number.POSITIVE_INFINITY : nums1[partitionX];
+
+        const maxY = partitionY === 0 ? Number.NEGATIVE_INFINITY : nums2[partitionY - 1];
+        const minY = partitionY === y ? Number.POSITIVE_INFINITY : nums2[partitionY];
+
+        if (maxX <= minY && maxY <= minX) {
+            // We have partitioned the arrays correctly
+            if ((x + y) % 2 === 0) {
+                return (Math.max(maxX, maxY) + Math.min(minX, minY)) / 2;
             } else {
-                if (length !== 0) {
-                    length = lps[length - 1];
-                } else {
-                    lps[i] = 0;
-                    i++;
-                }
+                return Math.max(maxX, maxY);
             }
+        } else if (maxX > minY) {
+            // Move towards the left in nums1
+            high = partitionX - 1;
+        } else {
+            // Move towards the right in nums1
+            low = partitionX + 1;
         }
-        return lps;
     }
 
-    // Method to perform KMP search
-    public kmpSearch(text: string, pattern: string): number {
-        const lps = this.createLPS(pattern);
-        let i = 0; // index for text
-        let j = 0; // index for pattern
-
-        while (i < text.length) {
-            if (pattern[j] === text[i]) {
-                i++;
-                j++;
-            }
-
-            if (j === pattern.length) {
-                // Found the pattern at index (i - j)
-                return i - j; // return the starting index of the match
-            } else if (i < text.length && pattern[j] !== text[i]) {
-                // Mismatch after j matches
-                if (j !== 0) {
-                    j = lps[j - 1];
-                } else {
-                    i++;
-                }
-            }
-        }
-        return -1; // Pattern not found
-    }
+    throw new Error("Input arrays are not sorted.");
 }
 
 // Example usage:
-const kmp = new KMP();
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const index = kmp.kmpSearch(text, pattern);
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2
 
-if (index !== -1) {
-    console.log(`Pattern found at index: ${index}`);
-} else {
-    console.log("Pattern not found");
-}
+const nums3 = [1, 2];
+const nums4 = [3, 4];
+console.log(findMedianSortedArrays(nums3, nums4)); // Output: 2.5
