@@ -1,33 +1,61 @@
-// Define the structure of a tree node
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+class Edge {
+    constructor(public source: number, public destination: number, public weight: number) {}
+}
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
+class Graph {
+    private edges: Edge[];
+
+    constructor() {
+        this.edges = [];
+    }
+
+    // Adds an edge to the graph
+    addEdge(source: number, destination: number, weight: number) {
+        this.edges.push(new Edge(source, destination, weight));
+    }
+
+    // Bellman-Ford algorithm implementation
+    bellmanFord(source: number, numVertices: number): number[] | string {
+        // Step 1: Initialize distances from source to all vertices as infinite
+        const distances: number[] = Array(numVertices).fill(Infinity);
+        // Distance from source to itself is 0
+        distances[source] = 0;
+
+        // Step 2: Relax all edges |V| - 1 times.
+        for (let i = 0; i < numVertices - 1; i++) {
+            for (const edge of this.edges) {
+                const { source, destination, weight } = edge;
+                if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                    distances[destination] = distances[source] + weight;
+                }
+            }
+        }
+
+        // Step 3: Check for negative-weight cycles.
+        for (const edge of this.edges) {
+            const { source, destination, weight } = edge;
+            if (distances[source] !== Infinity && distances[source] + weight < distances[destination]) {
+                return 'Graph contains a negative-weight cycle';
+            }
+        }
+
+        return distances;
     }
 }
 
-// Function to calculate the sum of all nodes in the binary tree
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: If the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
+// Example usage:
+const graph = new Graph();
+graph.addEdge(0, 1, -1);
+graph.addEdge(0, 2, 4);
+graph.addEdge(1, 2, 3);
+graph.addEdge(1, 3, 2);
+graph.addEdge(1, 4, 2);
+graph.addEdge(3, 2, 5);
+graph.addEdge(3, 1, 1);
+graph.addEdge(4, 3, -3);
 
-    // Recursive case: Return the sum of the current node value and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
+const numVertices = 5; // Number of vertices in the graph
+const sourceVertex = 0; // Starting vertex for the path
 
-// Example of using the above code
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-const totalSum = sumOfNodes(root);
-console.log(`The sum of all nodes in the binary tree is: ${totalSum}`); // Output: 15
+const distances = graph.bellmanFord(sourceVertex, numVertices);
+console.log(distances); // Output the shortest distances from source to all vertices
