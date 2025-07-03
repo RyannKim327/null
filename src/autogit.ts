@@ -1,54 +1,85 @@
-function majorityElement(nums: number[]): number | null {
-    const countMap: { [key: number]: number } = {};
-    const majorityCount = Math.floor(nums.length / 2);
+class TreeNode<T> {
+  value: T;
+  left: TreeNode<T> | null;
+  right: TreeNode<T> | null;
 
-    for (const num of nums) {
-        countMap[num] = (countMap[num] || 0) + 1;
-        if (countMap[num] > majorityCount) {
-            return num;
-        }
+  constructor(value: T) {
+    this.value = value;
+    this.left = null;
+    this.right = null;
+  }
+}
+
+class BinaryTree<T> {
+  root: TreeNode<T> | null;
+
+  constructor() {
+    this.root = null;
+  }
+
+  insert(value: T): void {
+    const newNode = new TreeNode(value);
+
+    if (this.root === null) {
+      this.root = newNode;
+      return;
     }
 
-    return null; // If no majority element exists
+    let current = this.root;
+    while (true) {
+      // Assuming T is comparable with < and > operators
+      // For generic T, you might need a comparator function
+
+      if (value < current.value) {
+        if (current.left === null) {
+          current.left = newNode;
+          break;
+        }
+        current = current.left;
+      } else {
+        if (current.right === null) {
+          current.right = newNode;
+          break;
+        }
+        current = current.right;
+      }
+    }
+  }
+
+  // In-order traversal: left, root, right
+  inOrderTraversal(node: TreeNode<T> | null = this.root, visit: (value: T) => void = console.log): void {
+    if (node !== null) {
+      this.inOrderTraversal(node.left, visit);
+      visit(node.value);
+      this.inOrderTraversal(node.right, visit);
+    }
+  }
+
+  // Pre-order traversal: root, left, right
+  preOrderTraversal(node: TreeNode<T> | null = this.root, visit: (value: T) => void = console.log): void {
+    if (node !== null) {
+      visit(node.value);
+      this.preOrderTraversal(node.left, visit);
+      this.preOrderTraversal(node.right, visit);
+    }
+  }
+
+  // Post-order traversal: left, right, root
+  postOrderTraversal(node: TreeNode<T> | null = this.root, visit: (value: T) => void = console.log): void {
+    if (node !== null) {
+      this.postOrderTraversal(node.left, visit);
+      this.postOrderTraversal(node.right, visit);
+      visit(node.value);
+    }
+  }
 }
 
 // Example usage:
-const nums = [3, 2, 3];
-console.log(majorityElement(nums)); // Output: 3
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+const tree = new BinaryTree<number>();
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(7);
 
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
-    }
-
-    // Optional: Verify that the candidate is indeed the majority element
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    return count > Math.floor(nums.length / 2) ? candidate : null;
-}
-
-// Example usage:
-const nums = [3, 2, 3];
-console.log(majorityElement(nums)); // Output: 3
-function majorityElement(nums: number[]): number | null {
-    nums.sort((a, b) => a - b);
-    return nums[Math.floor(nums.length / 2)];
-}
-
-// Example usage:
-const nums = [3, 2, 3];
-console.log(majorityElement(nums)); // Output: 3
+// Prints the values in sorted order due to in-order traversal
+tree.inOrderTraversal(tree.root, value => console.log(value));
