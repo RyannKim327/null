@@ -1,19 +1,12 @@
-npm install node-cron
-npm install typescript @types/node --save-dev
-import cron from 'node-cron';
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-    console.log('Task is running every minute');
-});
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-// Start the task
-task.start();
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-// Optional: Stop the task after 5 minutes
-setTimeout(() => {
-    task.stop();
-    console.log('Task has been stopped');
-}, 5 * 60 * 1000); // 5 minutes in milliseconds
-npx tsc cronJob.ts
-node cronJob.js
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
+
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
