@@ -1,28 +1,12 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
+const numbers: number[] = [5, 2, 8, 1, 4];
 
-    // First pass: find potential candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-        }
-        if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
-    }
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-    // Verify if the candidate is actually the majority
-    if (candidate !== null && nums.filter(n => n === candidate).length > Math.floor(nums.length / 2)) {
-        return candidate;
-    }
+console.log(numbers); // Output: [1, 2, 4, 5, 8]
+const numbers: number[] = [5, 2, 8, 1, 4];
 
-    return null; // if no majority element found
-}
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
 
-// Example usage:
-const array = [2, 2, 1, 1, 1, 2, 2];
-const result = majorityElement(array);
-console.log(result); // Output: 2
+console.log(numbers); // Output: [8, 5, 4, 2, 1]
