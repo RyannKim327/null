@@ -1,60 +1,112 @@
-class TreeNode<T> {
+class Node<T> {
     value: T;
-    children: TreeNode<T>[];
+    forward: Node<T>[];
 
-    constructor(value: T) {
+    constructor(value: T, level: number) {
         this.value = value;
-        this.children = [];
-    }
-
-    addChild(child: TreeNode<T>) {
-        this.children.push(child);
+        this.forward = new Array(level + 1).fill(null);
     }
 }
-function breadthLimitedSearch<T>(root: TreeNode<T>, target: T, maxDepth: number): TreeNode<T> | null {
-    if (maxDepth < 0) {
-        return null; // If maxDepth is negative, return null
+class SkipList<T> {
+    private head: Node<T>;
+    private maxLevel: number;
+    private p: number; // Probability for random level generation
+    private currentLevel: number;
+
+    constructor(maxLevel: number = 16, p: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.p = p;
+        this.currentLevel = 0;
+        this.head = new Node<T>(null, maxLevel);
     }
 
-    const queue: { node: TreeNode<T>; depth: number }[] = [{ node: root, depth: 0 }];
-    
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first element in the queue
+    private randomLevel(): number {
+        let level = 0;
+        while (Math.random() < this.p && level < this.maxLevel) {
+            level++;
+        }
+        return level;
+    }
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Return the found node
+    insert(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        for (let i = this.currentLevel; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
         }
 
-        // If we haven't reached the maximum depth, add children to the queue
-        if (depth < maxDepth) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
+        current = current.forward[0];
+
+        if (current === null || current.value !== value) {
+            const newLevel = this.randomLevel();
+            if (newLevel > this.currentLevel) {
+                for (let i = this.currentLevel + 1; i <= newLevel; i++) {
+                    update[i] = this.head;
+                }
+                this.currentLevel = newLevel;
+            }
+
+            const newNode = new Node(value, newLevel);
+            for (let i = 0; i <= newLevel; i++) {
+                newNode.forward[i] = update[i].forward[i];
+                update[i].forward[i] = newNode;
             }
         }
     }
 
-    return null; // Return null if the target is not found within the max depth
+    search(value: T): boolean {
+        let current: Node<T> = this.head;
+
+        for (let i = this.currentLevel; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+        }
+
+        current = current.forward[0];
+        return current !== null && current.value === value;
+    }
+
+    delete(value: T): void {
+        const update: Node<T>[] = new Array(this.maxLevel + 1);
+        let current: Node<T> = this.head;
+
+        for (let i = this.currentLevel; i >= 0; i--) {
+            while (current.forward[i] !== null && current.forward[i].value < value) {
+                current = current.forward[i];
+            }
+            update[i] = current;
+        }
+
+        current = current.forward[0];
+
+        if (current !== null && current.value === value) {
+            for (let i = 0; i <= this.currentLevel; i++) {
+                if (update[i].forward[i] !== current) break;
+                update[i].forward[i] = current.forward[i];
+            }
+
+            while (this.currentLevel > 0 && this.head.forward[this.currentLevel] === null) {
+                this.currentLevel--;
+            }
+        }
+    }
 }
-// Create a sample tree
-const root = new TreeNode<number>(1);
-const child1 = new TreeNode<number>(2);
-const child2 = new TreeNode<number>(3);
-const child3 = new TreeNode<number>(4);
-const child4 = new TreeNode<number>(5);
+const skipList = new SkipList<number>();
 
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(child3);
-child1.addChild(child4);
+skipList.insert(3);
+skipList.insert(6);
+skipList.insert(7);
+skipList.insert(9);
+skipList.insert(12);
+skipList.insert(19);
 
-// Search for a value with a maximum depth
-const targetValue = 4;
-const maxDepth = 2;
-const result = breadthLimitedSearch(root, targetValue, maxDepth);
+console.log(skipList.search(7)); // true
+console.log(skipList.search(15)); // false
 
-if (result) {
-    console.log(`Found node with value: ${result.value}`);
-} else {
-    console.log(`Node with value ${targetValue} not found within depth ${maxDepth}.`);
-}
+skipList.delete(3);
+console.log(skipList.search(3)); // false
