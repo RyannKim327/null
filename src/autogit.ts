@@ -1,57 +1,38 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
-    }
-
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-    
-    while (fast && fast.next) {
-        slow = slow!.next; // Move slow by 1
-        fast = fast.next.next; // Move fast by 2
-    }
-
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
-
-    while (current) {
-        const nextTemp = current.next; // Store next node
-        current.next = prev; // Reverse the link
-        prev = current; // Move prev to current
-        current = nextTemp; // Move to next node
-    }
-
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
-
-    while (right) {
-        if (left!.value !== right.value) {
-            return false; // Not a palindrome
+function longestCommonSubstring(str1: string, str2: string): string {
+  const len1 = str1.length;
+  const len2 = str2.length;
+  
+  // Create a 2D array initialized with zeros
+  const dp: number[][] = new Array(len1 + 1).fill(0).map(() => new Array(len2 + 1).fill(0));
+  
+  let maxLength = 0;
+  let endIndexStr1 = 0; // To track the end index of the LCS in str1
+  
+  for (let i = 1; i <= len1; i++) {
+    for (let j = 1; j <= len2; j++) {
+      if (str1[i - 1] === str2[j - 1]) {
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        // Update maximum length and position
+        if (dp[i][j] > maxLength) {
+          maxLength = dp[i][j];
+          endIndexStr1 = i; // end index in str1 (exclusive)
         }
-        left = left!.next;
-        right = right.next;
+      } else {
+        dp[i][j] = 0;
+      }
     }
-
-    return true; // It is a palindrome
+  }
+  
+  // Extract the longest common substring
+  if (maxLength === 0) {
+    return ""; // No common substring found
+  }
+  const startIndex = endIndexStr1 - maxLength;
+  return str1.substring(startIndex, endIndexStr1);
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
+const strA = "abcde12345";
+const strB = "123xyzabc";
 
-console.log(isPalindrome(head)); // Output: true
+console.log(longestCommonSubstring(strA, strB)); // Output: "123"
