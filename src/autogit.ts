@@ -1,13 +1,10 @@
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+const numbers: number[] = [5, 3, 8, 1, 2];
 
-const commonElements = array1.filter(element => array2.includes(element));
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-console.log(commonElements); // Output: [3, 4, 5]
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [3, 4, 5, 6, 7];
+console.log(numbers); // Output: [1, 2, 3, 5, 8]
+// Sort the array in descending order
+numbers.sort((a, b) => b - a);
 
-const set2 = new Set(array2);
-const commonElements = array1.filter(element => set2.has(element));
-
-console.log(commonElements); // Output: [3, 4, 5]
+console.log(numbers); // Output: [8, 5, 3, 2, 1]
