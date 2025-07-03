@@ -1,45 +1,23 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+npm install -g typescript
+mkdir my-cron-app
+cd my-cron-app
+npm init -y
+npm install node-cron
+npm install --save-dev @types/node
+import cron from 'node-cron';
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+  console.log(`Current Date and Time: ${new Date().toLocaleString()}`);
+});
 
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) return false;
+// Start the cron job
+task.start();
 
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move slow pointer by 1
-        fast = fast.next.next; // Move fast pointer by 2
-
-        if (slow === fast) {
-            return true; // There is a cycle
-        }
-    }
-
-    return false; // No cycle
-}
-
-// Example usage:
-const node1 = new ListNode(1);
-const node2 = new ListNode(2);
-const node3 = new ListNode(3);
-const node4 = new ListNode(4);
-
-// Creating a cycle for testing
-node1.next = node2;
-node2.next = node3;
-node3.next = node4;
-node4.next = node2; // Creates a cycle
-
-console.log(hasCycle(node1)); // Output: true
-
-// To test without a cycle
-node4.next = null; // Break the cycle
-console.log(hasCycle(node1)); // Output: false
+// Optional: Stop the task after 5 minutes (just for demonstration)
+setTimeout(() => {
+  task.stop();
+  console.log('Cron job stopped.');
+}, 5 * 60 * 1000);
+tsc cron-job.ts
+node cron-job.js
