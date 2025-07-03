@@ -1,64 +1,19 @@
-function KMPSearch(pattern: string, text: string): number[] {
-    const m = pattern.length;
-    const n = text.length;
-    
-    // Step 1: Preprocess the pattern to create the LPS array
-    const lps = computeLPSArray(pattern);
-    
-    const result: number[] = []; // To store the indices of the matches
-    let i = 0; // index for text
-    let j = 0; // index for pattern
-    
-    while (i < n) {
-        if (pattern[j] === text[i]) {
-            i++;
-            j++;
-        }
-        
-        if (j === m) {
-            // Found a match, add the start index to the result
-            result.push(i - j);
-            j = lps[j - 1]; // Continue searching
-        } else if (i < n && pattern[j] !== text[i]) {
-            // Mismatch after j matches
-            if (j !== 0) {
-                j = lps[j - 1]; // Use LPS to skip characters
-            } else {
-                i++; // Move to the next character in text
-            }
-        }
-    }
-    
-    return result;
-}
+function longestIncreasingSubsequence(nums: number[]): number {
+    if (nums.length === 0) return 0;
 
-function computeLPSArray(pattern: string): number[] {
-    const m = pattern.length;
-    const lps = new Array(m).fill(0); // Create LPS array
-    let length = 0; // Length of the previous longest prefix suffix
-    let i = 1; // Start from the second character
-    
-    while (i < m) {
-        if (pattern[i] === pattern[length]) {
-            length++;
-            lps[i] = length;
-            i++;
-        } else {
-            // Mismatch after length matches
-            if (length !== 0) {
-                length = lps[length - 1]; // Use the previously computed LPS
-            } else {
-                lps[i] = 0; // No prefix suffix
-                i++;
+    const dp: number[] = new Array(nums.length).fill(1);
+
+    for (let i = 1; i < nums.length; i++) {
+        for (let j = 0; j < i; j++) {
+            if (nums[i] > nums[j]) {
+                dp[i] = Math.max(dp[i], dp[j] + 1);
             }
         }
     }
-    
-    return lps;
+
+    return Math.max(...dp);
 }
 
 // Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = KMPSearch(pattern, text);
-console.log(`Pattern found at indices: ${matches.join(', ')}`);
+const arr = [10, 9, 2, 5, 3, 7, 101, 18];
+console.log(longestIncreasingSubsequence(arr)); // Output: 4
