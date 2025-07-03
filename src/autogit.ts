@@ -1,23 +1,29 @@
-npm install -g typescript
-mkdir my-cron-app
-cd my-cron-app
-npm init -y
-npm install node-cron
-npm install --save-dev @types/node
-import cron from 'node-cron';
+function longestCommonPrefix(strs: string[]): string {
+  if (strs.length === 0) return '';
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-  console.log(`Current Date and Time: ${new Date().toLocaleString()}`);
-});
+  // Start with the first string as the prefix
+  let prefix = strs[0];
 
-// Start the cron job
-task.start();
+  for (let i = 1; i < strs.length; i++) {
+    const currentStr = strs[i];
 
-// Optional: Stop the task after 5 minutes (just for demonstration)
-setTimeout(() => {
-  task.stop();
-  console.log('Cron job stopped.');
-}, 5 * 60 * 1000);
-tsc cron-job.ts
-node cron-job.js
+    // Find the common prefix between prefix and currentStr
+    let j = 0;
+    while (j < prefix.length && j < currentStr.length && prefix[j] === currentStr[j]) {
+      j++;
+    }
+
+    // Update prefix
+    prefix = prefix.substring(0, j);
+
+    // If at any point prefix becomes empty, no need to continue
+    if (prefix === '') break;
+  }
+
+  return prefix;
+}
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
+
+const moreStrings = ["dog", "racecar", "car"];
+console.log(longestCommonPrefix(moreStrings)); // Output: ""
