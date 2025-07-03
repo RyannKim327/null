@@ -1,62 +1,44 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const table: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+class Stack<T> {
+  private items: T[] = [];
 
-    // Initialize the table with the length of the pattern
-    for (let i = 0; i < patternLength - 1; i++) {
-        table[pattern[i]] = patternLength - 1 - i;
-    }
+  // Add an element to the top of the stack
+  push(element: T): void {
+    this.items.push(element);
+  }
 
-    // Fill in the default value for characters not in the pattern
-    for (let i = 0; i < 256; i++) {
-        const char = String.fromCharCode(i);
-        if (!(char in table)) {
-            table[char] = patternLength;
-        }
-    }
+  // Remove and return the top element of the stack
+  pop(): T | undefined {
+    return this.items.pop();
+  }
 
-    return table;
+  // Look at the top element without removing it
+  peek(): T | undefined {
+    return this.items[this.items.length - 1];
+  }
+
+  // Check if the stack is empty
+  isEmpty(): boolean {
+    return this.items.length === 0;
+  }
+
+  // Get the number of elements in the stack
+  size(): number {
+    return this.items.length;
+  }
+
+  // Clear the stack
+  clear(): void {
+    this.items = [];
+  }
 }
+const stack = new Stack<number>();
 
-function boyerMooreHorspool(text: string, pattern: string): number {
-    const textLength = text.length;
-    const patternLength = pattern.length;
+stack.push(10);
+stack.push(20);
+stack.push(30);
 
-    if (patternLength === 0 || textLength < patternLength) {
-        return -1; // Pattern not found
-    }
-
-    const badCharTable = createBadCharacterTable(pattern);
-    let i = 0; // Index for text
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Index for pattern
-
-        // Compare the pattern with the text from right to left
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
-        }
-
-        // If the pattern is found
-        if (j < 0) {
-            return i; // Return the starting index of the match
-        } else {
-            // Shift the pattern based on the bad character rule
-            const shift = badCharTable[text[i + j]] || patternLength;
-            i += shift;
-        }
-    }
-
-    return -1; // Pattern not found
-}
-
-// Example usage
-const text = "ababcabcabababd";
-const pattern = "ababd";
-const result = boyerMooreHorspool(text, pattern);
-
-if (result !== -1) {
-    console.log(`Pattern found at index: ${result}`);
-} else {
-    console.log("Pattern not found");
-}
+console.log(stack.peek());   // Output: 30
+console.log(stack.pop());    // Output: 30
+console.log(stack.pop());    // Output: 20
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.size());    // Output: 1
