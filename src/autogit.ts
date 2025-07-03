@@ -1,19 +1,48 @@
-function countOccurrences(text: string, word: string): number {
-    // Normalize the text and word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function interpolationSearch(arr: number[], target: number): number {
+    let low = 0;
+    let high = arr.length - 1;
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/);
+    while (low <= high && target >= arr[low] && target <= arr[high]) {
+        // Handle the case where arr[low] == arr[high]
+        if (arr[low] === arr[high]) {
+            if (arr[low] === target) {
+                return low; // Found target at position low
+            } else {
+                return -1; // Target not found
+            }
+        }
 
-    // Filter the array to count occurrences of the specified word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+        // Estimate the position
+        const pos = low + Math.floor(
+            ((target - arr[low]) * (high - low)) / (arr[high] - arr[low])
+        );
 
-    return count;
+        // Check if pos is within bounds
+        if (pos < low || pos > high) {
+            return -1; // Target not found
+        }
+
+        if (arr[pos] === target) {
+            return pos;
+        }
+
+        if (arr[pos] < target) {
+            low = pos + 1;
+        } else {
+            high = pos - 1;
+        }
+    }
+
+    return -1; // Target not found
 }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const word = "hello";
-const occurrences = countOccurrences(text, word);
-console.log(`The word "${word}" occurs ${occurrences} times.`);
+// Example usage:
+const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+const targetValue = 70;
+const index = interpolationSearch(sortedArray, targetValue);
+
+if (index !== -1) {
+    console.log(`Found ${targetValue} at index ${index}`);
+} else {
+    console.log(`${targetValue} not found in array.`);
+}
