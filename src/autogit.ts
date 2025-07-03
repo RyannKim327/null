@@ -1,13 +1,22 @@
-function calculateMean(numbers: number[]): number {
-  if (numbers.length === 0) {
-    throw new Error("Array must not be empty");
-  }
+function areAnagrams(str1: string, str2: string): boolean {
+    // Normalize the strings: remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-  const sum = numbers.reduce((acc, curr) => acc + curr, 0);
-  return sum / numbers.length;
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
+    }
+
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    // Compare the sorted strings
+    return sortedStr1 === sortedStr2;
 }
 
 // Example usage:
-const nums = [1, 2, 3, 4, 5];
-const mean = calculateMean(nums);
-console.log(mean);  // Output: 3
+const string1 = "listen";
+const string2 = "silent";
+console.log(areAnagrams(string1, string2)); // Output: true
