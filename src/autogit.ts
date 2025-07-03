@@ -1,87 +1,96 @@
-class PriorityQueue<T> {
-    private heap: { value: T; priority: number }[] = [];
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
 
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
+    constructor(value: T) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinarySearchTree<T> {
+    private root: TreeNode<T> | null;
+    private comparator: (a: T, b: T) => number;
+
+    constructor(comparator: (a: T, b: T) => number) {
+        this.root = null;
+        this.comparator = comparator;
     }
 
-    public size(): number {
-        return this.heap.length;
-    }
-
-    public enqueue(value: T, priority: number): void {
-        this.heap.push({ value, priority });
-        this.bubbleUp();
-    }
-
-    public dequeue(): T | undefined {
-        if (this.isEmpty()) return undefined;
-
-        const min = this.heap[0].value;
-        const last = this.heap.pop();
-        if (this.heap.length > 0 && last) {
-            this.heap[0] = last;
-            this.bubbleDown();
+    // Insert a value into the BST
+    insert(value: T): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+            return;
         }
-        return min;
+        this._insertNode(this.root, newNode);
     }
 
-    public peek(): T | undefined {
-        return this.isEmpty() ? undefined : this.heap[0].value;
-    }
-
-    private bubbleUp(): void {
-        let index = this.heap.length - 1;
-        while (index > 0) {
-            const parentIndex = Math.floor((index - 1) / 2);
-            if (this.heap[index].priority >= this.heap[parentIndex].priority) break;
-
-            [this.heap[index], this.heap[parentIndex]] = [this.heap[parentIndex], this.heap[index]];
-            index = parentIndex;
+    private _insertNode(current: TreeNode<T>, newNode: TreeNode<T>): void {
+        if (this.comparator(newNode.value, current.value) < 0) {
+            if (current.left === null) {
+                current.left = newNode;
+            } else {
+                this._insertNode(current.left, newNode);
+            }
+        } else {
+            if (current.right === null) {
+                current.right = newNode;
+            } else {
+                this._insertNode(current.right, newNode);
+            }
         }
     }
 
-    private bubbleDown(): void {
-        let index = 0;
-        const length = this.heap.length;
-        const element = this.heap[0];
+    // Search for a value in the BST
+    search(value: T): boolean {
+        return this._searchNode(this.root, value);
+    }
 
-        while (true) {
-            let leftChildIndex = 2 * index + 1;
-            let rightChildIndex = 2 * index + 2;
-            let leftChild: { value: T; priority: number } | undefined;
-            let rightChild: { value: T; priority: number } | undefined;
-            let swap = null;
+    private _searchNode(current: TreeNode<T> | null, value: T): boolean {
+        if (current === null) {
+            return false;
+        }
+        const comparison = this.comparator(value, current.value);
+        if (comparison === 0) {
+            return true;
+        } else if (comparison < 0) {
+            return this._searchNode(current.left, value);
+        } else {
+            return this._searchNode(current.right, value);
+        }
+    }
 
-            if (leftChildIndex < length) {
-                leftChild = this.heap[leftChildIndex];
-                if (leftChild.priority < element.priority) {
-                    swap = leftChildIndex;
-                }
-            }
-            if (rightChildIndex < length) {
-                rightChild = this.heap[rightChildIndex];
-                if (
-                    (swap === null && rightChild.priority < element.priority) ||
-                    (swap !== null && rightChild.priority < leftChild!.priority)
-                ) {
-                    swap = rightChildIndex;
-                }
-            }
-            if (swap === null) break;
+    // In-order traversal (optional)
+    inorderTraversal(callback: (node: TreeNode<T>) => void): void {
+        this._inorder(this.root, callback);
+    }
 
-            this.heap[index] = this.heap[swap];
-            this.heap[swap] = element;
-            index = swap;
+    private _inorder(node: TreeNode<T> | null, callback: (node: TreeNode<T>) => void): void {
+        if (node !== null) {
+            this._inorder(node.left, callback);
+            callback(node);
+            this._inorder(node.right, callback);
         }
     }
 }
+// Comparator for numbers
+const numberComparator = (a: number, b: number): number => a - b;
 
-// Example usage:
-const pq = new PriorityQueue<string>();
-pq.enqueue("high priority", 1);
-pq.enqueue("medium priority", 5);
-pq.enqueue("low priority", 10);
+const bst = new BinarySearchTree<number>(numberComparator);
 
-console.log(pq.dequeue()); // Outputs: "high priority"
-console.log(pq.peek());    // Outputs: "medium priority"
+// Insert values
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(7);
+
+// Search for a value
+console.log(bst.search(7));  // true
+console.log(bst.search(3));  // false
+
+// In-order traversal
+bst.inorderTraversal(node => console.log(node.value)); 
+// Output: 5, 7, 10, 15
