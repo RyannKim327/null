@@ -1,53 +1,48 @@
-function heapSort(arr: number[]): number[] {
-    const n = arr.length;
-
-    // Build a max heap
-    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
-        heapify(arr, n, i);
-    }
-
-    // One by one extract elements from the heap
-    for (let i = n - 1; i >= 0; i--) {
-        // Move current root to end
-        [arr[0], arr[i]] = [arr[i], arr[0]];
-
-        // call max heapify on the reduced heap
-        heapify(arr, i, 0);
-    }
-
-    return arr;
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(value => arr2.includes(value));
 }
 
-// To heapify a subtree rooted with node i which is an index in arr[]
-// n is the size of the heap
-function heapify(arr: number[], n: number, i: number): void {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-    // If left child is larger than root
-    if (left < n && arr[left] > arr[largest]) {
-        largest = left;
-    }
-
-    // If right child is larger than largest so far
-    if (right < n && arr[right] > arr[largest]) {
-        largest = right;
-    }
-
-    // If largest is not root
-    if (largest !== i) {
-        [arr[i], arr[largest]] = [arr[largest], arr[i]];
-
-        // Recursively heapify the affected sub-tree
-        heapify(arr, n, largest);
-    }
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const set1 = new Set(arr1);
+    return arr2.filter(value => set1.has(value));
 }
 
-// Example usage:
-const array = [12, 11, 13, 5, 6, 7];
-console.log("Original array:", array);
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
 
-heapSort(array);
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.reduce((acc: number[], value) => {
+        if (arr2.includes(value)) {
+            acc.push(value);
+        }
+        return acc;
+    }, []);
+}
 
-console.log("Sorted array:", array);
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const commonElements: number[] = [];
+    arr1.forEach(value => {
+        if (arr2.includes(value)) {
+            commonElements.push(value);
+        }
+    });
+    return commonElements;
+}
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [3, 4, 5, 6, 7];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [3, 4, 5]
