@@ -1,64 +1,71 @@
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
+class Node {
+    data: any;
+    next: Node | null;
+
+    constructor(data: any) {
+        this.data = data;
+        this.next = null;
     }
-    
-    // Sort the array
-    const sortedArray = arr.slice().sort((a, b) => a - b);
-    
-    // Return the k-th smallest element (1-based index)
-    return sortedArray[k - 1];
 }
 
-// Example usage:
-const arr = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(arr, k)); // Output: 7
-function partition(arr: number[], left: number, right: number, pivotIndex: number): number {
-    const pivotValue = arr[pivotIndex];
-    // Move pivot to end
-    [arr[pivotIndex], arr[right]] = [arr[right], arr[pivotIndex]]; 
-    let storeIndex = left;
-    
-    for (let i = left; i < right; i++) {
-        if (arr[i] < pivotValue) {
-            [arr[storeIndex], arr[i]] = [arr[i], arr[storeIndex]];
-            storeIndex++;
+class LinkedList {
+    head: Node | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to append nodes to the linked list
+    append(data: any) {
+        const newNode = new Node(data);
+        if (!this.head) {
+            this.head = newNode;
+            return;
         }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
     }
 
-    // Move pivot to its final place
-    [arr[right], arr[storeIndex]] = [arr[storeIndex], arr[right]];
-    return storeIndex;
+    // Method to reverse the linked list
+    reverse() {
+        let previous: Node | null = null;
+        let current = this.head;
+
+        while (current) {
+            const next = current.next; // Store the next node
+            current.next = previous;    // Reverse the link
+            previous = current;         // Move previous to this node
+            current = next;             // Move to the next node
+        }
+        this.head = previous; // Update the head to the new front of the list
+    }
+
+    // Method to print the linked list
+    print() {
+        let current = this.head;
+        const elements: any[] = [];
+        while (current) {
+            elements.push(current.data);
+            current = current.next;
+        }
+        console.log(elements.join(' -> '));
+    }
 }
 
-function quickselect(arr: number[], left: number, right: number, k: number): number {
-    if (left === right) {
-        return arr[left]; // Only one element
-    }
+// Example usage
+const linkedList = new LinkedList();
+linkedList.append(1);
+linkedList.append(2);
+linkedList.append(3);
+linkedList.append(4);
 
-    const pivotIndex = Math.floor(Math.random() * (right - left + 1)) + left;
-    const newPivotIndex = partition(arr, left, right, pivotIndex);
+console.log("Original Linked List:");
+linkedList.print();
 
-    if (k === newPivotIndex) {
-        return arr[k];
-    } else if (k < newPivotIndex) {
-        return quickselect(arr, left, newPivotIndex - 1, k);
-    } else {
-        return quickselect(arr, newPivotIndex + 1, right, k);
-    }
-}
+linkedList.reverse();
 
-function kthSmallest(arr: number[], k: number): number {
-    if (k < 1 || k > arr.length) {
-        throw new Error("k is out of bounds");
-    }
-    
-    // Convert k to zero-based index
-    return quickselect(arr, 0, arr.length - 1, k - 1);
-}
-
-// Example usage:
-const arr = [7, 10, 4, 3, 20, 15];
-const k = 3;
-console.log(kthSmallest(arr, k)); // Output: 7
+console.log("Reversed Linked List:");
+linkedList.print();
