@@ -1,30 +1,53 @@
-function bubbleSort(arr: number[]): number[] {
-    const n = arr.length;
-    let swapped: boolean;
-
-    // Outer loop for each pass
-    for (let i = 0; i < n - 1; i++) {
-        swapped = false; // Reset swapped to false for the current pass
-
-        // Inner loop for comparing adjacent elements
-        for (let j = 0; j < n - 1 - i; j++) {
-            if (arr[j] > arr[j + 1]) {
-                // Swap if elements are in the wrong order
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-                swapped = true; // Set swapped to true as we made a swap
-            }
-        }
-
-        // If no two elements were swapped, the array is sorted
-        if (!swapped) {
-            break;
-        }
+class Stack<T> {
+    private items: T[] = [];
+    
+    // Adds an item to the top of the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    return arr;
+    // Removes and returns the item from the top of the stack
+    pop(): T | undefined {
+        if (this.isEmpty()) {
+            console.warn("Stack is empty");
+            return undefined;
+        }
+        return this.items.pop();
+    }
+
+    // Returns the item at the top of the stack without removing it
+    peek(): T | undefined {
+        if (this.isEmpty()) {
+            console.warn("Stack is empty");
+            return undefined;
+        }
+        return this.items[this.items.length - 1];
+    }
+
+    // Checks if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
+    }
+
+    // Returns the size of the stack
+    size(): number {
+        return this.items.length;
+    }
+
+    // Clears the stack
+    clear(): void {
+        this.items = [];
+    }
 }
 
-// Example usage:
-const unsortedArray = [64, 34, 25, 12, 22, 11, 90];
-const sortedArray = bubbleSort(unsortedArray);
-console.log("Sorted array:", sortedArray);
+// Example Usage:
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.pop());  // Outputs: 3
+console.log(stack.peek()); // Outputs: 2
+console.log(stack.isEmpty()); // Outputs: false
+console.log(stack.size()); // Outputs: 2
+stack.clear();
+console.log(stack.isEmpty()); // Outputs: true
