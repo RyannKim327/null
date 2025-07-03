@@ -1,35 +1,28 @@
-function factorial(n: number): number {
-    // Base case: if n is 0, return 1
-    if (n === 0) {
-        return 1;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
+
+    // First pass: find potential candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+        }
+        if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
     }
-    // Recursive case: n * factorial(n - 1)
-    return n * factorial(n - 1);
+
+    // Verify if the candidate is actually the majority
+    if (candidate !== null && nums.filter(n => n === candidate).length > Math.floor(nums.length / 2)) {
+        return candidate;
+    }
+
+    return null; // if no majority element found
 }
 
-// Example usage
-const num = 5;
-console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
-if (n < 0) {
-    throw new Error("Factorial is not defined for negative numbers.");
-}
-function factorial(n: number): number {
-    // Check for negative input
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    // Base case: if n is 0, return 1
-    if (n === 0) {
-        return 1;
-    }
-    // Recursive case: n * factorial(n - 1)
-    return n * factorial(n - 1);
-}
-
-// Example usage
-try {
-    const num = 5;
-    console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
-} catch (error) {
-    console.error(error);
-}
+// Example usage:
+const array = [2, 2, 1, 1, 1, 2, 2];
+const result = majorityElement(array);
+console.log(result); // Output: 2
