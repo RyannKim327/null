@@ -1,12 +1,35 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
+function binarySearch<T>(arr: T[], target: T): number {
+    let left = 0;
+    let right = arr.length - 1;
+
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+
+        // Check if the target is at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return index
+        }
+
+        // If target is less than mid, adjust the right pointer
+        if (arr[mid] > target) {
+            right = mid - 1;
+        } else {
+            // If target is greater than mid, adjust the left pointer
+            left = mid + 1;
+        }
     }
-    // Recursive case: n! = n * (n - 1)!
-    return n * factorial(n - 1);
+
+    // Target not found
+    return -1; // Indicate that the target is not in the array
 }
 
-// Example usage:
-const num = 5;
-console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
+// Example Usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const target = 6;
+const index = binarySearch(sortedArray, target);
+
+if (index !== -1) {
+    console.log(`Target found at index: ${index}`);
+} else {
+    console.log('Target not found');
+}
