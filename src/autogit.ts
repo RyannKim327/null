@@ -1,51 +1,71 @@
-// Define the structure of a Node
-interface Node {
-    value: string; // or any type you need
-    children: Node[];
-}
+type Edge = {
+    node: string;
+    weight: number;
+};
 
-// Depth-Limited Search function
-function depthLimitedSearch(root: Node, limit: number, target: string): Node | null {
-    // Stack to hold nodes to explore, along with their current depth
-    const stack: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+class Graph {
+    private adjacencyList: Map<string, Edge[]>;
 
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!; // Get the last node and its depth
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
-        }
-
-        // If the current depth is less than the limit, add children to the stack
-        if (depth < limit) {
-            for (let i = node.children.length - 1; i >= 0; i--) {
-                stack.push({ node: node.children[i], depth: depth + 1 });
-            }
+    addVertex(vertex: string) {
+        if (!this.adjacencyList.has(vertex)) {
+            this.adjacencyList.set(vertex, []);
         }
     }
 
-    return null; // Target not found within the depth limit
+    addEdge(vertex1: string, vertex2: string, weight: number) {
+        this.addVertex(vertex1);
+        this.addVertex(vertex2);
+        this.adjacencyList.get(vertex1)?.push({ node: vertex2, weight });
+        this.adjacencyList.get(vertex2)?.push({ node: vertex1, weight }); // For undirected graph
+    }
+
+    dijkstra(start: string): Map<string, number> {
+        const distances = new Map<string, number>();
+        const priorityQueue: [string, number][] = [];
+        const visited = new Set<string>();
+
+        // Initialize distances
+        for (const vertex of this.adjacencyList.keys()) {
+            distances.set(vertex, Infinity);
+        }
+        distances.set(start, 0);
+        priorityQueue.push([start, 0]);
+
+        while (priorityQueue.length > 0) {
+            // Sort the priority queue by distance
+            priorityQueue.sort((a, b) => a[1] - b[1]);
+            const [currentVertex, currentDistance] = priorityQueue.shift()!;
+
+            if (visited.has(currentVertex)) continue;
+            visited.add(currentVertex);
+
+            // Explore neighbors
+            for (const edge of this.adjacencyList.get(currentVertex) || []) {
+                const { node: neighbor, weight } = edge;
+                const newDistance = currentDistance + weight;
+
+                if (newDistance < (distances.get(neighbor) || Infinity)) {
+                    distances.set(neighbor, newDistance);
+                    priorityQueue.push([neighbor, newDistance]);
+                }
+            }
+        }
+
+        return distances;
+    }
 }
 
 // Example usage
-const rootNode: Node = {
-    value: 'A',
-    children: [
-        { value: 'B', children: [] },
-        { value: 'C', children: [
-            { value: 'D', children: [] },
-            { value: 'E', children: [] }
-        ] }
-    ]
-};
+const graph = new Graph();
+graph.addEdge("A", "B", 1);
+graph.addEdge("A", "C", 4);
+graph.addEdge("B", "C", 2);
+graph.addEdge("B", "D", 5);
+graph.addEdge("C", "D", 1);
 
-const targetValue = 'D';
-const depthLimit = 2;
-
-const result = depthLimitedSearch(rootNode, depthLimit, targetValue);
-if (result) {
-    console.log(`Found node: ${result.value}`);
-} else {
-    console.log('Node not found within the depth limit.');
-}
+const distances = graph.dijkstra("A");
+console.log(distances); // Output the shortest distances from A
