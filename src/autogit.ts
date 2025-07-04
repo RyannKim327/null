@@ -1,28 +1,53 @@
-function quickSort(arr: number[]): number[] {
-    // If the array is empty or has one element, it is already sorted
-    if (arr.length <= 1) {
-        return arr;
-    }
-
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
-
-    // Partition the array into left and right
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
-    }
-
-    // Recursively sort the left and right sub-arrays and concatenate with the pivot
-    return [...quickSort(left), pivot, ...quickSort(right)];
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.filter(value => arr2.includes(value));
 }
 
-// Example usage:
-const arrayToSort = [5, 3, 8, 1, 2, 7];
-const sortedArray = quickSort(arrayToSort);
-console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 8]
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const set1 = new Set(arr1);
+    const set2 = new Set(arr2);
+    
+    const commonElements = [...set1].filter(value => set2.has(value));
+    return commonElements;
+}
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    return arr1.reduce((acc: number[], value) => {
+        if (arr2.includes(value)) {
+            acc.push(value);
+        }
+        return acc;
+    }, []);
+}
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
+function findCommonElements(arr1: number[], arr2: number[]): number[] {
+    const commonElements: number[] = [];
+    
+    arr1.forEach(value => {
+        if (arr2.includes(value)) {
+            commonElements.push(value);
+        }
+    });
+    
+    return commonElements;
+}
+
+const array1 = [1, 2, 3, 4, 5];
+const array2 = [4, 5, 6, 7, 8];
+
+const commonElements = findCommonElements(array1, array2);
+console.log(commonElements); // Output: [4, 5]
