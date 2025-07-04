@@ -1,36 +1,28 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+function largestPrimeFactor(n: number): number {
+    let largestFactor = -1;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position using interpolation formula
-        const pos = low + Math.floor(((high - low) / (arr[high] - arr[low])) * (target - arr[low]));
+    // Check for number of 2s that divide n
+    while (n % 2 === 0) {
+        largestFactor = 2;
+        n /= 2;
+    }
 
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos;  // Return the index of the target
-        }
-
-        // If target is larger, ignore left half
-        if (arr[pos] < target) {
-            low = pos + 1;
-        } 
-        // If target is smaller, ignore right half
-        else {
-            high = pos - 1;
+    // Check for odd factors from 3 to sqrt(n)
+    for (let i = 3; i * i <= n; i += 2) {
+        while (n % i === 0) {
+            largestFactor = i;
+            n /= i;
         }
     }
 
-    return -1;  // Target not found
+    // This condition is to check if n is a prime number greater than 2
+    if (n > 2) {
+        largestFactor = n;
+    }
+
+    return largestFactor;
 }
 
 // Example usage
-const arr = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
-const index = interpolationSearch(arr, target);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found');
-}
+const number = 600851475143; // Example number
+console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
