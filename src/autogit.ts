@@ -1,33 +1,4 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
-}
-function sumOfNodes(root: TreeNode | null): number {
-    // Base case: if the node is null, return 0
-    if (root === null) {
-        return 0;
-    }
-
-    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
-}
-// Example of creating a binary tree
-const root = new TreeNode(1);
-root.left = new TreeNode(2);
-root.right = new TreeNode(3);
-root.left.left = new TreeNode(4);
-root.left.right = new TreeNode(5);
-
-// Calculate the sum of all nodes
-const totalSum = sumOfNodes(root);
-console.log(`Sum of all nodes: ${totalSum}`); // Output: Sum of all nodes: 15
+// Definition for a binary tree node
 class TreeNode {
     value: number;
     left: TreeNode | null;
@@ -40,19 +11,26 @@ class TreeNode {
     }
 }
 
-function sumOfNodes(root: TreeNode | null): number {
+// Function to find the maximum depth of a binary tree
+function maxDepth(root: TreeNode | null): number {
+    // Base case: if the tree is empty, the depth is 0
     if (root === null) {
         return 0;
     }
-    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+
+    // Recursively find the depth of the left and right subtrees
+    const leftDepth = maxDepth(root.left);
+    const rightDepth = maxDepth(root.right);
+
+    // The maximum depth is the greater of the two depths plus one for the current node
+    return Math.max(leftDepth, rightDepth) + 1;
 }
 
-// Example usage
+// Example usage:
 const root = new TreeNode(1);
 root.left = new TreeNode(2);
 root.right = new TreeNode(3);
 root.left.left = new TreeNode(4);
 root.left.right = new TreeNode(5);
 
-const totalSum = sumOfNodes(root);
-console.log(`Sum of all nodes: ${totalSum}`); // Output: Sum of all nodes: 15
+console.log(maxDepth(root)); // Output: 3
