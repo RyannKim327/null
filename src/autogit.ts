@@ -1,53 +1,97 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+class Graph {
+    private adjacencyList: Map<number, number[]> = new Map();
+
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
+
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    getVertices(): number[] {
+        return Array.from(this.adjacencyList.keys());
+    }
 }
+class Graph {
+    // ... (previous code)
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+    dfsRecursive(start: number, visited: Set<number> = new Set()): void {
+        visited.add(start);
+        console.log(start); // Process the node
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
-}
-
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.reduce((acc: number[], value) => {
-        if (arr2.includes(value)) {
-            acc.push(value);
+        const neighbors = this.adjacencyList.get(start) || [];
+        for (const neighbor of neighbors) {
+            if (!visited.has(neighbor)) {
+                this.dfsRecursive(neighbor, visited);
+            }
         }
-        return acc;
-    }, []);
+    }
 }
+class Graph {
+    // ... (previous code)
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+    dfsIterative(start: number): void {
+        const stack: number[] = [start];
+        const visited = new Set<number>();
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const commonElements: number[] = [];
-    
-    arr1.forEach(value => {
-        if (arr2.includes(value)) {
-            commonElements.push(value);
+        while (stack.length > 0) {
+            const vertex = stack.pop()!;
+            if (!visited.has(vertex)) {
+                visited.add(vertex);
+                console.log(vertex); // Process the node
+
+                const neighbors = this.adjacencyList.get(vertex) || [];
+                for (const neighbor of neighbors) {
+                    if (!visited.has(neighbor)) {
+                        stack.push(neighbor);
+                    }
+                }
+            }
         }
-    });
-    
-    return commonElements;
+    }
 }
+const graph = new Graph();
+graph.addVertex(0);
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addEdge(0, 1);
+graph.addEdge(0, 2);
+graph.addEdge(1, 3);
+graph.addEdge(1, 4);
+graph.addEdge(2, 4);
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+// Perform DFS
+console.log("DFS Recursive:");
+graph.dfsRecursive(0);
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+console.log("DFS Iterative:");
+graph.dfsIterative(0);
+class TreeNode {
+    value: number;
+    left: TreeNode | null = null;
+    right: TreeNode | null = null;
+
+    constructor(value: number) {
+        this.value = value;
+    }
+}
+function dfsTree(node: TreeNode | null): void {
+    if (node === null) return;
+
+    console.log(node.value); // Process the node
+    dfsTree(node.left);
+    dfsTree(node.right);
+}
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
+
+// Perform DFS
+console.log("DFS on Tree:");
+dfsTree(root);
