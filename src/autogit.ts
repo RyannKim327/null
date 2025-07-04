@@ -1,35 +1,48 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
+function findSecondLargest(arr: number[]): number | null {
+    if (arr.length < 2) {
+        return null; // Not enough elements
     }
-    return count;
+
+    // Create a Set to remove duplicates
+    const uniqueElements = Array.from(new Set(arr));
+
+    // Sort the array in descending order
+    uniqueElements.sort((a, b) => b - a);
+
+    // Return the second element
+    return uniqueElements[1] || null; // Return null if there's no second largest
 }
 
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(`The length of the string is: ${length}`);
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        count++;
-    }
-    return count;
-}
-function getStringLength(str: string): number {
-    let count = 0;
-    let index = 0;
+// Example usage
+const numbers = [3, 1, 4, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
+function findSecondLargest(arr: number[]): number | null {
+    let first = -Infinity;
+    let second = -Infinity;
 
-    while (true) {
-        try {
-            str[index]; // Accessing the character at the current index
-            count++;
-            index++;
-        } catch (e) {
-            break; // Break the loop when an error occurs (index out of bounds)
+    for (const num of arr) {
+        if (num > first) {
+            second = first;
+            first = num;
+        } else if (num > second && num < first) {
+            second = num;
         }
     }
 
-    return count;
+    return second !== -Infinity ? second : null; // Return null if there's no second largest
 }
+
+// Example usage
+const numbers = [3, 1, 4, 4, 5, 2];
+const secondLargest = findSecondLargest(numbers);
+console.log(secondLargest); // Output: 4
+const nums1 = [7, 5, 7, 8, 1, 2];
+const nums2 = [1, 1, 1];
+const nums3 = [10];
+const nums4 = [];
+
+console.log(findSecondLargest(nums1)); // Output: 7
+console.log(findSecondLargest(nums2)); // Output: null
+console.log(findSecondLargest(nums3)); // Output: null
+console.log(findSecondLargest(nums4)); // Output: null
