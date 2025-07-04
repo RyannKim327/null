@@ -1,145 +1,28 @@
-class MinHeap {
-    private heap: number[] = [];
+// Declare an array of integers
+const numbers: number[] = [5, 3, 8, 1, 2, 7];
 
-    private getParentIndex(index: number): number {
-        return Math.floor((index - 1) / 2);
-    }
+// Sort the array in ascending order
+numbers.sort((a, b) => a - b);
 
-    private getLeftChildIndex(index: number): number {
-        return index * 2 + 1;
-    }
+console.log("Sorted array (ascending):", numbers);
 
-    private getRightChildIndex(index: number): number {
-        return index * 2 + 2;
-    }
+// If you want to sort in descending order
+numbers.sort((a, b) => b - a);
 
-    private hasParent(index: number): boolean {
-        return this.getParentIndex(index) >= 0;
-    }
-
-    private hasLeftChild(index: number): boolean {
-        return this.getLeftChildIndex(index) < this.heap.length;
-    }
-
-    private hasRightChild(index: number): boolean {
-        return this.getRightChildIndex(index) < this.heap.length;
-    }
-
-    private parent(index: number): number {
-        return this.heap[this.getParentIndex(index)];
-    }
-
-    private leftChild(index: number): number {
-        return this.heap[this.getLeftChildIndex(index)];
-    }
-
-    private rightChild(index: number): number {
-        return this.heap[this.getRightChildIndex(index)];
-    }
-
-    private swap(indexOne: number, indexTwo: number): void {
-        const temp = this.heap[indexOne];
-        this.heap[indexOne] = this.heap[indexTwo];
-        this.heap[indexTwo] = temp;
-    }
-
-    private bubbleUp(): void {
-        let index = this.heap.length - 1;
-
-        while (this.hasParent(index) && this.parent(index) > this.heap[index]) {
-            this.swap(this.getParentIndex(index), index);
-            index = this.getParentIndex(index);
-        }
-    }
-
-    private bubbleDown(): void {
-        let index = 0;
-
-        while (this.hasLeftChild(index)) {
-            let smallerChildIndex = this.getLeftChildIndex(index);
-
-            if (this.hasRightChild(index) && this.rightChild(index) < this.leftChild(index)) {
-                smallerChildIndex = this.getRightChildIndex(index);
-            }
-
-            if (this.heap[index] < this.heap[smallerChildIndex]) {
-                break;
-            } else {
-                this.swap(index, smallerChildIndex);
-            }
-
-            index = smallerChildIndex;
-        }
-    }
-
-    public insert(value: number): void {
-        this.heap.push(value);
-        this.bubbleUp();
-    }
-
-    public remove(): number | null {
-        if (this.heap.length === 0) {
-            return null;
-        }
-
-        const root = this.heap[0];
-        this.heap[0] = this.heap[this.heap.length - 1];
-        this.heap.pop();
-        this.bubbleDown();
-
-        return root;
-    }
-
-    public peek(): number | null {
-        return this.heap.length > 0 ? this.heap[0] : null;
-    }
-
-    public size(): number {
-        return this.heap.length;
-    }
-
-    public isEmpty(): boolean {
-        return this.heap.length === 0;
-    }
-}
-
-// Priority Queue Class
-class PriorityQueue {
-    private minHeap: MinHeap;
-
-    constructor() {
-        this.minHeap = new MinHeap();
-    }
-
-    public enqueue(value: number): void {
-        this.minHeap.insert(value);
-    }
-
-    public dequeue(): number | null {
-        return this.minHeap.remove();
-    }
-
-    public peek(): number | null {
-        return this.minHeap.peek();
-    }
-
-    public size(): number {
-        return this.minHeap.size();
-    }
-
-    public isEmpty(): boolean {
-        return this.minHeap.isEmpty();
-    }
+console.log("Sorted array (descending):", numbers);
+function sortArray(arr: number[], ascending: boolean = true): number[] {
+    return arr.sort((a, b) => ascending ? a - b : b - a);
 }
 
 // Example usage
-const pq = new PriorityQueue();
-pq.enqueue(5);
-pq.enqueue(3);
-pq.enqueue(8);
-pq.enqueue(1);
+const myArray: number[] = [45, 12, 78, 34, 23, 89, 11];
 
-console.log(pq.dequeue()); // Output: 1 (the lowest number)
-console.log(pq.peek());    // Output: 3 (next lowest)
-console.log(pq.size());    // Output: 3
-console.log(pq.isEmpty()); // Output: false
+// Sort in ascending order
+const sortedAscending = sortArray(myArray);
+console.log("Sorted Ascending:", sortedAscending);
+
+// Sort in descending order
+const sortedDescending = sortArray(myArray, false);
+console.log("Sorted Descending:", sortedDescending);
+Sorted Ascending: [ 11, 12, 23, 34, 45, 78, 89 ]
+Sorted Descending: [ 89, 78, 45, 34, 23, 12, 11 ]
