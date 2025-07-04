@@ -1,49 +1,54 @@
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
+function fibonacciSearch(arr: number[], target: number): number {
+    const n = arr.length;
 
-const newArray = originalArray.filter(item => item !== elementToRemove);
+    // Initialize Fibonacci numbers
+    let fibMm2 = 0; // (m-2)'th Fibonacci number
+    let fibMm1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibMm2 + fibMm1; // m'th Fibonacci number
 
-console.log(newArray); // Output: [1, 2, 4, 5]
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-// Find the index of the element
-const index = originalArray.indexOf(elementToRemove);
-
-if (index !== -1) {
-    originalArray.splice(index, 1); // Remove 1 element at the found index
-}
-
-console.log(originalArray); // Output: [1, 2, 4, 5]
-interface Item {
-    id: number;
-    name: string;
-}
-
-const originalArray: Item[] = [
-    { id: 1, name: 'Item 1' },
-    { id: 2, name: 'Item 2' },
-    { id: 3, name: 'Item 3' }
-];
-
-const idToRemove = 2;
-
-// Find the index of the object with the specified id
-const index = originalArray.findIndex(item => item.id === idToRemove);
-
-if (index !== -1) {
-    originalArray.splice(index, 1); // Remove the item if found
-}
-
-console.log(originalArray); // Output: [{ id: 1, name: 'Item 1' }, { id: 3, name: 'Item 3' }]
-const originalArray = [1, 2, 3, 4, 5];
-const elementToRemove = 3;
-
-const newArray = originalArray.reduce((acc, item) => {
-    if (item !== elementToRemove) {
-        acc.push(item);
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibMm2 = fibMm1;
+        fibMm1 = fibM;
+        fibM = fibMm2 + fibMm1;
     }
-    return acc;
-}, [] as number[]);
 
-console.log(newArray); // Output: [1, 2, 4, 5]
+    // Marks the eliminated range from front
+    let offset = -1;
+
+    while (fibM > 1) {
+        // Check if fibMm2 is a valid location
+        const i = Math.min(offset + fibMm2, n - 1);
+
+        if (arr[i] < target) {
+            // Move forward the Fibonacci sequence
+            fibM = fibMm1;
+            fibMm1 = fibMm2;
+            fibMm2 = fibM - fibMm1;
+            offset = i;
+        } else if (arr[i] > target) {
+            // Move backward in Fibonacci sequence
+            fibM = fibMm2;
+            fibMm1 = fibMm1 - fibMm2;
+            fibMm2 = fibM - fibMm1;
+        } else {
+            // Found the target
+            return i;
+        }
+    }
+
+    // Comparing the last element with target
+    if (fibMm1 && arr[offset + 1] === target) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
+}
+
+// Example usage:
+const sortedArray = [10, 22, 35, 40, 45, 50, 60, 70, 80, 90, 100];
+const target = 60;
+
+const index = fibonacciSearch(sortedArray, target);
+console.log(`Element ${target} found at index: ${index}`); // Output: Element 60 found at index: 6
