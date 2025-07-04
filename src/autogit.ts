@@ -1,35 +1,28 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+function quickSort(arr: number[]): number[] {
+    // If the array is empty or has one element, it is already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // Estimate the position of the target
-        const pos = low + Math.floor(((target - arr[low]) / (arr[high] - arr[low])) * (high - low));
+    // Choose a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
 
-        // Check if the target is found
-        if (arr[pos] === target) {
-            return pos; // Target found at index pos
-        }
-
-        // If target is greater, ignore the left half
-        if (arr[pos] < target) {
-            low = pos + 1;
+    // Partition the array into left and right
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
         } else {
-            // If target is smaller, ignore the right half
-            high = pos - 1;
+            right.push(arr[i]);
         }
     }
 
-    return -1; // Target not found
+    // Recursively sort the left and right sub-arrays and concatenate with the pivot
+    return [...quickSort(left), pivot, ...quickSort(right)];
 }
 
 // Example usage:
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const targetValue = 70;
-const index = interpolationSearch(sortedArray, targetValue);
-
-if (index !== -1) {
-    console.log(`Element found at index: ${index}`);
-} else {
-    console.log('Element not found in the array.');
-}
+const arrayToSort = [5, 3, 8, 1, 2, 7];
+const sortedArray = quickSort(arrayToSort);
+console.log(sortedArray); // Output: [1, 2, 3, 5, 7, 8]
