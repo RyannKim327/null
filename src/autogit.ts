@@ -1,93 +1,45 @@
-class BoyerMoore {
-    private pattern: string;
-    private badCharTable: Record<string, number>;
-    private goodSuffixTable: number[];
+class Stack<T> {
+    private items: T[] = [];
 
-    constructor(pattern: string) {
-        this.pattern = pattern;
-        this.badCharTable = this.buildBadCharTable();
-        this.goodSuffixTable = this.buildGoodSuffixTable();
+    // Add an element to the top of the stack
+    push(item: T): void {
+        this.items.push(item);
     }
 
-    private buildBadCharTable(): Record<string, number> {
-        const table: Record<string, number> = {};
-        const patternLength = this.pattern.length;
-
-        for (let i = 0; i < patternLength; i++) {
-            table[this.pattern[i]] = i; // Store the last occurrence of each character
-        }
-
-        return table;
+    // Remove and return the top element of the stack
+    pop(): T | undefined {
+        return this.items.pop();
     }
 
-    private buildGoodSuffixTable(): number[] {
-        const patternLength = this.pattern.length;
-        const table = new Array(patternLength).fill(0);
-        let lastPrefixPosition = patternLength;
-
-        // Fill the good suffix table
-        for (let i = patternLength - 1; i >= 0; i--) {
-            if (this.isPrefix(i + 1)) {
-                lastPrefixPosition = i + 1;
-            }
-            table[patternLength - 1 - i] = lastPrefixPosition - i + (lastPrefixPosition === patternLength ? 1 : 0);
-        }
-
-        for (let i = 0; i < patternLength - 1; i++) {
-            const len = this.getSuffixLength(i);
-            table[len] = patternLength - 1 - i + len;
-        }
-
-        return table;
+    // Return the top element without removing it
+    peek(): T | undefined {
+        return this.items[this.items.length - 1];
     }
 
-    private isPrefix(p: number): boolean {
-        for (let i = p, j = 0; i < this.pattern.length; i++, j++) {
-            if (this.pattern[i] !== this.pattern[j]) return false;
-        }
-        return true;
+    // Check if the stack is empty
+    isEmpty(): boolean {
+        return this.items.length === 0;
     }
 
-    private getSuffixLength(p: number): number {
-        let length = 0;
-        for (let i = p, j = this.pattern.length - 1; i >= 0 && this.pattern[i] === this.pattern[j]; i--, j--) {
-            length++;
-        }
-        return length;
+    // Get the size of the stack
+    size(): number {
+        return this.items.length;
     }
 
-    public search(text: string): number[] {
-        const patternLength = this.pattern.length;
-        const textLength = text.length;
-        const matches: number[] = [];
-
-        let skip = 0;
-        while (textLength - skip >= patternLength) {
-            let j = patternLength - 1;
-
-            while (j >= 0 && this.pattern[j] === text[skip + j]) {
-                j--;
-            }
-
-            if (j < 0) {
-                matches.push(skip);
-                skip += this.goodSuffixTable[0]; // Shift the pattern using the good suffix table
-            } else {
-                const badCharShift = this.badCharTable[text[skip + j]] !== undefined
-                    ? j - this.badCharTable[text[skip + j]]
-                    : j + 1;
-
-                const goodSuffixShift = this.goodSuffixTable[j];
-                skip += Math.max(badCharShift, goodSuffixShift);
-            }
-        }
-
-        return matches;
+    // Clear the stack
+    clear(): void {
+        this.items = [];
     }
 }
 
 // Example usage:
-const bm = new BoyerMoore("abc");
-const text = "ababcabcabc";
-const result = bm.search(text);
-console.log("Pattern found at indices:", result); // Output: Pattern found at indices: [2, 5, 8]
+const stack = new Stack<number>();
+stack.push(1);
+stack.push(2);
+stack.push(3);
+console.log(stack.peek()); // Output: 3
+console.log(stack.pop());   // Output: 3
+console.log(stack.isEmpty()); // Output: false
+console.log(stack.size());  // Output: 2
+stack.clear();
+console.log(stack.isEmpty()); // Output: true
