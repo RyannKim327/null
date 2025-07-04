@@ -1,52 +1,39 @@
-class Stack<T> {
-    private items: T[] = [];
+npm install axios
+npm install --save-dev @types/axios
+// Import the axios library
+import axios from 'axios';
 
-    // Pushes an element onto the stack
-    push(element: T): void {
-        this.items.push(element);
-    }
-
-    // Removes the top element from the stack and returns it
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Returns the top element without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Checks if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Returns the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clears the stack
-    clear(): void {
-        this.items = [];
-    }
-
-    // Returns the items in the stack (for debugging purposes)
-    toArray(): T[] {
-        return this.items.slice(); // Return a copy of the items array
-    }
+// Define an interface for the user data
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
 }
 
-// Example usage
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
+// Function to fetch users
+async function fetchUsers(): Promise<void> {
+  try {
+    // Make a GET request to the API
+    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
+    
+    // Log the response data
+    const users: User[] = response.data;
+    console.log('List of Users:');
+    users.forEach(user => {
+      console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
+    });
+  } catch (error) {
+    // Handle error gracefully
+    if (axios.isAxiosError(error)) {
+      console.error('Error message:', error.message);
+    } else {
+      console.error('Unexpected error:', error);
+    }
+  }
+}
 
-console.log(stack.peek());  // Output: 3
-console.log(stack.pop());    // Output: 3
-console.log(stack.isEmpty()); // Output: false
-console.log(stack.size());    // Output: 2
-console.log(stack.toArray()); // Output: [1, 2]
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+// Call the function to fetch users
+fetchUsers();
+tsc yourfile.ts
+node yourfile.js
