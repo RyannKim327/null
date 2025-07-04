@@ -1,45 +1,12 @@
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
-
-const newArray = array.filter(item => item !== valueToRemove);
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const indexToRemove = array.indexOf(3); // Find index of the element
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove 1 element at the found index
+function factorial(n: number): number {
+    // Base case: factorial of 0 or 1 is 1
+    if (n === 0 || n === 1) {
+        return 1;
+    }
+    // Recursive case: n! = n * (n - 1)!
+    return n * factorial(n - 1);
 }
 
-console.log(array); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
-
-const newArray = array.reduce((acc, item) => {
-    if (item !== valueToRemove) {
-        acc.push(item);
-    }
-    return acc;
-}, [] as number[]);
-
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = [1, 2, 3, 4, 5];
-const valueToRemove = 3;
-const newArray: number[] = [];
-
-array.forEach(item => {
-    if (item !== valueToRemove) {
-        newArray.push(item);
-    }
-});
-
-console.log(newArray); // Output: [1, 2, 4, 5]
-const array = ['apple', 'banana', 'cherry', 'date'];
-const valueToRemove = 'cherry';
-
-const indexToRemove = array.findIndex(item => item === valueToRemove);
-
-if (indexToRemove !== -1) {
-    array.splice(indexToRemove, 1); // Remove the element by index
-}
-
-console.log(array); // Output: ['apple', 'banana', 'date']
+// Example usage:
+const num = 5;
+console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
