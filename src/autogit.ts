@@ -1,131 +1,114 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+class TreeNode<T> {
+    value: T;
+    left: TreeNode<T> | null;
+    right: TreeNode<T> | null;
+
+    constructor(value: T) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
+}
+class BinaryTree<T> {
+    root: TreeNode<T> | null;
 
     constructor() {
-        this.adjacencyList = new Map();
+        this.root = null;
     }
 
-    addEdge(u: number, v: number) {
-        if (!this.adjacencyList.has(u)) {
-            this.adjacencyList.set(u, []);
+    // Insert a value into the binary tree
+    insert(value: T): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
-        this.adjacencyList.get(u)?.push(v);
     }
 
-    topologicalSortKahn(): number[] {
-        const inDegree = new Map<number, number>();
-        const zeroInDegreeQueue: number[] = [];
-        const topologicalOrder: number[] = [];
-
-        // Initialize in-degree of each vertex
-        for (const [u, neighbors] of this.adjacencyList.entries()) {
-            inDegree.set(u, 0); // Initialize in-degree
-            for (const v of neighbors) {
-                inDegree.set(v, (inDegree.get(v) || 0) + 1);
+    private insertNode(node: TreeNode<T>, newNode: TreeNode<T>): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
-
-        // Add all vertices with in-degree 0 to the queue
-        for (const [vertex, degree] of inDegree.entries()) {
-            if (degree === 0) {
-                zeroInDegreeQueue.push(vertex);
-            }
-        }
-
-        while (zeroInDegreeQueue.length > 0) {
-            const current = zeroInDegreeQueue.shift()!;
-            topologicalOrder.push(current);
-
-            // Decrease the in-degree of neighbors
-            const neighbors = this.adjacencyList.get(current) || [];
-            for (const neighbor of neighbors) {
-                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
-                if (inDegree.get(neighbor) === 0) {
-                    zeroInDegreeQueue.push(neighbor);
-                }
-            }
-        }
-
-        // Check for cycles
-        if (topologicalOrder.length !== inDegree.size) {
-            throw new Error("Graph has at least one cycle!");
-        }
-
-        return topologicalOrder;
-    }
-}
-
-// Example usage
-const graph = new Graph();
-graph.addEdge(5, 2);
-graph.addEdge(5, 0);
-graph.addEdge(4, 0);
-graph.addEdge(4, 1);
-graph.addEdge(2, 3);
-graph.addEdge(3, 1);
-
-try {
-    const order = graph.topologicalSortKahn();
-    console.log("Topological Sort using Kahn's Algorithm:", order);
-} catch (error) {
-    console.error(error);
-}
-class GraphDFS {
-    private adjacencyList: Map<number, number[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
     }
 
-    addEdge(u: number, v: number) {
-        if (!this.adjacencyList.has(u)) {
-            this.adjacencyList.set(u, []);
-        }
-        this.adjacencyList.get(u)?.push(v);
+    // Search for a value in the binary tree
+    search(value: T): boolean {
+        return this.searchNode(this.root, value);
     }
 
-    topologicalSortDFS(): number[] {
-        const visited = new Set<number>();
-        const stack: number[] = [];
-        const topologicalOrder: number[] = [];
-
-        const dfs = (node: number) => {
-            if (visited.has(node)) {
-                return;
-            }
-            visited.add(node);
-
-            const neighbors = this.adjacencyList.get(node) || [];
-            for (const neighbor of neighbors) {
-                dfs(neighbor);
-            }
-            stack.push(node);
-        };
-
-        // Perform DFS from each vertex
-        for (const vertex of this.adjacencyList.keys()) {
-            if (!visited.has(vertex)) {
-                dfs(vertex);
-            }
+    private searchNode(node: TreeNode<T> | null, value: T): boolean {
+        if (node === null) {
+            return false;
         }
-
-        // The topological order is the reverse of the stack
-        while (stack.length > 0) {
-            topologicalOrder.push(stack.pop()!);
+        if (value === node.value) {
+            return true;
         }
+        return value < node.value
+            ? this.searchNode(node.left, value)
+            : this.searchNode(node.right, value);
+    }
 
-        return topologicalOrder;
+    // In-order traversal
+    inOrderTraversal(node: TreeNode<T> | null, visit: (value: T) => void): void {
+        if (node !== null) {
+            this.inOrderTraversal(node.left, visit);
+            visit(node.value);
+            this.inOrderTraversal(node.right, visit);
+        }
+    }
+
+    // Pre-order traversal
+    preOrderTraversal(node: TreeNode<T> | null, visit: (value: T) => void): void {
+        if (node !== null) {
+            visit(node.value);
+            this.preOrderTraversal(node.left, visit);
+            this.preOrderTraversal(node.right, visit);
+        }
+    }
+
+    // Post-order traversal
+    postOrderTraversal(node: TreeNode<T> | null, visit: (value: T) => void): void {
+        if (node !== null) {
+            this.postOrderTraversal(node.left, visit);
+            this.postOrderTraversal(node.right, visit);
+            visit(node.value);
+        }
     }
 }
+const tree = new BinaryTree<number>();
 
-// Example usage
-const graphDFS = new GraphDFS();
-graphDFS.addEdge(5, 2);
-graphDFS.addEdge(5, 0);
-graphDFS.addEdge(4, 0);
-graphDFS.addEdge(4, 1);
-graphDFS.addEdge(2, 3);
-graphDFS.addEdge(3, 1);
+// Insert values
+tree.insert(10);
+tree.insert(5);
+tree.insert(15);
+tree.insert(3);
+tree.insert(7);
+tree.insert(12);
+tree.insert(18);
 
-const orderDFS = graphDFS.topologicalSortDFS();
-console.log("Topological Sort using DFS:", orderDFS);
+// Search for a value
+console.log(tree.search(7));  // true
+console.log(tree.search(20)); // false
+
+// In-order traversal
+console.log("In-order traversal:");
+tree.inOrderTraversal(tree.root, (value) => console.log(value));
+
+// Pre-order traversal
+console.log("Pre-order traversal:");
+tree.preOrderTraversal(tree.root, (value) => console.log(value));
+
+// Post-order traversal
+console.log("Post-order traversal:");
+tree.postOrderTraversal(tree.root, (value) => console.log(value));
