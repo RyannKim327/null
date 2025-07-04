@@ -1,86 +1,25 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
+function factorialIterative(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
-
-    addVertex(vertex: number) {
-        this.adjacencyList.set(vertex, []);
+    let result = 1;
+    for (let i = 1; i <= n; i++) {
+        result *= i;
     }
-
-    addEdge(v1: number, v2: number) {
-        this.adjacencyList.get(v1)?.push(v2);
-        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
-    }
-
-    dfsRecursive(start: number, visited: Set<number> = new Set()) {
-        if (!visited.has(start)) {
-            console.log(start); // Process the vertex
-            visited.add(start);
-            const neighbors = this.adjacencyList.get(start) || [];
-            for (const neighbor of neighbors) {
-                this.dfsRecursive(neighbor, visited);
-            }
-        }
-    }
+    return result;
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-
-console.log("DFS Recursive:");
-graph.dfsRecursive(1);
-class Graph {
-    private adjacencyList: Map<number, number[]>;
-
-    constructor() {
-        this.adjacencyList = new Map();
+console.log(factorialIterative(5)); // Output: 120
+function factorialRecursive(n: number): number {
+    if (n < 0) {
+        throw new Error("Factorial is not defined for negative numbers.");
     }
-
-    addVertex(vertex: number) {
-        this.adjacencyList.set(vertex, []);
+    if (n === 0 || n === 1) {
+        return 1; // Base case
     }
-
-    addEdge(v1: number, v2: number) {
-        this.adjacencyList.get(v1)?.push(v2);
-        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
-    }
-
-    dfsIterative(start: number) {
-        const stack: number[] = [start];
-        const visited: Set<number> = new Set();
-
-        while (stack.length > 0) {
-            const vertex = stack.pop()!;
-            if (!visited.has(vertex)) {
-                console.log(vertex); // Process the vertex
-                visited.add(vertex);
-                const neighbors = this.adjacencyList.get(vertex) || [];
-                for (const neighbor of neighbors) {
-                    stack.push(neighbor);
-                }
-            }
-        }
-    }
+    return n * factorialRecursive(n - 1); // Recursive case
 }
 
 // Example usage:
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-
-console.log("DFS Iterative:");
-graph.dfsIterative(1);
+console.log(factorialRecursive(5)); // Output: 120
