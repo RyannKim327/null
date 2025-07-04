@@ -1,39 +1,60 @@
-npm install axios
-npm install --save-dev @types/axios
-// Import the axios library
-import axios from 'axios';
+type Graph = { [key: string]: string[] };
 
-// Define an interface for the user data
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
-// Function to fetch users
-async function fetchUsers(): Promise<void> {
-  try {
-    // Make a GET request to the API
-    const response = await axios.get<User[]>('https://jsonplaceholder.typicode.com/users');
-    
-    // Log the response data
-    const users: User[] = response.data;
-    console.log('List of Users:');
-    users.forEach(user => {
-      console.log(`ID: ${user.id}, Name: ${user.name}, Username: ${user.username}, Email: ${user.email}`);
-    });
-  } catch (error) {
-    // Handle error gracefully
-    if (axios.isAxiosError(error)) {
-      console.error('Error message:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
+function dfsRecursive(graph: Graph, node: string, visited: Set<string> = new Set()): void {
+    if (visited.has(node)) {
+        return;
     }
-  }
+
+    visited.add(node);
+    console.log(node); // Process the node
+
+    for (const neighbor of graph[node]) {
+        dfsRecursive(graph, neighbor, visited);
+    }
 }
 
-// Call the function to fetch users
-fetchUsers();
-tsc yourfile.ts
-node yourfile.js
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function dfsIterative(graph: Graph, startNode: string): void {
+    const stack: string[] = [startNode];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (visited.has(node)) {
+            continue;
+        }
+
+        visited.add(node);
+        console.log(node); // Process the node
+
+        // Add neighbors to the stack
+        for (const neighbor of graph[node]) {
+            stack.push(neighbor);
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+dfsIterative(graph, 'A');
