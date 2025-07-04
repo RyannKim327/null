@@ -1,28 +1,35 @@
-function quicksort(arr: number[]): number[] {
-    // Base case: arrays with 0 or 1 element are already sorted
-    if (arr.length <= 1) {
-        return arr;
+function isSorted(arr: number[]): boolean {
+  for (let i = 0; i < arr.length - 1; i++) {
+    if (arr[i] > arr[i + 1]) {
+      return false;
     }
+  }
+  return true;
+}
 
-    // Choose a pivot (here we choose the last element)
-    const pivot = arr[arr.length - 1];
-    const left: number[] = [];
-    const right: number[] = [];
+function shuffleArray(arr: number[]): number[] {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
-    // Partitioning the array into left and right arrays
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] < pivot) {
-            left.push(arr[i]);
-        } else {
-            right.push(arr[i]);
-        }
+function bogosort(arr: number[]): number[] {
+  let attempts = 0;
+  while (!isSorted(arr)) {
+    shuffleArray(arr);
+    attempts++;
+    if (attempts > 1000000) { // prevent infinite loop in case of very large array
+      console.warn("Too many attempts, stopping...");
+      break;
     }
-
-    // Recursively apply quicksort to the left and right arrays, and concatenate results
-    return [...quicksort(left), pivot, ...quicksort(right)];
+  }
+  return arr;
 }
 
 // Example usage
-const array = [3, 6, 8, 10, 1, 2, 1];
-const sortedArray = quicksort(array);
-console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
+const arrayToSort = [3, 1, 4, 2, 5];
+const sortedArray = bogosort([...arrayToSort]);
+console.log("Original array:", arrayToSort);
+console.log("Sorted array:", sortedArray);
