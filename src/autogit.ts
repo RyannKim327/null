@@ -1,146 +1,59 @@
-class AVLNode<T> {
-    key: T;
-    height: number;
-    left: AVLNode<T> | null;
-    right: AVLNode<T> | null;
+function fibonacciSearch(arr: number[], x: number): number {
+    const n = arr.length;
+    
+    // Initialize Fibonacci numbers
+    let fibM2 = 0; // (m-2)'th Fibonacci number
+    let fibM1 = 1; // (m-1)'th Fibonacci number
+    let fibM = fibM1 + fibM2; // m'th Fibonacci number
 
-    constructor(key: T) {
-        this.key = key;
-        this.height = 1; // New node is initially added at leaf
-        this.left = null;
-        this.right = null;
+    // Find the smallest Fibonacci number greater than or equal to n
+    while (fibM < n) {
+        fibM2 = fibM1;
+        fibM1 = fibM;
+        fibM = fibM1 + fibM2;
     }
+
+    // Marks the eliminated range from front
+    let offset = -1;
+
+    // While there are elements to be inspected
+    while (fibM > 1) {
+        // Calculate the index to compare
+        const i = Math.min(offset + fibM2, n - 1); // Ensure we don't go out of bounds
+
+        // If x is greater than the value at index i, cut the subarray from offset to i
+        if (arr[i] < x) {
+            fibM = fibM1;
+            fibM1 = fibM2;
+            fibM2 = fibM - fibM1;
+            offset = i; // Update offset
+        }
+        // If x is less than the value at index i, cut the subarray after i
+        else if (arr[i] > x) {
+            fibM = fibM2;
+            fibM1 = fibM1 - fibM2;
+            fibM2 = fibM - fibM1;
+        }
+        // Element found
+        else return i;
+    }
+
+    // Comparing the last element with x
+    if (fibM1 && offset + 1 < n && arr[offset + 1] === x) {
+        return offset + 1;
+    }
+
+    // Element not found
+    return -1;
 }
-class AVLTree<T> {
-    root: AVLNode<T> | null;
 
-    constructor() {
-        this.root = null;
-    }
+// Example usage
+const arr = [10, 22, 35, 40, 45, 50, 80, 82, 85, 90, 100];
+const x = 85;
 
-    // Get the height of the node
-    private getHeight(node: AVLNode<T> | null): number {
-        return node ? node.height : 0;
-    }
-
-    // Get the balance factor of the node
-    private getBalance(node: AVLNode<T> | null): number {
-        return node ? this.getHeight(node.left) - this.getHeight(node.right) : 0;
-    }
-
-    // Right rotate the subtree rooted with y
-    private rightRotate(y: AVLNode<T>): AVLNode<T> {
-        const x = y.left!;
-        const T2 = x.right;
-
-        // Perform rotation
-        x.right = y;
-        y.left = T2;
-
-        // Update heights
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-
-        // Return new root
-        return x;
-    }
-
-    // Left rotate the subtree rooted with x
-    private leftRotate(x: AVLNode<T>): AVLNode<T> {
-        const y = x.right!;
-        const T2 = y.left;
-
-        // Perform rotation
-        y.left = x;
-        x.right = T2;
-
-        // Update heights
-        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
-        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
-
-        // Return new root
-        return y;
-    }
-
-    // Insert a key into the subtree rooted with node and return the new root
-    public insert(key: T): void {
-        this.root = this.insertNode(this.root, key);
-    }
-
-    private insertNode(node: AVLNode<T> | null, key: T): AVLNode<T> {
-        // Perform the normal BST insert
-        if (node === null) {
-            return new AVLNode(key);
-        }
-
-        if (key < node.key) {
-            node.left = this.insertNode(node.left, key);
-        } else if (key > node.key) {
-            node.right = this.insertNode(node.right, key);
-        } else {
-            // Duplicate keys are not allowed in the AVL tree
-            return node;
-        }
-
-        // Update the height of this ancestor node
-        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
-
-        // Get the balance factor of this ancestor node to check whether
-        // this node became unbalanced
-        const balance = this.getBalance(node);
-
-        // If this node becomes unbalanced, then there are 4 cases
-
-        // Left Left Case
-        if (balance > 1 && key < node.left!.key) {
-            return this.rightRotate(node);
-        }
-
-        // Right Right Case
-        if (balance < -1 && key > node.right!.key) {
-            return this.leftRotate(node);
-        }
-
-        // Left Right Case
-        if (balance > 1 && key > node.left!.key) {
-            node.left = this.leftRotate(node.left!);
-            return this.rightRotate(node);
-        }
-
-        // Right Left Case
-        if (balance < -1 && key < node.right!.key) {
-            node.right = this.rightRotate(node.right!);
-            return this.leftRotate(node);
-        }
-
-        // Return the (unchanged) node pointer
-        return node;
-    }
-
-    // Inorder traversal of the tree
-    public inorder(): T[] {
-        const result: T[] = [];
-        this.inorderTraversal(this.root, result);
-        return result;
-    }
-
-    private inorderTraversal(node: AVLNode<T> | null, result: T[]): void {
-        if (node !== null) {
-            this.inorderTraversal(node.left, result);
-            result.push(node.key);
-            this.inorderTraversal(node.right, result);
-        }
-    }
+const result = fibonacciSearch(arr, x);
+if (result >= 0) {
+    console.log(`Element found at index ${result}`);
+} else {
+    console.log('Element not found');
 }
-const avlTree = new AVLTree<number>();
-
-// Insert elements
-avlTree.insert(10);
-avlTree.insert(20);
-avlTree.insert(30);
-avlTree.insert(40);
-avlTree.insert(50);
-avlTree.insert(25);
-
-// Inorder traversal
-console.log(avlTree.inorder()); // Output: [10, 20, 25, 30, 40, 50]
