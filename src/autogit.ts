@@ -1,13 +1,24 @@
-function areAnagrams(str1: string, str2: string): boolean {
-    // Normalize the strings: convert to lowercase and remove spaces
-    const normalize = (str: string): string => str.toLowerCase().replace(/\s+/g, '').split('').sort().join('');
-
-    // Compare normalized versions of both strings
-    return normalize(str1) === normalize(str2);
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
+    }
+    return count;
 }
 
-// Example usage
-const string1 = "Listen";
-const string2 = "Silent";
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`);
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        count++;
+    }
+    return count;
+}
 
-console.log(areAnagrams(string1, string2)); // Output: true
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`);
