@@ -1,12 +1,30 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
+function majorityElement(nums: number[]): number {
+    let candidate: number | null = null;
+    let count = 0;
+
+    // Phase 1: Find a candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
     }
-    // Recursive case: n! = n * (n - 1)!
-    return n * factorial(n - 1);
+
+    // Phase 2: Verify the candidate (optional, if you want to ensure it's a majority)
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
+
+    return count > nums.length / 2 ? candidate : -1; // Return -1 if no majority element exists
 }
 
 // Example usage:
-const num = 5;
-console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
+const nums = [3, 2, 3];
+console.log(majorityElement(nums)); // Output: 3
