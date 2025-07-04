@@ -1,36 +1,51 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
-
-    // Phase 1: Find a candidate for the majority element
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
-    }
-
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    // Check if the candidate is indeed the majority element
-    if (count > nums.length / 2) {
-        return candidate;
-    } else {
-        return null; // No majority element found
-    }
+// Define a Node interface
+interface Node {
+    value: string;
+    children: Node[];
 }
 
-// Example usage:
-const nums = [3, 2, 3];
-const result = majorityElement(nums);
-console.log(result); // Output: 3
+// Depth-Limited Search Function
+function depthLimitedSearch(root: Node, goal: string, depthLimit: number): Node | null {
+    // Stack for the nodes to visit, initialized with the root node and its depth
+    const stack: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (stack.length > 0) {
+        // Pop the last node from the stack
+        const { node, depth } = stack.pop()!; // Using non-null assertion since we know stack is not empty
+
+        // Check if the current node is the goal
+        if (node.value === goal) {
+            return node; // Goal found
+        }
+
+        // If the current depth is less than the depth limit, push children onto the stack
+        if (depth < depthLimit) {
+            for (let i = node.children.length - 1; i >= 0; i--) {
+                const child = node.children[i];
+                stack.push({ node: child, depth: depth + 1 }); // Increment depth for child nodes
+            }
+        }
+    }
+    
+    return null; // Goal not found within depth limit
+}
+
+// Example Usage
+const rootNode: Node = {
+    value: "A",
+    children: [
+        { value: "B", children: [] },
+        { value: "C", children: [
+            { value: "D", children: [] },
+            { value: "E", children: [] }
+        ] }
+    ]
+};
+
+// Searching for a node
+const goalNode = depthLimitedSearch(rootNode, "D", 2);
+if (goalNode) {
+    console.log(`Found node with value: ${goalNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
