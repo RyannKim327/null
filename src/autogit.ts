@@ -1,30 +1,51 @@
-function majorityElement(nums: number[]): number {
-    let candidate: number | null = null;
-    let count = 0;
+class TreeNode {
+    val: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    // Phase 1: Find a candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
+    constructor(val: number) {
+        this.val = val;
+        this.left = null;
+        this.right = null;
     }
-
-    // Phase 2: Verify the candidate (optional, if you want to ensure it's a majority)
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    return count > nums.length / 2 ? candidate : -1; // Return -1 if no majority element exists
 }
 
-// Example usage:
-const nums = [3, 2, 3];
-console.log(majorityElement(nums)); // Output: 3
+class BinaryTree {
+    root: TreeNode | null;
+
+    constructor() {
+        this.root = null;
+    }
+
+    // Function to calculate the diameter of the binary tree
+    diameterOfBinaryTree(root: TreeNode | null): number {
+        let diameter = 0;
+
+        const depth = (node: TreeNode | null): number => {
+            if (!node) return 0;
+
+            // Recursively find the depth of left and right subtrees
+            const leftDepth = depth(node.left);
+            const rightDepth = depth(node.right);
+
+            // Update the diameter if the path through this node is larger
+            diameter = Math.max(diameter, leftDepth + rightDepth);
+
+            // Return the depth of the current node
+            return Math.max(leftDepth, rightDepth) + 1;
+        };
+
+        depth(root); // Start the recursion from the root
+        return diameter;
+    }
+}
+
+// Example usage
+const tree = new BinaryTree();
+tree.root = new TreeNode(1);
+tree.root.left = new TreeNode(2);
+tree.root.right = new TreeNode(3);
+tree.root.left.left = new TreeNode(4);
+tree.root.left.right = new TreeNode(5);
+
+console.log(tree.diameterOfBinaryTree(tree.root)); // Output: 3
