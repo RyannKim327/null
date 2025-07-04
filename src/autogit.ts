@@ -1,49 +1,45 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+const newArray = array.filter(item => item !== valueToRemove);
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const indexToRemove = array.indexOf(3); // Find index of the element
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove 1 element at the found index
 }
-function hasCycle(head: ListNode | null): boolean {
-    if (!head) {
-        return false; // If head is null, there is no cycle
+
+console.log(array); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
+
+const newArray = array.reduce((acc, item) => {
+    if (item !== valueToRemove) {
+        acc.push(item);
     }
+    return acc;
+}, [] as number[]);
 
-    let slow: ListNode | null = head; // Tortoise
-    let fast: ListNode | null = head; // Hare
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = [1, 2, 3, 4, 5];
+const valueToRemove = 3;
+const newArray: number[] = [];
 
-    while (fast !== null && fast.next !== null) {
-        slow = slow.next; // Move tortoise one step
-        fast = fast.next.next; // Move hare two steps
-
-        // If they meet, there is a cycle
-        if (slow === fast) {
-            return true;
-        }
+array.forEach(item => {
+    if (item !== valueToRemove) {
+        newArray.push(item);
     }
+});
 
-    return false; // If we reach the end, there is no cycle
+console.log(newArray); // Output: [1, 2, 4, 5]
+const array = ['apple', 'banana', 'cherry', 'date'];
+const valueToRemove = 'cherry';
+
+const indexToRemove = array.findIndex(item => item === valueToRemove);
+
+if (indexToRemove !== -1) {
+    array.splice(indexToRemove, 1); // Remove the element by index
 }
-// Create a linked list with a cycle for testing
-const head = new ListNode(1);
-const second = new ListNode(2);
-const third = new ListNode(3);
-const fourth = new ListNode(4);
 
-// Linking nodes
-head.next = second;
-second.next = third;
-third.next = fourth;
-
-// Creating a cycle
-fourth.next = second; // Cycle here
-
-// Check for cycle
-console.log(hasCycle(head)); // Output: true
-
-// To test a list without a cycle, you can modify the links
-fourth.next = null; // Break the cycle
-console.log(hasCycle(head)); // Output: false
+console.log(array); // Output: ['apple', 'banana', 'date']
