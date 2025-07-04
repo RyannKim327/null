@@ -1,49 +1,62 @@
-type Node = string; // Define the type for nodes, can be adjusted to any type.
+type Graph = { [key: string]: string[] };
 
-interface Graph {
-    [key: string]: Node[]; // Adjacency list representation.
-}
-
-function depthLimitedSearch(graph: Graph, start: Node, goal: Node, limit: number): boolean {
-    const stack: { node: Node; depth: number }[] = []; // Stack to manage the search
-    stack.push({ node: start, depth: 0 }); // Start with the initial node at depth 0
-
-    while (stack.length > 0) {
-        const { node, depth } = stack.pop()!; // Get the last node added to the stack
-
-        // If we reach the goal, return true
-        if (node === goal) {
-            return true;
-        }
-
-        // If the current depth is less than the limit, explore neighbors
-        if (depth < limit) {
-            const neighbors = graph[node] || []; // Get the neighbors of the current node
-            // Push neighbors onto the stack with incremented depth
-            for (const neighbor of neighbors) {
-                stack.push({ node: neighbor, depth: depth + 1 });
-            }
-        }
+function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If already visited, return
     }
 
-    // If goal is not found within the depth limit
-    return false;
+    console.log(start); // Process the node (e.g., print it)
+    visited.add(start); // Mark the node as visited
+
+    for (const neighbor of graph[start]) {
+        dfsRecursive(graph, neighbor, visited); // Recur for each neighbor
+    }
 }
 
-// Example Usage
+// Example usage:
 const graph: Graph = {
     A: ['B', 'C'],
     B: ['D', 'E'],
     C: ['F'],
     D: [],
-    E: ['G'],
-    F: [],
-    G: []
+    E: [],
+    F: []
 };
 
-const startNode: Node = 'A';
-const goalNode: Node = 'G';
-const depthLimit: number = 3;
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
 
-const found = depthLimitedSearch(graph, startNode, goalNode, depthLimit);
-console.log(`Goal ${goalNode} found: ${found}`);
+function dfsIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (visited.has(node)) {
+            continue; // If already visited, skip
+        }
+
+        console.log(node); // Process the node (e.g., print it)
+        visited.add(node); // Mark the node as visited
+
+        // Push all unvisited neighbors onto the stack
+        for (const neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                stack.push(neighbor);
+            }
+        }
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: [],
+    F: []
+};
+
+dfsIterative(graph, 'A');
