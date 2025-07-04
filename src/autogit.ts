@@ -1,46 +1,79 @@
-class Stack<T> {
-    private items: T[] = [];
-
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
-    }
-
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
-    }
-
-    // Peek at the top item of the stack
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
-
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
-
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
-
-    // Clear the stack
-    clear(): void {
-        this.items = [];
-    }
+interface Node {
+  // Define your node structure
+  id: string; // or number, or any unique identifier
+  children?: Node[]; // assuming a tree or graph structure
 }
 
-// Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
+// A helper function to generate all neighbors or children of a node
+function getNeighbors(node: Node): Node[] {
+  return node.children || [];
+}
 
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty()); // Output: false
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+/**
+ * Iterative Depth-Limited Search
+ * @param start - the starting node
+ * @param goal - function to determine if a node is goal
+ * @param limit - maximum depth to search
+ * @returns the node if found, otherwise null
+ */
+function depthLimitedSearch(
+  start: Node,
+  goal: (node: Node) => boolean,
+  limit: number
+): Node | null {
+  type StackItem = { node: Node; depth: number };
+
+  // Initialize stack with start node at depth 0
+  const stack: StackItem[] = [{ node: start, depth: 0 }];
+  // Keep track of visited nodes to prevent revisiting
+  const visited = new Set<string>();
+
+  while (stack.length > 0) {
+    const { node, depth } = stack.pop()!;
+
+    if (visited.has(node.id)) {
+      continue;
+    }
+    visited.add(node.id);
+
+    // Check if current node matches goal
+    if (goal(node)) {
+      return node;
+    }
+
+    // If within depth limit, expand children
+    if (depth < limit) {
+      const neighbors = getNeighbors(node);
+      // Push children onto the stack with incremented depth
+      for (const neighbor of neighbors) {
+        if (!visited.has(neighbor.id)) {
+          stack.push({ node: neighbor, depth: depth + 1 });
+        }
+      }
+    }
+  }
+
+  // Not found within depth limit
+  return null;
+}
+const nodeA: Node = {
+  id: "A",
+  children: [
+    { id: "B" },
+    {
+      id: "C",
+      children: [
+        { id: "D" },
+        { id: "E" }
+      ]
+    }
+  ]
+};
+
+const foundNode = depthLimitedSearch(
+  nodeA,
+  (node) => node.id === "E",
+  3
+);
+
+console.log(foundNode); // Should log the node with id "E" if within depth limit
