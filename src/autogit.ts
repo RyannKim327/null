@@ -4,70 +4,43 @@ class ListNode {
 
     constructor(value: number) {
         this.value = value;
-        this.next = null; // Initially, the next node is null
+        this.next = null;
     }
 }
 
-class LinkedList {
-    head: ListNode | null;
+function findNthFromEnd(head: ListNode | null, n: number): ListNode | null {
+    let first: ListNode | null = head;
+    let second: ListNode | null = head;
 
-    constructor() {
-        this.head = null; // Initially, the linked list is empty
+    // Move first pointer n nodes ahead
+    for (let i = 0; i < n; i++) {
+        if (first === null) {
+            return null; // n is greater than the length of the list
+        }
+        first = first.next;
     }
 
-    // Method to add a new node at the end of the list
-    append(value: number): void {
-        const newNode = new ListNode(value);
-        if (this.head === null) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next !== null) {
-            current = current.next;
-        }
-        current.next = newNode;
+    // Move both pointers until first reaches the end
+    while (first !== null) {
+        first = first.next;
+        second = second.next;
     }
 
-    // Method to reverse the linked list
-    reverse(): void {
-        let previous: ListNode | null = null;
-        let current: ListNode | null = this.head;
-        let next: ListNode | null = null;
-
-        while (current !== null) {
-            next = current.next; // Store the next node
-            current.next = previous; // Reverse the current node's pointer
-            previous = current; // Move previous to this node
-            current = next; // Move to the next node
-        }
-        this.head = previous; // Update the head to the new first element
-    }
-
-    // Method to print the linked list
-    print(): void {
-        let current = this.head;
-        const values: number[] = [];
-        while (current !== null) {
-            values.push(current.value);
-            current = current.next;
-        }
-        console.log(values.join(' -> '));
-    }
+    // second now points to the nth node from the end
+    return second;
 }
 
 // Example usage:
-const list = new LinkedList();
-list.append(1);
-list.append(2);
-list.append(3);
-list.append(4);
-list.append(5);
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(3);
+head.next.next.next = new ListNode(4);
+head.next.next.next.next = new ListNode(5);
 
-console.log("Original Linked List:");
-list.print(); // Output: 1 -> 2 -> 3 -> 4 -> 5
-
-list.reverse();
-
-console.log("Reversed Linked List:");
-list.print(); // Output: 5 -> 4 -> 3 -> 2 -> 1
+const n = 2;
+const result = findNthFromEnd(head, n);
+if (result) {
+    console.log(`The ${n}th node from the end is: ${result.value}`);
+} else {
+    console.log(`The list is shorter than ${n} nodes.`);
+}
