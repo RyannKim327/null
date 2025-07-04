@@ -1,19 +1,28 @@
-function countOccurrences(text: string, word: string): number {
-    // Normalize the text and word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+function quicksort(arr: number[]): number[] {
+    // Base case: arrays with 0 or 1 element are already sorted
+    if (arr.length <= 1) {
+        return arr;
+    }
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/);
+    // Choose a pivot (here we choose the last element)
+    const pivot = arr[arr.length - 1];
+    const left: number[] = [];
+    const right: number[] = [];
 
-    // Filter the array to count occurrences of the specified word
-    const count = wordsArray.filter(w => w === normalizedWord).length;
+    // Partitioning the array into left and right arrays
+    for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] < pivot) {
+            left.push(arr[i]);
+        } else {
+            right.push(arr[i]);
+        }
+    }
 
-    return count;
+    // Recursively apply quicksort to the left and right arrays, and concatenate results
+    return [...quicksort(left), pivot, ...quicksort(right)];
 }
 
 // Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const word = "hello";
-const occurrences = countOccurrences(text, word);
-console.log(`The word "${word}" occurs ${occurrences} times.`);
+const array = [3, 6, 8, 10, 1, 2, 1];
+const sortedArray = quicksort(array);
+console.log(sortedArray); // Output: [1, 1, 2, 3, 6, 8, 10]
