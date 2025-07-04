@@ -1,9 +1,36 @@
-const mainString: string = "Hello, welcome to TypeScript!";
-const substring: string = "welcome";
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-const containsSubstring: boolean = mainString.includes(substring);
+    // Phase 1: Find a candidate for the majority element
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
+        }
+    }
 
-console.log(containsSubstring); // Output: true
-const containsSubstringCaseInsensitive: boolean = mainString.toLowerCase().includes(substring.toLowerCase());
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
+        }
+    }
 
-console.log(containsSubstringCaseInsensitive); // Output: true
+    // Check if the candidate is indeed the majority element
+    if (count > nums.length / 2) {
+        return candidate;
+    } else {
+        return null; // No majority element found
+    }
+}
+
+// Example usage:
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
