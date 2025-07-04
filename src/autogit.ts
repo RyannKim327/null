@@ -1,7 +1,9 @@
-function reverseString(str: string): string {
-    return str.split('').reverse().join('');
-}
+const mainString: string = "Hello, welcome to TypeScript!";
+const substring: string = "welcome";
 
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: !dlroW ,olleH
+const containsSubstring: boolean = mainString.includes(substring);
+
+console.log(containsSubstring); // Output: true
+const containsSubstringCaseInsensitive: boolean = mainString.toLowerCase().includes(substring.toLowerCase());
+
+console.log(containsSubstringCaseInsensitive); // Output: true
