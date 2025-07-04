@@ -1,36 +1,62 @@
-// api.ts
-export const fetchData = async (url: string): Promise<any> => {
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+type Graph = { [key: string]: string[] };
+
+function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
+    if (visited.has(start)) {
+        return; // If already visited, return
+    }
+
+    console.log(start); // Process the node (e.g., print it)
+    visited.add(start); // Mark the node as visited
+
+    for (const neighbor of graph[start]) {
+        dfsRecursive(graph, neighbor, visited); // Recur for each neighbor
+    }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
+};
+
+dfsRecursive(graph, 'A');
+type Graph = { [key: string]: string[] };
+
+function dfsIterative(graph: Graph, start: string): void {
+    const stack: string[] = [start];
+    const visited: Set<string> = new Set();
+
+    while (stack.length > 0) {
+        const node = stack.pop()!;
+        
+        if (visited.has(node)) {
+            continue; // If already visited, skip
         }
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error("Fetch error:", error);
-        throw error;
+
+        console.log(node); // Process the node (e.g., print it)
+        visited.add(node); // Mark the node as visited
+
+        // Push all unvisited neighbors onto the stack
+        for (const neighbor of graph[node]) {
+            if (!visited.has(neighbor)) {
+                stack.push(neighbor);
+            }
+        }
     }
+}
+
+// Example usage:
+const graph: Graph = {
+    A: ['B', 'C'],
+    B: ['D', 'E'],
+    C: ['F'],
+    D: [],
+    E: ['F'],
+    F: []
 };
 
-// main.ts
-import { fetchData } from './api';
-
-const apiUrl = 'https://jsonplaceholder.typicode.com/posts';
-
-const loadPosts = async () => {
-    try {
-        console.log("Fetching posts...");
-        const posts = await fetchData(apiUrl);
-        console.log("Posts fetched successfully:", posts);
-    } catch (error) {
-        console.error("Error while fetching posts:", error);
-    }
-};
-
-// Call the loadPosts function to initiate the fetch
-loadPosts();
-// In your MainActivity.java or MainActivity.kt
-WebView myWebView = findViewById(R.id.webview);
-myWebView.getSettings().setJavaScriptEnabled(true);
-myWebView.loadUrl("file:///android_asset/index.html");
+dfsIterative(graph, 'A');
