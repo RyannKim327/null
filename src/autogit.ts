@@ -1,24 +1,27 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let i = 0; i < str.charCodeAt(i); i++) {
-        count++;
+import axios from 'axios';
+
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
+
+async function fetchUser(userId: number): Promise<User | null> {
+  try {
+    const response = await axios.get<User>(`https://jsonplaceholder.typicode.com/users/${userId}`);
+    const user = response.data;
+    console.log(`User Name: ${user.name}`);
+    return user;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      console.error(`Axios error: ${error.message}`);
+    } else {
+      console.error(`Unexpected error: ${error}`);
     }
-    return count;
+    return null;
+  }
 }
 
 // Example usage:
-const myString = "Hello, world!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
-function getStringLength(str: string): number {
-    let count = 0;
-    for (const char of str) {
-        count++;
-    }
-    return count;
-}
-
-// Example usage:
-const myString = "Hello, world!";
-const length = getStringLength(myString);
-console.log(length); // Output: 13
+fetchUser(1);
