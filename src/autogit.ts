@@ -1,79 +1,57 @@
-type Graph = {
-    [key: string]: string[];
-};
-function biDirectionalSearch(graph: Graph, start: string, goal: string): string[] | null {
-    if (start === goal) return [start];
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    const visitedFromStart = new Set<string>();
-    const visitedFromGoal = new Set<string>();
-    const queueFromStart: string[] = [start];
-    const queueFromGoal: string[] = [goal];
-    const parentFromStart: { [key: string]: string | null } = { [start]: null };
-    const parentFromGoal: { [key: string]: string | null } = { [goal]: null };
-
-    while (queueFromStart.length > 0 && queueFromGoal.length > 0) {
-        // Search from the start
-        const currentFromStart = queueFromStart.shift()!;
-        visitedFromStart.add(currentFromStart);
-
-        for (const neighbor of graph[currentFromStart] || []) {
-            if (!visitedFromStart.has(neighbor)) {
-                parentFromStart[neighbor] = currentFromStart;
-                queueFromStart.push(neighbor);
-                if (visitedFromGoal.has(neighbor)) {
-                    return constructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-            }
-        }
-
-        // Search from the goal
-        const currentFromGoal = queueFromGoal.shift()!;
-        visitedFromGoal.add(currentFromGoal);
-
-        for (const neighbor of graph[currentFromGoal] || []) {
-            if (!visitedFromGoal.has(neighbor)) {
-                parentFromGoal[neighbor] = currentFromGoal;
-                queueFromGoal.push(neighbor);
-                if (visitedFromStart.has(neighbor)) {
-                    return constructPath(neighbor, parentFromStart, parentFromGoal);
-                }
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    return null; // No path found
 }
 
-function constructPath(meetingPoint: string, parentFromStart: { [key: string]: string | null }, parentFromGoal: { [key: string]: string | null }): string[] {
-    const pathFromStart: string[] = [];
-    let current: string | null = meetingPoint;
-
-    while (current !== null) {
-        pathFromStart.push(current);
-        current = parentFromStart[current];
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node is a palindrome
     }
 
-    const pathFromGoal: string[] = [];
-    current = parentFromGoal[meetingPoint];
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
 
-    while (current !== null) {
-        pathFromGoal.push(current);
-        current = parentFromGoal[current];
+    while (fast && fast.next) {
+        slow = slow.next;
+        fast = fast.next.next;
     }
 
-    return pathFromStart.reverse().concat(pathFromGoal);
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextTemp;
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left.next;
+        right = right.next;
+    }
+
+    return true; // It is a palindrome
 }
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['A', 'D', 'E'],
-    C: ['A', 'F'],
-    D: ['B'],
-    E: ['B', 'F'],
-    F: ['C', 'E'],
-};
 
-const start = 'A';
-const goal = 'F';
-const path = biDirectionalSearch(graph, start, goal);
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
 
-console.log(path); // Output: ['A', 'C', 'F'] or ['A', 'B', 'E', 'F']
+console.log(isPalindrome(head)); // Output: true
