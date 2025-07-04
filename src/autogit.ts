@@ -1,57 +1,49 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
-
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node is a palindrome
+function findMedianSortedArrays(nums1: number[], nums2: number[]): number {
+    // Ensure nums1 is the smaller array
+    if (nums1.length > nums2.length) {
+        [nums1, nums2] = [nums2, nums1];
     }
 
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
+    const x = nums1.length;
+    const y = nums2.length;
 
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
-    }
+    let low = 0;
+    let high = x;
 
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
+    while (low <= high) {
+        const partitionX = Math.floor((low + high) / 2);
+        const partitionY = Math.floor((x + y + 1) / 2) - partitionX;
 
-    while (current) {
-        const nextTemp = current.next;
-        current.next = prev;
-        prev = current;
-        current = nextTemp;
-    }
+        const maxX = (partitionX === 0) ? Number.MIN_SAFE_INTEGER : nums1[partitionX - 1];
+        const minX = (partitionX === x) ? Number.MAX_SAFE_INTEGER : nums1[partitionX];
 
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
+        const maxY = (partitionY === 0) ? Number.MIN_SAFE_INTEGER : nums2[partitionY - 1];
+        const minY = (partitionY === y) ? Number.MAX_SAFE_INTEGER : nums2[partitionY];
 
-    while (right) {
-        if (left.value !== right.value) {
-            return false; // Not a palindrome
+        if (maxX <= minY && maxY <= minX) {
+            // We have found the correct partitions
+            if ((x + y) % 2 === 0) {
+                return (Math.max(maxX, maxY) + Math.min(minX, minY)) / 2;
+            } else {
+                return Math.max(maxX, maxY);
+            }
+        } else if (maxX > minY) {
+            // Move towards the left in nums1
+            high = partitionX - 1;
+        } else {
+            // Move towards the right in nums1
+            low = partitionX + 1;
         }
-        left = left.next;
-        right = right.next;
     }
 
-    return true; // It is a palindrome
+    throw new Error("Input arrays are not sorted.");
 }
 
 // Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
+const nums1 = [1, 3];
+const nums2 = [2];
+console.log(findMedianSortedArrays(nums1, nums2)); // Output: 2.0
 
-console.log(isPalindrome(head)); // Output: true
+const nums1_2 = [1, 2];
+const nums2_2 = [3, 4];
+console.log(findMedianSortedArrays(nums1_2, nums2_2)); // Output: 2.5
