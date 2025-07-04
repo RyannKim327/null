@@ -1,25 +1,19 @@
-function factorialIterative(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    let result = 1;
-    for (let i = 1; i <= n; i++) {
-        result *= i;
-    }
-    return result;
-}
+// cronJob.ts
+import cron from 'node-cron';
 
-// Example usage:
-console.log(factorialIterative(5)); // Output: 120
-function factorialRecursive(n: number): number {
-    if (n < 0) {
-        throw new Error("Factorial is not defined for negative numbers.");
-    }
-    if (n === 0 || n === 1) {
-        return 1; // Base case
-    }
-    return n * factorialRecursive(n - 1); // Recursive case
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+  const now = new Date();
+  console.log(`Task is running at: ${now.toISOString()}`);
+});
 
-// Example usage:
-console.log(factorialRecursive(5)); // Output: 120
+// Start the cron job
+task.start();
+
+// Optional: Stop the cron job after 5 minutes
+setTimeout(() => {
+  task.stop();
+  console.log('Task has been stopped.');
+}, 5 * 60 * 1000); // 5 minutes
+Task is running at: 2023-07-04T10:00:00.000Z
+Task has been stopped.
