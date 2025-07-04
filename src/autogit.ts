@@ -1,28 +1,34 @@
-// Declare an array of integers
-const numbers: number[] = [5, 3, 8, 1, 2, 7];
+npm install axios
+import axios from 'axios';
 
-// Sort the array in ascending order
-numbers.sort((a, b) => a - b);
-
-console.log("Sorted array (ascending):", numbers);
-
-// If you want to sort in descending order
-numbers.sort((a, b) => b - a);
-
-console.log("Sorted array (descending):", numbers);
-function sortArray(arr: number[], ascending: boolean = true): number[] {
-    return arr.sort((a, b) => ascending ? a - b : b - a);
+// Define an interface for the data structure you expect
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Example usage
-const myArray: number[] = [45, 12, 78, 34, 23, 89, 11];
+// Function to fetch posts
+const fetchPosts = async (): Promise<Post[]> => {
+    try {
+        const response = await axios.get<Post[]>('https://jsonplaceholder.typicode.com/posts');
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error('Error fetching posts:', error.message);
+        } else {
+            console.error('Unexpected error:', error);
+        }
+        throw error; // Rethrow the error for further handling if needed
+    }
+};
 
-// Sort in ascending order
-const sortedAscending = sortArray(myArray);
-console.log("Sorted Ascending:", sortedAscending);
-
-// Sort in descending order
-const sortedDescending = sortArray(myArray, false);
-console.log("Sorted Descending:", sortedDescending);
-Sorted Ascending: [ 11, 12, 23, 34, 45, 78, 89 ]
-Sorted Descending: [ 89, 78, 45, 34, 23, 12, 11 ]
+// Call the function and log the results
+fetchPosts()
+    .then(posts => {
+        console.log('Fetched posts:', posts);
+    })
+    .catch(error => {
+        console.error('Failed to fetch posts:', error);
+    });
