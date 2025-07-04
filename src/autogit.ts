@@ -1,24 +1,16 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
-    }
-    return count;
-}
+import cron from 'node-cron';
 
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(`The length of the string is: ${length}`);
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        count++;
-    }
-    return count;
-}
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    const date = new Date();
+    console.log(`Task executed at: ${date.toISOString()}`);
+});
 
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(`The length of the string is: ${length}`);
+// Start the cron job
+task.start();
+
+// Optionally: Stop the cron job after 5 minutes for demonstration
+setTimeout(() => {
+    task.stop();
+    console.log('Cron job stopped.');
+}, 5 * 60 * 1000); // 5 minutes in milliseconds
