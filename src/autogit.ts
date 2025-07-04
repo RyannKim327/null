@@ -1,26 +1,25 @@
-function insertionSort(arr: number[]): number[] {
-    // Loop through each element in the array starting from the second element
-    for (let i = 1; i < arr.length; i++) {
-        // Store the current element to be compared
-        let key = arr[i];
-        // Initialize a variable to keep track of the position for insertion
-        let j = i - 1;
+mkdir my-cron-app
+cd my-cron-app
+npm init -y
+npm install typescript @types/node node-cron
+npm install -g typescript
+npx tsc --init
+touch cronJob.ts
+import cron from 'node-cron';
 
-        // Shift elements of arr[0..i-1], that are greater than key, to one position ahead of their current position
-        while (j >= 0 && arr[j] > key) {
-            arr[j + 1] = arr[j]; // Shift element to the right
-            j = j - 1; // Move to the next element on the left
-        }
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    const now = new Date();
+    console.log(`Cron job executed at: ${now.toLocaleString()}`);
+});
 
-        // Insert the key in its correct position
-        arr[j + 1] = key;
-    }
+// Start the cron job
+task.start();
 
-    return arr; // Return the sorted array
-}
-
-// Example usage
-const arrayToSort = [12, 11, 13, 5, 6];
-console.log("Original array:", arrayToSort);
-const sortedArray = insertionSort(arrayToSort);
-console.log("Sorted array:", sortedArray);
+// Optional: Stop the cron job after 5 minutes
+setTimeout(() => {
+    task.stop();
+    console.log('Cron job stopped.');
+}, 5 * 60 * 1000);  // Stops after 5 minutes
+npx tsc
+node cronJob.js
