@@ -1,19 +1,25 @@
-// cronJob.ts
-import cron from 'node-cron';
+function bubbleSort(arr: number[]): number[] {
+    const n = arr.length;
+    let swapped: boolean;
 
-// Schedule a task to run every minute
-const task = cron.schedule('* * * * *', () => {
-  const now = new Date();
-  console.log(`Task is running at: ${now.toISOString()}`);
-});
+    do {
+        swapped = false;
+        for (let i = 0; i < n - 1; i++) {
+            if (arr[i] > arr[i + 1]) {
+                // Swap the elements
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                swapped = true;
+            }
+        }
+        // After each pass, the largest element is bubbled to the end,
+        // so we can reduce the range for the next pass
+        // For optimization, uncomment the next line:
+        // n--;
+    } while (swapped);
 
-// Start the cron job
-task.start();
+    return arr;
+}
 
-// Optional: Stop the cron job after 5 minutes
-setTimeout(() => {
-  task.stop();
-  console.log('Task has been stopped.');
-}, 5 * 60 * 1000); // 5 minutes
-Task is running at: 2023-07-04T10:00:00.000Z
-Task has been stopped.
+// Example usage:
+const sampleArray = [64, 34, 25, 12, 22, 11, 90];
+console.log(bubbleSort(sampleArray)); // Output: [11, 12, 22, 25, 34, 64, 90]
