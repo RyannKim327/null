@@ -1,33 +1,63 @@
-function lengthOfLIS(nums: number[]): number {
-    if (nums.length === 0) return 0;
+// Function to perform topological sort
+function topologicalSort(graph: Map<string, string[]>): string[] {
+    const inDegree = new Map<string, number>();
+    const nodes = Array.from(graph.keys());
 
-    const dp: number[] = [];
+    // Initialize in-degree for each node
+    for (const node of nodes) {
+        inDegree.set(node, 0);
+    }
 
-    for (const num of nums) {
-        // Use binary search to find the insertion point
-        let left = 0;
-        let right = dp.length;
-
-        while (left < right) {
-            const mid = Math.floor((left + right) / 2);
-            if (dp[mid] < num) {
-                left = mid + 1;
-            } else {
-                right = mid;
-            }
-        }
-
-        // If left is equal to the length of dp, it means num is greater than all elements in dp
-        if (left === dp.length) {
-            dp.push(num);
-        } else {
-            dp[left] = num; // Replace the found position with num
+    // Calculate in-degree for each node
+    for (const [node, neighbors] of graph.entries()) {
+        for (const neighbor of neighbors) {
+            inDegree.set(neighbor, (inDegree.get(neighbor) || 0) + 1);
         }
     }
 
-    return dp.length; // The length of dp is the length of the longest increasing subsequence
+    // Collect nodes with zero in-degree
+    const queue: string[] = [];
+    for (const [node, degree] of inDegree.entries()) {
+        if (degree === 0) {
+            queue.push(node);
+        }
+    }
+
+    const sortedOrder: string[] = [];
+
+    // Process nodes
+    while (queue.length > 0) {
+        const current = queue.shift()!;
+        sortedOrder.push(current);
+
+        // Decrease in-degree of neighbors
+        const neighbors = graph.get(current) || [];
+        for (const neighbor of neighbors) {
+            inDegree.set(neighbor, (inDegree.get(neighbor) || 0) - 1);
+            if (inDegree.get(neighbor) === 0) {
+                queue.push(neighbor);
+            }
+        }
+    }
+
+    // Check if topological sort is possible (no cycles)
+    if (sortedOrder.length !== nodes.length) {
+        throw new Error("Graph has at least one cycle, topological sort not possible.");
+    }
+
+    return sortedOrder;
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(nums)); // Output: 4
+// Example Usage:
+const graph = new Map<string, string[]>([
+    ['A', ['C']],
+    ['B', ['C', 'D']],
+    ['C', ['E']],
+    ['D', ['F']],
+    ['E', ['F']],
+    ['F', []]
+]);
+
+const order = topologicalSort(graph);
+console.log(order);
+// Possible Output: ['A', 'B', 'C', 'D', 'E', 'F']
