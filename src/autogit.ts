@@ -1,45 +1,131 @@
-class Stack<T> {
-    private items: T[] = [];
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    // Push an item onto the stack
-    push(item: T): void {
-        this.items.push(item);
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    // Pop an item off the stack
-    pop(): T | undefined {
-        return this.items.pop();
+    addEdge(u: number, v: number) {
+        if (!this.adjacencyList.has(u)) {
+            this.adjacencyList.set(u, []);
+        }
+        this.adjacencyList.get(u)?.push(v);
     }
 
-    // Peek at the top item of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
-    }
+    topologicalSortKahn(): number[] {
+        const inDegree = new Map<number, number>();
+        const zeroInDegreeQueue: number[] = [];
+        const topologicalOrder: number[] = [];
 
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
-    }
+        // Initialize in-degree of each vertex
+        for (const [u, neighbors] of this.adjacencyList.entries()) {
+            inDegree.set(u, 0); // Initialize in-degree
+            for (const v of neighbors) {
+                inDegree.set(v, (inDegree.get(v) || 0) + 1);
+            }
+        }
 
-    // Get the size of the stack
-    size(): number {
-        return this.items.length;
-    }
+        // Add all vertices with in-degree 0 to the queue
+        for (const [vertex, degree] of inDegree.entries()) {
+            if (degree === 0) {
+                zeroInDegreeQueue.push(vertex);
+            }
+        }
 
-    // Clear the stack
-    clear(): void {
-        this.items = [];
+        while (zeroInDegreeQueue.length > 0) {
+            const current = zeroInDegreeQueue.shift()!;
+            topologicalOrder.push(current);
+
+            // Decrease the in-degree of neighbors
+            const neighbors = this.adjacencyList.get(current) || [];
+            for (const neighbor of neighbors) {
+                inDegree.set(neighbor, inDegree.get(neighbor)! - 1);
+                if (inDegree.get(neighbor) === 0) {
+                    zeroInDegreeQueue.push(neighbor);
+                }
+            }
+        }
+
+        // Check for cycles
+        if (topologicalOrder.length !== inDegree.size) {
+            throw new Error("Graph has at least one cycle!");
+        }
+
+        return topologicalOrder;
     }
 }
 
-// Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty()); // Output: false
-stack.clear();
-console.log(stack.isEmpty()); // Output: true
+// Example usage
+const graph = new Graph();
+graph.addEdge(5, 2);
+graph.addEdge(5, 0);
+graph.addEdge(4, 0);
+graph.addEdge(4, 1);
+graph.addEdge(2, 3);
+graph.addEdge(3, 1);
+
+try {
+    const order = graph.topologicalSortKahn();
+    console.log("Topological Sort using Kahn's Algorithm:", order);
+} catch (error) {
+    console.error(error);
+}
+class GraphDFS {
+    private adjacencyList: Map<number, number[]>;
+
+    constructor() {
+        this.adjacencyList = new Map();
+    }
+
+    addEdge(u: number, v: number) {
+        if (!this.adjacencyList.has(u)) {
+            this.adjacencyList.set(u, []);
+        }
+        this.adjacencyList.get(u)?.push(v);
+    }
+
+    topologicalSortDFS(): number[] {
+        const visited = new Set<number>();
+        const stack: number[] = [];
+        const topologicalOrder: number[] = [];
+
+        const dfs = (node: number) => {
+            if (visited.has(node)) {
+                return;
+            }
+            visited.add(node);
+
+            const neighbors = this.adjacencyList.get(node) || [];
+            for (const neighbor of neighbors) {
+                dfs(neighbor);
+            }
+            stack.push(node);
+        };
+
+        // Perform DFS from each vertex
+        for (const vertex of this.adjacencyList.keys()) {
+            if (!visited.has(vertex)) {
+                dfs(vertex);
+            }
+        }
+
+        // The topological order is the reverse of the stack
+        while (stack.length > 0) {
+            topologicalOrder.push(stack.pop()!);
+        }
+
+        return topologicalOrder;
+    }
+}
+
+// Example usage
+const graphDFS = new GraphDFS();
+graphDFS.addEdge(5, 2);
+graphDFS.addEdge(5, 0);
+graphDFS.addEdge(4, 0);
+graphDFS.addEdge(4, 1);
+graphDFS.addEdge(2, 3);
+graphDFS.addEdge(3, 1);
+
+const orderDFS = graphDFS.topologicalSortDFS();
+console.log("Topological Sort using DFS:", orderDFS);
