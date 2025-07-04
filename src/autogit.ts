@@ -1,62 +1,49 @@
-type Graph = { [key: string]: string[] };
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-function dfsRecursive(graph: Graph, start: string, visited: Set<string> = new Set()): void {
-    if (visited.has(start)) {
-        return; // If already visited, return
-    }
-
-    console.log(start); // Process the node (e.g., print it)
-    visited.add(start); // Mark the node as visited
-
-    for (const neighbor of graph[start]) {
-        dfsRecursive(graph, neighbor, visited); // Recur for each neighbor
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
 }
+function hasCycle(head: ListNode | null): boolean {
+    if (!head) {
+        return false; // If head is null, there is no cycle
+    }
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: []
-};
+    let slow: ListNode | null = head; // Tortoise
+    let fast: ListNode | null = head; // Hare
 
-dfsRecursive(graph, 'A');
-type Graph = { [key: string]: string[] };
+    while (fast !== null && fast.next !== null) {
+        slow = slow.next; // Move tortoise one step
+        fast = fast.next.next; // Move hare two steps
 
-function dfsIterative(graph: Graph, start: string): void {
-    const stack: string[] = [start];
-    const visited: Set<string> = new Set();
-
-    while (stack.length > 0) {
-        const node = stack.pop()!;
-        
-        if (visited.has(node)) {
-            continue; // If already visited, skip
-        }
-
-        console.log(node); // Process the node (e.g., print it)
-        visited.add(node); // Mark the node as visited
-
-        // Push all unvisited neighbors onto the stack
-        for (const neighbor of graph[node]) {
-            if (!visited.has(neighbor)) {
-                stack.push(neighbor);
-            }
+        // If they meet, there is a cycle
+        if (slow === fast) {
+            return true;
         }
     }
+
+    return false; // If we reach the end, there is no cycle
 }
+// Create a linked list with a cycle for testing
+const head = new ListNode(1);
+const second = new ListNode(2);
+const third = new ListNode(3);
+const fourth = new ListNode(4);
 
-// Example usage:
-const graph: Graph = {
-    A: ['B', 'C'],
-    B: ['D', 'E'],
-    C: ['F'],
-    D: [],
-    E: ['F'],
-    F: []
-};
+// Linking nodes
+head.next = second;
+second.next = third;
+third.next = fourth;
 
-dfsIterative(graph, 'A');
+// Creating a cycle
+fourth.next = second; // Cycle here
+
+// Check for cycle
+console.log(hasCycle(head)); // Output: true
+
+// To test a list without a cycle, you can modify the links
+fourth.next = null; // Break the cycle
+console.log(hasCycle(head)); // Output: false
