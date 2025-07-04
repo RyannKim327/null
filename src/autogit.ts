@@ -1,36 +1,146 @@
-function countOccurrences(text: string, word: string): number {
-    // Normalize the text and the word to lower case to make the search case-insensitive
-    const normalizedText = text.toLowerCase();
-    const normalizedWord = word.toLowerCase();
+class AVLNode<T> {
+    key: T;
+    height: number;
+    left: AVLNode<T> | null;
+    right: AVLNode<T> | null;
 
-    // Split the text into an array of words
-    const wordsArray = normalizedText.split(/\s+/); // Split by whitespace
+    constructor(key: T) {
+        this.key = key;
+        this.height = 1; // New node is initially added at leaf
+        this.left = null;
+        this.right = null;
+    }
+}
+class AVLTree<T> {
+    root: AVLNode<T> | null;
 
-    // Count occurrences of the word
-    let count = 0;
-    for (const w of wordsArray) {
-        if (w === normalizedWord) {
-            count++;
-        }
+    constructor() {
+        this.root = null;
     }
 
-    return count;
-}
+    // Get the height of the node
+    private getHeight(node: AVLNode<T> | null): number {
+        return node ? node.height : 0;
+    }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countOccurrences(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
-function countOccurrencesRegex(text: string, word: string): number {
-    const normalizedWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // Escape special characters
-    const regex = new RegExp(`\\b${normalizedWord}\\b`, 'gi'); // Word boundary and case-insensitive
-    const matches = text.match(regex);
-    return matches ? matches.length : 0;
-}
+    // Get the balance factor of the node
+    private getBalance(node: AVLNode<T> | null): number {
+        return node ? this.getHeight(node.left) - this.getHeight(node.right) : 0;
+    }
 
-// Example usage
-const text = "Hello world! This is a test. Hello again, world!";
-const wordToCount = "hello";
-const occurrences = countOccurrencesRegex(text, wordToCount);
-console.log(`The word "${wordToCount}" occurs ${occurrences} times.`);
+    // Right rotate the subtree rooted with y
+    private rightRotate(y: AVLNode<T>): AVLNode<T> {
+        const x = y.left!;
+        const T2 = x.right;
+
+        // Perform rotation
+        x.right = y;
+        y.left = T2;
+
+        // Update heights
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+
+        // Return new root
+        return x;
+    }
+
+    // Left rotate the subtree rooted with x
+    private leftRotate(x: AVLNode<T>): AVLNode<T> {
+        const y = x.right!;
+        const T2 = y.left;
+
+        // Perform rotation
+        y.left = x;
+        x.right = T2;
+
+        // Update heights
+        x.height = Math.max(this.getHeight(x.left), this.getHeight(x.right)) + 1;
+        y.height = Math.max(this.getHeight(y.left), this.getHeight(y.right)) + 1;
+
+        // Return new root
+        return y;
+    }
+
+    // Insert a key into the subtree rooted with node and return the new root
+    public insert(key: T): void {
+        this.root = this.insertNode(this.root, key);
+    }
+
+    private insertNode(node: AVLNode<T> | null, key: T): AVLNode<T> {
+        // Perform the normal BST insert
+        if (node === null) {
+            return new AVLNode(key);
+        }
+
+        if (key < node.key) {
+            node.left = this.insertNode(node.left, key);
+        } else if (key > node.key) {
+            node.right = this.insertNode(node.right, key);
+        } else {
+            // Duplicate keys are not allowed in the AVL tree
+            return node;
+        }
+
+        // Update the height of this ancestor node
+        node.height = 1 + Math.max(this.getHeight(node.left), this.getHeight(node.right));
+
+        // Get the balance factor of this ancestor node to check whether
+        // this node became unbalanced
+        const balance = this.getBalance(node);
+
+        // If this node becomes unbalanced, then there are 4 cases
+
+        // Left Left Case
+        if (balance > 1 && key < node.left!.key) {
+            return this.rightRotate(node);
+        }
+
+        // Right Right Case
+        if (balance < -1 && key > node.right!.key) {
+            return this.leftRotate(node);
+        }
+
+        // Left Right Case
+        if (balance > 1 && key > node.left!.key) {
+            node.left = this.leftRotate(node.left!);
+            return this.rightRotate(node);
+        }
+
+        // Right Left Case
+        if (balance < -1 && key < node.right!.key) {
+            node.right = this.rightRotate(node.right!);
+            return this.leftRotate(node);
+        }
+
+        // Return the (unchanged) node pointer
+        return node;
+    }
+
+    // Inorder traversal of the tree
+    public inorder(): T[] {
+        const result: T[] = [];
+        this.inorderTraversal(this.root, result);
+        return result;
+    }
+
+    private inorderTraversal(node: AVLNode<T> | null, result: T[]): void {
+        if (node !== null) {
+            this.inorderTraversal(node.left, result);
+            result.push(node.key);
+            this.inorderTraversal(node.right, result);
+        }
+    }
+}
+const avlTree = new AVLTree<number>();
+
+// Insert elements
+avlTree.insert(10);
+avlTree.insert(20);
+avlTree.insert(30);
+avlTree.insert(40);
+avlTree.insert(50);
+avlTree.insert(25);
+
+// Inorder traversal
+console.log(avlTree.inorder()); // Output: [10, 20, 25, 30, 40, 50]
