@@ -1,79 +1,43 @@
-interface Node {
-  // Define your node structure
-  id: string; // or number, or any unique identifier
-  children?: Node[]; // assuming a tree or graph structure
-}
-
-// A helper function to generate all neighbors or children of a node
-function getNeighbors(node: Node): Node[] {
-  return node.children || [];
-}
-
-/**
- * Iterative Depth-Limited Search
- * @param start - the starting node
- * @param goal - function to determine if a node is goal
- * @param limit - maximum depth to search
- * @returns the node if found, otherwise null
- */
-function depthLimitedSearch(
-  start: Node,
-  goal: (node: Node) => boolean,
-  limit: number
-): Node | null {
-  type StackItem = { node: Node; depth: number };
-
-  // Initialize stack with start node at depth 0
-  const stack: StackItem[] = [{ node: start, depth: 0 }];
-  // Keep track of visited nodes to prevent revisiting
-  const visited = new Set<string>();
-
-  while (stack.length > 0) {
-    const { node, depth } = stack.pop()!;
-
-    if (visited.has(node.id)) {
-      continue;
-    }
-    visited.add(node.id);
-
-    // Check if current node matches goal
-    if (goal(node)) {
-      return node;
+function quickSelect(arr: number[], left: number, right: number, k: number): number {
+    if (left === right) {
+        return arr[left]; // If the list contains only one element
     }
 
-    // If within depth limit, expand children
-    if (depth < limit) {
-      const neighbors = getNeighbors(node);
-      // Push children onto the stack with incremented depth
-      for (const neighbor of neighbors) {
-        if (!visited.has(neighbor.id)) {
-          stack.push({ node: neighbor, depth: depth + 1 });
+    const pivotIndex = partition(arr, left, right);
+
+    // The pivot is in its final sorted position
+    if (k === pivotIndex) {
+        return arr[k];
+    } else if (k < pivotIndex) {
+        return quickSelect(arr, left, pivotIndex - 1, k);
+    } else {
+        return quickSelect(arr, pivotIndex + 1, right, k);
+    }
+}
+
+function partition(arr: number[], left: number, right: number): number {
+    const pivot = arr[right]; // Choose the rightmost element as pivot
+    let i = left;
+
+    for (let j = left; j < right; j++) {
+        if (arr[j] < pivot) {
+            [arr[i], arr[j]] = [arr[j], arr[i]]; // Swap elements
+            i++;
         }
-      }
     }
-  }
-
-  // Not found within depth limit
-  return null;
+    [arr[i], arr[right]] = [arr[right], arr[i]]; // Swap pivot to its final place
+    return i; // Return the index of the pivot
 }
-const nodeA: Node = {
-  id: "A",
-  children: [
-    { id: "B" },
-    {
-      id: "C",
-      children: [
-        { id: "D" },
-        { id: "E" }
-      ]
+
+function findKthSmallest(arr: number[], k: number): number {
+    if (k < 1 || k > arr.length) {
+        throw new Error("k is out of bounds");
     }
-  ]
-};
+    return quickSelect(arr, 0, arr.length - 1, k - 1); // k-1 for zero-based index
+}
 
-const foundNode = depthLimitedSearch(
-  nodeA,
-  (node) => node.id === "E",
-  3
-);
-
-console.log(foundNode); // Should log the node with id "E" if within depth limit
+// Example usage:
+const arr = [3, 2, 1, 5, 6, 4];
+const k = 2;
+const kthSmallest = findKthSmallest(arr, k);
+console.log(`The ${k}-th smallest element is ${kthSmallest}`);
