@@ -1,14 +1,24 @@
-function getRandomNumberInRange(min: number, max: number): number {
-  return Math.random() * (max - min) + min;
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let i = 0; i < str.charCodeAt(i); i++) {
+        count++;
+    }
+    return count;
 }
-const randomNum = getRandomNumberInRange(1, 10);
-console.log(randomNum); // e.g., 3.764123456789
-function getRandomIntegerInRange(min: number, max: number): number {
-  // Ensure min and max are integers
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+
+// Example usage:
+const myString = "Hello, world!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
+function getStringLength(str: string): number {
+    let count = 0;
+    for (const char of str) {
+        count++;
+    }
+    return count;
 }
-const randomInt = getRandomIntegerInRange(1, 10);
-console.log(randomInt); // e.g., 4
+
+// Example usage:
+const myString = "Hello, world!";
+const length = getStringLength(myString);
+console.log(length); // Output: 13
