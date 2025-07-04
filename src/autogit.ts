@@ -1,12 +1,27 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
-    }
-    return count;
-}
+import * as readline from 'readline';
 
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(`The length of the string is: ${length}`);
+// Create an interface for input and output
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to ask for user input
+const askQuestion = (question: string): Promise<string> => {
+    return new Promise((resolve) => {
+        rl.question(question, (answer) => {
+            resolve(answer);
+        });
+    });
+};
+
+// Main function to run the program
+const main = async () => {
+    const name = await askQuestion('What is your name? ');
+    console.log(`Hello, ${name}!`);
+    
+    rl.close();
+};
+
+// Run the main function
+main();
