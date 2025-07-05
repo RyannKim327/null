@@ -1,22 +1,39 @@
-function insertionSort(arr: number[]): number[] {
-    // Start from the second element as the first element is trivially sorted
-    for (let i = 1; i < arr.length; i++) {
-        const current = arr[i]; // The element to be positioned
-        let j = i - 1; // Start comparing with the elements in the sorted portion
+type Graph = {
+    [key: string]: string[];
+};
+function bfs(graph: Graph, startNode: string): string[] {
+    const visited: Set<string> = new Set(); // To keep track of visited nodes
+    const queue: string[] = [startNode]; // Initialize the queue with the start node
+    const result: string[] = []; // To store the order of traversal
 
-        // Move elements that are greater than current, to one position ahead
-        while (j >= 0 && arr[j] > current) {
-            arr[j + 1] = arr[j]; // Shift element to the right
-            j--; // Move to the left in the sorted area
+    while (queue.length > 0) {
+        const currentNode = queue.shift(); // Dequeue the first node
+
+        if (currentNode && !visited.has(currentNode)) {
+            visited.add(currentNode); // Mark the node as visited
+            result.push(currentNode); // Add it to the result
+
+            // Enqueue all unvisited neighbors
+            for (const neighbor of graph[currentNode]) {
+                if (!visited.has(neighbor)) {
+                    queue.push(neighbor);
+                }
+            }
         }
-        // Insert the current element into its correct position
-        arr[j + 1] = current;
     }
 
-    return arr; // Return the sorted array
+    return result; // Return the order of traversal
 }
+const graph: Graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': [],
+    'E': ['F'],
+    'F': [],
+};
 
-// Example usage
-const unsortedArray = [5, 2, 9, 1, 5, 6];
-const sortedArray = insertionSort(unsortedArray);
-console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
+const startNode = 'A';
+const traversalOrder = bfs(graph, startNode);
+
+console.log(traversalOrder); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
