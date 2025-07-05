@@ -1,23 +1,35 @@
-function longestCommonPrefix(strs: string[]): string {
-    if (strs.length === 0) return "";
+function isPalindrome(s: string): boolean {
+    let left = 0;
+    let right = s.length - 1;
 
-    // Sort the array
-    strs.sort();
-
-    // Get the first and last string
-    const first = strs[0];
-    const last = strs[strs.length - 1];
-    let i = 0;
-
-    // Compare characters until they differ
-    while (i < first.length && i < last.length && first[i] === last[i]) {
-        i++;
+    while (left < right) {
+        // Move the left pointer to the next valid character
+        while (left < right && !isValidCharacter(s[left])) {
+            left++;
+        }
+        // Move the right pointer to the previous valid character
+        while (left < right && !isValidCharacter(s[right])) {
+            right--;
+        }
+        
+        // Check if the characters are equal (case insensitive)
+        if (s[left].toLowerCase() !== s[right].toLowerCase()) {
+            return false;
+        }
+        
+        // Move towards the center
+        left++;
+        right--;
     }
+    
+    return true;
+}
 
-    // Return the common prefix
-    return first.substring(0, i);
+function isValidCharacter(c: string): boolean {
+    // Check if the character is alphanumeric
+    return /^[a-zA-Z0-9]$/.test(c);
 }
 
 // Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+console.log(isPalindrome("A man, a plan, a canal: Panama")); // true
+console.log(isPalindrome("race a car")); // false
