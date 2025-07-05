@@ -1,74 +1,68 @@
-// Define a TrieNode class
-class TrieNode {
-  // Map to hold child nodes
-  children: Map<string, TrieNode>;
-  // Flag to mark the end of a word
-  isEndOfWord: boolean;
+// Define the structure for a Node
+class Node {
+    value: string;
+    children: Node[];
 
-  constructor() {
-    this.children = new Map<string, TrieNode>();
-    this.isEndOfWord = false;
-  }
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
+    }
+
+    // Method to add a child node
+    addChild(child: Node) {
+        this.children.push(child);
+    }
 }
 
-// Define the Trie class
-class Trie {
-  private root: TrieNode;
-
-  constructor() {
-    this.root = new TrieNode();
-  }
-
-  // Method to insert a word into the trie
-  insert(word: string): void {
-    let currentNode = this.root;
-
-    for (const char of word) {
-      if (!currentNode.children.has(char)) {
-        currentNode.children.set(char, new TrieNode());
-      }
-      currentNode = currentNode.children.get(char)!;
+// Implement the breadth-limited search algorithm
+function breadthLimitedSearch(root: Node, target: string, depthLimit: number): Node | null {
+    if (depthLimit < 0) {
+        throw new Error("Depth limit must be non-negative");
     }
 
-    currentNode.isEndOfWord = true;
-  }
+    // Create a queue for BFS
+    const queue: { node: Node; depth: number }[] = [];
+    queue.push({ node: root, depth: 0 });
 
-  // Method to search for a full word
-  search(word: string): boolean {
-    let currentNode = this.root;
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the front node
 
-    for (const char of word) {
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char)!;
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Return the found node
+        }
+
+        // Only traverse children if we haven't reached the depth limit
+        if (depth < depthLimit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
     }
 
-    return currentNode.isEndOfWord;
-  }
-
-  // Method to check if any word in the trie starts with the given prefix
-  startsWith(prefix: string): boolean {
-    let currentNode = this.root;
-
-    for (const char of prefix) {
-      if (!currentNode.children.has(char)) {
-        return false;
-      }
-      currentNode = currentNode.children.get(char)!;
-    }
-
-    return true;
-  }
+    // Return null if the target was not found
+    return null;
 }
 
-// Example usage:
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("app");
-trie.insert("application");
+// Example usage
+const root = new Node("A");
+const b = new Node("B");
+const c = new Node("C");
+const d = new Node("D");
+const e = new Node("E");
+const f = new Node("F");
 
-console.log(trie.search("app")); // true
-console.log(trie.search("appl")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("apply")); // false
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+// Perform a breadth-limited search
+const targetNode = breadthLimitedSearch(root, "E", 2);
+
+if (targetNode) {
+    console.log(`Found node: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the depth limit.");
+}
