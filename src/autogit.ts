@@ -1,23 +1,30 @@
-const originalArray: number[] = [1, 2, 3, 4, 5];
-const reversedArray: number[] = originalArray.reverse();
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(originalArray);  // Output: [5, 4, 3, 2, 1] (original array is also modified)
-const originalArray: number[] = [1, 2, 3, 4, 5];
-const reversedArray: number[] = [...originalArray].reverse();
-
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-console.log(originalArray);  // Output: [1, 2, 3, 4, 5] (original array remains unchanged)
-const originalArray: number[] = [1, 2, 3, 4, 5];
-const reversedArray: number[] = [];
-
-for (let i = originalArray.length - 1; i >= 0; i--) {
-    reversedArray.push(originalArray[i]);
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
+    }
 }
+function sumOfNodes(root: TreeNode | null): number {
+    // Base case: if the node is null, return 0
+    if (root === null) {
+        return 0;
+    }
 
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
-const originalArray: number[] = [1, 2, 3, 4, 5];
+    // Recursive case: sum the value of the current node and the sums of the left and right subtrees
+    return root.value + sumOfNodes(root.left) + sumOfNodes(root.right);
+}
+// Create a binary tree
+const root = new TreeNode(1);
+root.left = new TreeNode(2);
+root.right = new TreeNode(3);
+root.left.left = new TreeNode(4);
+root.left.right = new TreeNode(5);
 
-const reversedArray: number[] = originalArray.reduce((acc, curr) => [curr, ...acc], []);
-
-console.log(reversedArray); // Output: [5, 4, 3, 2, 1]
+// Calculate the sum of all nodes
+const totalSum = sumOfNodes(root);
+console.log(`The sum of all nodes in the binary tree is: ${totalSum}`);
