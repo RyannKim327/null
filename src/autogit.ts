@@ -1,17 +1,23 @@
-// Define an array
-let numbers: number[] = [1, 2, 3, 4, 5];
+function longestCommonPrefix(strs: string[]): string {
+    if (strs.length === 0) return "";
 
-// Reverse the array
-numbers.reverse();
+    // Sort the array
+    strs.sort();
 
-// Output the reversed array
-console.log(numbers); // Output: [5, 4, 3, 2, 1]
-// Define an array
-let numbers: number[] = [1, 2, 3, 4, 5];
+    // Get the first and last string
+    const first = strs[0];
+    const last = strs[strs.length - 1];
+    let i = 0;
 
-// Create a copy of the array and reverse it
-let reversedNumbers = [...numbers].reverse();
+    // Compare characters until they differ
+    while (i < first.length && i < last.length && first[i] === last[i]) {
+        i++;
+    }
 
-// Output the original and reversed arrays
-console.log(numbers);         // Output: [1, 2, 3, 4, 5]
-console.log(reversedNumbers); // Output: [5, 4, 3, 2, 1]
+    // Return the common prefix
+    return first.substring(0, i);
+}
+
+// Example usage:
+const strings = ["flower", "flow", "flight"];
+console.log(longestCommonPrefix(strings)); // Output: "fl"
