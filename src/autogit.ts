@@ -14,15 +14,15 @@ function diameterOfBinaryTree(root: TreeNode | null): number {
     let diameter = 0;
 
     function height(node: TreeNode | null): number {
-        if (node === null) {
+        if (!node) {
             return 0;
         }
 
-        // Recursively find the height of the left and right subtrees
+        // Recursively find the height of the left and right subtree
         const leftHeight = height(node.left);
         const rightHeight = height(node.right);
 
-        // Update the diameter if the path through the current node is larger
+        // Update the diameter as the maximum found so far
         diameter = Math.max(diameter, leftHeight + rightHeight);
 
         // Return the height of the current node
@@ -33,11 +33,18 @@ function diameterOfBinaryTree(root: TreeNode | null): number {
     return diameter;
 }
 
-// Example usage:
+// Example Usage:
+// Creating a sample binary tree:
+//       1
+//      / \
+//     2   3
+//    / \
+//   4   5
+
 const root = new TreeNode(1);
 root.left = new TreeNode(2);
 root.right = new TreeNode(3);
 root.left.left = new TreeNode(4);
 root.left.right = new TreeNode(5);
 
-console.log(diameterOfBinaryTree(root)); // Output: 3 (the path is 4 -> 2 -> 1 -> 3 or 5 -> 2 -> 1 -> 3)
+console.log(diameterOfBinaryTree(root)); // Output: 3
