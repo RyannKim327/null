@@ -1,59 +1,59 @@
-class Graph {
-    private adjacencyList: Map<number, number[]>;
+function rabinKarpSearch(text: string, pattern: string): number[] {
+  const result: number[] = [];
+  const m = pattern.length;
+  const n = text.length;
+  const base = 256; // Number of possible characters
+  const prime = 101; // A prime number for modulus to reduce collisions
 
-    constructor() {
-        this.adjacencyList = new Map();
-    }
+  if (m > n) return result;
 
-    // Add a vertex to the graph
-    addVertex(vertex: number): void {
-        this.adjacencyList.set(vertex, []);
-    }
+  let patternHash = 0; // Hash value for pattern
+  let textHash = 0;    // Hash value for current window
+  let h = 1;         // The high order digit (for removing leading digit)
 
-    // Add an edge to the graph
-    addEdge(vertex1: number, vertex2: number): void {
-        this.adjacencyList.get(vertex1)?.push(vertex2);
-        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
-    }
+  // Precompute (base^(m-1)) % prime
+  for (let i = 0; i < m - 1; i++) {
+    h = (h * base) % prime;
+  }
 
-    // Perform BFS
-    bfs(startVertex: number): number[] {
-        const visited: Set<number> = new Set();
-        const queue: number[] = [];
-        const result: number[] = [];
+  // Calculate initial hash values for pattern and first window
+  for (let i = 0; i < m; i++) {
+    patternHash = (base * patternHash + pattern.charCodeAt(i)) % prime;
+    textHash = (base * textHash + text.charCodeAt(i)) % prime;
+  }
 
-        visited.add(startVertex);
-        queue.push(startVertex);
-
-        while (queue.length > 0) {
-            const currentVertex = queue.shift()!;
-            result.push(currentVertex);
-
-            const neighbors = this.adjacencyList.get(currentVertex) || [];
-            for (const neighbor of neighbors) {
-                if (!visited.has(neighbor)) {
-                    visited.add(neighbor);
-                    queue.push(neighbor);
-                }
-            }
+  // Slide the pattern over text
+  for (let i = 0; i <= n - m; i++) {
+    // If the hash values match, check for characters one by one to avoid false positives due to collisions
+    if (patternHash === textHash) {
+      let match = true;
+      for (let j = 0; j < m; j++) {
+        if (text.charAt(i + j) !== pattern.charAt(j)) {
+          match = false;
+          break;
         }
-
-        return result;
+      }
+      if (match) {
+        result.push(i);
+      }
     }
+
+    // Calculate hash for next window
+    if (i < n - m) {
+      textHash = (base * (textHash - text.charCodeAt(i) * h) + text.charCodeAt(i + m)) % prime;
+      // We might get negative value of textHash, converting it to positive
+      if (textHash < 0) {
+        textHash += prime;
+      }
+    }
+  }
+
+  return result;
 }
 
-// Example usage
-const graph = new Graph();
-graph.addVertex(1);
-graph.addVertex(2);
-graph.addVertex(3);
-graph.addVertex(4);
-graph.addVertex(5);
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABC";
 
-graph.addEdge(1, 2);
-graph.addEdge(1, 3);
-graph.addEdge(2, 4);
-graph.addEdge(3, 5);
-
-const bfsResult = graph.bfs(1);
-console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
+const matches = rabinKarpSearch(text, pattern);
+console.log("Pattern found at indices:", matches);
