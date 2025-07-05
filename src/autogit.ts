@@ -1,40 +1,57 @@
-function createBadCharacterTable(pattern: string): { [key: string]: number } {
-    const badCharTable: { [key: string]: number } = {};
-    const patternLength = pattern.length;
+type Graph = Map<number, number[]>; // Adjacency list representation
 
-    // Fill the bad character table with default values
-    for (let i = 0; i < patternLength; i++) {
-        // Store the last occurrence of each character in the pattern
-        badCharTable[pattern[i]] = i;
+function tarjan(graph: Graph): number[][] {
+    const indices: number[] = [];
+    const lowlink: number[] = [];
+    const stack: number[] = [];
+    const onStack: boolean[] = [];
+    const result: number[][] = [];
+    let index = 0;
+
+    // Initialize the indices and lowlink arrays
+    for (let i = 0; i < graph.size; i++) {
+        indices[i] = -1;
+        lowlink[i] = -1;
+        onStack[i] = false;
     }
 
-    return badCharTable;
-}
+    const strongconnect = (v: number) => {
+        // Set the depth index for v to the smallest unused index
+        indices[v] = index;
+        lowlink[v] = index;
+        index++;
+        stack.push(v);
+        onStack[v] = true;
 
-function boyerMooreSearch(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const textLength = text.length;
-    const patternLength = pattern.length;
-    const result: number[] = [];
-
-    let shift = 0; // The shift of the pattern with respect to text
-
-    while (shift <= textLength - patternLength) {
-        let j = patternLength - 1;
-
-        // Keep reducing j while characters of pattern and text are matching
-        while (j >= 0 && pattern[j] === text[shift + j]) {
-            j--;
+        // Consider successors of v
+        for (const w of (graph.get(v) || [])) {
+            if (indices[w] === -1) {
+                // Successor w has not yet been visited; recurse on it
+                strongconnect(w);
+                lowlink[v] = Math.min(lowlink[v], lowlink[w]);
+            } else if (onStack[w]) {
+                // Successor w is in stack and hence in the current SCC
+                lowlink[v] = Math.min(lowlink[v], indices[w]);
+            }
         }
 
-        // If the pattern is found
-        if (j < 0) {
-            result.push(shift); // Found pattern at index 'shift'
-            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text[shift + patternLength]] || patternLength : 1;
-        } else {
-            // Shift the pattern to align with the next occurrence of the bad character
-            const badCharShift = badCharTable[text[shift + j]] || -1;
-            shift += Math.max(1, j - badCharShift);
+        // If v is a root node, pop the stack and generate an SCC
+        if (lowlink[v] === indices[v]) {
+            const scc: number[] = [];
+            let w: number;
+            do {
+                w = stack.pop()!;
+                onStack[w] = false;
+                scc.push(w);
+            } while (w !== v);
+            result.push(scc);
+        }
+    };
+
+    // Start with each vertex if it has not been visited
+    for (const v of graph.keys()) {
+        if (indices[v] === -1) {
+            strongconnect(v);
         }
     }
 
@@ -42,8 +59,15 @@ function boyerMooreSearch(text: string, pattern: string): number[] {
 }
 
 // Example usage:
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const matches = boyerMooreSearch(text, pattern);
+const graph: Graph = new Map([
+    [0, [1]],
+    [1, [2]],
+    [2, [0, 3]],
+    [3, [4]],
+    [4, [5]],
+    [5, [3]],
+    [6, [5]]
+]);
 
-console.log("Pattern found at indices:", matches); // Output indices where pattern found
+const sccs = tarjan(graph);
+console.log(sccs); // Output the strongly connected components
