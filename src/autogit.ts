@@ -1,7 +1,12 @@
-function reverseString(str: string): string {
-    return str.split('').reverse().join('');
+function getStringLength(str: string): number {
+    let count = 0;
+    for (let char of str) {
+        count++;
+    }
+    return count;
 }
 
-const originalString = "Hello, World!";
-const reversedString = reverseString(originalString);
-console.log(reversedString); // Output: !dlroW ,olleH
+// Example usage:
+const myString = "Hello, World!";
+const length = getStringLength(myString);
+console.log(`The length of the string is: ${length}`);
