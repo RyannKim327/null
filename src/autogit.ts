@@ -1,24 +1,65 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+// TrieNode class represents each node in the Trie
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
+
+    constructor() {
+        this.children = new Map();
+        this.isEndOfWord = false;
+    }
+}
+
+// Trie class encapsulates the root node and trie operations
+class Trie {
+    private root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
+    }
+
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let currentNode = this.root;
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        currentNode.isEndOfWord = true;
+    }
+
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        let currentNode = this.root;
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return false;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return currentNode.isEndOfWord;
+    }
+
+    // Check if any word starts with the given prefix
+    startsWith(prefix: string): boolean {
+        let currentNode = this.root;
+        for (const char of prefix) {
+            if (!currentNode.children.has(char)) {
+                return false;
+            }
+            currentNode = currentNode.children.get(char)!;
+        }
+        return true;
+    }
 }
 
 // Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
-}
-
-// Example usage:
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
-
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("app");
+console.log(trie.search("apple")); // true
+console.log(trie.search("app"));   // true
+console.log(trie.search("apples")); // false
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("apz")); // false
