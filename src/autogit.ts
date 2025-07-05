@@ -1,28 +1,48 @@
-function longestCommonPrefix(strings: string[]): string {
-  if (strings.length === 0) return '';
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-  // Initialize the prefix with the first string
-  let prefix = strings[0];
-
-  for (let i = 1; i < strings.length; i++) {
-    const currentString = strings[i];
-
-    // Compare prefix with current string character by character
-    let j = 0;
-    while (j < prefix.length && j < currentString.length && prefix[j] === currentString[j]) {
-      j++;
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Update the prefix
-    prefix = prefix.substring(0, j);
-
-    // If at any point the prefix becomes empty, no common prefix exists
-    if (prefix === '') break;
-  }
-
-  return prefix;
 }
 
-// Example usage:
-const strings = ["flower", "flow", "flight"];
-console.log(longestCommonPrefix(strings)); // Output: "fl"
+class LinkedList<T> {
+    head: Node<T> | null;
+
+    constructor() {
+        this.head = null;
+    }
+
+    // Method to add a new node at the end of the list
+    append(value: T): void {
+        const newNode = new Node(value);
+        if (!this.head) {
+            this.head = newNode;
+            return;
+        }
+        let current = this.head;
+        while (current.next) {
+            current = current.next;
+        }
+        current.next = newNode;
+    }
+
+    // Method to find the length of the linked list
+    length(): number {
+        let count = 0;
+        let current = this.head;
+        while (current) {
+            count++;
+            current = current.next;
+        }
+        return count;
+    }
+}
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+
+console.log("Length of the linked list:", list.length()); // Output: Length of the linked list: 3
