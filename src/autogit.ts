@@ -1,40 +1,57 @@
-function longestCommonSubsequence(str1: string, str2: string): string {
-    const m = str1.length;
-    const n = str2.length;
+class ListNode {
+    value: number;
+    next: ListNode | null;
 
-    // Create a 2D array to store lengths of longest common subsequence
-    const dp: number[][] = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
-
-    // Fill the dp array
-    for (let i = 1; i <= m; i++) {
-        for (let j = 1; j <= n; j++) {
-            if (str1[i - 1] === str2[j - 1]) {
-                dp[i][j] = dp[i - 1][j - 1] + 1; // Characters match
-            } else {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]); // Take max from left or top
-            }
-        }
+    constructor(value: number) {
+        this.value = value;
+        this.next = null;
     }
-
-    // Backtrack to find the LCS
-    let lcs = '';
-    let i = m, j = n;
-    while (i > 0 && j > 0) {
-        if (str1[i - 1] === str2[j - 1]) {
-            lcs = str1[i - 1] + lcs; // Append character to LCS
-            i--;
-            j--;
-        } else if (dp[i - 1][j] > dp[i][j - 1]) {
-            i--; // Move up
-        } else {
-            j--; // Move left
-        }
-    }
-
-    return lcs; // Return the longest common subsequence
 }
 
-// Example usage
-const str1 = "AGGTAB";
-const str2 = "GXTXAYB";
-console.log(longestCommonSubsequence(str1, str2)); // Output: "GTAB"
+function isPalindrome(head: ListNode | null): boolean {
+    if (!head || !head.next) {
+        return true; // An empty list or a single node list is a palindrome
+    }
+
+    // Step 1: Find the middle of the linked list
+    let slow: ListNode | null = head;
+    let fast: ListNode | null = head;
+
+    while (fast && fast.next) {
+        slow = slow.next;
+        fast = fast.next.next;
+    }
+
+    // Step 2: Reverse the second half of the linked list
+    let prev: ListNode | null = null;
+    let current: ListNode | null = slow;
+
+    while (current) {
+        const nextTemp = current.next;
+        current.next = prev;
+        prev = current;
+        current = nextTemp;
+    }
+
+    // Step 3: Compare the first half and the reversed second half
+    let left: ListNode | null = head;
+    let right: ListNode | null = prev; // This is the head of the reversed second half
+
+    while (right) {
+        if (left.value !== right.value) {
+            return false; // Not a palindrome
+        }
+        left = left.next;
+        right = right.next;
+    }
+
+    return true; // It is a palindrome
+}
+
+// Example usage:
+const head = new ListNode(1);
+head.next = new ListNode(2);
+head.next.next = new ListNode(2);
+head.next.next.next = new ListNode(1);
+
+console.log(isPalindrome(head)); // Output: true
