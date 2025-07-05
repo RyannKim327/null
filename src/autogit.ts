@@ -1,34 +1,45 @@
-function binarySearch(arr: number[], target: number, left: number, right: number): number {
-    // Base condition: if left index exceeds right, the target is not found
-    if (left > right) {
-        return -1; // Target not found
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
     }
-
-    // Calculate the middle index
-    const middle = Math.floor((left + right) / 2);
-    
-    // Check if the target is present at middle
-    if (arr[middle] === target) {
-        return middle; // Target found
-    }
-    
-    // If target is smaller than middle element, search the left half
-    if (target < arr[middle]) {
-        return binarySearch(arr, target, left, middle - 1);
-    }
-    
-    // If target is larger than middle element, search the right half
-    return binarySearch(arr, target, middle + 1, right);
-}
-
-// Helper function to call binarySearch with initial indices
-function search(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+    return count;
 }
 
 // Example usage:
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const target = 5;
-const result = search(arr, target);
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
 
-console.log(result); // Output: 4 (index of the target)
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split('').reduce((count, currentChar) => {
+        return currentChar === char ? count + 1 : count;
+    }, 0);
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    const regex = new RegExp(char, 'g'); // 'g' for global search
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return Array.from(str).filter(c => c === char).length;
+}
+
+// Example usage:
+const result = countCharacter("hello world", "o");
+console.log(result); // Output: 2
