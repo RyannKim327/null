@@ -1,78 +1,95 @@
-class ListNode<T> {
-  data: T;
-  next: ListNode<T> | null;
+class HashTable<K, V> {
+    private table: Array<Array<[K, V] | null>>;
+    private size: number;
 
-  constructor(data: T) {
-    this.data = data;
-    this.next = null;
-  }
+    constructor(size: number) {
+        this.size = size;
+        this.table = new Array(size).fill(null).map(() => []);
+    }
+
+    private hash(key: K): number {
+        let hash = 0;
+        const keyString = String(key);
+        for (let i = 0; i < keyString.length; i++) {
+            hash += keyString.charCodeAt(i);
+        }
+        return hash % this.size;
+    }
+
+    public set(key: K, value: V): void {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        // Check if the key already exists in the bucket
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket[i][1] = value; // Update the value
+                return;
+            }
+        }
+
+        // If the key does not exist, add a new key-value pair
+        bucket.push([key, value]);
+    }
+
+    public get(key: K): V | undefined {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                return bucket[i][1]; // Return the value
+            }
+        }
+
+        return undefined; // Key not found
+    }
+
+    public remove(key: K): boolean {
+        const index = this.hash(key);
+        const bucket = this.table[index];
+
+        for (let i = 0; i < bucket.length; i++) {
+            if (bucket[i] && bucket[i][0] === key) {
+                bucket.splice(i, 1); // Remove the key-value pair
+                return true;
+            }
+        }
+
+        return false; // Key not found
+    }
+
+    public keys(): K[] {
+        const keys: K[] = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    keys.push(entry[0]);
+                }
+            }
+        }
+        return keys;
+    }
+
+    public values(): V[] {
+        const values: V[] = [];
+        for (const bucket of this.table) {
+            for (const entry of bucket) {
+                if (entry) {
+                    values.push(entry[1]);
+                }
+            }
+        }
+        return values;
+    }
 }
-class LinkedList<T> {
-  private head: ListNode<T> | null = null;
 
-  // Add a new node at the end
-  append(data: T): void {
-    const newNode = new ListNode(data);
-    if (!this.head) {
-      this.head = newNode;
-    } else {
-      let current = this.head;
-      while (current.next) {
-        current = current.next;
-      }
-      current.next = newNode;
-    }
-  }
-
-  // Insert at the beginning
-  prepend(data: T): void {
-    const newNode = new ListNode(data);
-    newNode.next = this.head;
-    this.head = newNode;
-  }
-
-  // Remove a node with specific data
-  remove(data: T): boolean {
-    if (!this.head) return false;
-
-    if (this.head.data === data) {
-      this.head = this.head.next;
-      return true;
-    }
-
-    let current = this.head;
-    while (current.next && current.next.data !== data) {
-      current = current.next;
-    }
-
-    if (current.next && current.next.data === data) {
-      current.next = current.next.next;
-      return true;
-    }
-    return false;
-  }
-
-  // Traverse and log the list
-  print(): void {
-    let current = this.head;
-    const elements: T[] = [];
-    while (current) {
-      elements.push(current.data);
-      current = current.next;
-    }
-    console.log(elements.join(" -> "));
-  }
-
-  // Additional methods like insertAt, getAt, etc., can be added as needed
-}
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-list.print(); // Output: 1 -> 2 -> 3
-
-list.prepend(0);
-list.print(); // Output: 0 -> 1 -> 2 -> 3
-
-list.remove(2);
-list.print(); // Output: 0 -> 1 -> 3
+// Example usage
+const hashTable = new HashTable<string, number>(10);
+hashTable.set("apple", 1);
+hashTable.set("banana", 2);
+console.log(hashTable.get("apple")); // Output: 1
+console.log(hashTable.get("banana")); // Output: 2
+hashTable.remove("apple");
+console.log(hashTable.get("apple")); // Output: undefined
+console.log(hashTable.keys()); // Output: ['banana']
