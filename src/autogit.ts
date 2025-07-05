@@ -1,73 +1,44 @@
-type Graph = Map<number, number[]>; // Adjacency list representation
+function radixSort(arr: number[]): number[] {
+  if (arr.length === 0) return arr;
 
-function tarjan(graph: Graph): number[][] {
-    const indices: number[] = [];
-    const lowlink: number[] = [];
-    const stack: number[] = [];
-    const onStack: boolean[] = [];
-    const result: number[][] = [];
-    let index = 0;
+  // Find the maximum number to determine the number of digits
+  const maxNum = Math.max(...arr);
 
-    // Initialize the indices and lowlink arrays
-    for (let i = 0; i < graph.size; i++) {
-        indices[i] = -1;
-        lowlink[i] = -1;
-        onStack[i] = false;
-    }
-
-    const strongconnect = (v: number) => {
-        // Set the depth index for v to the smallest unused index
-        indices[v] = index;
-        lowlink[v] = index;
-        index++;
-        stack.push(v);
-        onStack[v] = true;
-
-        // Consider successors of v
-        for (const w of (graph.get(v) || [])) {
-            if (indices[w] === -1) {
-                // Successor w has not yet been visited; recurse on it
-                strongconnect(w);
-                lowlink[v] = Math.min(lowlink[v], lowlink[w]);
-            } else if (onStack[w]) {
-                // Successor w is in stack and hence in the current SCC
-                lowlink[v] = Math.min(lowlink[v], indices[w]);
-            }
-        }
-
-        // If v is a root node, pop the stack and generate an SCC
-        if (lowlink[v] === indices[v]) {
-            const scc: number[] = [];
-            let w: number;
-            do {
-                w = stack.pop()!;
-                onStack[w] = false;
-                scc.push(w);
-            } while (w !== v);
-            result.push(scc);
-        }
-    };
-
-    // Start with each vertex if it has not been visited
-    for (const v of graph.keys()) {
-        if (indices[v] === -1) {
-            strongconnect(v);
-        }
-    }
-
-    return result;
+  // Perform counting sort for each digit, starting from least significant digit
+  let exp = 1; // 10^0
+  while (Math.floor(maxNum / exp) > 0) {
+    arr = countingSortByDigit(arr, exp);
+    exp *= 10;
+  }
+  return arr;
 }
 
-// Example usage:
-const graph: Graph = new Map([
-    [0, [1]],
-    [1, [2]],
-    [2, [0, 3]],
-    [3, [4]],
-    [4, [5]],
-    [5, [3]],
-    [6, [5]]
-]);
+function countingSortByDigit(arr: number[], exp: number): number[] {
+  const output: number[] = new Array(arr.length).fill(0);
+  const count: number[] = new Array(10).fill(0);
 
-const sccs = tarjan(graph);
-console.log(sccs); // Output the strongly connected components
+  // Store count of occurrences in count[]
+  for (let i = 0; i < arr.length; i++) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    count[digit]++;
+  }
+
+  // Change count[i] so that count[i] contains actual position
+  for (let i = 1; i < 10; i++) {
+    count[i] += count[i - 1];
+  }
+
+  // Build the output array
+  for (let i = arr.length - 1; i >= 0; i--) {
+    const digit = Math.floor(arr[i] / exp) % 10;
+    output[count[digit] - 1] = arr[i];
+    count[digit]--;
+  }
+
+  return output;
+}
+
+// Example Usage:
+const arrayToSort = [170, 45, 75, 90, 802, 24, 2, 66];
+const sortedArray = radixSort(arrayToSort);
+console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
