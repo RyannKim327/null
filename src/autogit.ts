@@ -1,101 +1,87 @@
-type Entry<K, V> = {
-  key: K;
-  value: V;
-  next?: Entry<K, V>;
-};
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-class HashTable<K, V> {
-  private buckets: Array<Entry<K, V> | undefined>;
-  private size: number;
-
-  constructor(private capacity: number = 16) {
-    this.buckets = new Array(capacity);
-    this.size = 0;
-  }
-
-  // Hash function to compute index
-  private hash(key: K): number {
-    const stringKey = String(key);
-    let hash = 0;
-    for (let i = 0; i < stringKey.length; i++) {
-      hash = (hash * 31 + stringKey.charCodeAt(i)) >>> 0; // Unsigned right shift
+    constructor(value: number) {
+        this.value = value;
+        this.left = null;
+        this.right = null;
     }
-    return hash % this.capacity;
-  }
-
-  // Insert or update a key-value pair
-  public set(key: K, value: V): void {
-    const index = this.hash(key);
-    let head = this.buckets[index];
-
-    // Check if key exists and update
-    let current = head;
-    while (current) {
-      if (current.key === key) {
-        current.value = value;
-        return;
-      }
-      current = current.next;
-    }
-
-    // Insert new entry at the beginning
-    const newEntry: Entry<K, V> = { key, value, next: head };
-    this.buckets[index] = newEntry;
-    this.size++;
-  }
-
-  // Retrieve value by key
-  public get(key: K): V | undefined {
-    const index = this.hash(key);
-    let current = this.buckets[index];
-
-    while (current) {
-      if (current.key === key) {
-        return current.value;
-      }
-      current = current.next;
-    }
-
-    return undefined; // Key not found
-  }
-
-  // Delete key-value pair
-  public delete(key: K): boolean {
-    const index = this.hash(key);
-    let current = this.buckets[index];
-    let prev: Entry<K, V> | undefined = undefined;
-
-    while (current) {
-      if (current.key === key) {
-        if (prev) {
-          prev.next = current.next;
-        } else {
-          this.buckets[index] = current.next;
-        }
-        this.size--;
-        return true;
-      }
-      prev = current;
-      current = current.next;
-    }
-
-    return false; // Key not found
-  }
-
-  // Optional: Get current size
-  public getSize(): number {
-    return this.size;
-  }
 }
-const hashTable = new HashTable<string, number>();
 
-hashTable.set("apple", 5);
-hashTable.set("banana", 10);
+class BinarySearchTree {
+    root: TreeNode | null;
 
-console.log(hashTable.get("apple")); // Output: 5
-console.log(hashTable.get("banana")); // Output: 10
+    constructor() {
+        this.root = null;
+    }
 
-hashTable.delete("apple");
-console.log(hashTable.get("apple")); // Output: undefined
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
+        }
+    }
 
-console.log(hashTable.getSize()); // Output: 1
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
+            }
+        }
+    }
+
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
+
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
+        }
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // value is equal to node.value
+        }
+    }
+
+    inOrderTraversal(callback: (value: number) => void): void {
+        this.inOrder(this.root, callback);
+    }
+
+    private inOrder(node: TreeNode | null, callback: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrder(node.left, callback);
+            callback(node.value);
+            this.inOrder(node.right, callback);
+        }
+    }
+}
+
+// Example usage:
+const bst = new BinarySearchTree();
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+
+console.log("In-order Traversal:");
+bst.inOrderTraversal(value => console.log(value));
+
+console.log("Search for 7:", bst.search(7)); // true
+console.log("Search for 20:", bst.search(20)); // false
