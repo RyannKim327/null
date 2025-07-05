@@ -1,50 +1,115 @@
-function createBadCharacterTable(pattern: string): Record<string, number> {
-    const badCharTable: Record<string, number> = {};
-    const patternLength = pattern.length;
+class SkipListNode<T> {
+    value: T;
+    forwards: Array<SkipListNode<T> | null>;
 
-    // Initialize all characters in the pattern
-    for (let i = 0; i < patternLength; i++) {
-        badCharTable[pattern[i]] = i; // Store the last occurrence of the character
+    constructor(level: number, value: T) {
+        this.value = value;
+        this.forwards = new Array(level).fill(null);
+    }
+}
+class SkipList<T> {
+    private maxLevel: number;
+    private probability: number;
+    private head: SkipListNode<T>;
+    private level: number; // Current highest level in the list
+
+    constructor(maxLevel: number = 16, probability: number = 0.5) {
+        this.maxLevel = maxLevel;
+        this.probability = probability;
+        this.head = new SkipListNode<T>(this.maxLevel, null as any);
+        this.level = 1;
     }
 
-    return badCharTable;
-}
+    // Generate a random level for node
+    private randomLevel(): number {
+        let lvl = 1;
+        while (Math.random() < this.probability && lvl < this.maxLevel) {
+            lvl++;
+        }
+        return lvl;
+    }
 
-function boyerMooreHorspool(text: string, pattern: string): number[] {
-    const badCharTable = createBadCharacterTable(pattern);
-    const patternLength = pattern.length;
-    const textLength = text.length;
-    const occurrences: number[] = [];
+    // Insert a value into the skip list
+    insert(value: T): void {
+        const update: Array<SkipListNode<T> | null> = new Array(this.maxLevel).fill(null);
+        let current = this.head;
 
-    // Set the initial index for the text
-    let i = 0;
-
-    while (i <= textLength - patternLength) {
-        let j = patternLength - 1; // Start matching from the end of the pattern
-
-        // Compare the pattern with the text
-        while (j >= 0 && pattern[j] === text[i + j]) {
-            j--;
+        // Find the position to insert
+        for (let i = this.level - 1; i >= 0; i--) {
+            while (current.forwards[i] !== null && current.forwards[i]!.value < value) {
+                current = current.forwards[i]!;
+            }
+            update[i] = current;
         }
 
-        // If the pattern is found
-        if (j < 0) {
-            occurrences.push(i); // Store occurrence index
-            // Shift the pattern by the length of the pattern
-            i += (i + patternLength < textLength) ? patternLength - (badCharTable[text[i + patternLength]] || -1) : 1;
-        } else {
-            // Shift the pattern based on the bad character table
-            const badCharShift = badCharTable[text[i + j]] || -1;
-            i += Math.max(1, j - badCharShift); // Ensure we always shift at least one
+        // Generate a random level for the new node
+        const nodeLevel = this.randomLevel();
+        if (nodeLevel > this.level) {
+            for (let i = this.level; i < nodeLevel; i++) {
+                update[i] = this.head;
+            }
+            this.level = nodeLevel;
+        }
+
+        const newNode = new SkipListNode<T>(nodeLevel, value);
+        for (let i = 0; i < nodeLevel; i++) {
+            newNode.forwards[i] = update[i]!.forwards[i];
+            update[i]!.forwards[i] = newNode;
         }
     }
 
-    return occurrences;
-}
+    // Search for a value in the skip list
+    search(value: T): T | null {
+        let current = this.head;
+        for (let i = this.level - 1; i >= 0; i--) {
+            while (current.forwards[i] !== null && current.forwards[i]!.value < value) {
+                current = current.forwards[i]!;
+            }
+        }
 
-// Example usage
-const text = "ABABDABACDABABCABAB";
-const pattern = "ABABCABAB";
-const result = boyerMooreHorspool(text, pattern);
-console.log("Pattern found at indices:", result);
-Pattern found at indices: [10]
+        current = current.forwards[0]!;
+        if (current !== null && current.value === value) {
+            return current.value;
+        }
+        return null;
+    }
+
+    // Optional: Delete a value from the skip list
+    delete(value: T): boolean {
+        const update: Array<SkipListNode<T> | null> = new Array(this.maxLevel).fill(null);
+        let current = this.head;
+
+        for (let i = this.level - 1; i >= 0; i--) {
+            while (current.forwards[i] !== null && current.forwards[i]!.value < value) {
+                current = current.forwards[i]!;
+            }
+            update[i] = current;
+        }
+
+        const target = current.forwards[0];
+        if (target !== null && target.value === value) {
+            for (let i = 0; i < this.level; i++) {
+                if (update[i]!.forwards[i] !== target) break;
+                update[i]!.forwards[i] = target.forwards[i];
+            }
+
+            // Adjust the current level
+            while (this.level > 1 && this.head.forwards[this.level - 1] === null) {
+                this.level--;
+            }
+            return true;
+        }
+        return false;
+    }
+}
+const skiplist = new SkipList<number>();
+
+skiplist.insert(10);
+skiplist.insert(20);
+skiplist.insert(15);
+
+console.log(skiplist.search(15)); // Output: 15
+console.log(skiplist.search(100)); // Output: null
+
+skiplist.delete(15);
+console.log(skiplist.search(15)); // Output: null
