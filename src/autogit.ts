@@ -1,34 +1,47 @@
-function binarySearch(arr: number[], target: number, left: number, right: number): number {
-    // Base case: if the left index exceeds the right index, the target is not found
-    if (left > right) {
-        return -1; // Target not found
-    }
-
-    // Calculate the middle index
-    const mid = Math.floor((left + right) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found
-    }
-
-    // If the target is less than the middle element, search the left half
-    if (arr[mid] > target) {
-        return binarySearch(arr, target, left, mid - 1);
-    }
-
-    // If the target is greater than the middle element, search the right half
-    return binarySearch(arr, target, mid + 1, right);
-}
-
-// Helper function to initiate the binary search
-function search(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+function removeDuplicatesUsingSet<T>(array: T[]): T[] {
+    return Array.from(new Set(array));
 }
 
 // Example usage
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const targetValue = 5;
-const result = search(sortedArray, targetValue);
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = removeDuplicatesUsingSet(array);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+function removeDuplicatesUsingFilter<T>(array: T[]): T[] {
+    return array.filter((value, index) => array.indexOf(value) === index);
+}
 
-console.log(result); // Output: 4 (the index of the target value)
+// Example usage
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = removeDuplicatesUsingFilter(array);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+function removeDuplicatesUsingReduce<T>(array: T[]): T[] {
+    return array.reduce<T[]>((acc, current) => {
+        if (!acc.includes(current)) {
+            acc.push(current);
+        }
+        return acc;
+    }, []);
+}
+
+// Example usage
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = removeDuplicatesUsingReduce(array);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+function removeDuplicatesUsingForEach<T>(array: T[]): T[] {
+    const seen: { [key: string]: boolean } = {};
+    const uniqueArray: T[] = [];
+
+    array.forEach((item) => {
+        if (!seen[item]) {
+            seen[item] = true;
+            uniqueArray.push(item);
+        }
+    });
+
+    return uniqueArray;
+}
+
+// Example usage
+const array = [1, 2, 2, 3, 4, 4, 5];
+const uniqueArray = removeDuplicatesUsingForEach(array);
+console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
