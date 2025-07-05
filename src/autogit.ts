@@ -1,42 +1,26 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
-        }
-    }
-    return count;
+import * as readline from 'readline';
+
+// Create an interface for input and output
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to ask for user input
+function askQuestion(query: string): Promise<string> {
+    return new Promise(resolve => rl.question(query, resolve));
 }
 
-// Example usage:
-const str = "Hello, World!";
-const char = "o";
-console.log(countCharacter(str, char)); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
+// Main function to run the program
+async function main() {
+    const name = await askQuestion("What is your name? ");
+    console.log(`Hello, ${name}!`);
+    
+    const age = await askQuestion("How old are you? ");
+    console.log(`You are ${age} years old.`);
+    
+    rl.close();
 }
 
-// Example usage:
-const str = "Hello, World!";
-const char = "o";
-console.log(countCharacter(str, char)); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return Array.from(str).reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
-}
-
-// Example usage:
-const str = "Hello, World!";
-const char = "o";
-console.log(countCharacter(str, char)); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g');
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const str = "Hello, World!";
-const char = "o";
-console.log(countCharacter(str, char)); // Output: 2
+// Run the main function
+main();
