@@ -1,33 +1,60 @@
-function lengthOfLIS(nums: number[]): number {
-    if (nums.length === 0) return 0;
+// Define the structure of a tree node
+class TreeNode {
+    value: string;
+    children: TreeNode[];
 
-    const dp: number[] = []; // This will store the smallest tail for all increasing subsequences
+    constructor(value: string) {
+        this.value = value;
+        this.children = [];
+    }
 
-    for (const num of nums) {
-        // Use binary search to find the insertion point of num in dp
-        let left = 0;
-        let right = dp.length;
+    addChild(child: TreeNode) {
+        this.children.push(child);
+    }
+}
 
-        while (left < right) {
-            const mid = Math.floor((left + right) / 2);
-            if (dp[mid] < num) {
-                left = mid + 1; // Move right
-            } else {
-                right = mid; // Move left
-            }
+// Define the breadth-limited search function
+function breadthLimitedSearch(root: TreeNode | null, depthLimit: number): string[] {
+    if (!root || depthLimit < 0) {
+        return [];
+    }
+
+    const results: string[] = [];
+    const queue: { node: TreeNode; depth: number }[] = [{ node: root, depth: 0 }];
+
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the current node and its depth
+
+        // Add the current node value to results if within depth limit
+        if (depth <= depthLimit) {
+            results.push(node.value);
         }
 
-        // If left is equal to the length of dp, it means num is greater than all elements in dp
-        if (left === dp.length) {
-            dp.push(num); // Extend the size of dp
-        } else {
-            dp[left] = num; // Replace the found position with num
+        // If we have not reached the depth limit, enqueue the children
+        if (depth < depthLimit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
         }
     }
 
-    return dp.length; // The length of dp is the length of the longest increasing subsequence
+    return results;
 }
 
-// Example usage:
-const nums = [10, 9, 2, 5, 3, 7, 101, 18];
-console.log(lengthOfLIS(nums)); // Output: 4
+// Example usage
+const root = new TreeNode("A");
+const b = new TreeNode("B");
+const c = new TreeNode("C");
+const d = new TreeNode("D");
+const e = new TreeNode("E");
+const f = new TreeNode("F");
+
+root.addChild(b);
+root.addChild(c);
+b.addChild(d);
+b.addChild(e);
+c.addChild(f);
+
+const depthLimit = 1;
+const result = breadthLimitedSearch(root, depthLimit);
+console.log(result); // Output: ['A', 'B', 'C']
