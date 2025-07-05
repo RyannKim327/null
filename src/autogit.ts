@@ -1,56 +1,31 @@
-// Define a type for the Node
-interface Node {
-    value: string;
-    children: Node[];
+// Define the Post interface to represent the structure of the data
+interface Post {
+    userId: number;
+    id: number;
+    title: string;
+    body: string;
 }
 
-// Function to perform a breadth-limited search
-function breadthLimitedSearch(root: Node, target: string, depthLimit: number): Node | null {
-    // Queue for nodes to explore, initialized with the root node and depth 0
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-    
-    while (queue.length > 0) {
-        // Dequeue the next node
-        const { node, depth } = queue.shift()!;
+// Function to fetch posts from the JSONPlaceholder API
+async function fetchPosts(): Promise<Post[]> {
+    try {
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
+        // Check if the response is not ok (status code not in the range 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // If we haven't reached the depth limit, enqueue the children
-        if (depth < depthLimit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
-            }
-        }
+        // Parse the JSON response
+        const posts: Post[] = await response.json();
+        return posts;
+    } catch (error) {
+        console.error('Error fetching posts:', error);
+        return [];
     }
-
-    // If the target is not found within the depth limit
-    return null;
 }
 
-// Example usage
-const rootNode: Node = {
-    value: 'A',
-    children: [
-        {
-            value: 'B',
-            children: [
-                { value: 'D', children: [] },
-                { value: 'E', children: [] },
-            ],
-        },
-        {
-            value: 'C',
-            children: [
-                { value: 'F', children: [] },
-                { value: 'G', children: [] },
-            ],
-        },
-    ],
-};
-
-// Perform a breadth-limited search
-const result = breadthLimitedSearch(rootNode, 'E', 2);
-console.log(result ? `Found: ${result.value}` : 'Not Found');
+// Call the fetchPosts function and log the results
+fetchPosts().then(posts => {
+    console.log('Fetched Posts:', posts);
+});
