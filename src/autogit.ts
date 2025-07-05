@@ -1,38 +1,50 @@
-function binarySearch(arr: number[], target: number, left: number, right: number): number {
-    // Base case: if the left index exceeds the right index, target not found
-    if (left > right) {
-        return -1; // Indicating the target is not found
+function createBadCharacterTable(pattern: string): Record<string, number> {
+    const badCharTable: Record<string, number> = {};
+    const patternLength = pattern.length;
+
+    // Initialize all characters in the pattern
+    for (let i = 0; i < patternLength; i++) {
+        badCharTable[pattern[i]] = i; // Store the last occurrence of the character
     }
 
-    // Calculate the mid index
-    const mid = Math.floor((left + right) / 2);
-
-    // Check if the middle element is the target
-    if (arr[mid] === target) {
-        return mid; // Target found, return the index
-    }
-
-    // If the target is less than the middle element, search in the left half
-    if (target < arr[mid]) {
-        return binarySearch(arr, target, left, mid - 1);
-    }
-    
-    // If the target is greater than the middle element, search in the right half
-    return binarySearch(arr, target, mid + 1, right);
+    return badCharTable;
 }
 
-// Helper function to initiate the binary search
-function search(arr: number[], target: number): number {
-    return binarySearch(arr, target, 0, arr.length - 1);
+function boyerMooreHorspool(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const patternLength = pattern.length;
+    const textLength = text.length;
+    const occurrences: number[] = [];
+
+    // Set the initial index for the text
+    let i = 0;
+
+    while (i <= textLength - patternLength) {
+        let j = patternLength - 1; // Start matching from the end of the pattern
+
+        // Compare the pattern with the text
+        while (j >= 0 && pattern[j] === text[i + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            occurrences.push(i); // Store occurrence index
+            // Shift the pattern by the length of the pattern
+            i += (i + patternLength < textLength) ? patternLength - (badCharTable[text[i + patternLength]] || -1) : 1;
+        } else {
+            // Shift the pattern based on the bad character table
+            const badCharShift = badCharTable[text[i + j]] || -1;
+            i += Math.max(1, j - badCharShift); // Ensure we always shift at least one
+        }
+    }
+
+    return occurrences;
 }
 
 // Example usage
-const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 7;
-const result = search(sortedArray, target);
-
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log('Element not found in the array.');
-}
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = boyerMooreHorspool(text, pattern);
+console.log("Pattern found at indices:", result);
+Pattern found at indices: [10]
