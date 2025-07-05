@@ -1,58 +1,86 @@
-class Node {
-    value: number;
-    children: Node[];
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-    constructor(value: number) {
-        this.value = value;
-        this.children = [];
+    constructor() {
+        this.adjacencyList = new Map();
     }
 
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-function breadthLimitedSearch(root: Node, target: number, limit: number): Node | null {
-    if (limit < 0) {
-        return null; // Limit reached, return null
+    addVertex(vertex: number) {
+        this.adjacencyList.set(vertex, []);
     }
 
-    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
-    
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the first node in the queue
+    addEdge(v1: number, v2: number) {
+        this.adjacencyList.get(v1)?.push(v2);
+        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
+    }
 
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Target found
-        }
-
-        // If we haven't reached the limit, add children to the queue
-        if (depth < limit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
+    dfsRecursive(start: number, visited: Set<number> = new Set()) {
+        if (!visited.has(start)) {
+            console.log(start); // Process the vertex
+            visited.add(start);
+            const neighbors = this.adjacencyList.get(start) || [];
+            for (const neighbor of neighbors) {
+                this.dfsRecursive(neighbor, visited);
             }
         }
     }
-
-    return null; // Target not found within the limit
 }
 
 // Example usage
-const root = new Node(1);
-const child1 = new Node(2);
-const child2 = new Node(3);
-const child3 = new Node(4);
-const child4 = new Node(5);
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
 
-root.addChild(child1);
-root.addChild(child2);
-child1.addChild(child3);
-child1.addChild(child4);
+console.log("DFS Recursive:");
+graph.dfsRecursive(1);
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-const targetNode = breadthLimitedSearch(root, 4, 2);
-if (targetNode) {
-    console.log(`Found node with value: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the limit.");
+    constructor() {
+        this.adjacencyList = new Map();
+    }
+
+    addVertex(vertex: number) {
+        this.adjacencyList.set(vertex, []);
+    }
+
+    addEdge(v1: number, v2: number) {
+        this.adjacencyList.get(v1)?.push(v2);
+        this.adjacencyList.get(v2)?.push(v1); // For undirected graph
+    }
+
+    dfsIterative(start: number) {
+        const stack: number[] = [start];
+        const visited = new Set<number>();
+
+        while (stack.length > 0) {
+            const vertex = stack.pop()!;
+            if (!visited.has(vertex)) {
+                console.log(vertex); // Process the vertex
+                visited.add(vertex);
+                const neighbors = this.adjacencyList.get(vertex) || [];
+                for (const neighbor of neighbors) {
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
 }
+
+// Example usage
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+
+console.log("DFS Iterative:");
+graph.dfsIterative(1);
