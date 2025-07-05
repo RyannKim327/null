@@ -1,39 +1,19 @@
-type Graph = {
-    [key: string]: string[];
-};
-function bfs(graph: Graph, startNode: string): string[] {
-    const visited: Set<string> = new Set(); // To keep track of visited nodes
-    const queue: string[] = [startNode]; // Initialize the queue with the start node
-    const result: string[] = []; // To store the order of traversal
+function areAnagrams(str1: string, str2: string): boolean {
+  // Remove whitespace and convert to lowercase for case-insensitive comparison
+  const normalize = (str: string) => str.replace(/\s+/g, '').toLowerCase();
 
-    while (queue.length > 0) {
-        const currentNode = queue.shift(); // Dequeue the first node
+  const s1 = normalize(str1);
+  const s2 = normalize(str2);
 
-        if (currentNode && !visited.has(currentNode)) {
-            visited.add(currentNode); // Mark the node as visited
-            result.push(currentNode); // Add it to the result
+  if (s1.length !== s2.length) {
+    return false; // Different lengths, can't be anagrams
+  }
 
-            // Enqueue all unvisited neighbors
-            for (const neighbor of graph[currentNode]) {
-                if (!visited.has(neighbor)) {
-                    queue.push(neighbor);
-                }
-            }
-        }
-    }
+  const sortString = (str: string) => str.split('').sort().join('');
 
-    return result; // Return the order of traversal
+  return sortString(s1) === sortString(s2);
 }
-const graph: Graph = {
-    'A': ['B', 'C'],
-    'B': ['D', 'E'],
-    'C': ['F'],
-    'D': [],
-    'E': ['F'],
-    'F': [],
-};
 
-const startNode = 'A';
-const traversalOrder = bfs(graph, startNode);
-
-console.log(traversalOrder); // Output: ['A', 'B', 'C', 'D', 'E', 'F']
+// Example usage:
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("hello", "world"));   // false
