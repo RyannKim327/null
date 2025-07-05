@@ -1,67 +1,31 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function majorityElement(nums: number[]): number | null {
+    let candidate: number | null = null;
+    let count = 0;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
-    }
-}
-
-class Queue<T> {
-    private head: Node<T> | null = null;
-    private tail: Node<T> | null = null;
-    private length: number = 0;
-
-    // Add an element to the end of the queue
-    enqueue(value: T): void {
-        const newNode = new Node(value);
-        if (this.tail) {
-            this.tail.next = newNode; // Link the old tail to the new node
+    // Phase 1: Find a candidate
+    for (const num of nums) {
+        if (count === 0) {
+            candidate = num;
+            count = 1;
+        } else if (num === candidate) {
+            count++;
+        } else {
+            count--;
         }
-        this.tail = newNode; // Update the tail to the new node
-        if (!this.head) {
-            this.head = newNode; // If the queue was empty, head is also the new node
+    }
+
+    // Phase 2: Verify the candidate
+    count = 0;
+    for (const num of nums) {
+        if (num === candidate) {
+            count++;
         }
-        this.length++;
     }
 
-    // Remove and return the element from the front of the queue
-    dequeue(): T | null {
-        if (!this.head) {
-            return null; // Queue is empty
-        }
-        const dequeuedValue = this.head.value; // Get the value to return
-        this.head = this.head.next; // Move the head to the next node
-        if (!this.head) {
-            this.tail = null; // If the queue is now empty, set tail to null
-        }
-        this.length--;
-        return dequeuedValue;
-    }
-
-    // Check if the queue is empty
-    isEmpty(): boolean {
-        return this.length === 0;
-    }
-
-    // Get the size of the queue
-    size(): number {
-        return this.length;
-    }
-
-    // Peek at the front element without removing it
-    peek(): T | null {
-        return this.head ? this.head.value : null;
-    }
+    return count > nums.length / 2 ? candidate : null;
 }
 
 // Example usage:
-const queue = new Queue<number>();
-queue.enqueue(1);
-queue.enqueue(2);
-queue.enqueue(3);
-console.log(queue.dequeue()); // Output: 1
-console.log(queue.peek()); // Output: 2
-console.log(queue.size()); // Output: 2
-console.log(queue.isEmpty()); // Output: false
+const nums = [3, 2, 3];
+const result = majorityElement(nums);
+console.log(result); // Output: 3
