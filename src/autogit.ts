@@ -1,43 +1,29 @@
-function interpolationSearch(arr: number[], target: number): number {
-    let low = 0;
-    let high = arr.length - 1;
+function shellSort(arr: number[]): number[] {
+    const n = arr.length;
+    
+    // Start with a big gap, then reduce the gap
+    for (let gap = Math.floor(n / 2); gap > 0; gap = Math.floor(gap / 2)) {
+        // Do a gapped insertion sort for this gap size
+        for (let i = gap; i < n; i++) {
+            // save arr[i] in a temp variable
+            const temp = arr[i];
+            let j = i;
 
-    while (low <= high && target >= arr[low] && target <= arr[high]) {
-        // To avoid division by zero, check if the array element at low is equal to high
-        if (arr[low] === arr[high]) {
-            if (arr[low] === target) {
-                return low; // Found the target
+            // shift earlier gap-sorted elements up until the correct location for arr[i] is found
+            while (j >= gap && arr[j - gap] > temp) {
+                arr[j] = arr[j - gap];
+                j -= gap;
             }
-            return -1; // Target is not in the array
-        }
-
-        // Estimate the position using the interpolation formula
-        const pos = low + Math.floor(((target - arr[low]) * (high - low)) / (arr[high] - arr[low]));
-
-        // Check if the estimated position has the target value
-        if (arr[pos] === target) {
-            return pos; // Found the target
-        }
-
-        // If target is smaller, narrow the search to the left
-        if (arr[pos] > target) {
-            high = pos - 1;
-        } else {
-            // If target is larger, narrow the search to the right
-            low = pos + 1;
+            // put temp (the original arr[i]) in its correct location
+            arr[j] = temp;
         }
     }
-
-    return -1; // Target is not found
+    
+    return arr;
 }
 
 // Example usage
-const sortedArray = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-const target = 70;
-const result = interpolationSearch(sortedArray, target);
-
-if (result !== -1) {
-    console.log(`Element found at index: ${result}`);
-} else {
-    console.log("Element not found");
-}
+const array = [12, 34, 54, 2, 3];
+console.log("Original array:", array);
+const sortedArray = shellSort(array);
+console.log("Sorted array:", sortedArray);
