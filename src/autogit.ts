@@ -1,13 +1,8 @@
-// Example string
-const originalString: string = "Hello, World!";
-
-// Convert to lowercase
-const lowerCaseString: string = originalString.toLowerCase();
-
-console.log(lowerCaseString); // Output: "hello, world!"
-function convertToLowerCase(input: string): string {
-    return input.toLowerCase();
+function removeVowels(input: string): string {
+    return input.replace(/[aeiouAEIOU]/g, '');
 }
 
-const result = convertToLowerCase("TypeScript is Awesome!");
-console.log(result); // Output: "typescript is awesome!"
+// Example usage:
+const originalString = "Hello, World!";
+const stringWithoutVowels = removeVowels(originalString);
+console.log(stringWithoutVowels); // Hll, Wrld!
