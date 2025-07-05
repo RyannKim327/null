@@ -1,48 +1,35 @@
-class Node<T> {
-    value: T;
-    next: Node<T> | null;
+function binarySearch(arr: number[], target: number): number {
+    let left = 0;
+    let right = arr.length - 1;
 
-    constructor(value: T) {
-        this.value = value;
-        this.next = null;
+    while (left <= right) {
+        const mid = Math.floor((left + right) / 2);
+
+        // Check if the target is present at mid
+        if (arr[mid] === target) {
+            return mid; // Target found, return the index
+        }
+
+        // If target is greater, ignore the left half
+        if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            // If target is smaller, ignore the right half
+            right = mid - 1;
+        }
     }
+
+    // Target was not found in the array
+    return -1;
 }
 
-class LinkedList<T> {
-    head: Node<T> | null;
+// Example usage:
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const targetValue = 7;
+const result = binarySearch(sortedArray, targetValue);
 
-    constructor() {
-        this.head = null;
-    }
-
-    // Method to add a new node at the end of the list
-    append(value: T): void {
-        const newNode = new Node(value);
-        if (!this.head) {
-            this.head = newNode;
-            return;
-        }
-        let current = this.head;
-        while (current.next) {
-            current = current.next;
-        }
-        current.next = newNode;
-    }
-
-    // Method to find the length of the linked list
-    length(): number {
-        let count = 0;
-        let current = this.head;
-        while (current) {
-            count++;
-            current = current.next;
-        }
-        return count;
-    }
+if (result !== -1) {
+    console.log(`Target found at index: ${result}`);
+} else {
+    console.log('Target not found in the array.');
 }
-const list = new LinkedList<number>();
-list.append(1);
-list.append(2);
-list.append(3);
-
-console.log("Length of the linked list:", list.length()); // Output: Length of the linked list: 3
