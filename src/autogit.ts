@@ -1,32 +1,59 @@
-// Define an interface for the data structure you expect from the API
-interface User {
-    id: number;
-    name: string;
-    username: string;
-    email: string;
-}
+class Graph {
+    private adjacencyList: Map<number, number[]>;
 
-// Function to fetch users from a public API
-async function fetchUsers(): Promise<void> {
-    const apiUrl = 'https://jsonplaceholder.typicode.com/users';
+    constructor() {
+        this.adjacencyList = new Map();
+    }
 
-    try {
-        const response = await fetch(apiUrl);
-        
-        // Check if the response is OK (status code 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    // Add a vertex to the graph
+    addVertex(vertex: number): void {
+        this.adjacencyList.set(vertex, []);
+    }
+
+    // Add an edge to the graph
+    addEdge(vertex1: number, vertex2: number): void {
+        this.adjacencyList.get(vertex1)?.push(vertex2);
+        this.adjacencyList.get(vertex2)?.push(vertex1); // For undirected graph
+    }
+
+    // Perform BFS
+    bfs(startVertex: number): number[] {
+        const visited: Set<number> = new Set();
+        const queue: number[] = [];
+        const result: number[] = [];
+
+        visited.add(startVertex);
+        queue.push(startVertex);
+
+        while (queue.length > 0) {
+            const currentVertex = queue.shift()!;
+            result.push(currentVertex);
+
+            const neighbors = this.adjacencyList.get(currentVertex) || [];
+            for (const neighbor of neighbors) {
+                if (!visited.has(neighbor)) {
+                    visited.add(neighbor);
+                    queue.push(neighbor);
+                }
+            }
         }
 
-        // Parse the JSON response
-        const users: User[] = await response.json();
-        
-        // Log the users to the console
-        console.log(users);
-    } catch (error) {
-        console.error('Error fetching users:', error);
+        return result;
     }
 }
 
-// Call the function to fetch users
-fetchUsers();
+// Example usage
+const graph = new Graph();
+graph.addVertex(1);
+graph.addVertex(2);
+graph.addVertex(3);
+graph.addVertex(4);
+graph.addVertex(5);
+
+graph.addEdge(1, 2);
+graph.addEdge(1, 3);
+graph.addEdge(2, 4);
+graph.addEdge(3, 5);
+
+const bfsResult = graph.bfs(1);
+console.log(bfsResult); // Output: [1, 2, 3, 4, 5]
