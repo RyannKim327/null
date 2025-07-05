@@ -1,47 +1,28 @@
-function removeDuplicatesUsingSet<T>(array: T[]): T[] {
-    return Array.from(new Set(array));
+const numbers: number[] = [1, 5, 2, 9, 3];
+const max = Math.max(...numbers);
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 2, 9, 3];
+const max = numbers.reduce((accumulator, current) => {
+    return current > accumulator ? current : accumulator;
+}, numbers[0]); // Initialize with the first element
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 2, 9, 3];
+let max = numbers[0];
+
+for(let i = 1; i < numbers.length; i++) {
+    if(numbers[i] > max) {
+        max = numbers[i];
+    }
 }
 
-// Example usage
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicatesUsingSet(array);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-function removeDuplicatesUsingFilter<T>(array: T[]): T[] {
-    return array.filter((value, index) => array.indexOf(value) === index);
-}
+console.log(max); // Output: 9
+const numbers: number[] = [1, 5, 2, 9, 3];
+let max = numbers[0];
 
-// Example usage
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicatesUsingFilter(array);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-function removeDuplicatesUsingReduce<T>(array: T[]): T[] {
-    return array.reduce<T[]>((acc, current) => {
-        if (!acc.includes(current)) {
-            acc.push(current);
-        }
-        return acc;
-    }, []);
-}
+numbers.forEach(num => {
+    if (num > max) {
+        max = num;
+    }
+});
 
-// Example usage
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicatesUsingReduce(array);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-function removeDuplicatesUsingForEach<T>(array: T[]): T[] {
-    const seen: { [key: string]: boolean } = {};
-    const uniqueArray: T[] = [];
-
-    array.forEach((item) => {
-        if (!seen[item]) {
-            seen[item] = true;
-            uniqueArray.push(item);
-        }
-    });
-
-    return uniqueArray;
-}
-
-// Example usage
-const array = [1, 2, 2, 3, 4, 4, 5];
-const uniqueArray = removeDuplicatesUsingForEach(array);
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+console.log(max); // Output: 9
