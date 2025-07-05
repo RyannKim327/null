@@ -1,28 +1,49 @@
-function largestPrimeFactor(n: number): number {
-    let largestFactor = -1;
+function createBadCharacterTable(pattern: string): { [key: string]: number } {
+    const badCharTable: { [key: string]: number } = {};
+    const patternLength = pattern.length;
 
-    // Check for number of 2s that divide n
-    while (n % 2 === 0) {
-        largestFactor = 2;
-        n /= 2;
+    // Fill the bad character table with default values
+    for (let i = 0; i < patternLength; i++) {
+        // Store the last occurrence of each character in the pattern
+        badCharTable[pattern[i]] = i;
     }
 
-    // n must be odd at this point, so we can skip even numbers
-    for (let i = 3; i * i <= n; i += 2) {
-        while (n % i === 0) {
-            largestFactor = i;
-            n /= i;
+    return badCharTable;
+}
+
+function boyerMooreSearch(text: string, pattern: string): number[] {
+    const badCharTable = createBadCharacterTable(pattern);
+    const textLength = text.length;
+    const patternLength = pattern.length;
+    const result: number[] = [];
+
+    let shift = 0; // The shift of the pattern with respect to text
+
+    while (shift <= textLength - patternLength) {
+        let j = patternLength - 1;
+
+        // Keep reducing j while characters of pattern and text are matching
+        while (j >= 0 && pattern[j] === text[shift + j]) {
+            j--;
+        }
+
+        // If the pattern is found
+        if (j < 0) {
+            result.push(shift); // Found pattern at index 'shift'
+            shift += (shift + patternLength < textLength) ? patternLength - badCharTable[text[shift + patternLength]] || patternLength : 1;
+        } else {
+            // Shift the pattern to align with the next occurrence of the bad character
+            const badCharShift = badCharTable[text[shift + j]] || -1;
+            shift += Math.max(1, j - badCharShift);
         }
     }
 
-    // This condition is to check if n is a prime number greater than 2
-    if (n > 2) {
-        largestFactor = n;
-    }
-
-    return largestFactor;
+    return result;
 }
 
 // Example usage:
-const number = 13195;
-console.log(`The largest prime factor of ${number} is ${largestPrimeFactor(number)}`);
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const matches = boyerMooreSearch(text, pattern);
+
+console.log("Pattern found at indices:", matches); // Output indices where pattern found
