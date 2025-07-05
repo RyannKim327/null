@@ -1,57 +1,78 @@
-class ListNode {
-    value: number;
-    next: ListNode | null;
+class ListNode<T> {
+  data: T;
+  next: ListNode<T> | null;
 
-    constructor(value: number) {
-        this.value = value;
-        this.next = null;
-    }
+  constructor(data: T) {
+    this.data = data;
+    this.next = null;
+  }
 }
+class LinkedList<T> {
+  private head: ListNode<T> | null = null;
 
-function isPalindrome(head: ListNode | null): boolean {
-    if (!head || !head.next) {
-        return true; // An empty list or a single node list is a palindrome
+  // Add a new node at the end
+  append(data: T): void {
+    const newNode = new ListNode(data);
+    if (!this.head) {
+      this.head = newNode;
+    } else {
+      let current = this.head;
+      while (current.next) {
+        current = current.next;
+      }
+      current.next = newNode;
+    }
+  }
+
+  // Insert at the beginning
+  prepend(data: T): void {
+    const newNode = new ListNode(data);
+    newNode.next = this.head;
+    this.head = newNode;
+  }
+
+  // Remove a node with specific data
+  remove(data: T): boolean {
+    if (!this.head) return false;
+
+    if (this.head.data === data) {
+      this.head = this.head.next;
+      return true;
     }
 
-    // Step 1: Find the middle of the linked list
-    let slow: ListNode | null = head;
-    let fast: ListNode | null = head;
-
-    while (fast && fast.next) {
-        slow = slow.next;
-        fast = fast.next.next;
+    let current = this.head;
+    while (current.next && current.next.data !== data) {
+      current = current.next;
     }
 
-    // Step 2: Reverse the second half of the linked list
-    let prev: ListNode | null = null;
-    let current: ListNode | null = slow;
+    if (current.next && current.next.data === data) {
+      current.next = current.next.next;
+      return true;
+    }
+    return false;
+  }
 
+  // Traverse and log the list
+  print(): void {
+    let current = this.head;
+    const elements: T[] = [];
     while (current) {
-        const nextTemp = current.next;
-        current.next = prev;
-        prev = current;
-        current = nextTemp;
+      elements.push(current.data);
+      current = current.next;
     }
+    console.log(elements.join(" -> "));
+  }
 
-    // Step 3: Compare the first half and the reversed second half
-    let left: ListNode | null = head;
-    let right: ListNode | null = prev; // This is the head of the reversed second half
-
-    while (right) {
-        if (left.value !== right.value) {
-            return false; // Not a palindrome
-        }
-        left = left.next;
-        right = right.next;
-    }
-
-    return true; // It is a palindrome
+  // Additional methods like insertAt, getAt, etc., can be added as needed
 }
+const list = new LinkedList<number>();
+list.append(1);
+list.append(2);
+list.append(3);
+list.print(); // Output: 1 -> 2 -> 3
 
-// Example usage:
-const head = new ListNode(1);
-head.next = new ListNode(2);
-head.next.next = new ListNode(2);
-head.next.next.next = new ListNode(1);
+list.prepend(0);
+list.print(); // Output: 0 -> 1 -> 2 -> 3
 
-console.log(isPalindrome(head)); // Output: true
+list.remove(2);
+list.print(); // Output: 0 -> 1 -> 3
