@@ -1,36 +1,20 @@
-class Stack<T> {
-  private items: T[] = [];
+function firstRepeatedCharacter(s: string): string | null {
+    const seenChars = new Set<string>();
 
-  // Add an item to the top of the stack
-  push(item: T): void {
-    this.items.push(item);
-  }
+    for (const char of s) {
+        // Check if the character has already been seen
+        if (seenChars.has(char)) {
+            return char; // Return the first repeated character
+        }
+        // Otherwise, add the character to the set
+        seenChars.add(char);
+    }
 
-  // Remove and return the top item from the stack
-  pop(): T | undefined {
-    return this.items.pop();
-  }
-
-  // View the top item without removing it
-  peek(): T | undefined {
-    return this.items[this.items.length - 1];
-  }
-
-  // Check if the stack is empty
-  isEmpty(): boolean {
-    return this.items.length === 0;
-  }
-
-  // Get the size of the stack
-  size(): number {
-    return this.items.length;
-  }
+    // If no repeated character is found, return null
+    return null;
 }
 
-// Usage:
-const stack = new Stack<number>();
-stack.push(10);
-stack.push(20);
-console.log(stack.peek()); // 20
-console.log(stack.pop());  // 20
-console.log(stack.size()); // 1
+// Example usage:
+const inputString = "abcdefgabc";
+const result = firstRepeatedCharacter(inputString);
+console.log(result); // Output: "a"
