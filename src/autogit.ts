@@ -1,115 +1,97 @@
-class SkipListNode<T> {
-    value: T;
-    forwards: Array<SkipListNode<T> | null>;
+class TreeNode {
+    value: number;
+    left: TreeNode | null;
+    right: TreeNode | null;
 
-    constructor(level: number, value: T) {
+    constructor(value: number) {
         this.value = value;
-        this.forwards = new Array(level).fill(null);
+        this.left = null;
+        this.right = null;
     }
 }
-class SkipList<T> {
-    private maxLevel: number;
-    private probability: number;
-    private head: SkipListNode<T>;
-    private level: number; // Current highest level in the list
+class BinarySearchTree {
+    root: TreeNode | null;
 
-    constructor(maxLevel: number = 16, probability: number = 0.5) {
-        this.maxLevel = maxLevel;
-        this.probability = probability;
-        this.head = new SkipListNode<T>(this.maxLevel, null as any);
-        this.level = 1;
+    constructor() {
+        this.root = null;
     }
 
-    // Generate a random level for node
-    private randomLevel(): number {
-        let lvl = 1;
-        while (Math.random() < this.probability && lvl < this.maxLevel) {
-            lvl++;
-        }
-        return lvl;
-    }
-
-    // Insert a value into the skip list
-    insert(value: T): void {
-        const update: Array<SkipListNode<T> | null> = new Array(this.maxLevel).fill(null);
-        let current = this.head;
-
-        // Find the position to insert
-        for (let i = this.level - 1; i >= 0; i--) {
-            while (current.forwards[i] !== null && current.forwards[i]!.value < value) {
-                current = current.forwards[i]!;
-            }
-            update[i] = current;
-        }
-
-        // Generate a random level for the new node
-        const nodeLevel = this.randomLevel();
-        if (nodeLevel > this.level) {
-            for (let i = this.level; i < nodeLevel; i++) {
-                update[i] = this.head;
-            }
-            this.level = nodeLevel;
-        }
-
-        const newNode = new SkipListNode<T>(nodeLevel, value);
-        for (let i = 0; i < nodeLevel; i++) {
-            newNode.forwards[i] = update[i]!.forwards[i];
-            update[i]!.forwards[i] = newNode;
+    // Insert a new value into the BST
+    insert(value: number): void {
+        const newNode = new TreeNode(value);
+        if (this.root === null) {
+            this.root = newNode;
+        } else {
+            this.insertNode(this.root, newNode);
         }
     }
 
-    // Search for a value in the skip list
-    search(value: T): T | null {
-        let current = this.head;
-        for (let i = this.level - 1; i >= 0; i--) {
-            while (current.forwards[i] !== null && current.forwards[i]!.value < value) {
-                current = current.forwards[i]!;
+    private insertNode(node: TreeNode, newNode: TreeNode): void {
+        if (newNode.value < node.value) {
+            // Go to the left subtree
+            if (node.left === null) {
+                node.left = newNode;
+            } else {
+                this.insertNode(node.left, newNode);
+            }
+        } else {
+            // Go to the right subtree
+            if (node.right === null) {
+                node.right = newNode;
+            } else {
+                this.insertNode(node.right, newNode);
             }
         }
-
-        current = current.forwards[0]!;
-        if (current !== null && current.value === value) {
-            return current.value;
-        }
-        return null;
     }
 
-    // Optional: Delete a value from the skip list
-    delete(value: T): boolean {
-        const update: Array<SkipListNode<T> | null> = new Array(this.maxLevel).fill(null);
-        let current = this.head;
+    // Search for a value in the BST
+    search(value: number): boolean {
+        return this.searchNode(this.root, value);
+    }
 
-        for (let i = this.level - 1; i >= 0; i--) {
-            while (current.forwards[i] !== null && current.forwards[i]!.value < value) {
-                current = current.forwards[i]!;
-            }
-            update[i] = current;
+    private searchNode(node: TreeNode | null, value: number): boolean {
+        if (node === null) {
+            return false;
         }
 
-        const target = current.forwards[0];
-        if (target !== null && target.value === value) {
-            for (let i = 0; i < this.level; i++) {
-                if (update[i]!.forwards[i] !== target) break;
-                update[i]!.forwards[i] = target.forwards[i];
-            }
-
-            // Adjust the current level
-            while (this.level > 1 && this.head.forwards[this.level - 1] === null) {
-                this.level--;
-            }
-            return true;
+        if (value < node.value) {
+            return this.searchNode(node.left, value);
+        } else if (value > node.value) {
+            return this.searchNode(node.right, value);
+        } else {
+            return true; // Value found
         }
-        return false;
+    }
+
+    // In-order traversal of the BST
+    inOrderTraversal(node: TreeNode | null, visit: (value: number) => void): void {
+        if (node !== null) {
+            this.inOrderTraversal(node.left, visit);
+            visit(node.value);
+            this.inOrderTraversal(node.right, visit);
+        }
+    }
+
+    // Public method to start in-order traversal
+    traverseInOrder(visit: (value: number) => void): void {
+        this.inOrderTraversal(this.root, visit);
     }
 }
-const skiplist = new SkipList<number>();
+const bst = new BinarySearchTree();
 
-skiplist.insert(10);
-skiplist.insert(20);
-skiplist.insert(15);
+// Inserting values
+bst.insert(10);
+bst.insert(5);
+bst.insert(15);
+bst.insert(3);
+bst.insert(7);
+bst.insert(12);
+bst.insert(18);
 
-console.log(skiplist.search(15)); // Output: 15
-console.log(skiplist.search(100)); // Output: null
+// Searching for values
+console.log(bst.search(7));  // true
+console.log(bst.search(20)); // false
 
-skiplist.delete(15);
-console.log(skiplist.search(15)); // Output: null
+// Traversing the tree in order
+console.log('In-order Traversal:');
+bst.traverseInOrder(value => console.log(value)); // 3, 5, 7, 10, 12, 15, 18
