@@ -1,12 +1,20 @@
-const array = [1, 2, 2, 3, 4, 4, 5];
+npm install node-cron
+import cron from 'node-cron';
 
-const uniqueArray = Array.from(new Set(array));
+// Schedule a task to run every minute
+const task = cron.schedule('* * * * *', () => {
+    const currentDateTime = new Date();
+    console.log(`Task executed at: ${currentDateTime.toLocaleString()}`);
+});
 
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
-const array = [1, 2, 2, 3, 4, 4, 5];
+// Start the cron job
+task.start();
 
-const uniqueArray = array.filter((item, index) => 
-  array.indexOf(item) === index
-);
-
-console.log(uniqueArray); // Output: [1, 2, 3, 4, 5]
+// This can be useful to stop the job after some time, for demonstration
+setTimeout(() => {
+    task.stop();
+    console.log('Cron job stopped.');
+}, 60000); // Stops after 60 seconds
+tsc cronJob.ts
+node cronJob.js
+* * * * * (minute, hour, day of month, month, day of week)
