@@ -1,68 +1,55 @@
-// Define the structure for a Node
-class Node {
-    value: string;
-    children: Node[];
+function KMPSearch(pattern: string, text: string): number[] {
+    const lps = computeLPSArray(pattern);
+    const result: number[] = [];
+    let i = 0; // index for text
+    let j = 0; // index for pattern
 
-    constructor(value: string) {
-        this.value = value;
-        this.children = [];
-    }
-
-    // Method to add a child node
-    addChild(child: Node) {
-        this.children.push(child);
-    }
-}
-
-// Implement the breadth-limited search algorithm
-function breadthLimitedSearch(root: Node, target: string, depthLimit: number): Node | null {
-    if (depthLimit < 0) {
-        throw new Error("Depth limit must be non-negative");
-    }
-
-    // Create a queue for BFS
-    const queue: { node: Node; depth: number }[] = [];
-    queue.push({ node: root, depth: 0 });
-
-    while (queue.length > 0) {
-        const { node, depth } = queue.shift()!; // Get the front node
-
-        // Check if the current node is the target
-        if (node.value === target) {
-            return node; // Return the found node
+    while (i < text.length) {
+        if (pattern[j] === text[i]) {
+            i++;
+            j++;
         }
 
-        // Only traverse children if we haven't reached the depth limit
-        if (depth < depthLimit) {
-            for (const child of node.children) {
-                queue.push({ node: child, depth: depth + 1 });
+        if (j === pattern.length) {
+            result.push(i - j); // Match found, add the starting index to result
+            j = lps[j - 1]; // Use LPS to avoid unnecessary comparisons
+        } else if (i < text.length && pattern[j] !== text[i]) {
+            if (j !== 0) {
+                j = lps[j - 1]; // Use LPS to skip characters in pattern
+            } else {
+                i++;
             }
         }
     }
 
-    // Return null if the target was not found
-    return null;
+    return result;
 }
 
-// Example usage
-const root = new Node("A");
-const b = new Node("B");
-const c = new Node("C");
-const d = new Node("D");
-const e = new Node("E");
-const f = new Node("F");
+function computeLPSArray(pattern: string): number[] {
+    const lps = new Array(pattern.length).fill(0);
+    let length = 0; // length of the previous longest prefix suffix
+    let i = 1;
 
-root.addChild(b);
-root.addChild(c);
-b.addChild(d);
-b.addChild(e);
-c.addChild(f);
+    while (i < pattern.length) {
+        if (pattern[i] === pattern[length]) {
+            length++;
+            lps[i] = length;
+            i++;
+        } else {
+            if (length !== 0) {
+                length = lps[length - 1]; // Use the previous LPS value
+            } else {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
 
-// Perform a breadth-limited search
-const targetNode = breadthLimitedSearch(root, "E", 2);
-
-if (targetNode) {
-    console.log(`Found node: ${targetNode.value}`);
-} else {
-    console.log("Node not found within the depth limit.");
+    return lps;
 }
+
+// Example usage:
+const text = "ABABDABACDABABCABAB";
+const pattern = "ABABCABAB";
+const result = KMPSearch(pattern, text);
+console.log("Pattern found at indices:", result);
