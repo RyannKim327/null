@@ -1,17 +1,67 @@
-function isSortedAscending<T>(array: T[]): boolean {
-  // Loop through the array up to the second last element
-  for (let i = 0; i < array.length - 1; i++) {
-    // Compare current element with the next
-    if (array[i] > array[i + 1]) {
-      // If current element is greater than the next, array is not sorted
-      return false;
-    }
-  }
-  // If the loop completes, array is sorted in ascending order
-  return true;
-}
-const arr1 = [1, 2, 3, 4, 5];
-const arr2 = [1, 3, 2, 4, 5];
+class Node<T> {
+    value: T;
+    next: Node<T> | null;
 
-console.log(isSortedAscending(arr1)); // true
-console.log(isSortedAscending(arr2)); // false
+    constructor(value: T) {
+        this.value = value;
+        this.next = null;
+    }
+}
+
+class Queue<T> {
+    private head: Node<T> | null = null;
+    private tail: Node<T> | null = null;
+    private length: number = 0;
+
+    // Add an element to the end of the queue
+    enqueue(value: T): void {
+        const newNode = new Node(value);
+        if (this.tail) {
+            this.tail.next = newNode; // Link the old tail to the new node
+        }
+        this.tail = newNode; // Update the tail to the new node
+        if (!this.head) {
+            this.head = newNode; // If the queue was empty, head is also the new node
+        }
+        this.length++;
+    }
+
+    // Remove and return the element from the front of the queue
+    dequeue(): T | null {
+        if (!this.head) {
+            return null; // Queue is empty
+        }
+        const dequeuedValue = this.head.value; // Get the value to return
+        this.head = this.head.next; // Move the head to the next node
+        if (!this.head) {
+            this.tail = null; // If the queue is now empty, set tail to null
+        }
+        this.length--;
+        return dequeuedValue;
+    }
+
+    // Check if the queue is empty
+    isEmpty(): boolean {
+        return this.length === 0;
+    }
+
+    // Get the size of the queue
+    size(): number {
+        return this.length;
+    }
+
+    // Peek at the front element without removing it
+    peek(): T | null {
+        return this.head ? this.head.value : null;
+    }
+}
+
+// Example usage:
+const queue = new Queue<number>();
+queue.enqueue(1);
+queue.enqueue(2);
+queue.enqueue(3);
+console.log(queue.dequeue()); // Output: 1
+console.log(queue.peek()); // Output: 2
+console.log(queue.size()); // Output: 2
+console.log(queue.isEmpty()); // Output: false
