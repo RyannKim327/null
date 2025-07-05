@@ -1,12 +1,12 @@
-function factorial(n: number): number {
-    // Base case: factorial of 0 or 1 is 1
-    if (n === 0 || n === 1) {
-        return 1;
-    }
-    // Recursive case: n! = n * (n - 1)!
-    return n * factorial(n - 1);
+function validateEmail(email: string): boolean {
+    // Regex pattern for validating email addresses
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailPattern.test(email);
 }
 
-// Example usage:
-const num = 5;
-console.log(`Factorial of ${num} is ${factorial(num)}`); // Output: Factorial of 5 is 120
+// Example usage
+const email1 = "example@example.com";
+const email2 = "invalid-email@.com";
+
+console.log(validateEmail(email1)); // true
+console.log(validateEmail(email2)); // false
