@@ -1,72 +1,34 @@
-class HashTable<K, V> {
-  private buckets: Array<Array<{ key: K; value: V }>>;
-  private capacity: number;
-
-  constructor(capacity: number = 16) {
-    this.capacity = capacity;
-    this.buckets = new Array(this.capacity);
-    for (let i = 0; i < this.capacity; i++) {
-      this.buckets[i] = [];
-    }
-  }
-
-  // Hash function to compute index from key
-  private hash(key: K): number {
-    const keyString = String(key);
-    let hash = 0;
-
-    for (let i = 0; i < keyString.length; i++) {
-      hash = (hash + keyString.charCodeAt(i) * 31) % this.capacity;
-    }
-    return hash;
-  }
-
-  // Add or update a key-value pair
-  set(key: K, value: V): void {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-
-    // Check if key exists, update if found
-    for (let pair of bucket) {
-      if (pair.key === key) {
-        pair.value = value;
-        return;
-      }
+function binarySearch(arr: number[], target: number, left: number, right: number): number {
+    // Base case: if left index exceeds right index, target is not found
+    if (left > right) {
+        return -1; // Target not found
     }
 
-    // If key doesn't exist, add new pair
-    bucket.push({ key, value });
-  }
+    // Calculate the middle index
+    const mid = Math.floor((left + right) / 2);
 
-  // Retrieve value by key
-  get(key: K): V | undefined {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-
-    for (let pair of bucket) {
-      if (pair.key === key) {
-        return pair.value;
-      }
+    // Check if the middle element is the target
+    if (arr[mid] === target) {
+        return mid; // Target found
     }
-    return undefined; // Not found
-  }
 
-  // Remove key-value pair
-  delete(key: K): boolean {
-    const index = this.hash(key);
-    const bucket = this.buckets[index];
-
-    for (let i = 0; i < bucket.length; i++) {
-      if (bucket[i].key === key) {
-        bucket.splice(i, 1);
-        return true;
-      }
+    // If target is less than the middle element, search in the left half
+    if (target < arr[mid]) {
+        return binarySearch(arr, target, left, mid - 1);
     }
-    return false; // Not found
-  }
+
+    // If target is greater than the middle element, search in the right half
+    return binarySearch(arr, target, mid + 1, right);
 }
-const myMap = new HashTable<string, number>();
-myMap.set('apple', 5);
-console.log(myMap.get('apple')); // Output: 5
-myMap.delete('apple');
-console.log(myMap.get('apple')); // Output: undefined
+
+// Helper function to initiate the binary search
+function search(arr: number[], target: number): number {
+    return binarySearch(arr, target, 0, arr.length - 1);
+}
+
+// Example usage
+const sortedArray = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+const targetValue = 5;
+const result = search(sortedArray, targetValue);
+
+console.log(result); // Output: 4 (index of the target value)
