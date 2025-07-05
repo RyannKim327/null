@@ -1,44 +1,22 @@
-function radixSort(arr: number[]): number[] {
-  if (arr.length === 0) return arr;
+function insertionSort(arr: number[]): number[] {
+    // Loop through the array starting from the second element
+    for (let i = 1; i < arr.length; i++) {
+        const key = arr[i]; // The element to be positioned
+        let j = i - 1; // The index of the last sorted element
 
-  // Find the maximum number to determine the number of digits
-  const maxNum = Math.max(...arr);
-
-  // Perform counting sort for each digit, starting from least significant digit
-  let exp = 1; // 10^0
-  while (Math.floor(maxNum / exp) > 0) {
-    arr = countingSortByDigit(arr, exp);
-    exp *= 10;
-  }
-  return arr;
+        // Move elements of arr[0..i-1], that are greater than key,
+        // to one position ahead of their current position
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        // Place the key in its correct position
+        arr[j + 1] = key;
+    }
+    return arr;
 }
 
-function countingSortByDigit(arr: number[], exp: number): number[] {
-  const output: number[] = new Array(arr.length).fill(0);
-  const count: number[] = new Array(10).fill(0);
-
-  // Store count of occurrences in count[]
-  for (let i = 0; i < arr.length; i++) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    count[digit]++;
-  }
-
-  // Change count[i] so that count[i] contains actual position
-  for (let i = 1; i < 10; i++) {
-    count[i] += count[i - 1];
-  }
-
-  // Build the output array
-  for (let i = arr.length - 1; i >= 0; i--) {
-    const digit = Math.floor(arr[i] / exp) % 10;
-    output[count[digit] - 1] = arr[i];
-    count[digit]--;
-  }
-
-  return output;
-}
-
-// Example Usage:
-const arrayToSort = [170, 45, 75, 90, 802, 24, 2, 66];
-const sortedArray = radixSort(arrayToSort);
-console.log(sortedArray); // Output: [2, 24, 45, 66, 75, 90, 170, 802]
+// Example usage:
+const array = [5, 2, 9, 1, 5, 6];
+const sortedArray = insertionSort(array);
+console.log(sortedArray); // Output: [1, 2, 5, 5, 6, 9]
