@@ -1,38 +1,68 @@
-class Stack<T> {
-    private items: T[] = [];
+class TrieNode {
+    children: Map<string, TrieNode>;
+    isEndOfWord: boolean;
 
-    // Add an item to the top of the stack
-    push(item: T): void {
-        this.items.push(item);
+    constructor() {
+        this.children = new Map<string, TrieNode>();
+        this.isEndOfWord = false;
+    }
+}
+
+class Trie {
+    private root: TrieNode;
+
+    constructor() {
+        this.root = new TrieNode();
     }
 
-    // Remove and return the item from the top of the stack
-    pop(): T | undefined {
-        return this.items.pop();
+    // Insert a word into the Trie
+    insert(word: string): void {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                currentNode.children.set(char, new TrieNode());
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        currentNode.isEndOfWord = true;
     }
 
-    // Return the item at the top of the stack without removing it
-    peek(): T | undefined {
-        return this.items[this.items.length - 1];
+    // Search for a word in the Trie
+    search(word: string): boolean {
+        const node = this.findNode(word);
+        return node !== null && node.isEndOfWord;
     }
 
-    // Check if the stack is empty
-    isEmpty(): boolean {
-        return this.items.length === 0;
+    // Check if there is any word in the Trie that starts with the given prefix
+    startsWith(prefix: string): boolean {
+        return this.findNode(prefix) !== null;
     }
 
-    // Return the number of items in the stack
-    size(): number {
-        return this.items.length;
+    // Helper function to find the node corresponding to a given word/prefix
+    private findNode(word: string): TrieNode | null {
+        let currentNode = this.root;
+
+        for (const char of word) {
+            if (!currentNode.children.has(char)) {
+                return null;
+            }
+            currentNode = currentNode.children.get(char)!; // Non-null assertion
+        }
+        return currentNode;
     }
 }
 
 // Example usage:
-const stack = new Stack<number>();
-stack.push(1);
-stack.push(2);
-stack.push(3);
-console.log(stack.peek()); // Output: 3
-console.log(stack.pop());   // Output: 3
-console.log(stack.size());  // Output: 2
-console.log(stack.isEmpty()); // Output: false
+const trie = new Trie();
+trie.insert("hello");
+trie.insert("world");
+trie.insert("hi");
+
+console.log(trie.search("hello")); // true
+console.log(trie.search("hell"));  // false
+console.log(trie.startsWith("he")); // true
+console.log(trie.startsWith("wo")); // true
+console.log(trie.startsWith("hi")); // true
+console.log(trie.startsWith("h"));  // true
+console.log(trie.startsWith("x"));  // false
