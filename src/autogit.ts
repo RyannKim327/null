@@ -1,65 +1,56 @@
-// TrieNode class represents each node in the Trie
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+class BoyerMoore {
+    private pattern: string;
+    private badCharTable: Map<string, number>;
 
-    constructor() {
-        this.children = new Map();
-        this.isEndOfWord = false;
-    }
-}
-
-// Trie class encapsulates the root node and trie operations
-class Trie {
-    private root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
+    constructor(pattern: string) {
+        this.pattern = pattern;
+        this.badCharTable = this.buildBadCharTable(pattern);
     }
 
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!;
+    private buildBadCharTable(pattern: string): Map<string, number> {
+        const table = new Map<string, number>();
+        const patternLength = pattern.length;
+
+        for (let i = 0; i < patternLength; i++) {
+            table.set(pattern[i], i);
         }
-        currentNode.isEndOfWord = true;
+
+        return table;
     }
 
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        let currentNode = this.root;
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return false;
-            }
-            currentNode = currentNode.children.get(char)!;
-        }
-        return currentNode.isEndOfWord;
-    }
+    public search(text: string): number {
+        const patternLength = this.pattern.length;
+        const textLength = text.length;
+        let skip: number;
 
-    // Check if any word starts with the given prefix
-    startsWith(prefix: string): boolean {
-        let currentNode = this.root;
-        for (const char of prefix) {
-            if (!currentNode.children.has(char)) {
-                return false;
+        for (let i = 0; i <= textLength - patternLength; i += skip) {
+            skip = 0;
+
+            for (let j = patternLength - 1; j >= 0; j--) {
+                if (this.pattern[j] !== text[i + j]) {
+                    const badCharIndex = this.badCharTable.get(text[i + j]) || -1;
+                    skip = Math.max(1, j - badCharIndex);
+                    break;
+                }
             }
-            currentNode = currentNode.children.get(char)!;
+
+            if (skip === 0) {
+                // Match found at index i
+                return i; // Return the index of the first match
+            }
         }
-        return true;
+
+        return -1; // No match found
     }
 }
 
 // Example usage:
-const trie = new Trie();
-trie.insert("apple");
-trie.insert("app");
-console.log(trie.search("apple")); // true
-console.log(trie.search("app"));   // true
-console.log(trie.search("apples")); // false
-console.log(trie.startsWith("app")); // true
-console.log(trie.startsWith("apz")); // false
+const bm = new BoyerMoore("abc");
+const text = "abcpqrabcxyz";
+const index = bm.search(text);
+
+if (index !== -1) {
+    console.log(`Pattern found at index: ${index}`);
+} else {
+    console.log("Pattern not found.");
+}
