@@ -1,14 +1,24 @@
-function calculateMean(numbers: number[]): number {
-  if (numbers.length === 0) {
-    throw new Error("Cannot calculate mean of an empty list");
-  }
-
-  const sum = numbers.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  const mean = sum / numbers.length;
-  return mean;
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
+    }
+    return count;
 }
 
 // Example usage:
-const myNumbers = [10, 20, 30, 40, 50];
-const average = calculateMean(myNumbers);
-console.log(`The mean is: ${average}`);
+const myString = "hello world";
+const characterToCount = "o";
+const result = countCharacter(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${result} times.`);
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
+
+// Example usage:
+const myString = "hello world";
+const characterToCount = "o";
+const result = countCharacter(myString, characterToCount);
+console.log(`The character '${characterToCount}' occurs ${result} times.`);
