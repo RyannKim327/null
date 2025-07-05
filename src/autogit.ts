@@ -1,12 +1,15 @@
-function getStringLength(str: string): number {
-    let count = 0;
-    for (let char of str) {
-        count++;
-    }
-    return count;
-}
+const str: string = "Hello, world!";
+const substring: string = "world";
 
-// Example usage:
-const myString = "Hello, World!";
-const length = getStringLength(myString);
-console.log(`The length of the string is: ${length}`);
+const containsSubstring: boolean = str.includes(substring);
+console.log(containsSubstring); // Output: true
+const str: string = "Hello, world!";
+const substring: string = "world";
+
+const containsSubstring: boolean = str.indexOf(substring) !== -1;
+console.log(containsSubstring); // Output: true
+const str: string = "Hello, world!";
+const substring: string = "world";
+
+const containsSubstring: boolean = new RegExp(substring).test(str);
+console.log(containsSubstring); // Output: true
