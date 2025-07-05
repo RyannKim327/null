@@ -1,18 +1,41 @@
-function findCommonElements(arr1: number[], arr2: number[]): number[] {
-    return arr1.filter(value => arr2.includes(value));
+function areAnagrams(str1: string, str2: string): boolean {
+  const normalize = (str: string) =>
+    str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
+  
+  return normalize(str1) === normalize(str2);
 }
 
-const array1 = [1, 2, 3, 4, 5];
-const array2 = [4, 5, 6, 7, 8];
+// Usage:
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'world'));   // false
+function areAnagrams(str1: string, str2: string): boolean {
+  const normalize = (str: string) =>
+    str.replace(/\s+/g, '').toLowerCase();
 
-const commonElements = findCommonElements(array1, array2);
-console.log(commonElements); // Output: [4, 5]
-function findCommonElementsUsingSet(arr1: number[], arr2: number[]): number[] {
-    const set1 = new Set(arr1);
-    const set2 = new Set(arr2);
-    const commonElements = [...set1].filter(value => set2.has(value));
-    return commonElements;
+  if (normalize(str1).length !== normalize(str2).length) {
+    return false;
+  }
+
+  const countChars = (str: string) => {
+    const counts: Record<string, number> = {};
+    for (const char of str) {
+      counts[char] = (counts[char] || 0) + 1;
+    }
+    return counts;
+  };
+
+  const count1 = countChars(normalize(str1));
+  const count2 = countChars(normalize(str2));
+
+  for (const key in count1) {
+    if (count1[key] !== count2[key]) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
-const commonElementsSet = findCommonElementsUsingSet(array1, array2);
-console.log(commonElementsSet); // Output: [4, 5]
+// Usage:
+console.log(areAnagrams('listen', 'silent')); // true
+console.log(areAnagrams('hello', 'world'));   // false
