@@ -1,97 +1,49 @@
-class TreeNode {
-    value: number;
-    left: TreeNode | null;
-    right: TreeNode | null;
+function areAnagrams(str1: string, str2: string): boolean {
+    // Remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
 
-    constructor(value: number) {
-        this.value = value;
-        this.left = null;
-        this.right = null;
-    }
+    // Sort the characters of both strings
+    const sortedStr1 = normalizedStr1.split('').sort().join('');
+    const sortedStr2 = normalizedStr2.split('').sort().join('');
+
+    // Compare sorted versions
+    return sortedStr1 === sortedStr2;
 }
-class BinarySearchTree {
-    root: TreeNode | null;
 
-    constructor() {
-        this.root = null;
+// Example usage
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("Hello", "Olelh"));   // true
+console.log(areAnagrams("Test", "Taste"));     // false
+function areAnagrams(str1: string, str2: string): boolean {
+    // Remove spaces and convert to lowercase
+    const normalizedStr1 = str1.replace(/\s+/g, '').toLowerCase();
+    const normalizedStr2 = str2.replace(/\s+/g, '').toLowerCase();
+
+    // If lengths are different, they cannot be anagrams
+    if (normalizedStr1.length !== normalizedStr2.length) {
+        return false;
     }
 
-    // Insert a new value into the BST
-    insert(value: number): void {
-        const newNode = new TreeNode(value);
-        if (this.root === null) {
-            this.root = newNode;
-        } else {
-            this.insertNode(this.root, newNode);
+    // Create frequency maps for both strings
+    const charCount: { [key: string]: number } = {};
+
+    for (const char of normalizedStr1) {
+        charCount[char] = (charCount[char] || 0) + 1;
+    }
+
+    for (const char of normalizedStr2) {
+        if (!charCount[char]) {
+            return false; // Character not found or too many instances
         }
+        charCount[char]--;
     }
 
-    private insertNode(node: TreeNode, newNode: TreeNode): void {
-        if (newNode.value < node.value) {
-            // Go to the left subtree
-            if (node.left === null) {
-                node.left = newNode;
-            } else {
-                this.insertNode(node.left, newNode);
-            }
-        } else {
-            // Go to the right subtree
-            if (node.right === null) {
-                node.right = newNode;
-            } else {
-                this.insertNode(node.right, newNode);
-            }
-        }
-    }
-
-    // Search for a value in the BST
-    search(value: number): boolean {
-        return this.searchNode(this.root, value);
-    }
-
-    private searchNode(node: TreeNode | null, value: number): boolean {
-        if (node === null) {
-            return false;
-        }
-
-        if (value < node.value) {
-            return this.searchNode(node.left, value);
-        } else if (value > node.value) {
-            return this.searchNode(node.right, value);
-        } else {
-            return true; // Value found
-        }
-    }
-
-    // In-order traversal of the BST
-    inOrderTraversal(node: TreeNode | null, visit: (value: number) => void): void {
-        if (node !== null) {
-            this.inOrderTraversal(node.left, visit);
-            visit(node.value);
-            this.inOrderTraversal(node.right, visit);
-        }
-    }
-
-    // Public method to start in-order traversal
-    traverseInOrder(visit: (value: number) => void): void {
-        this.inOrderTraversal(this.root, visit);
-    }
+    // Check if all counts are zero
+    return Object.values(charCount).every(count => count === 0);
 }
-const bst = new BinarySearchTree();
 
-// Inserting values
-bst.insert(10);
-bst.insert(5);
-bst.insert(15);
-bst.insert(3);
-bst.insert(7);
-bst.insert(12);
-bst.insert(18);
-
-// Searching for values
-console.log(bst.search(7));  // true
-console.log(bst.search(20)); // false
-
-// Traversing the tree in order
-console.log('In-order Traversal:');
-bst.traverseInOrder(value => console.log(value)); // 3, 5, 7, 10, 12, 15, 18
+// Example usage
+console.log(areAnagrams("listen", "silent")); // true
+console.log(areAnagrams("Hello", "Olelh"));   // true
+console.log(areAnagrams("Test", "Taste"));     // false
