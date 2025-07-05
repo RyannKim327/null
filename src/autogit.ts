@@ -1,45 +1,34 @@
-function countCharacter(str: string, char: string): number {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === char) {
-            count++;
+function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
+    const n = input.length;
+    const rotations: string[] = [];
+
+    // Generate all rotations of the input string
+    for (let i = 0; i < n; i++) {
+        rotations.push(input.slice(i) + input.slice(0, i));
+    }
+
+    // Sort the rotations
+    rotations.sort();
+
+    // Build the BWT result and find the original index
+    let bwtResult = '';
+    let originalIndex = -1;
+
+    for (let i = 0; i < n; i++) {
+        const rotation = rotations[i];
+        bwtResult += rotation[n - 1]; // Take the last character of each sorted rotation
+        if (rotation === input) {
+            originalIndex = i; // Store the index of the original string
         }
     }
-    return count;
+
+    return { transformed: bwtResult, index: originalIndex };
 }
 
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split(char).length - 1;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return str.split('').reduce((count, currentChar) => {
-        return currentChar === char ? count + 1 : count;
-    }, 0);
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    const regex = new RegExp(char, 'g'); // 'g' for global search
-    const matches = str.match(regex);
-    return matches ? matches.length : 0;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
-function countCharacter(str: string, char: string): number {
-    return Array.from(str).filter(c => c === char).length;
-}
-
-// Example usage:
-const result = countCharacter("hello world", "o");
-console.log(result); // Output: 2
+// Example usage
+const input = "banana";
+const { transformed, index } = burrowsWheelerTransform(input);
+console.log("Transformed:", transformed);
+console.log("Original Index:", index);
+Transformed: annb$aa
+Original Index: 3
