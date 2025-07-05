@@ -1,31 +1,17 @@
-// Define the Post interface to represent the structure of the data
-interface Post {
-    userId: number;
-    id: number;
-    title: string;
-    body: string;
-}
-
-// Function to fetch posts from the JSONPlaceholder API
-async function fetchPosts(): Promise<Post[]> {
-    try {
-        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-
-        // Check if the response is not ok (status code not in the range 200-299)
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Parse the JSON response
-        const posts: Post[] = await response.json();
-        return posts;
-    } catch (error) {
-        console.error('Error fetching posts:', error);
-        return [];
+function isSortedAscending<T>(array: T[]): boolean {
+  // Loop through the array up to the second last element
+  for (let i = 0; i < array.length - 1; i++) {
+    // Compare current element with the next
+    if (array[i] > array[i + 1]) {
+      // If current element is greater than the next, array is not sorted
+      return false;
     }
+  }
+  // If the loop completes, array is sorted in ascending order
+  return true;
 }
+const arr1 = [1, 2, 3, 4, 5];
+const arr2 = [1, 3, 2, 4, 5];
 
-// Call the fetchPosts function and log the results
-fetchPosts().then(posts => {
-    console.log('Fetched Posts:', posts);
-});
+console.log(isSortedAscending(arr1)); // true
+console.log(isSortedAscending(arr2)); // false
