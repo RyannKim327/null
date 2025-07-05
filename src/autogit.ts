@@ -1,41 +1,74 @@
-function areAnagrams(str1: string, str2: string): boolean {
-  const normalize = (str: string) =>
-    str.replace(/\s+/g, '').toLowerCase().split('').sort().join('');
-  
-  return normalize(str1) === normalize(str2);
+// Define a TrieNode class
+class TrieNode {
+  // Map to hold child nodes
+  children: Map<string, TrieNode>;
+  // Flag to mark the end of a word
+  isEndOfWord: boolean;
+
+  constructor() {
+    this.children = new Map<string, TrieNode>();
+    this.isEndOfWord = false;
+  }
 }
 
-// Usage:
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world'));   // false
-function areAnagrams(str1: string, str2: string): boolean {
-  const normalize = (str: string) =>
-    str.replace(/\s+/g, '').toLowerCase();
+// Define the Trie class
+class Trie {
+  private root: TrieNode;
 
-  if (normalize(str1).length !== normalize(str2).length) {
-    return false;
+  constructor() {
+    this.root = new TrieNode();
   }
 
-  const countChars = (str: string) => {
-    const counts: Record<string, number> = {};
-    for (const char of str) {
-      counts[char] = (counts[char] || 0) + 1;
-    }
-    return counts;
-  };
+  // Method to insert a word into the trie
+  insert(word: string): void {
+    let currentNode = this.root;
 
-  const count1 = countChars(normalize(str1));
-  const count2 = countChars(normalize(str2));
-
-  for (const key in count1) {
-    if (count1[key] !== count2[key]) {
-      return false;
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        currentNode.children.set(char, new TrieNode());
+      }
+      currentNode = currentNode.children.get(char)!;
     }
+
+    currentNode.isEndOfWord = true;
   }
 
-  return true;
+  // Method to search for a full word
+  search(word: string): boolean {
+    let currentNode = this.root;
+
+    for (const char of word) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+
+    return currentNode.isEndOfWord;
+  }
+
+  // Method to check if any word in the trie starts with the given prefix
+  startsWith(prefix: string): boolean {
+    let currentNode = this.root;
+
+    for (const char of prefix) {
+      if (!currentNode.children.has(char)) {
+        return false;
+      }
+      currentNode = currentNode.children.get(char)!;
+    }
+
+    return true;
+  }
 }
 
-// Usage:
-console.log(areAnagrams('listen', 'silent')); // true
-console.log(areAnagrams('hello', 'world'));   // false
+// Example usage:
+const trie = new Trie();
+trie.insert("apple");
+trie.insert("app");
+trie.insert("application");
+
+console.log(trie.search("app")); // true
+console.log(trie.search("appl")); // false
+console.log(trie.startsWith("app")); // true
+console.log(trie.startsWith("apply")); // false
