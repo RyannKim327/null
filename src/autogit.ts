@@ -1,31 +1,59 @@
-function majorityElement(nums: number[]): number | null {
-    let candidate: number | null = null;
-    let count = 0;
-
-    // Phase 1: Find a candidate
-    for (const num of nums) {
-        if (count === 0) {
-            candidate = num;
-            count = 1;
-        } else if (num === candidate) {
-            count++;
-        } else {
-            count--;
-        }
-    }
-
-    // Phase 2: Verify the candidate
-    count = 0;
-    for (const num of nums) {
-        if (num === candidate) {
-            count++;
-        }
-    }
-
-    return count > nums.length / 2 ? candidate : null;
+interface Node {
+    value: any; // The value stored in the node
+    children: Node[]; // The children of this node
 }
+function breadthLimitedSearch(root: Node, depthLimit: number, target: any): Node | null {
+    // Early exit if the root is null
+    if (!root) {
+        return null;
+    }
+    
+    // Queue for BFS
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+    
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!;
+        
+        // Check if the current node matches the target value
+        if (node.value === target) {
+            return node; // Target found
+        }
 
-// Example usage:
-const nums = [3, 2, 3];
-const result = majorityElement(nums);
-console.log(result); // Output: 3
+        // If we haven't reached the depth limit, add children to the queue
+        if (depth < depthLimit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
+        }
+    }
+    
+    // Target not found within depth limit
+    return null;
+}
+// Create an example tree
+const rootNode: Node = {
+    value: 'A',
+    children: [
+        {
+            value: 'B',
+            children: [
+                { value: 'D', children: [] },
+                { value: 'E', children: [] },
+            ],
+        },
+        {
+            value: 'C',
+            children: [
+                { value: 'F', children: [] },
+                { value: 'G', children: [] },
+            ],
+        },
+    ],
+};
+
+// Test the breadth-limited search
+const result = breadthLimitedSearch(rootNode, 2, 'E');
+console.log(result); // Output: { value: 'E', children: [] }
+
+const notFound = breadthLimitedSearch(rootNode, 1, 'D');
+console.log(notFound); // Output: null (D is deeper than depth limit)
