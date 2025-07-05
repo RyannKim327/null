@@ -1,25 +1,32 @@
-npm install -g typescript
-// Import the 'readline' module to handle input from the command line
-import * as readline from 'readline';
-
-// Create an interface for input and output streams
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-// Function to ask for the user's name
-function askForName(): void {
-    rl.question('What is your name? ', (name: string) => {
-        greetUser(name);
-    });
+// Define an interface for the data structure you expect from the API
+interface User {
+    id: number;
+    name: string;
+    username: string;
+    email: string;
 }
 
-// Function to greet the user
-function greetUser(name: string): void {
-    console.log(`Hello, ${name}! Welcome to TypeScript.`);
-    rl.close(); // Close the readline interface
+// Function to fetch users from a public API
+async function fetchUsers(): Promise<void> {
+    const apiUrl = 'https://jsonplaceholder.typicode.com/users';
+
+    try {
+        const response = await fetch(apiUrl);
+        
+        // Check if the response is OK (status code 200-299)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // Parse the JSON response
+        const users: User[] = await response.json();
+        
+        // Log the users to the console
+        console.log(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+    }
 }
 
-// Start the program by asking for the user's name
-askForName();
+// Call the function to fetch users
+fetchUsers();
