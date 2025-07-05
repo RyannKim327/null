@@ -1,34 +1,58 @@
-function burrowsWheelerTransform(input: string): { transformed: string, index: number } {
-    const n = input.length;
-    const rotations: string[] = [];
+class Node {
+    value: number;
+    children: Node[];
 
-    // Generate all rotations of the input string
-    for (let i = 0; i < n; i++) {
-        rotations.push(input.slice(i) + input.slice(0, i));
+    constructor(value: number) {
+        this.value = value;
+        this.children = [];
     }
 
-    // Sort the rotations
-    rotations.sort();
+    addChild(child: Node) {
+        this.children.push(child);
+    }
+}
 
-    // Build the BWT result and find the original index
-    let bwtResult = '';
-    let originalIndex = -1;
+function breadthLimitedSearch(root: Node, target: number, limit: number): Node | null {
+    if (limit < 0) {
+        return null; // Limit reached, return null
+    }
 
-    for (let i = 0; i < n; i++) {
-        const rotation = rotations[i];
-        bwtResult += rotation[n - 1]; // Take the last character of each sorted rotation
-        if (rotation === input) {
-            originalIndex = i; // Store the index of the original string
+    const queue: { node: Node; depth: number }[] = [{ node: root, depth: 0 }];
+    
+    while (queue.length > 0) {
+        const { node, depth } = queue.shift()!; // Get the first node in the queue
+
+        // Check if the current node is the target
+        if (node.value === target) {
+            return node; // Target found
+        }
+
+        // If we haven't reached the limit, add children to the queue
+        if (depth < limit) {
+            for (const child of node.children) {
+                queue.push({ node: child, depth: depth + 1 });
+            }
         }
     }
 
-    return { transformed: bwtResult, index: originalIndex };
+    return null; // Target not found within the limit
 }
 
 // Example usage
-const input = "banana";
-const { transformed, index } = burrowsWheelerTransform(input);
-console.log("Transformed:", transformed);
-console.log("Original Index:", index);
-Transformed: annb$aa
-Original Index: 3
+const root = new Node(1);
+const child1 = new Node(2);
+const child2 = new Node(3);
+const child3 = new Node(4);
+const child4 = new Node(5);
+
+root.addChild(child1);
+root.addChild(child2);
+child1.addChild(child3);
+child1.addChild(child4);
+
+const targetNode = breadthLimitedSearch(root, 4, 2);
+if (targetNode) {
+    console.log(`Found node with value: ${targetNode.value}`);
+} else {
+    console.log("Node not found within the limit.");
+}
