@@ -1,68 +1,25 @@
-class TrieNode {
-    children: Map<string, TrieNode>;
-    isEndOfWord: boolean;
+npm install -g typescript
+// Import the 'readline' module to handle input from the command line
+import * as readline from 'readline';
 
-    constructor() {
-        this.children = new Map<string, TrieNode>();
-        this.isEndOfWord = false;
-    }
+// Create an interface for input and output streams
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+});
+
+// Function to ask for the user's name
+function askForName(): void {
+    rl.question('What is your name? ', (name: string) => {
+        greetUser(name);
+    });
 }
 
-class Trie {
-    private root: TrieNode;
-
-    constructor() {
-        this.root = new TrieNode();
-    }
-
-    // Insert a word into the Trie
-    insert(word: string): void {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                currentNode.children.set(char, new TrieNode());
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        currentNode.isEndOfWord = true;
-    }
-
-    // Search for a word in the Trie
-    search(word: string): boolean {
-        const node = this.findNode(word);
-        return node !== null && node.isEndOfWord;
-    }
-
-    // Check if there is any word in the Trie that starts with the given prefix
-    startsWith(prefix: string): boolean {
-        return this.findNode(prefix) !== null;
-    }
-
-    // Helper function to find the node corresponding to a given word/prefix
-    private findNode(word: string): TrieNode | null {
-        let currentNode = this.root;
-
-        for (const char of word) {
-            if (!currentNode.children.has(char)) {
-                return null;
-            }
-            currentNode = currentNode.children.get(char)!; // Non-null assertion
-        }
-        return currentNode;
-    }
+// Function to greet the user
+function greetUser(name: string): void {
+    console.log(`Hello, ${name}! Welcome to TypeScript.`);
+    rl.close(); // Close the readline interface
 }
 
-// Example usage:
-const trie = new Trie();
-trie.insert("hello");
-trie.insert("world");
-trie.insert("hi");
-
-console.log(trie.search("hello")); // true
-console.log(trie.search("hell"));  // false
-console.log(trie.startsWith("he")); // true
-console.log(trie.startsWith("wo")); // true
-console.log(trie.startsWith("hi")); // true
-console.log(trie.startsWith("h"));  // true
-console.log(trie.startsWith("x"));  // false
+// Start the program by asking for the user's name
+askForName();
