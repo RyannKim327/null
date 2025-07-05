@@ -1,11 +1,42 @@
-function findMaxValue(arr: number[]): number | null {
-    if (arr.length === 0) {
-        return null; // Return null if the array is empty
+function countCharacter(str: string, char: string): number {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === char) {
+            count++;
+        }
     }
-    return Math.max(...arr); // Use Math.max with the spread operator
+    return count;
 }
 
 // Example usage:
-const numbers = [3, 5, 7, 2, 8, -1];
-const maxValue = findMaxValue(numbers);
-console.log(maxValue); // Output: 8
+const str = "Hello, World!";
+const char = "o";
+console.log(countCharacter(str, char)); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return str.split(char).length - 1;
+}
+
+// Example usage:
+const str = "Hello, World!";
+const char = "o";
+console.log(countCharacter(str, char)); // Output: 2
+function countCharacter(str: string, char: string): number {
+    return Array.from(str).reduce((count, currentChar) => {
+        return currentChar === char ? count + 1 : count;
+    }, 0);
+}
+
+// Example usage:
+const str = "Hello, World!";
+const char = "o";
+console.log(countCharacter(str, char)); // Output: 2
+function countCharacter(str: string, char: string): number {
+    const regex = new RegExp(char, 'g');
+    const matches = str.match(regex);
+    return matches ? matches.length : 0;
+}
+
+// Example usage:
+const str = "Hello, World!";
+const char = "o";
+console.log(countCharacter(str, char)); // Output: 2
